@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADS Study Hub — CEPEC7041 · Modules 1–2 · MSE</title>
+<title>ADS MSE Study Guide</title>
 <meta name="description" content="Mid-Semester Exam preparation for CEPEC7041 Applied Data Science. Modules 1–2, 30 marks, 1.5 hours. Built from the official syllabus, both COMP A and COMP B lecture decks, the class notes, the formula sheet and CIA-2. Progress saved locally in your browser.">
 <style>
 :root{
@@ -58,11 +58,14 @@ img,svg{max-width:100%}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 
 /* ---------- topbar ---------- */
-header.topbar{background:var(--panel);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:60}
+header.topbar{background:var(--panel);border-bottom:1px solid var(--border);
+ position:sticky;position:-webkit-sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(15,20,30,.06)}
+:root[data-theme="dark"] header.topbar{box-shadow:0 1px 10px rgba(0,0,0,.4)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) header.topbar{box-shadow:0 1px 10px rgba(0,0,0,.4)}}
 .topbar-inner{max-width:1140px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.brand{font-weight:750;font-size:1rem;white-space:nowrap;line-height:1.2;cursor:pointer;background:none;border:none;
- color:var(--ink);padding:0;text-align:left;font-family:inherit}
-.brand small{display:block;font-weight:400;color:var(--ink-soft);font-size:.68rem;letter-spacing:.01em}
+.brand{font-weight:700;font-size:.92rem;white-space:nowrap;line-height:1.2;cursor:pointer;background:none;border:none;
+ color:var(--ink);padding:0 2px 0 0;text-align:left;font-family:inherit;letter-spacing:-.01em}
+.brand:hover{background:none;color:var(--accent)}
 nav.maintabs{display:flex;gap:2px;flex-wrap:wrap;flex:1;min-width:0}
 nav.maintabs button{background:none;border:1px solid transparent;color:var(--ink-soft);
  padding:5px 9px;border-radius:6px;cursor:pointer;font-size:.82rem;font-weight:620;font-family:inherit;white-space:nowrap}
@@ -154,9 +157,13 @@ button.sel-bad{background:var(--bad-soft);border-color:var(--bad);color:var(--ba
 /* ---------- topic cards ---------- */
 .topic{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
  padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--border-2)}
-.topic.c-common{border-left-color:var(--good)}
-.topic.c-bonly{border-left-color:var(--accent)}
-.topic.c-aonly{border-left-color:var(--border-2)}
+.topic.p-high{border-left-color:var(--accent)}
+.topic.p-medium{border-left-color:var(--border-2)}
+.topic.p-low{border-left-color:var(--border)}
+.topic.is-done{border-left-color:var(--good)}
+.topic .qmeter{display:flex;align-items:center;gap:9px;margin-top:8px}
+.topic .qmeter .progressbar{flex:1;margin:0}
+.topic .qmeter .qn{font-size:.75rem;color:var(--ink-mute);font-variant-numeric:tabular-nums;white-space:nowrap}
 .topic .th{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
 .topic .tt{font-weight:700;font-size:.98rem;flex:1;min-width:190px;line-height:1.4}
 .topic .tsum{font-size:.86rem;color:var(--ink-soft);margin:.2rem 0 .6rem}
@@ -239,15 +246,6 @@ ol.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:25
 .stage-tag{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
  color:var(--violet);background:var(--violet-soft);border:1px solid var(--violet-line);padding:2px 8px;border-radius:20px}
 
-/* ---------- flashcards ---------- */
-.fc{background:var(--panel);border:1px solid var(--border-2);border-radius:12px;padding:26px 22px;
- min-height:190px;display:flex;flex-direction:column;justify-content:center;text-align:center;
- box-shadow:var(--shadow-2);cursor:pointer;margin-bottom:12px}
-.fc .fq{font-size:1.05rem;font-weight:700;line-height:1.5}
-.fc .fa{margin-top:14px;padding-top:14px;border-top:1px dashed var(--border-2);font-size:.9rem;
- color:var(--ink-soft);line-height:1.6;text-align:left}
-.fc .hintline{font-size:.72rem;color:var(--ink-mute);margin-top:14px}
-
 /* ---------- search ---------- */
 .sr-item{background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:10px 13px;margin-bottom:8px;
  cursor:pointer;box-shadow:var(--shadow)}
@@ -303,20 +301,16 @@ details[open]>summary::before{transform:rotate(90deg)}
 
 <header class="topbar">
   <div class="topbar-inner">
-    <button class="brand" data-go="dashboard">ADS Study Hub<small>CEPEC7041 &middot; Applied Data Science &middot; MSE &middot; Modules 1&ndash;2</small></button>
+    <button class="brand" data-go="dashboard">ADS MSE Study Guide</button>
     <nav class="maintabs" id="mainNav" aria-label="Main sections">
       <button data-go="dashboard" class="active">Dashboard</button>
-      <button data-go="modules">Modules</button>
-      <button data-go="examples">Solved Examples</button>
+      <button data-go="m1">Module 1</button>
+      <button data-go="m2">Module 2</button>
       <button data-go="recognition">Recognition</button>
-      <button data-go="practice">Practice</button>
-      <button data-go="important">Important Qs</button>
       <button data-go="quiz">Quiz</button>
-      <button data-go="revision">Quick Revision</button>
       <button data-go="formula">Formulae</button>
-      <button data-go="flashcards">Flashcards</button>
-      <button data-go="compare">A vs B</button>
       <button data-go="exam">Exam Mode</button>
+      <button data-go="compare">A vs B</button>
     </nav>
     <button class="icon-btn" id="searchBtn" title="Search (press /)" aria-label="Search">&#9906;</button>
     <button class="icon-btn" id="themeBtn" title="Switch theme" aria-label="Switch colour theme">&#9681;</button>
@@ -336,7 +330,6 @@ details[open]>summary::before{transform:rotate(90deg)}
 
 <script>
 "use strict";
-
 /* =====================================================================
    ADS STUDY HUB — CEPEC7041 Applied Data Science
    ---------------------------------------------------------------------
@@ -411,7 +404,6 @@ const DIFF_LABEL = {
   basic:"Basic understanding", standard:"Standard exam", moderate:"Moderate",
   challenging:"Challenging", highvalue:"High-value exam problem"
 };
-
 /* =====================================================================
    TOPICS — the single source the whole app is generated from.
    ===================================================================== */
@@ -509,7 +501,7 @@ and works out the program (the representative model) itself.</div>
 
 TOPICS.push({
  id:"m1t2", m:"m1", title:"Motivation: Volume, Dimensions and Complexity",
- classification:"common", priority:"high", type:"mixed", marks:5, los:["LO 1.1"],
+ classification:"common", priority:"high", type:"theory", marks:5, los:["LO 1.1"],
  src:"COMP B M1 slides 23–27 · COMP A M1 slides 78–88 (Apollo Hospital case study) · class notes p.1",
  summary:"The three characteristics that motivate data science — and the case-study question type both classes drilled.",
  bExtras:["Confirmatory vs Exploratory analysis, and Tukey's line that neither replaces the other"],
@@ -732,7 +724,6 @@ TOPICS.push({
   {q:"Given a set of business scenarios, identify the appropriate data science task with justification.", marks:5, d:"standard", priority:"high", source:"source"},
   {q:"Differentiate classification and clustering with examples.", marks:5, d:"standard", priority:"high", source:"predicted"}]
 });
-
 TOPICS.push({
  id:"m1t4", m:"m1", title:"The Data Science Process (CRISP-DM, 5 steps)",
  classification:"common", priority:"high", type:"theory", marks:10, los:["LO 1.2","LO 1.3"],
@@ -898,7 +889,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m1t5", m:"m1", title:"Overview of Data Preparation (cleaning and transforming)",
- classification:"common", priority:"high", type:"mixed", marks:10, los:["LO 1.3","LO 1.4"],
+ classification:"common", priority:"high", type:"theory", marks:10, los:["LO 1.3","LO 1.4"],
  src:"COMP B M1 slides 42–51 (loan dataset) · COMP A M1 slides 36–51 (patient dataset) · syllabus 1.3",
  summary:"The five data-quality problems, the fix for each, and the five transformation operations. A syllabus sub-topic in its own right.",
  bExtras:["Normalization and label encoding, worked through on the loan dataset"],
@@ -1008,7 +999,6 @@ TOPICS.push({
   {q:"What is normalization and why is it required? Explain feature selection.", marks:5, d:"standard", priority:"high", source:"source"},
   {q:"Approximately what proportion of a data scientist's time is spent on data preparation, and why?", marks:2, d:"basic", priority:"medium", source:"source"}]
 });
-
 TOPICS.push({
  id:"m1t6", m:"m1", title:"Model Building &amp; Validation: Hold-out, k-Fold, LOOCV, Bootstrapping",
  classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 1.4"],
@@ -1354,7 +1344,6 @@ TOPICS.push({
   {q:"Explain any four applications of Data Science in modern society.", marks:5, d:"basic", priority:"medium", source:"source"},
   {q:"Discuss the role of data science in healthcare / finance / retail with examples.", marks:5, d:"standard", priority:"medium", source:"source"}]
 });
-
 /* ============================ MODULE 2 ============================== */
 
 TOPICS.push({
@@ -1662,7 +1651,6 @@ Then:  SUBTRACT it from every lower limit
   {q:"Given mid-values, determine the class intervals.", marks:5, d:"standard", priority:"medium", source:"source"},
   {q:"Represent the given raw data as a discrete frequency distribution using tally marks.", marks:5, d:"basic", priority:"medium", source:"source"}]
 });
-
 TOPICS.push({
  id:"m2t3", m:"m2", title:"Tabulation of Data",
  classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.1"],
@@ -2127,7 +2115,6 @@ TOPICS.push({
   {q:"Distinguish between a histogram and a bar diagram.", marks:5, d:"basic", priority:"high", source:"source"},
   {q:"Explain the construction of a frequency polygon and its advantage over a histogram.", marks:5, d:"standard", priority:"medium", source:"source"}]
 });
-
 TOPICS.push({
  id:"m2t6", m:"m2", title:"Arithmetic Mean (individual, discrete, continuous, combined, weighted)",
  classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.2"],
@@ -2532,7 +2519,6 @@ TOPICS.push({
   {q:"Calculate the mean, median and standard deviation of the given data.", marks:10, d:"standard", priority:"high", source:"source"},
   {q:"Compare mean and median. Which is preferable for skewed data and why?", marks:5, d:"standard", priority:"medium", source:"predicted"}]
 });
-
 TOPICS.push({
  id:"m2t8", m:"m2", title:"Mode &amp; the Mean–Median–Mode Relationship",
  classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2"],
@@ -2828,7 +2814,6 @@ Q3: 3N/4 = 150 -> Q3 = 38 + [(150 - 76)/99] × 2 = 39.49</div>
   {q:"Find Q₁ and Q₃ for the given distribution and hence the quartile deviation.", marks:5, d:"standard", priority:"high", source:"source"},
   {q:"Compute the specified decile and percentile for the given data.", marks:5, d:"standard", priority:"medium", source:"source"}]
 });
-
 TOPICS.push({
  id:"m2t10", m:"m2", title:"Measures of Spread: Range, IQR &amp; Quartile Deviation",
  classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2"],
@@ -3165,7 +3150,6 @@ Batsman B: (15/60) × 100 = 25.0 %</div>
   {q:"Compare the consistency of two datasets using the coefficient of variation.", marks:5, d:"moderate", priority:"medium", source:"source"},
   {q:"State the merits and limitations of the standard deviation.", marks:5, d:"basic", priority:"medium", source:"predicted"}]
 });
-
 TOPICS.push({
  id:"m2t12", m:"m2", title:"Skewness — Karl Pearson &amp; Bowley",
  classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.2","LO 2.3"],
@@ -3509,7 +3493,6 @@ Q3 = 40 + [(37.5 - 31)/9] × 10 = 47.22</div>
   {q:"State the tests of skewness and the relationship between mean, median and mode in skewed distributions.", marks:5, d:"basic", priority:"high", source:"source"},
   {q:"Compare Karl Pearson's and Bowley's measures of skewness.", marks:5, d:"standard", priority:"high", source:"source"}]
 });
-
 TOPICS.push({
  id:"m2t13", m:"m2", title:"Moments &amp; Kurtosis",
  classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2"],
@@ -4006,7 +3989,6 @@ r = 13556 / 13969 = 0.97</div>
   {q:"Does correlation imply causation? Discuss with examples.", marks:5, d:"standard", priority:"high", source:"source"},
   {q:"What is the central data point? Explain multivariate exploration.", marks:3, d:"basic", priority:"medium", source:"source"}]
 });
-
 TOPICS.push({
  id:"m2t15", m:"m2", title:"Univariate Visualization: Box Plot &amp; Distribution Chart",
  classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.4","LO 2.5","LO 2.6"],
@@ -4263,7 +4245,6 @@ TOPICS.push({
   {q:"Which visualization would you use for the given scenario, and why?", marks:5, d:"standard", priority:"medium", source:"source"},
   {q:"Distinguish between univariate and multivariate visualization.", marks:5, d:"basic", priority:"medium", source:"predicted"}]
 });
-
 /* =====================================================================
    QUIZ BANK
    Each question carries the topic id it tests, so wrong answers feed
@@ -4478,7 +4459,6 @@ const QUIZ = [
  o:["A scatter plot with very many points","A grid of scatter plots showing every pairwise combination of variables","A scatter plot with a fitted regression line","A three-dimensional scatter plot"], a:1,
  e:"A scatter matrix (pairs plot) is a GRID of small scatter plots, one cell per pair of variables, so every pairwise relationship in a multi-variable dataset can be inspected at once. It is the fastest way to find which pairs are worth investigating further."}
 ];
-
 /* =====================================================================
    FORMULA / REFERENCE SHEET — transcribed from the teacher's own sheet,
    with the series it applies to and where it is used next.
@@ -4567,57 +4547,6 @@ const FORMULAE = [
 ];
 
 /* =====================================================================
-   FLASHCARDS
-   ===================================================================== */
-const FLASHCARDS = [
-{m:"m1", t:"m1t1", q:"Define Data Science.", a:"An interdisciplinary field involving collecting, processing, storing, analyzing and interpreting large volumes of structured and unstructured data to extract meaningful insights and knowledge."},
-{m:"m1", t:"m1t1", q:"What four terms is Data Science also known as?", a:"Knowledge Discovery · Machine Learning · Predictive Analytics · Data Mining."},
-{m:"m1", t:"m1t1", q:"How do AI, ML and Data Science nest?", a:"AI (mimicking human cognitive behaviour) ⊃ ML (learning from data, a sub-field/tool of AI). Data Science is the business application of AI, ML, statistics and visualization."},
-{m:"m1", t:"m1t2", q:"The three characteristics motivating data science?", a:"Volume (how much data — number of records) · Dimensionality (how many attributes per record) · Complexity (how hard the question is, and how varied the formats)."},
-{m:"m1", t:"m1t2", q:"Confirmatory vs Exploratory analysis?", a:"Confirmatory = traditional statistics, validates ONE hypothesis you already hold. Exploratory = machine learning, runs recursively generating many hypotheses. Tukey: “We need both.”"},
-{m:"m1", t:"m1t3", q:"Name the seven data science tasks.", a:"Classification · Regression · Anomaly detection · Time series forecasting · Clustering · Association analysis · Recommendation engines."},
-{m:"m1", t:"m1t3", q:"Classification vs Clustering — the deciding difference?", a:"Classification uses PREDEFINED classes learned from a labelled dataset (supervised). Clustering discovers natural groups with NO labels given beforehand (unsupervised)."},
-{m:"m1", t:"m1t4", q:"The five steps of the data science process?", a:"1 Prior Knowledge · 2 Preparation · 3 Modeling · 4 Application · 5 Knowledge. Iterative, not rigid."},
-{m:"m1", t:"m1t4", q:"The four sub-steps of Prior Knowledge?", a:"1.1 Objective (the most important step) · 1.2 Subject Area / domain knowledge · 1.3 Data · 1.4 Correlation vs Causation."},
-{m:"m1", t:"m1t4", q:"What does CRISP-DM stand for, and who developed it?", a:"Cross Industry Standard Process for Data Mining — a data-mining consortium, 2000. The most widely adopted framework. Others: SEMMA (SAS), DMAIC (Six Sigma), KDD."},
-{m:"m1", t:"m1t5", q:"The five data-quality problems found in exploration?", a:"Duplicate records · Inconsistent values · Missing values · Invalid data · Outliers. Outliers are FLAGGED, not deleted."},
-{m:"m1", t:"m1t5", q:"Why is an ID column dropped in feature selection?", a:"A unique identifier differs for every record, so it can perfectly “explain” the training data while carrying zero predictive information about a new record."},
-{m:"m1", t:"m1t6", q:"k-fold: how many records train the model each iteration?", a:"N − N/k. The held-out fold is NOT available for training. With N = 600 and k = 5: test 120, train 480."},
-{m:"m1", t:"m1t6", q:"What is bootstrapping, and what are OOB samples?", a:"Generating samples by randomly drawing data points WITH replacement, usually to the original size. The records NOT selected are the Out-of-Bag samples, used as the test set."},
-{m:"m1", t:"m1t6", q:"When is stratified k-fold essential?", a:"For imbalanced classification (fraud, churn). Each fold preserves the original class proportions, preventing a fold from containing only one class."},
-{m:"m1", t:"m1t7", q:"Data Science vs Data Analytics — the one-line difference?", a:"Analytics looks BACK — descriptive and diagnostic, “what happened and why”, producing reports and dashboards. Data science looks AHEAD — predictive and prescriptive, producing models and automated decisions. Analytics is a subset of data science."},
-{m:"m2", t:"m2t1", q:"The four levels of measurement, lowest to highest?", a:"Nominal (named) → Ordinal (+ ordered) → Interval (+ equal intervals, no true zero) → Ratio (+ absolute zero). Each level can do everything the levels below it can."},
-{m:"m2", t:"m2t1", q:"Why is temperature in °C interval, not ratio?", a:"0°C is the freezing point of water — an arbitrary reference, not an absence of heat. So 40°C is not twice as hot as 20°C. Test: if changing the unit changes the ratio, the scale is interval."},
-{m:"m2", t:"m2t2", q:"State the correction factor and when it is used.", a:"CF = (Lower limit of 2nd class − Upper limit of 1st class)/2. Subtract from every lower limit, add to every upper limit. Required whenever classes are INCLUSIVE (a gap between classes), before any median, quartile or mode calculation."},
-{m:"m2", t:"m2t2", q:"In an exclusive distribution, which class does a boundary value go to?", a:"The NEXT class. The item equal to the upper limit is excluded and placed in the following class — so 20 goes into 20–30, not 10–20."},
-{m:"m2", t:"m2t2", q:"Sturges' rule?", a:"k = 1 + 3.322 log N, for the number of classes. N = 100 gives 7.644 ≈ 8. Conventionally k is kept between 4 and 20."},
-{m:"m2", t:"m2t6", q:"Step-deviation mean formula?", a:"X̄ = A + (Σfd′/N) × i, where d′ = (m − A)/i. Do not forget the × i — omitting it gives an answer suspiciously close to A."},
-{m:"m2", t:"m2t6", q:"Combined mean of two groups?", a:"X̄₁₂ = (N₁X̄₁ + N₂X̄₂)/(N₁ + N₂). NOT the simple average of the two means, unless the groups are the same size."},
-{m:"m2", t:"m2t7", q:"Median of a continuous series?", a:"Median = L + [(N/2 − cf)/f] × i, where cf is the cumulative frequency of the class BEFORE the median class. Locate the class using N/2."},
-{m:"m2", t:"m2t8", q:"Mode of a continuous series?", a:"Mode = L + [Δ₁/(Δ₁+Δ₂)] × i, where Δ₁ = |f₁−f₀| and Δ₂ = |f₁−f₂|. f₀ and f₂ are the immediately preceding and succeeding classes."},
-{m:"m2", t:"m2t8", q:"The empirical relationship between mean, median and mode?", a:"Mode = 3 Median − 2 Mean. Substituting it into Sk = (X̄ − Mode)/σ gives Karl Pearson's second formula 3(X̄ − Median)/σ."},
-{m:"m2", t:"m2t8", q:"Order of averages in a positively skewed distribution?", a:"Mode < Median < Mean. The mean is highest and the tail stretches to the RIGHT. (The mean is always dragged toward the tail.)"},
-{m:"m2", t:"m2t10", q:"Quartile deviation and its coefficient?", a:"Q.D. = (Q₃ − Q₁)/2. Coefficient of Q.D. = (Q₃ − Q₁)/(Q₃ + Q₁) — note the SUM in the denominator of the coefficient."},
-{m:"m2", t:"m2t11", q:"Standard deviation by step deviation?", a:"σ = √[Σfd′²/N − (Σfd′/N)²] × i. Σfd′² is the sum of squares, NOT (Σfd′)². And do not forget × i."},
-{m:"m2", t:"m2t11", q:"Coefficient of variation, and what it is for?", a:"C.V. = (σ/X̄) × 100%. A relative measure for comparing the consistency of datasets with different units or means. LOWER C.V. = more consistent."},
-{m:"m2", t:"m2t12", q:"Karl Pearson's two skewness formulas?", a:"(i) Sk = (Mean − Mode)/σ when the mode is well defined. (ii) Sk = 3(Mean − Median)/σ when the mode is ill-defined or the series is bimodal."},
-{m:"m2", t:"m2t12", q:"Bowley's coefficient of skewness?", a:"Sk_B = (Q₃ + Q₁ − 2 Median)/(Q₃ − Q₁). Based entirely on quartiles, and bounded between −1 and +1."},
-{m:"m2", t:"m2t12", q:"Why do Karl Pearson's and Bowley's coefficients often differ?", a:"Karl Pearson uses the mean and σ, so it feels the whole distribution including the tails. Bowley uses only Q₁, median and Q₃ — the middle 50% — and is blind beyond them. The SIGNS should still agree."},
-{m:"m2", t:"m2t12", q:"Dispersion vs Skewness?", a:"Dispersion = the AMOUNT of variation, always computed. Skewness = the DIRECTION of variation (departure from symmetry), depends on dispersion, rarely computed in business series."},
-{m:"m2", t:"m2t13", q:"Kurtosis formula and the three shapes?", a:"β₂ = μ₄/μ₂². β₂ > 3 leptokurtic (narrow tall peak, heavier tails); β₂ = 3 mesokurtic (normal); β₂ < 3 platykurtic (broad flat top, lighter tails). Excess γ₂ = β₂ − 3."},
-{m:"m2", t:"m2t13", q:"What do the four moments measure?", a:"μ₁′ = mean · μ₂ = variance · μ₃ = skewness · μ₄ = kurtosis. Note μ₁ about the mean is always zero."},
-{m:"m2", t:"m2t14", q:"Karl Pearson's r — Method 1?", a:"r = Σxy/√(Σx² × Σy²), where x = X − X̄ and y = Y − Ȳ. Check: Σx and Σy must both equal zero."},
-{m:"m2", t:"m2t14", q:"The direct-method formula for r?", a:"r = [NΣXY − (ΣX)(ΣY)] / {√[NΣX² − (ΣX)²] × √[NΣY² − (ΣY)²]}. Watch the difference between ΣX² and (ΣX)²."},
-{m:"m2", t:"m2t14", q:"Does correlation imply causation?", a:"No. Causation implies correlation, but not the reverse. Three reasons: pure chance, a common third variable, or mutual influence."},
-{m:"m2", t:"m2t14", q:"Degrees of correlation?", a:"±1 perfect · ±0.75 to ±0.99 high degree · 0 to ±0.5 low degree · ≈ 0 no correlation. Always −1 ≤ r ≤ +1."},
-{m:"m2", t:"m2t15", q:"Box plot outlier rule?", a:"IQR = Q₃ − Q₁. Lower fence = Q₁ − 1.5×IQR; upper fence = Q₃ + 1.5×IQR. Anything beyond is an outlier, plotted as a dot; whiskers stop at the nearest non-outlier."},
-{m:"m2", t:"m2t15", q:"The empirical rule?", a:"68.2% of data within ±1σ · 95.4% within ±2σ · 99.7% within ±3σ. This is why ±3σ is a common outlier threshold."},
-{m:"m2", t:"m2t16", q:"Scatter plot vs scatter matrix vs bubble chart?", a:"Scatter = 2 variables by position. Scatter matrix = a grid of scatter plots showing every pairwise combination. Bubble = 3 variables — two by position, the third by bubble area."},
-{m:"m2", t:"m2t5", q:"Histogram vs bar diagram?", a:"Histogram: continuous data, bars TOUCH, magnitude carried by AREA, width is the class interval. Bar diagram: categorical data, GAPS between bars, magnitude carried by length, width arbitrary."},
-{m:"m2", t:"m2t5", q:"Where do the two ogives intersect?", a:"At the MEDIAN. Their intersection corresponds to cumulative frequency N/2; drop a perpendicular to the x-axis to read the median off."}
-];
-
-/* =====================================================================
    COMP A vs COMP B — the syllabus comparison map.
    Built by extracting the text of both classes' decks and comparing
    topic-by-topic, then reconciling against the official syllabus.
@@ -4663,21 +4592,81 @@ const AB_MAP = {
 ]};
 
 /* =====================================================================
-   QUICK REVISION — the 30–60 minute pass.
+   QUICK REVIEW — per module. Appears as the third sub-tab inside each
+   module, and nowhere else.
    ===================================================================== */
-const REVISION = [
-{h:"The exam in one box", b:`<div class="scroll"><table class="t"><tbody>
-<tr><td><b>Course</b></td><td>CEPEC7041 Applied Data Science</td></tr>
-<tr><td><b>Marks / duration</b></td><td>30 marks · 1.5 hours</td></tr>
-<tr><td><b>Scope</b></td><td><b>Module 1 and Module 2 — ALL topics.</b> The MSE syllabus sheet says so explicitly.</td></tr>
-<tr><td><b>Focus (from the sheet)</b></td><td>Concepts &amp; definitions · <b>Numerical problems</b> · <b>Interpretation of statistical measures</b> · Graphs and visualizations · <b>Differences / comparisons</b> · Practical examples</td></tr>
-<tr><td><b>Time budget</b></td><td>≈ 3 minutes per mark. A 10-mark question deserves ~30 minutes; a 5-mark part ~15.</td></tr>
-</tbody></table></div>
-<div class="box warn" style="margin-bottom:0"><h5>Four of the six focus items are not calculation</h5><p style="margin:0">Interpretation, comparison, concepts and examples outnumber pure numericals. After every calculation, <b>write a sentence saying what the number means.</b> That sentence is separately marked and is the cheapest mark on the paper.</p></div>`},
+const REVIEW = [
+/* ------------------------------ MODULE 1 ------------------------------ */
+{m:"m1", h:"Module 1 in ten lines", b:`<ol class="list" style="margin-bottom:0">
+<li><b>Data Science</b> = collecting, processing, storing, analyzing and interpreting large volumes of structured and unstructured data to extract insights.</li>
+<li><b>AI ⊃ ML</b>; Data Science is the business application of AI, ML, statistics and visualization.</li>
+<li><b>Motivation:</b> Volume (records) · Dimensionality (attributes) · Complexity (formats and questions).</li>
+<li><b>Seven tasks:</b> classification, regression, anomaly detection, time series forecasting, clustering, association analysis, recommendation engines.</li>
+<li><b>Process:</b> Prior Knowledge → Preparation → Modeling → Application → Knowledge. Iterative.</li>
+<li><b>Prior Knowledge:</b> objective, subject area, data, correlation vs causation.</li>
+<li><b>Cleaning:</b> duplicates, inconsistent, missing, invalid, outliers. Outliers are flagged, not deleted.</li>
+<li><b>Validation:</b> hold-out (large data) · k-fold (default) · stratified (imbalanced) · LOOCV (tiny data) · bootstrap (with replacement, OOB test set).</li>
+<li><b>k-fold arithmetic:</b> fold = N/k; test = N/k; <b>train = N − N/k</b>.</li>
+<li><b>Analytics looks back</b> (descriptive, diagnostic, reports); <b>data science looks ahead</b> (predictive, prescriptive, models).</li>
+</ol>`},
 
-{h:"Module 2 numerical formulas — the ones you cannot look up", b:`<div class="formula">MEAN (continuous, step deviation)
+{m:"m1", h:"The only Module 1 arithmetic", b:`<div class="formula">HOLD-OUT
+    Train = p × N        Test = (1 - p) × N
+    Rule of thumb: about two-thirds train, one-third test
+
+K-FOLD
+    Fold size          = N / k
+    Test per iteration = N / k
+    TRAIN per iteration = N - N/k     <- the one people get wrong
+    Models trained      = k
+    Accuracy_cv = (1/k) &Sigma; Accuracy_i
+
+LEAVE-ONE-OUT (LOOCV)
+    Train = n - 1      Test = 1      Iterations = n
+
+LEAVE-P-OUT
+    Iterations = C(n, p)      C(10,2) = 45 already
+
+BOOTSTRAP
+    Draw WITH replacement, sample size = original size
+    Out-of-Bag = the records NOT drawn -> the test set</div>`},
+
+{m:"m1", h:"Module 1 comparison tables", b:`<p>Comparison is one of the six official focus items. Write these as tables, never as prose.</p>
+<h4>Data Science vs Data Analytics</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Aspect</th><th>Data Science</th><th>Data Analytics</th></tr></thead><tbody>
+<tr><td>Scope</td><td>Broad — analytics, ML, AI, statistics, big data</td><td>Narrower — a subset of data science</td></tr>
+<tr><td>Goal</td><td>Predict outcomes, build intelligent systems</td><td>Understand past and present to support decisions</td></tr>
+<tr><td>Analysis type</td><td>Descriptive, Diagnostic, <b>Predictive, Prescriptive</b></td><td>Mostly Descriptive and Diagnostic</td></tr>
+<tr><td>Tools</td><td>Python, R, TensorFlow, Spark</td><td>Excel, SQL, Power BI, Tableau</td></tr>
+<tr><td>Outcome</td><td>Models, predictions, automated decisions</td><td>Reports, dashboards, insights</td></tr>
+</tbody></table></div>
+<h4>Hold-out vs k-Fold vs LOOCV</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Aspect</th><th>Hold-out</th><th>k-Fold</th><th>LOOCV</th></tr></thead><tbody>
+<tr><td>Models trained</td><td>1</td><td>k</td><td>n</td></tr>
+<tr><td>Data efficiency</td><td>Poor — 20–30% never trains</td><td>Good</td><td>Best — n−1 trains every time</td></tr>
+<tr><td>Score stability</td><td>Depends on the split</td><td>Averaged over k folds</td><td>Every record tested</td></tr>
+<tr><td>Use when</td><td>Dataset is large</td><td>General default</td><td>Dataset is very small</td></tr>
+</tbody></table></div>
+<h4>Classification vs Clustering</h4>
+<div class="scroll"><table class="t"><thead><tr><th></th><th>Classification</th><th>Clustering</th></tr></thead><tbody>
+<tr><td>Classes</td><td><b>Predefined</b>, known in advance</td><td><b>Discovered</b>; no labels given beforehand</td></tr>
+<tr><td>Learning</td><td>Supervised</td><td>Unsupervised</td></tr>
+<tr><td>Example</td><td>Spam / not-spam filtering</td><td>Customer segmentation</td></tr>
+</tbody></table></div>`},
+
+{m:"m1", h:"Module 1 traps", b:`<ol class="list" style="margin-bottom:0">
+<li><b>k-fold training size.</b> Train = N − N/k, not N. With 600 records and k = 5 it is 480, not 600.</li>
+<li><b>Volume vs Dimensionality.</b> Rows are volume; columns are dimensionality. Exam stems always state both together to see if you separate them.</li>
+<li><b>Bootstrap OOB.</b> The Out-of-Bag set is what is <i>missing</i> from the sample, not what is duplicated in it.</li>
+<li><b>Outliers are flagged, not deleted.</b> Capping is for <i>invalid</i> data (a credit score of 900); flagging is for extreme-but-possible values.</li>
+<li><b>Clustering vs classification.</b> “No labels given beforehand” is always clustering, however much the scenario sounds like sorting into groups.</li>
+<li><b>Regression vs time series.</b> Both predict a number; forecasting extrapolates a <i>time</i> series from its own history.</li>
+</ol>`},
+
+/* ------------------------------ MODULE 2 ------------------------------ */
+{m:"m2", h:"The formulas you cannot look up", b:`<div class="formula">MEAN (continuous, step deviation)
     X̄ = A + (&Sigma;fd'/N) × i        d' = (m - A)/i
-    <b>Do not forget the × i</b>
+    Do not forget the × i
 
 MEDIAN (continuous)
     Median = L + [(N/2 - cf)/f] × i
@@ -4686,17 +4675,22 @@ MEDIAN (continuous)
 MODE (continuous)
     Mode = L + [&Delta;1/(&Delta;1 + &Delta;2)] × i
     &Delta;1 = |f1 - f0|,  &Delta;2 = |f1 - f2|
+    Empirical:  Mode = 3 Median - 2 Mean
 
-QUARTILES (continuous)
-    Q_k = L + [(kN/4 - cf)/f] × i
+QUARTILES / DECILES / PERCENTILES (continuous)
+    Q_k = L + [(kN/4   - cf)/f] × i
+    D_k = L + [(kN/10  - cf)/f] × i
+    P_k = L + [(kN/100 - cf)/f] × i
 
-STANDARD DEVIATION (continuous, step deviation)
+DISPERSION
+    Q.D. = (Q3 - Q1)/2
+    Coefficient of Q.D. = (Q3 - Q1)/(Q3 + Q1)      <- SUM below
     &sigma; = &radic;[&Sigma;fd'²/N - (&Sigma;fd'/N)²] × i
-    &Sigma;fd'² is the SUM OF SQUARES, not (&Sigma;fd')²
+    C.V. = (&sigma;/X̄) × 100 %
 
 SKEWNESS
     Sk_p = (Mean - Mode)/&sigma;              [mode well defined]
-    Sk_p = 3(Mean - Median)/&sigma;           [mode ill-defined / bimodal]
+    Sk_p = 3(Mean - Median)/&sigma;           [ill-defined / bimodal]
     Sk_B = (Q3 + Q1 - 2 Median)/(Q3 - Q1)  [bounded -1 to +1]
 
 KURTOSIS
@@ -4709,85 +4703,62 @@ CORRELATION
 
 BOX PLOT
     IQR = Q3 - Q1
-    Fences: Q1 - 1.5×IQR  and  Q3 + 1.5×IQR</div>`},
+    Fences: Q1 - 1.5×IQR   and   Q3 + 1.5×IQR
 
-{h:"The five traps that cost the most marks", b:`<ol class="list">
-<li><b>Inclusive classes not converted.</b> If there is a gap between classes (10–19, 20–29), apply the correction factor (lower of 2nd − upper of 1st)/2 <i>before</i> any median, quartile or mode calculation. The class notes star this.</li>
+BUILDING THE TABLE
+    Correction factor = (lower of 2nd class - upper of 1st)/2
+    Sturges:  k = 1 + 3.322 log N       i = (L - S)/k</div>`},
+
+{m:"m2", h:"The five traps that cost the most marks", b:`<ol class="list" style="margin-bottom:0">
+<li><b>Inclusive classes not converted.</b> If there is a gap between classes (10–19, 20–29), apply the correction factor <i>before</i> any median, quartile or mode calculation. The class notes star this.</li>
 <li><b>Forgetting × i</b> in the step-deviation mean or standard deviation. The tell: your mean comes out suspiciously close to the assumed mean A.</li>
 <li><b>Missing a bimodal distribution.</b> Scan the frequency column for a repeated maximum. If two classes tie, the mode is ill-defined and you must use Sk = 3(X̄ − Median)/σ — and say why.</li>
 <li><b>Using cf of the median class</b> instead of the class before it, in every interpolation formula.</li>
-<li><b>Giving a number with no interpretation.</b> The MSE focus list names “interpretation of statistical measures” as its own item.</li>
+<li><b>Giving a number with no interpretation.</b> The official focus list names “interpretation of statistical measures” as its own item.</li>
 </ol>`},
 
-{h:"Comparison tables to have ready", b:`<p>Four of the six focus items involve comparison. These are the tables most likely to be asked — write them as tables, never as prose.</p>
-<ul class="list">
-<li><b>Data Science vs Data Analytics</b> — scope, goal, analysis type, techniques, tools, outcome</li>
-<li><b>Karl Pearson vs Bowley</b> — based on, range, needs a mode?, which data it sees</li>
-<li><b>Mean vs Median</b> — uses all observations, effect of extremes, open-end classes, algebraic treatment</li>
-<li><b>Histogram vs Bar diagram</b> — data type, gaps, area vs length, width meaning</li>
-<li><b>Classification vs Tabulation</b> — order, purpose, basis, output</li>
-<li><b>Absolute vs Relative measures of dispersion</b> — units, when used</li>
-<li><b>Hold-out vs k-fold vs LOOCV</b> — split, cost, data efficiency, when to use</li>
-<li><b>Univariate vs Multivariate visualization</b> — variables, what it shows, which charts</li>
-<li><b>Dispersion vs Skewness</b> — amount vs direction</li>
-<li><b>Classification vs Clustering</b> — predefined vs discovered classes</li>
-</ul>`},
+{m:"m2", h:"Module 2 comparison tables", b:`<p>These are the comparisons most likely to be asked. Tables, not prose.</p>
+<div class="scroll"><table class="t"><thead><tr><th>Comparison</th><th>Rows to use</th></tr></thead><tbody>
+<tr><td><b>Karl Pearson vs Bowley</b></td><td>Based on · theoretical range · needs a mode? · which part of the data it sees · best suited when</td></tr>
+<tr><td><b>Mean vs Median</b></td><td>Uses all observations · effect of extremes · open-end classes · graphical determination · further algebra</td></tr>
+<tr><td><b>Histogram vs Bar diagram</b></td><td>Data type · gaps between bars · area vs length · meaning of width · order of bars</td></tr>
+<tr><td><b>Classification vs Tabulation</b></td><td>Meaning · sequence · purpose · basis · output</td></tr>
+<tr><td><b>Absolute vs Relative dispersion</b></td><td>Units · when used · examples</td></tr>
+<tr><td><b>Dispersion vs Skewness</b></td><td>Amount vs direction · always computed vs rarely computed</td></tr>
+<tr><td><b>Univariate vs Multivariate visualization</b></td><td>Number of variables · what it shows · which charts</td></tr>
+</tbody></table></div>
+<div class="box tip" style="margin-bottom:0"><h5>The one sentence that carries the Pearson-vs-Bowley mark</h5>
+<p style="margin:0">Karl Pearson uses the mean and σ, so it feels the <b>whole</b> distribution including the tails. Bowley uses only Q₁, the median and Q₃, so it sees only the <b>middle 50%</b>. They should agree in <b>sign</b>; they often differ in magnitude, and that difference tells you where the skewness lives.</p></div>`},
 
-{h:"Interpretation phrases — learn these sentences", b:`<div class="scroll"><table class="t"><thead><tr><th>Result</th><th>What to write</th></tr></thead><tbody>
+{m:"m2", h:"Interpretation phrases — learn these sentences", b:`<div class="scroll"><table class="t"><thead><tr><th>Result</th><th>What to write</th></tr></thead><tbody>
 <tr><td>Sk = +0.14</td><td>“Small and positive, so the distribution is approximately symmetrical with a very slight positive skew — the longer tail lies to the right.”</td></tr>
 <tr><td>Sk = −0.5</td><td>“Negative, so the mean lies below the mode and the longer tail stretches to the left. At |0.5| the skew is moderate.”</td></tr>
-<tr><td>Pearson ≫ Bowley</td><td>“Karl Pearson uses the mean and σ so it feels the tails; Bowley uses only the middle 50%. The gap indicates the skewness lies in the tails, outside the quartiles.”</td></tr>
+<tr><td>Pearson ≫ Bowley</td><td>“Karl Pearson feels the tails; Bowley sees only the middle 50%. The gap indicates the skewness lies in the tails, outside the quartiles.”</td></tr>
 <tr><td>β₂ = 1.7</td><td>“Less than 3, so platykurtic — flatter than normal, with lighter tails and less outlier-prone.”</td></tr>
 <tr><td>β₂ = 3.1</td><td>“Greater than 3, so leptokurtic — a slightly sharper peak and heavier tails than normal. Excess kurtosis +0.1.”</td></tr>
-<tr><td>r = +0.43</td><td>“Positive, so the variables move together; at 0.43 this falls in the low-degree-positive band — a moderate relationship. Correlation does not imply causation.”</td></tr>
+<tr><td>r = +0.43</td><td>“Positive, so the variables move together; at 0.43 this is the low-degree-positive band — a moderate relationship. Correlation does not imply causation.”</td></tr>
 <tr><td>r = −0.62</td><td>“Negative, so the variables move in opposite directions; a moderate to fairly strong negative relationship.”</td></tr>
 <tr><td>Mean ≫ Median</td><td>“The mean is more than double the median, a red flag that extreme values are dragging the average up. The median is the better measure of the typical value.”</td></tr>
 <tr><td>Small C.V.</td><td>“Lower coefficient of variation means less variability relative to the average — this dataset is more consistent.”</td></tr>
 <tr><td>Small Q.D.</td><td>“A small quartile deviation means high uniformity and low variation among the central data.”</td></tr>
-</tbody></table></div>`},
-
-{h:"Module 1 in ten lines", b:`<ol class="list">
-<li><b>Data Science</b> = collecting, processing, storing, analyzing and interpreting large volumes of structured and unstructured data to extract insights.</li>
-<li><b>AI ⊃ ML</b>; Data Science is the business application of AI, ML, statistics and visualization.</li>
-<li><b>Motivation:</b> Volume (records) · Dimensionality (attributes) · Complexity (formats and questions).</li>
-<li><b>Seven tasks:</b> classification, regression, anomaly detection, time series forecasting, clustering, association analysis, recommendation engines.</li>
-<li><b>Process:</b> Prior Knowledge → Preparation → Modeling → Application → Knowledge. Iterative.</li>
-<li><b>Prior Knowledge:</b> objective, subject area, data, correlation vs causation.</li>
-<li><b>Cleaning:</b> duplicates, inconsistent, missing, invalid, outliers. Outliers are flagged, not deleted.</li>
-<li><b>Validation:</b> hold-out (fast, large data) · k-fold (default) · stratified (imbalanced) · LOOCV (tiny data) · bootstrap (with replacement, OOB test set).</li>
-<li><b>k-fold arithmetic:</b> fold = N/k; test = N/k; <b>train = N − N/k</b>.</li>
-<li><b>Analytics looks back</b> (descriptive, diagnostic, reports); <b>data science looks ahead</b> (predictive, prescriptive, models). Analytics is a subset.</li>
-</ol>`},
-
-{h:"If you have 30 minutes left", b:`<p>In this order:</p>
-<ol class="list">
-<li>The formula block above — mean, median, mode, σ, both skewness formulas, r.</li>
-<li>The correction factor, and when it applies.</li>
-<li>The mean-median-mode ordering for positive and negative skew.</li>
-<li>β₂ thresholds: &gt;3 lepto, =3 meso, &lt;3 platy.</li>
-<li>The box plot fences: Q₁ − 1.5×IQR and Q₃ + 1.5×IQR.</li>
-<li>k-fold: train = N − N/k.</li>
-<li>Data Science vs Data Analytics table.</li>
-<li>The interpretation phrases table above.</li>
-</ol>`}
+</tbody></table></div>`}
 ];
-
+function reviewOf(m){ return REVIEW.filter(r => r.m === m); }
 /* =====================================================================
    ============================  APPLICATION  ==========================
-   Progress lives in localStorage, per browser. Nothing is hard-coded:
-   a fresh browser always starts at 0%.
+   Progress lives in localStorage, per browser, and is derived entirely
+   from the individual questions you mark — never from whole topics.
+   Nothing is hard-coded: a fresh browser always starts at 0%.
    ===================================================================== */
-const KEY = "ads_study_hub_cepec7041_v1";
-const THEME_KEY = "ads_study_hub_theme";
+const KEY = "ads_study_guide_cepec7041_v2";
+const THEME_KEY = "ads_study_guide_theme";
 
 function blankProgress(){
   return {
-    topics:{},        /* id -> "progress" | "done"           */
-    examples:{},      /* id -> true (reviewed)               */
-    practice:{},      /* id -> true (attempted)              */
-    quizTopic:{},     /* topicId -> {c: correct, n: total}   */
-    quizStage:{},     /* stage   -> {c: correct, n: total}   */
-    revision:{},      /* revision section id -> true         */
+    examples:{},      /* solved-example id -> true (worked / reviewed) */
+    practice:{},      /* practice-question id -> true (attempted)      */
+    quizTopic:{},     /* topicId -> {c: correct, n: total}             */
+    quizStage:{},     /* stage   -> {c: correct, n: total}             */
     lastStudied:null,
     streak:0, lastVisit:null, firstVisit:null
   };
@@ -4806,6 +4777,9 @@ TOPICS.forEach(t => (t.questions||[]).forEach((q,i) => ALL_QUESTIONS.push(Object
 
 function topicsOf(m){ return TOPICS.filter(t => t.m === m); }
 function moduleOf(id){ return MODULES.find(x => x.id === id); }
+/* Theory track vs Numericals track */
+function trackOf(t){ return t.type === "theory" ? "theory" : "numerical"; }
+function topicsInTrack(m, track){ return topicsOf(m).filter(t => trackOf(t) === track); }
 
 /* ---------- persistence ---------- */
 function today(){
@@ -4823,11 +4797,16 @@ function load(){
 }
 function validateProgress(o){
   if(!o || typeof o !== "object" || Array.isArray(o)) return {ok:false};
+  /* Must actually look like one of our progress files, so an unrelated JSON
+     object cannot be imported and silently wipe everything to 0%. */
+  const isObj = x => !!x && typeof x === "object" && !Array.isArray(x);
+  const looksRight = o._app === "ads-study-guide" || o._app === "ads-study-hub" ||
+    ["examples","practice","quizTopic","quizStage"].some(k => isObj(o[k]));
+  if(!looksRight) return {ok:false};
   const d = blankProgress();
   const topicIds    = new Set(TOPICS.map(t=>t.id));
   const exampleIds  = new Set(ALL_EXAMPLES.map(e=>e.id));
   const practiceIds = new Set(ALL_PRACTICE.map(p=>p.id));
-  const revIds      = new Set(REVISION.map((r,i)=>"rev"+i));
   const stages      = new Set(["recognise","select","solve","concept"]);
   const pick = (src, allow, fn) => {
     const out = {};
@@ -4846,10 +4825,8 @@ function validateProgress(o){
     if(!isFinite(c) || !isFinite(n) || n <= 0 || c < 0 || c > n) return undefined;
     return {c:Math.round(c), n:Math.round(n)};
   };
-  d.topics    = pick(o.topics, topicIds, v => ["progress","done"].includes(v) ? v : undefined);
   d.examples  = pick(o.examples, exampleIds, v => v === true ? true : undefined);
   d.practice  = pick(o.practice, practiceIds, v => v === true ? true : undefined);
-  d.revision  = pick(o.revision, revIds, v => v === true ? true : undefined);
   d.quizTopic = pick(o.quizTopic, topicIds, score);
   d.quizStage = pick(o.quizStage, stages, score);
   d.lastStudied = (typeof o.lastStudied === "string" && topicIds.has(o.lastStudied)) ? o.lastStudied : null;
@@ -4873,46 +4850,55 @@ function touchVisit(){
   P.lastVisit = t; save();
 }
 
-/* ---------- progress computation (always derived, never stored) ------ */
-const STATUS_WEIGHT = {done:1, progress:0.5};
-function topicStatus(id){ return P.topics[id] || "none"; }
-function topicScore(id){ return STATUS_WEIGHT[topicStatus(id)] || 0; }
-
-/* The headline metric represents COMP B preparation: every topic taught
-   to COMP B, which is all of them (comp-a-only topics are awareness). */
-function progressOf(list){
-  if(!list.length) return {pct:0, done:0, prog:0, none:0, total:0};
-  let sum=0, done=0, prog=0;
-  list.forEach(t=>{
-    const s = topicStatus(t.id);
-    if(s === "done"){ done++; sum += 1; }
-    else if(s === "progress"){ prog++; sum += 0.5; }
-  });
-  return {pct:Math.round(sum/list.length*100), done, prog, none:list.length-done-prog, total:list.length};
+/* =====================================================================
+   PROGRESS — derived from the individual questions marked, never stored.
+   A topic's "items" are its solved examples plus its practice questions.
+   ===================================================================== */
+function topicItems(t){
+  const items = [];
+  (t.examples||[]).forEach(e => items.push({k:"ex", id:e.id}));
+  (t.practice||[]).forEach(p => items.push({k:"pr", id:p.id}));
+  return items;
 }
-function bTopics(){ return TOPICS.filter(t => t.classification !== "aonly"); }
-function overallProgress(){ return progressOf(bTopics()); }
-function commonProgress(){ return progressOf(TOPICS.filter(t => t.classification === "common")); }
+function itemDone(it){ return it.k === "ex" ? !!P.examples[it.id] : !!P.practice[it.id]; }
+
+function topicProgress(t){
+  const items = topicItems(t);
+  const done = items.filter(itemDone).length;
+  return {done, total:items.length, pct: items.length ? Math.round(done/items.length*100) : 0};
+}
+function topicStatus(id){
+  const t = TOPIC_BY_ID[id];
+  if(!t) return "none";
+  const p = topicProgress(t);
+  if(!p.total) return "none";
+  if(p.done === p.total) return "done";
+  return p.done > 0 ? "progress" : "none";
+}
+/* Aggregate over a list of topics, weighted by number of questions. */
+function progressOf(list){
+  let done = 0, total = 0, topicsDone = 0;
+  list.forEach(t => {
+    const p = topicProgress(t);
+    done += p.done; total += p.total;
+    if(p.total && p.done === p.total) topicsDone++;
+  });
+  return {done, total, pct: total ? Math.round(done/total*100) : 0,
+          topicsDone, topics:list.length};
+}
+function overallProgress(){ return progressOf(TOPICS); }
+function moduleProgress(m){ return progressOf(topicsOf(m)); }
+function trackProgress(track){ return progressOf(TOPICS.filter(t => trackOf(t) === track)); }
+function moduleTrackProgress(m, track){ return progressOf(topicsInTrack(m, track)); }
+
+/* A vs B facts — used only on the comparison page */
 function hasBExtras(t){ return !!(t.bExtras && t.bExtras.length); }
 function hasAExtras(t){ return !!(t.aExtras && t.aExtras.length); }
 function bExtraTopics(){ return TOPICS.filter(hasBExtras); }
 function aExtraTopics(){ return TOPICS.filter(hasAExtras); }
-function bOnlyProgress(){ return progressOf(bExtraTopics()); }
 function countBExtras(){ return TOPICS.reduce((a,t)=>a+(t.bExtras?t.bExtras.length:0),0); }
 function countAExtras(){ return TOPICS.reduce((a,t)=>a+(t.aExtras?t.aExtras.length:0),0); }
-function moduleProgress(m){ return progressOf(topicsOf(m).filter(t => t.classification !== "aonly")); }
-function typeProgress(type){
-  const list = bTopics().filter(t => type === "theory" ? t.type === "theory" : t.type !== "theory");
-  return progressOf(list);
-}
-function examplesProgress(){
-  const n = ALL_EXAMPLES.length, d = ALL_EXAMPLES.filter(e => P.examples[e.id]).length;
-  return {done:d, total:n, pct: n ? Math.round(d/n*100) : 0};
-}
-function practiceProgress(){
-  const n = ALL_PRACTICE.length, d = ALL_PRACTICE.filter(p => P.practice[p.id]).length;
-  return {done:d, total:n, pct: n ? Math.round(d/n*100) : 0};
-}
+
 function quizOverall(){
   let c=0, n=0;
   Object.values(P.quizTopic).forEach(v => { c += v.c; n += v.n; });
@@ -4937,54 +4923,28 @@ function stageStats(){
   });
 }
 
-/* ---------- "What should I study next?" — transparent rule order ----- */
+/* ---------- "Study next" — transparent rule order ------------------- */
 function studyNext(){
-  const rank = t => (t.classification === "common" ? 0 : t.classification === "bonly" ? 1 : 2);
   const prio = t => (t.priority === "high" ? 0 : t.priority === "medium" ? 1 : 2);
+  const started = t => topicProgress(t).done > 0 ? 0 : 1;
 
-  /* 1. Weak COMMON topics (quiz accuracy < 60%) */
   const weak = weakTopics();
-  const weakCommon = weak.find(w => w.topic.classification === "common");
-  if(weakCommon) return {topic:weakCommon.topic, why:"Common A+B topic with quiz accuracy of only "+weakCommon.pct+"%",
-    plan:"Re-read the recognition clues, work the solved example again, then retry the practice questions.", rule:1};
+  if(weak.length) return {topic:weak[0].topic, rule:1};
 
-  /* 2. Incomplete COMMON + high priority */
-  const c1 = bTopics().filter(t => t.classification === "common" && t.priority === "high" && topicStatus(t.id) !== "done")
-    .sort((a,b) => (topicStatus(b.id)==="progress") - (topicStatus(a.id)==="progress"));
-  if(c1.length) return {topic:c1[0], why:"Common to COMP A + COMP B, high priority, and not yet complete",
-    plan:"Read the concept, study the solved example, then attempt the practice questions and mark it complete.", rule:2};
+  const c1 = TOPICS.filter(t => t.priority === "high" && topicStatus(t.id) === "progress");
+  if(c1.length) return {topic:c1[0], rule:2};
 
-  /* 3. Any other weak topic */
-  if(weak.length) return {topic:weak[0].topic, why:"Quiz accuracy of only "+weak[0].pct+"% on this topic",
-    plan:"Revisit the concept and common mistakes, then re-test.", rule:3};
+  const c2 = TOPICS.filter(t => t.priority === "high" && topicStatus(t.id) === "none")
+    .sort((a,b) => (trackOf(a)==="numerical"?0:1) - (trackOf(b)==="numerical"?0:1));
+  if(c2.length) return {topic:c2[0], rule:3};
 
-  /* 4. Incomplete COMP B-only + high priority */
-  const c2 = bTopics().filter(t => t.classification === "bonly" && t.priority === "high" && topicStatus(t.id) !== "done");
-  if(c2.length) return {topic:c2[0], why:"COMP B syllabus, high priority, and not yet complete",
-    plan:"Read it through and mark it complete.", rule:4};
+  const c3 = TOPICS.filter(t => topicStatus(t.id) !== "done")
+    .sort((a,b) => prio(a)-prio(b) || started(a)-started(b));
+  if(c3.length) return {topic:c3[0], rule:4};
 
-  /* 5. Any incomplete problem-solving topic */
-  const c3 = bTopics().filter(t => t.type !== "theory" && topicStatus(t.id) !== "done")
-    .sort((a,b) => rank(a)-rank(b) || prio(a)-prio(b));
-  if(c3.length) return {topic:c3[0], why:"An unfinished problem-solving topic — these carry the numerical marks",
-    plan:"Work the solved example step by step, then the practice questions.", rule:5};
-
-  /* 6. Anything else incomplete */
-  const c4 = bTopics().filter(t => topicStatus(t.id) !== "done").sort((a,b) => rank(a)-rank(b) || prio(a)-prio(b));
-  if(c4.length) return {topic:c4[0], why:"Still incomplete", plan:"Read it and mark it complete.", rule:6};
-
-  /* 7. Untouched practice */
-  const up = ALL_PRACTICE.filter(p => !P.practice[p.id]);
-  if(up.length) return {topic:TOPIC_BY_ID[up[0].topic], why:"Every topic is complete — now consolidate with practice",
-    plan:"Attempt the remaining practice questions before revealing the solutions.", rule:7};
-
-  /* 8. Quiz not attempted much */
-  if(quizOverall().n < QUIZ.length) return {topic:null, view:"quiz", why:"Everything is complete — now test recall",
-    plan:"Take the full quiz to find any remaining weak spots.", rule:8};
-
-  return {topic:null, view:"revision", why:"Everything complete and quizzed", plan:"Move to Quick Revision and Exam Mode.", rule:9};
+  if(quizOverall().n < QUIZ.length) return {topic:null, view:"quiz", rule:5};
+  return {topic:null, view:"exam", rule:6};
 }
-
 /* ---------------------------- helpers ------------------------------- */
 const $  = (s,r=document) => r.querySelector(s);
 const $$ = (s,r=document) => Array.from(r.querySelectorAll(s));
@@ -5004,225 +4964,146 @@ function toast(msg){
 function pbar(p, cls){
   return '<div class="progressbar '+(cls||"")+'" role="progressbar" aria-valuenow="'+p+'" aria-valuemin="0" aria-valuemax="100"><div style="width:'+p+'%"></div></div>';
 }
-function barClass(p){ return p >= 75 ? "good" : p >= 40 ? "warn" : ""; }
+function barClass(p){ return p >= 100 ? "good" : p >= 40 ? "warn" : ""; }
 function pill(cls, txt){ return '<span class="pill '+cls+'">'+txt+'</span>'; }
-function classPill(c){ const L = CLASS_LABEL[c]; return '<span class="pill '+L.pill+'" title="'+esc(L.long)+'">'+L.short+'</span>'; }
-function extrasPill(t){
-  let s = "";
-  if(t.bExtras && t.bExtras.length) s += '<span class="pill bonly" title="'+esc(t.bExtras.join(" · "))+'">+'+t.bExtras.length+' COMP B only</span>';
-  if(t.aExtras && t.aExtras.length) s += '<span class="pill aonly" title="'+esc(t.aExtras.join(" · "))+'">COMP A note</span>';
-  return s;
-}
-function prioPill(p){ return '<span class="pill '+(p==="high"?"high":p==="medium"?"medium":"low")+'">'+esc(PRIO_LABEL[p])+'</span>'; }
-function typePill(t){
-  const map = {theory:"theory", "problem-solving":"num", mixed:"num", algorithm:"num"};
-  const label = {theory:"Theory", "problem-solving":"Problem-solving", mixed:"Mixed", algorithm:"Algorithm"};
-  return '<span class="pill '+(map[t]||"theory")+'">'+(label[t]||t)+'</span>';
+function prioPill(p){
+  const label = {high:"High priority", medium:"Medium priority", low:"Lower priority"}[p] || p;
+  const lo = {high:"Named in a learning outcome and repeatedly emphasised in the material",
+              medium:"Examinable, but less central than the high-priority topics",
+              low:"Worth knowing once the rest is secure"}[p] || "";
+  return '<span class="pill '+(p==="high"?"high":p==="medium"?"medium":"low")+'" title="'+esc(lo)+'">'+label+'</span>';
 }
 function diffPill(d){ return '<span class="pill '+d+'">'+esc(DIFF_LABEL[d]||d)+'</span>'; }
+function classPill(c){ const L = CLASS_LABEL[c]; return '<span class="pill '+L.pill+'" title="'+esc(L.long)+'">'+L.short+'</span>'; }
 function statusDot(id){
   const s = topicStatus(id);
   const ch = s === "done" ? "✓" : s === "progress" ? "◐" : "☐";
   const cl = s === "done" ? "done" : s === "progress" ? "prog" : "none";
   return '<span class="status-dot '+cl+'" aria-hidden="true">'+ch+'</span>';
 }
-function statusPill(id){
-  const s = topicStatus(id);
-  if(s === "done") return pill("done","Completed");
-  if(s === "progress") return pill("prog","In progress");
-  return "";
-}
-function srcPill(s){ return s === "source" ? pill("src","From source material") : pill("pred","Likely exam pattern"); }
 function loPill(id){
   const l = LOS.find(x => x.id === id);
   return l ? '<span class="pill lo" title="'+esc(l.text)+'">'+id+'</span>' : "";
 }
-/* Reveal-toggle button + hidden body */
-function revealBlock(id, labelShow, labelHide, body, extra){
-  const open = !!revealed[id];
-  return '<div class="reveal-row"><button class="small primary" data-reveal="'+id+'">'+(open?labelHide:labelShow)+'</button>'+(extra||"")+'</div>'+
-         '<div class="hidden-body'+(open?" show":"")+'">'+body+'</div>';
-}
+function srcPill(s){ return s === "source" ? pill("src","From source material") : pill("pred","Likely exam pattern"); }
 let revealed = {};   /* session-only: which answers are showing */
 
 /* ---------------------------- DASHBOARD ----------------------------- */
 function vDashboard(){
-  const ov = overallProgress(), cm = commonProgress(), bo = bOnlyProgress();
-  const ex = examplesProgress(), pr = practiceProgress(), qz = quizOverall();
-  const weak = weakTopics(), next = studyNext();
-  const isNew = ov.done === 0 && ov.prog === 0 && qz.n === 0;
+  const ov = overallProgress();
+  const th = trackProgress("theory"), nu = trackProgress("numerical");
+  const qz = quizOverall(), weak = weakTopics(), next = studyNext();
+  const isNew = ov.done === 0 && qz.n === 0;
 
-  let h = "";
-  if(isNew){
-    h += '<div class="banner info"><b>Welcome to ADS Study Hub.</b> This is built for <b>COMP B</b> preparation for the '+
-      EXAM.code+' mid-semester exam &mdash; '+EXAM.marks+' marks, '+EXAM.duration+', covering <b>'+EXAM.scope+'</b>. '+
-      'Your study progress is saved automatically <b>in this browser only</b>. Nothing is sent anywhere and no account is needed. '+
-      'Start with <b>Do this next</b> below.</div>';
-  } else {
-    h += '<div class="banner info"><b>Welcome back.</b> You are <b>'+ov.pct+'%</b> through your COMP B preparation'+
-      (P.lastStudied && TOPIC_BY_ID[P.lastStudied] ? ' &mdash; you were last on <b>'+esc(strip(TOPIC_BY_ID[P.lastStudied].title))+'</b>' : '')+'.'+
-      (P.streak > 1 ? ' Study streak: <b>'+P.streak+' consecutive days</b>.' : '')+'</div>';
-  }
+  let h = '<h1>Dashboard</h1>';
+  h += '<p class="lead" style="margin-bottom:1rem">'+
+    (isNew
+      ? 'Progress is measured by the questions you mark as done, and is saved in this browser only.'
+      : 'You are <b>'+ov.pct+'%</b> through the questions'+(P.streak > 1 ? ' &middot; '+P.streak+'-day streak' : '')+'.')+
+    '</p>';
 
-  h += '<h1>Dashboard</h1><p class="lead">'+EXAM.code+' &middot; '+EXAM.title+' &middot; <b>'+EXAM.scope+'</b> &middot; '+
-    EXAM.marks+' marks &middot; '+EXAM.duration+'. Primary class: <b>'+EXAM.primaryClass+'</b>.</p>';
-
-  /* headline stats */
+  /* readiness — overall, theory, numericals */
   h += '<div class="grid stats">'+
-   '<div class="stat"><div class="num">'+ov.pct+'%</div><div class="label">COMP B readiness</div>'+
-     '<div class="sub">'+ov.done+' of '+ov.total+' topics complete</div>'+pbar(ov.pct, barClass(ov.pct))+'</div>'+
-   '<div class="stat"><div class="num" style="color:var(--good)">'+cm.pct+'%</div><div class="label">Common A+B</div>'+
-     '<div class="sub">'+cm.done+' / '+cm.total+' &middot; highest priority</div>'+pbar(cm.pct, barClass(cm.pct))+'</div>'+
-   '<div class="stat"><div class="num" style="color:var(--accent)">'+bo.pct+'%</div><div class="label">Topics with B-only extras</div>'+
-     '<div class="sub">'+bo.done+' / '+bo.total+' topics &middot; '+countBExtras()+' extra sub-topics</div>'+pbar(bo.pct, barClass(bo.pct))+'</div>'+
-   '<div class="stat"><div class="num">'+(qz.pct===null?"—":qz.pct+"%")+'</div><div class="label">Quiz accuracy</div>'+
-     '<div class="sub">'+(qz.n ? qz.c+" of "+qz.n+" correct" : "No quiz taken yet")+'</div></div>'+
-   '<div class="stat"><div class="num" style="color:var(--bad)">'+weak.length+'</div><div class="label">Weak topics</div>'+
-     '<div class="sub">'+(weak.length ? "Below 60% accuracy" : "None detected yet")+'</div></div>'+
+   '<div class="stat"><div class="num">'+ov.pct+'%</div><div class="label">Overall readiness</div>'+
+     '<div class="sub">'+ov.done+' of '+ov.total+' questions</div>'+pbar(ov.pct, barClass(ov.pct))+'</div>'+
+   '<div class="stat"><div class="num">'+nu.pct+'%</div><div class="label">Numericals</div>'+
+     '<div class="sub">'+nu.done+' of '+nu.total+' questions</div>'+pbar(nu.pct, barClass(nu.pct))+'</div>'+
+   '<div class="stat"><div class="num">'+th.pct+'%</div><div class="label">Theory</div>'+
+     '<div class="sub">'+th.done+' of '+th.total+' questions</div>'+pbar(th.pct, barClass(th.pct))+'</div>'+
    '</div>';
 
-  /* study next */
-  h += '<div class="card" style="border-left:4px solid var(--accent)"><h3 style="margin-top:0">Study next</h3>';
+  /* study next — module name + topic name only */
+  h += '<div class="card" style="border-left:4px solid var(--accent);margin-top:12px">'+
+    '<h4 style="margin-top:0">Study next</h4>';
   if(next.topic){
     const t = next.topic;
-    h += '<div class="badge-row" style="margin-bottom:6px">'+classPill(t.classification)+prioPill(t.priority)+typePill(t.type)+
-      pill("marks","Module "+t.m.slice(1))+statusPill(t.id)+'</div>'+
-      '<p style="margin:.25rem 0 .35rem;font-size:1.02rem;font-weight:700">'+t.title+'</p>'+
-      '<p class="muted" style="margin:0 0 4px"><b>Why:</b> '+esc(next.why)+'</p>'+
-      '<p class="muted" style="margin:0 0 10px"><b>How:</b> '+esc(next.plan)+'</p>'+
-      '<button class="primary big" data-topic="'+t.id+'">Start studying &rarr;</button>';
+    h += '<p class="muted" style="margin:0">Module '+t.m.slice(1)+'</p>'+
+      '<p style="margin:.15rem 0 .7rem;font-size:1.05rem;font-weight:700">'+t.title+'</p>'+
+      '<button class="primary" data-topic="'+t.id+'">Open &rarr;</button>';
   } else {
-    h += '<p style="margin:.25rem 0 .35rem;font-size:1.02rem;font-weight:700">'+
-      (next.view === "quiz" ? "Take the full quiz" : "Move to Quick Revision")+'</p>'+
-      '<p class="muted" style="margin:0 0 10px"><b>Why:</b> '+esc(next.why)+' &mdash; '+esc(next.plan)+'</p>'+
-      '<button class="primary big" data-go="'+next.view+'">Open &rarr;</button>';
+    h += '<p style="margin:.15rem 0 .7rem;font-size:1.05rem;font-weight:700">'+
+      (next.view === "quiz" ? "Take the quiz" : "Exam Mode")+'</p>'+
+      '<button class="primary" data-go="'+next.view+'">Open &rarr;</button>';
   }
   h += '</div>';
 
-  /* module progress */
-  h += '<h2>Modules</h2>';
-  h += '<div class="grid two">';
+  /* module-wise readiness */
+  h += '<div class="grid two" style="margin-top:12px">';
   MODULES.forEach(m => {
     const mp = moduleProgress(m.id);
-    const list = topicsOf(m.id);
-    const nCommon = list.filter(t=>t.classification==="common").length;
-    h += '<div class="card"><div class="badge-row" style="margin-bottom:7px">'+
-      '<b>Module '+m.num+'</b>'+pill("marks",m.hours+" hrs")+pill("low",m.co)+
+    h += '<div class="card"><div class="badge-row" style="margin-bottom:6px">'+
+      '<b>Module '+m.num+'</b>'+
       '<span style="margin-left:auto;font-weight:800;color:var(--accent)">'+mp.pct+'%</span></div>'+
       pbar(mp.pct, barClass(mp.pct))+
-      '<p style="font-weight:650;margin:.55rem 0 .3rem;font-size:.95rem">'+esc(m.title)+'</p>'+
-      '<p class="muted" style="margin:0 0 8px">'+esc(m.blurb)+'</p>'+
-      '<p class="muted" style="margin:0 0 10px">'+mp.done+' complete &middot; '+mp.prog+' in progress &middot; '+mp.none+' not started &middot; '+nCommon+' common A+B</p>'+
-      '<button data-module="'+m.id+'">Open Module '+m.num+' &rarr;</button></div>';
+      '<p style="font-weight:640;margin:.5rem 0 .2rem;font-size:.92rem">'+esc(m.title)+'</p>'+
+      '<p class="muted" style="margin:0 0 10px">'+mp.done+' of '+mp.total+' questions &middot; '+
+      mp.topicsDone+' of '+mp.topics+' topics finished</p>'+
+      '<button data-go="'+m.id+'">Open Module '+m.num+' &rarr;</button></div>';
   });
   h += '</div>';
 
-  /* activity progress */
-  h += '<h2>Study activity</h2><div class="grid three">'+
-   '<div class="card tight"><div class="badge-row"><b>Theory topics</b><span style="margin-left:auto;font-weight:800">'+typeProgress("theory").pct+'%</span></div>'+pbar(typeProgress("theory").pct, barClass(typeProgress("theory").pct))+'</div>'+
-   '<div class="card tight"><div class="badge-row"><b>Problem-solving topics</b><span style="margin-left:auto;font-weight:800">'+typeProgress("ps").pct+'%</span></div>'+pbar(typeProgress("ps").pct, barClass(typeProgress("ps").pct))+'</div>'+
-   '<div class="card tight"><div class="badge-row"><b>Solved examples reviewed</b><span style="margin-left:auto;font-weight:800">'+ex.done+' / '+ex.total+'</span></div>'+pbar(ex.pct, barClass(ex.pct))+'</div>'+
-   '<div class="card tight"><div class="badge-row"><b>Practice attempted</b><span style="margin-left:auto;font-weight:800">'+pr.done+' / '+pr.total+'</span></div>'+pbar(pr.pct, barClass(pr.pct))+'</div>'+
-   '</div>';
-
-  /* recognition skill breakdown */
-  const st = stageStats().filter(s => s.n > 0);
-  if(st.length){
-    h += '<h2>Question-handling skills</h2><p class="lead" style="margin-top:-.3rem">From your quiz answers, split by what each question tested.</p><div class="card">';
-    st.forEach(s => {
-      h += '<div style="margin-bottom:10px"><div class="badge-row" style="margin-bottom:3px"><span style="font-size:.87rem;font-weight:650">'+esc(s.label)+'</span>'+
-        '<span style="margin-left:auto;font-size:.83rem;color:var(--ink-soft)">'+s.c+' / '+s.n+' &middot; '+s.pct+'%</span></div>'+
-        pbar(s.pct, barClass(s.pct))+'</div>';
-    });
-    h += '</div>';
-  }
-
-  /* weak areas */
+  /* weak areas — only when the quiz has actually flagged something */
   if(weak.length){
-    h += '<h2>Weak areas</h2><p class="lead" style="margin-top:-.3rem">Topics where your quiz accuracy is below 60%.</p>';
-    weak.slice(0,6).forEach(w => {
-      h += '<div class="card tight"><div class="badge-row" style="margin-bottom:5px">'+
-        pill("high","⚠ "+w.pct+"%")+classPill(w.topic.classification)+prioPill(w.topic.priority)+
-        '<span style="margin-left:auto"><button class="small" data-topic="'+w.topic.id+'">Review</button></span></div>'+
-        '<p style="margin:0;font-weight:650;font-size:.92rem">'+w.topic.title+'</p>'+
-        '<p class="muted" style="margin:3px 0 0">'+w.c+' correct out of '+w.n+' attempted. '+
-        'Recommended: re-read the recognition clues &rarr; study the solved example &rarr; attempt the practice questions.</p></div>';
+    h += '<h2>Weak areas</h2>';
+    weak.slice(0,5).forEach(w => {
+      h += '<div class="card tight"><div class="badge-row">'+pill("high",w.pct+"% in quiz")+
+        '<span style="flex:1;font-weight:640;font-size:.92rem">'+w.topic.title+'</span>'+
+        '<button class="small" data-topic="'+w.topic.id+'">Review</button></div></div>';
     });
   }
-
-  /* paper shape */
-  h += '<h2>What the paper will ask</h2><div class="card">'+
-   '<p style="margin-top:0">'+esc(EXAM.scopeNote)+'</p>'+
-   '<h4>The official focus list</h4><ul class="list">'+EXAM.focus.map(f=>'<li>'+f+'</li>').join("")+'</ul>'+
-   '<p class="muted" style="margin-bottom:0">'+EXAM.focusNote+'</p></div>';
-
-  h += '<div class="btn-row" style="margin-top:14px">'+
-   '<button data-go="examples">Solved Examples</button>'+
-   '<button data-go="recognition">Question Recognition</button>'+
-   '<button data-go="practice">Practice</button>'+
-   '<button data-go="revision">Quick Revision</button>'+
-   '<button data-go="compare">COMP A vs COMP B</button>'+
-   '<button data-go="exam">Exam Mode</button></div>';
   return h;
 }
 
-/* ---------------------------- MODULES LIST -------------------------- */
-let modFilters = {module:"all", cls:"all", type:"all", prio:"all", status:"all"};
-function vModules(){
-  let list = TOPICS.slice();
-  if(modFilters.module !== "all") list = list.filter(t => t.m === modFilters.module);
-  if(modFilters.cls === "bonly")      list = list.filter(hasBExtras);
-  else if(modFilters.cls === "aonly") list = list.filter(hasAExtras);
-  else if(modFilters.cls === "common")list = list.filter(t => t.classification === "common");
-  if(modFilters.type   !== "all") list = list.filter(t => modFilters.type === "theory" ? t.type === "theory" : t.type !== "theory");
-  if(modFilters.prio   !== "all") list = list.filter(t => t.priority === modFilters.prio);
-  if(modFilters.status !== "all") list = list.filter(t => modFilters.status === "done" ? topicStatus(t.id)==="done" : topicStatus(t.id)!=="done");
+/* --------------------------- MODULE VIEW ---------------------------- */
+let subTab = {m1:"theory", m2:"theory"};
 
-  let h = '<h1>Modules</h1><p class="lead">All '+TOPICS.length+' topics across Modules 1 and 2. '+
-    '<b>Common A+B topics come first in priority</b> — they are taught to both divisions, so they are the safest place to spend time.</p>';
+function topicCard(t){
+  const tp = topicProgress(t);
+  const cls = topicStatus(t.id) === "done" ? "is-done" : "p-"+t.priority;
+  return '<div class="topic '+cls+'">'+
+    '<div class="th"><div class="tt">'+statusDot(t.id)+' '+t.title+'</div>'+
+    '<div class="badge-row">'+prioPill(t.priority)+'</div></div>'+
+    '<p class="tsum">'+esc(t.summary)+'</p>'+
+    '<div class="qmeter">'+pbar(tp.pct, barClass(tp.pct))+
+      '<span class="qn">'+tp.done+' / '+tp.total+' questions</span>'+
+      '<button class="small primary" data-topic="'+t.id+'">Open</button></div>'+
+    '</div>';
+}
 
-  h += '<div class="toolbar">'+
-   '<label for="fm">Module</label><select id="fm" data-mf="module">'+
-     '<option value="all"'+(modFilters.module==="all"?" selected":"")+'>All</option>'+
-     MODULES.map(m=>'<option value="'+m.id+'"'+(modFilters.module===m.id?" selected":"")+'>Module '+m.num+'</option>').join("")+'</select>'+
-   '<label for="fc">Class</label><select id="fc" data-mf="cls">'+
-     '<option value="all"'+(modFilters.cls==="all"?" selected":"")+'>All</option>'+
-     '<option value="common"'+(modFilters.cls==="common"?" selected":"")+'>Common A+B core</option>'+
-     '<option value="bonly"'+(modFilters.cls==="bonly"?" selected":"")+'>Has COMP B-only extras</option>'+
-     '<option value="aonly"'+(modFilters.cls==="aonly"?" selected":"")+'>Has COMP A notes</option></select>'+
-   '<label for="ft">Type</label><select id="ft" data-mf="type">'+
-     '<option value="all"'+(modFilters.type==="all"?" selected":"")+'>All</option>'+
-     '<option value="theory"'+(modFilters.type==="theory"?" selected":"")+'>Theory</option>'+
-     '<option value="ps"'+(modFilters.type==="ps"?" selected":"")+'>Problem-solving</option></select>'+
-   '<label for="fp">Priority</label><select id="fp" data-mf="prio">'+
-     '<option value="all"'+(modFilters.prio==="all"?" selected":"")+'>All</option>'+
-     '<option value="high"'+(modFilters.prio==="high"?" selected":"")+'>High</option>'+
-     '<option value="medium"'+(modFilters.prio==="medium"?" selected":"")+'>Medium</option></select>'+
-   '<label for="fs">Status</label><select id="fs" data-mf="status">'+
-     '<option value="all"'+(modFilters.status==="all"?" selected":"")+'>All</option>'+
-     '<option value="todo"'+(modFilters.status==="todo"?" selected":"")+'>Not complete</option>'+
-     '<option value="done"'+(modFilters.status==="done"?" selected":"")+'>Completed</option></select>'+
-   '<span class="count">'+list.length+' of '+TOPICS.length+'</span></div>';
+function vModule(mid){
+  const m = moduleOf(mid);
+  const mp = moduleProgress(mid);
+  const tab = subTab[mid] || "theory";
+  const nTh = topicsInTrack(mid,"theory").length, nNu = topicsInTrack(mid,"numerical").length;
 
-  if(!list.length) return h + '<div class="empty">No topics match these filters.</div>';
+  let h = '<h1>Module '+m.num+' &mdash; '+esc(m.title)+'</h1>';
+  h += '<div class="card tight"><div class="badge-row"><b>'+mp.done+' of '+mp.total+' questions done</b>'+
+    '<span style="margin-left:auto;font-weight:800;color:var(--accent)">'+mp.pct+'%</span></div>'+
+    pbar(mp.pct, barClass(mp.pct))+'</div>';
 
-  MODULES.forEach(m => {
-    const sub = list.filter(t => t.m === m.id);
-    if(!sub.length) return;
-    const mp = moduleProgress(m.id);
-    h += '<h2>Module '+m.num+' &mdash; '+esc(m.title)+' <span class="pill marks">'+mp.pct+'% complete</span></h2>';
-    /* order: common first, then by priority */
-    sub.sort((a,b) => (CLASS_LABEL[a.classification].rank - CLASS_LABEL[b.classification].rank) ||
-                      ((a.priority==="high"?0:a.priority==="medium"?1:2) - (b.priority==="high"?0:b.priority==="medium"?1:2)));
-    sub.forEach(t => {
-      h += '<div class="topic c-'+t.classification+'">'+
-        '<div class="th"><div class="tt">'+statusDot(t.id)+' '+t.title+'</div>'+
-        '<div class="badge-row">'+classPill(t.classification)+extrasPill(t)+prioPill(t.priority)+typePill(t.type)+pill("marks",t.marks+" marks")+'</div></div>'+
-        '<p class="tsum">'+esc(t.summary)+'</p>'+
-        '<div class="badge-row">'+t.los.map(loPill).join("")+
-        '<span style="margin-left:auto"><button class="small primary" data-topic="'+t.id+'">Open topic</button></span></div></div>';
+  h += '<div class="subtabs" role="tablist">'+
+    '<button role="tab" aria-selected="'+(tab==="theory")+'" class="'+(tab==="theory"?"active":"")+'" data-sub="theory" data-mid="'+mid+'">Theory ('+nTh+')</button>'+
+    '<button role="tab" aria-selected="'+(tab==="numerical")+'" class="'+(tab==="numerical"?"active":"")+'" data-sub="numerical" data-mid="'+mid+'">Numericals ('+nNu+')</button>'+
+    '<button role="tab" aria-selected="'+(tab==="review")+'" class="'+(tab==="review"?"active":"")+'" data-sub="review" data-mid="'+mid+'">Quick Review</button>'+
+    '</div>';
+
+  if(tab === "review"){
+    reviewOf(mid).forEach(r => {
+      h += '<div class="card"><h3 style="margin-top:0">'+esc(r.h)+'</h3>'+r.b+'</div>';
     });
-  });
+    return h;
+  }
+
+  const list = topicsInTrack(mid, tab)
+    .slice()
+    .sort((a,b) => ((a.priority==="high"?0:a.priority==="medium"?1:2) - (b.priority==="high"?0:b.priority==="medium"?1:2)));
+  if(!list.length) return h + '<div class="empty">No topics in this track.</div>';
+  const tp = moduleTrackProgress(mid, tab);
+  h += '<p class="lead" style="margin-top:-.4rem">'+
+    (tab === "numerical"
+      ? 'Topics where you compute something and show working. '+tp.done+' of '+tp.total+' questions done.'
+      : 'Topics answered in words, tables and diagrams. '+tp.done+' of '+tp.total+' questions done.')+'</p>';
+  list.forEach(t => { h += topicCard(t); });
   return h;
 }
 
@@ -5231,130 +5112,106 @@ function vTopic(id){
   const t = TOPIC_BY_ID[id];
   if(!t) return '<div class="empty">Topic not found.</div>';
   const m = moduleOf(t.m);
-  const st = topicStatus(id);
+  const tp = topicProgress(t);
 
-  let h = '<button class="small" data-module="'+t.m+'">&larr; Module '+m.num+'</button>';
-  h += '<h1 style="margin-top:.5rem">'+t.title+'</h1>';
-  h += '<div class="badge-row" style="margin-bottom:10px">'+classPill(t.classification)+extrasPill(t)+prioPill(t.priority)+typePill(t.type)+
-    pill("marks","~"+t.marks+" marks")+t.los.map(loPill).join("")+statusPill(id)+'</div>';
-  h += '<p class="muted" style="margin-top:0"><b>Source:</b> '+esc(t.src)+'</p>';
-  if(t.bExtras && t.bExtras.length){
-    h += '<div class="box neutral"><h5>Inside this topic, taught to COMP B only</h5>'+
-      '<p style="margin:0 0 .3rem">The topic as a whole is common to both divisions, but these parts of it appear in the COMP B material and not in COMP A. They are still your syllabus, so learn them.</p>'+
-      '<ul style="margin:0">'+t.bExtras.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div>';
-  }
-  if(t.aExtras && t.aExtras.length){
-    h += '<div class="box neutral"><h5>What COMP A does differently here</h5><ul style="margin:0">'+
-      t.aExtras.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div>';
-  }
+  let h = '<button class="small" data-go="'+t.m+'">&larr; Module '+m.num+'</button>';
+  h += '<h1 style="margin-top:.55rem">'+t.title+'</h1>';
+  h += '<div class="badge-row" style="margin-bottom:8px">'+prioPill(t.priority)+t.los.map(loPill).join("")+'</div>';
+  h += '<div class="card tight"><div class="badge-row"><b style="font-size:.86rem">Questions worked</b>'+
+    '<span style="margin-left:auto;font-weight:800;color:var(--accent)">'+tp.done+' / '+tp.total+'</span></div>'+
+    pbar(tp.pct, barClass(tp.pct))+
+    '<p class="muted" style="margin:7px 0 0">This topic counts as complete once every question below is marked. Nothing is marked automatically.</p></div>';
 
-  /* 1 What is this */
-  h += '<h2>1 &middot; What is this?</h2>'+t.whatIs;
-
-  /* 2 What do I need to know */
-  h += '<h2>2 &middot; What do I need to know?</h2><div class="card"><ul class="list" style="margin:0">'+
+  /* 1 · CONCEPT */
+  h += '<h2>1 &middot; Concept</h2>'+t.whatIs+t.concept;
+  h += '<div class="box neutral"><h5>What you need to be able to do</h5><ul style="margin:0">'+
     t.needToKnow.map(x => '<li>'+x+'</li>').join("")+'</ul></div>';
 
-  /* 3 Recognition */
-  h += '<h2>3 &middot; How do I recognise this question?</h2>'+
-   '<div class="box recog"><h5>Clues in the question</h5><ul style="margin:0">'+
-     t.recognition.clues.map(c => '<li>'+c+'</li>').join("")+'</ul></div>'+
-   '<div class="box neutral"><h5>Typical wording</h5><ul style="margin:0">'+
-     t.recognition.wording.map(w => '<li><i>&ldquo;'+esc(w)+'&rdquo;</i></li>').join("")+'</ul></div>';
-
-  /* 4 Approach */
-  h += '<h2>4 &middot; How do I approach it?</h2>'+
-   '<div class="box tip"><h5>First thing to identify</h5><p style="margin:0">'+t.recognition.firstStep+'</p></div>'+
-   '<div class="box exam"><h5>Method</h5><p style="margin:0">'+t.recognition.method+'</p></div>'+
-   '<div class="box mistake"><h5>The trap in this topic</h5><p style="margin:0">'+t.recognition.trap+'</p></div>';
-
-  /* 5 Concept */
-  h += '<h2>5 &middot; Concept</h2>'+t.concept;
-
-  /* 6 Solved examples */
-  if(t.examples && t.examples.length){
-    h += '<h2>6 &middot; Solved examples</h2>';
-    t.examples.forEach(e => { h += exampleCard(e, false); });
-  }
-
-  /* 7 Exam answer */
-  h += '<h2>'+(t.examples&&t.examples.length?"7":"6")+' &middot; Exam answer</h2>'+
+  /* 2 · HOW TO WRITE IT */
+  h += '<h2>2 &middot; How to write the answer</h2>'+
    '<div class="card"><h4>Short answer (2–3 marks)</h4><p style="margin-top:0">'+t.examAnswer.short+'</p>'+
    '<h4>Medium answer (5 marks)</h4><p>'+t.examAnswer.medium+'</p>'+
    '<h4>Long answer (10 marks)</h4><p style="margin-bottom:0">'+t.examAnswer.long+'</p></div>';
 
-  /* 8 Common mistakes */
-  h += '<h2>'+(t.examples&&t.examples.length?"8":"7")+' &middot; Common mistakes</h2>'+
+  /* 3 · COMMON MISTAKES */
+  h += '<h2>3 &middot; Common mistakes</h2>'+
    '<div class="box mistake"><h5>Avoid these</h5><ul style="margin:0">'+
     t.mistakes.map(x => '<li>'+x+'</li>').join("")+'</ul></div>';
 
-  /* 9 Practice */
+  /* 4 · PRACTICE — solved examples first (solutions hidden), then practice questions */
+  h += '<h2>4 &middot; Practice</h2>'+
+    '<p class="lead" style="margin-top:-.4rem">Every solution here is hidden until you ask for it, so you can work these as practice. '+
+    'Mark each one when you have attempted it — that is what drives your progress.</p>';
+  if(t.examples && t.examples.length){
+    h += '<h3>Worked examples ('+t.examples.length+')</h3>';
+    t.examples.forEach(e => { h += exampleCard(e); });
+  }
   if(t.practice && t.practice.length){
-    h += '<h2>'+(t.examples&&t.examples.length?"9":"8")+' &middot; Practice</h2>'+
-      '<p class="lead" style="margin-top:-.3rem">Attempt each on paper before revealing the solution.</p>';
+    h += '<h3>Practice questions ('+t.practice.length+')</h3>';
     t.practice.forEach(p => { h += practiceCard(p); });
   }
 
-  /* 10 Mark complete */
-  h += '<h2>'+(t.examples&&t.examples.length?"10":"9")+' &middot; Mark your progress</h2><div class="card">'+
-   '<p style="margin-top:0" class="muted">Nothing is marked automatically &mdash; opening a page does not complete it. Choose honestly; the recommendation engine relies on it.</p>'+
-   '<div class="btn-row">'+
-   '<button class="'+(st==="none"?"sel-warn":"")+'" data-status="none" data-id="'+id+'">☐ Not started</button>'+
-   '<button class="'+(st==="progress"?"sel-warn":"")+'" data-status="progress" data-id="'+id+'">◐ In progress</button>'+
-   '<button class="'+(st==="done"?"sel-good":"")+'" data-status="done" data-id="'+id+'">✓ Completed</button>'+
-   '</div></div>';
+  /* 5 · QUESTION RECOGNITION */
+  h += '<h2>5 &middot; Question recognition</h2>'+
+   '<div class="box recog"><h5>Clues that this is the topic</h5><ul style="margin:0">'+
+     t.recognition.clues.map(c => '<li>'+c+'</li>').join("")+'</ul></div>'+
+   '<div class="box neutral"><h5>Typical wording</h5><ul style="margin:0">'+
+     t.recognition.wording.map(w => '<li><i>&ldquo;'+esc(w)+'&rdquo;</i></li>').join("")+'</ul></div>'+
+   '<div class="box tip"><h5>First thing to identify</h5><p style="margin:0">'+t.recognition.firstStep+'</p></div>'+
+   '<div class="box exam"><h5>Method</h5><p style="margin:0">'+t.recognition.method+'</p></div>'+
+   '<div class="box mistake"><h5>The trap</h5><p style="margin:0">'+t.recognition.trap+'</p></div>';
 
-  /* related */
-  const sameLO = TOPICS.filter(x => x.id !== id && x.los.some(l => t.los.includes(l)));
-  if(sameLO.length){
-    h += '<h2>Related topics</h2><div class="btn-row">'+
-      sameLO.slice(0,6).map(x => '<button class="small" data-topic="'+x.id+'">'+esc(clip(strip(x.title),46))+'</button>').join("")+'</div>';
+  /* likely questions on this topic */
+  if(t.questions && t.questions.length){
+    h += '<h2>6 &middot; Likely exam questions</h2><div class="card">';
+    t.questions.forEach((q,i) => {
+      h += '<div style="padding:7px 0'+(i?';border-top:1px solid var(--border)':'')+'">'+
+        '<div style="font-size:.9rem;font-weight:600">'+esc(q.q)+'</div>'+
+        '<div class="badge-row" style="margin-top:5px">'+pill("marks",q.marks+" marks")+diffPill(q.d)+srcPill(q.source)+'</div></div>';
+    });
+    h += '</div>';
   }
+
+  h += '<div class="btn-row" style="margin-top:16px"><button data-go="'+t.m+'">&larr; Back to Module '+m.num+'</button></div>';
   return h;
 }
 
 /* reusable cards ----------------------------------------------------- */
-function exampleCard(e, showTopic){
-  const t = TOPIC_BY_ID[e.topic];
-  const reviewed = !!P.examples[e.id];
-  let body = '<div class="box recog"><h5>How to recognise this category</h5><p style="margin:0">'+e.recog+'</p></div>'+
-   '<div class="box neutral"><h5>Concept required</h5><p style="margin:0">'+e.need+'</p></div>'+
-   '<h4>Step-by-step solution</h4><ol class="steps">'+e.steps.map(s => '<li>'+s+'</li>').join("")+'</ol>'+
-   '<h4>Final answer</h4>'+e.answer+
-   '<div class="box tip"><h5>Why this method works</h5><p style="margin:0">'+e.why+'</p></div>'+
-   '<div class="box mistake"><h5>Common mistake / trap</h5><p style="margin:0">'+e.trap+'</p></div>'+
-   '<div class="btn-row" style="margin-top:10px"><button class="small '+(reviewed?"sel-good":"")+'" data-exdone="'+e.id+'">'+
-     (reviewed?"✓ Reviewed":"Mark as reviewed")+'</button></div>';
-
-  return '<div class="card" id="ex_'+e.id+'">'+
-    '<div class="badge-row" style="margin-bottom:6px">'+pill("num","Solved example")+
-    '<span class="pill marks">'+esc(e.category)+'</span>'+
-    (showTopic && t ? '<span class="pill low">'+esc(clip(strip(t.title),34))+'</span>' : '')+
-    (reviewed?pill("done","Reviewed"):"")+'</div>'+
-    '<h3 style="margin-top:0">'+esc(e.title)+'</h3>'+
-    '<div class="box neutral"><h5>Question</h5><p style="margin:0">'+e.q+'</p></div>'+
-    revealBlock("ex_"+e.id, "Show worked solution", "Hide solution", body)+
-    '</div>';
+function exampleCard(e){
+  const done = !!P.examples[e.id];
+  const open = !!revealed["ex_"+e.id];
+  let h = '<div class="card" id="ex_'+e.id+'">'+
+    '<div class="badge-row" style="margin-bottom:6px">'+pill("num","Worked example")+
+    '<span class="pill marks">'+esc(e.category)+'</span>'+(done?pill("done","Done"):"")+'</div>'+
+    '<h4 style="margin-top:0">'+esc(e.title)+'</h4>'+
+    '<div style="font-size:.92rem;font-weight:600">'+e.q+'</div>'+
+    '<div class="reveal-row">'+
+      '<button class="small primary" data-reveal="ex_'+e.id+'">'+(open?"Hide solution":"Show solution")+'</button>'+
+      '<button class="small '+(done?"sel-good":"")+'" data-exdone="'+e.id+'">'+(done?"✓ Done":"Mark done")+'</button>'+
+    '</div>'+
+    '<div class="hidden-body'+(open?" show":"")+'">'+
+      '<div class="box recog"><h5>How to recognise this category</h5><p style="margin:0">'+e.recog+'</p></div>'+
+      '<div class="box neutral"><h5>Concept required</h5><p style="margin:0">'+e.need+'</p></div>'+
+      '<h4>Step-by-step</h4><ol class="steps">'+e.steps.map(s => '<li>'+s+'</li>').join("")+'</ol>'+
+      '<h4>Final answer</h4>'+e.answer+
+      '<div class="box tip"><h5>Why this method works</h5><p style="margin:0">'+e.why+'</p></div>'+
+      '<div class="box mistake"><h5>Common mistake</h5><p style="margin:0">'+e.trap+'</p></div>'+
+    '</div></div>';
+  return h;
 }
 function practiceCard(p){
   const done = !!P.practice[p.id];
-  const t = TOPIC_BY_ID[p.topic];
   const openSol = !!revealed["pr_"+p.id];
   const openHint = !!revealed["hint_"+p.id];
-
   let h = '<div class="card" id="pr_'+p.id+'">'+
     '<div class="badge-row" style="margin-bottom:6px">'+diffPill(p.d)+pill("marks",p.marks+" marks")+
-    (t ? '<span class="pill low">'+esc(clip(strip(t.title),34))+'</span>' : '')+
-    (done?pill("done","Attempted"):"")+'</div>'+
-    '<div style="font-size:.92rem;font-weight:600">'+p.q+'</div>';
-
-  /* buttons first, then hint, then solution — so the reading order matches the study order */
-  h += '<div class="reveal-row">'+
-    '<button class="small primary" data-reveal="pr_'+p.id+'">'+(openSol?"Hide solution":"Show solution")+'</button>'+
-    (p.hint ? '<button class="small" data-reveal="hint_'+p.id+'">'+(openHint?"Hide hint":"Hint")+'</button>' : "")+
-    '<button class="small '+(done?"sel-good":"")+'" data-prdone="'+p.id+'">'+(done?"✓ Attempted":"Mark as attempted")+'</button>'+
+    (done?pill("done","Done"):"")+'</div>'+
+    '<div style="font-size:.92rem;font-weight:600">'+p.q+'</div>'+
+    '<div class="reveal-row">'+
+      '<button class="small primary" data-reveal="pr_'+p.id+'">'+(openSol?"Hide solution":"Show solution")+'</button>'+
+      (p.hint ? '<button class="small" data-reveal="hint_'+p.id+'">'+(openHint?"Hide hint":"Hint")+'</button>' : "")+
+      '<button class="small '+(done?"sel-good":"")+'" data-prdone="'+p.id+'">'+(done?"✓ Done":"Mark done")+'</button>'+
     '</div>';
-
   if(p.hint){
     h += '<div class="hidden-body'+(openHint?" show":"")+'" style="border-top:none;padding-top:8px;margin-top:2px">'+
       '<p class="muted" style="margin:0"><b>Hint:</b> '+esc(p.hint)+'</p></div>';
@@ -5362,271 +5219,102 @@ function practiceCard(p){
   h += '<div class="hidden-body'+(openSol?" show":"")+'">'+p.a+'</div>';
   return h + '</div>';
 }
-
-/* ------------------------- SOLVED EXAMPLES -------------------------- */
-let exFilter = {module:"all", topic:"all"};
-function vExamples(){
-  const ex = examplesProgress();
-  let h = '<h1>Solved Examples</h1><p class="lead">Every worked example in one place, organised <b>Module &rarr; Topic &rarr; Example</b>. '+
-    'Each one shows the question, its category, how to recognise that category, the step-by-step solution, why the method works, and the trap.</p>';
-  h += '<div class="card tight"><div class="badge-row"><b>Reviewed</b><span style="margin-left:auto;font-weight:800;color:var(--accent)">'+
-    ex.done+' / '+ex.total+'</span></div>'+pbar(ex.pct, barClass(ex.pct))+'</div>';
-
-  h += '<div class="toolbar"><label for="exm">Module</label><select id="exm" data-exf="module">'+
-    '<option value="all"'+(exFilter.module==="all"?" selected":"")+'>All</option>'+
-    MODULES.map(m=>'<option value="'+m.id+'"'+(exFilter.module===m.id?" selected":"")+'>Module '+m.num+'</option>').join("")+
-    '</select><span class="count">'+ALL_EXAMPLES.length+' examples</span></div>';
-
-  let any = false;
-  MODULES.forEach(m => {
-    if(exFilter.module !== "all" && exFilter.module !== m.id) return;
-    const tops = topicsOf(m.id).filter(t => t.examples && t.examples.length);
-    if(!tops.length) return;
-    any = true;
-    h += '<h2>Module '+m.num+' &mdash; '+esc(m.title)+'</h2>';
-    tops.forEach(t => {
-      h += '<h3 style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+t.title+
-        ' '+classPill(t.classification)+prioPill(t.priority)+
-        '<button class="small" data-topic="'+t.id+'" style="margin-left:auto">Open topic</button></h3>';
-      t.examples.forEach(e => { h += exampleCard(Object.assign({}, e, {topic:t.id}), false); });
-    });
-  });
-  if(!any) h += '<div class="empty">No solved examples for this filter.</div>';
-  return h;
-}
-
 /* ------------------------ QUESTION RECOGNITION ---------------------- */
 function vRecognition(){
-  let h = '<h1>Question Recognition</h1><p class="lead">The skill this page trains is not <i>how do I solve it</i> but <b>how do I know what kind of question this is</b>. '+
-    'Read the clue, name the category, then pick the method. Every topic&rsquo;s recognition guide is collected here.</p>';
+  let h = '<h1>Question Recognition</h1><p class="lead">Not <i>how do I solve it</i> but <b>how do I know what kind of question this is</b>. '+
+    'Most lost marks are recognition failures, not arithmetic failures — applying the mode formula to a bimodal distribution is perfect arithmetic and zero marks.</p>';
 
   h += '<div class="box exam"><h5>The three-stage habit</h5>'+
-   '<div class="dtree">   Read the question\n'+
-   '        |\n'+
-   '   1. RECOGNISE  -> what category of question is this?\n'+
-   '        |\n'+
-   '   2. SELECT     -> which formula / method does that category use?\n'+
-   '        |\n'+
-   '   3. SOLVE      -> execute, then INTERPRET the number\n'+
-   '</div>'+
-   '<p style="margin:0">Most lost marks are stage-1 failures, not arithmetic failures. A student who applies the mode formula to a bimodal distribution has done the arithmetic perfectly and still lost the marks.</p></div>';
+   '<div class="dtree">Read the question\n'+
+   '     |\n'+
+   ' 1. RECOGNISE  -> what category of question is this?\n'+
+   '     |\n'+
+   ' 2. SELECT     -> which formula / method does that category use?\n'+
+   '     |\n'+
+   ' 3. SOLVE      -> execute, then INTERPRET the number\n</div>'+
+   '<p style="margin:0">The Quiz tracks these three separately, so you can see which stage is costing you.</p></div>';
 
-  /* Master decision trees */
-  h += '<h2>Decision tree — which Module 2 measure is being asked for?</h2>'+
+  h += '<h2>Which Module 2 measure is being asked for?</h2>'+
    '<div class="dtree">Read the question\n'+
    '     |\n'+
    'What is being asked for?\n'+
    '     |\n'+
    '     +-- "average", "typical value"  -> CENTRAL TENDENCY\n'+
-   '     |        |\n'+
-   '     |        +-- uses all values, further algebra needed -> MEAN\n'+
-   '     |        +-- extreme values present / open-end class -> MEDIAN\n'+
-   '     |        +-- "most common", "which size to stock"    -> MODE\n'+
+   '     |        +-- uses all values, further algebra -> MEAN\n'+
+   '     |        +-- extremes / open-end class        -> MEDIAN\n'+
+   '     |        +-- "most common", "which size"      -> MODE\n'+
    '     |\n'+
    '     +-- "spread", "variation", "consistency" -> DISPERSION\n'+
-   '     |        |\n'+
-   '     |        +-- just two extreme values      -> RANGE\n'+
-   '     |        +-- middle 50% / open-end class  -> QUARTILE DEVIATION\n'+
-   '     |        +-- all values, further algebra  -> STANDARD DEVIATION\n'+
-   '     |        +-- different units or means     -> COEFFICIENT (relative)\n'+
+   '     |        +-- just two extreme values     -> RANGE\n'+
+   '     |        +-- middle 50% / open-end class -> QUARTILE DEVIATION\n'+
+   '     |        +-- all values, further algebra -> STANDARD DEVIATION\n'+
+   '     |        +-- different units or means    -> COEFFICIENT (relative)\n'+
    '     |\n'+
-   '     +-- "symmetry", "skewed", "which side"    -> SKEWNESS\n'+
-   '     |        |\n'+
-   '     |        +-- mode well defined            -> KARL PEARSON (i)\n'+
-   '     |        +-- bimodal / no clear mode      -> KARL PEARSON (ii)\n'+
-   '     |        +-- open-end classes / quartiles -> BOWLEY\n'+
+   '     +-- "symmetry", "skewed", "which side"   -> SKEWNESS\n'+
+   '     |        +-- mode well defined           -> KARL PEARSON (i)\n'+
+   '     |        +-- bimodal / no clear mode     -> KARL PEARSON (ii)\n'+
+   '     |        +-- open-end / quartiles given  -> BOWLEY\n'+
    '     |\n'+
-   '     +-- "peakedness", "flat", "beta-2"        -> KURTOSIS\n'+
+   '     +-- "peakedness", "flat", "beta-2"       -> KURTOSIS\n'+
    '     |\n'+
-   '     +-- TWO variables, "relationship"         -> CORRELATION\n'+
-   '              |\n'+
-   '              +-- means are whole numbers  -> Method 1 (actual mean)\n'+
-   '              +-- means are fractional     -> Method 2 (direct)\n'+
-   '              +-- assumed means given      -> Method 3 (assumed mean)\n'+
-   '</div>';
+   '     +-- TWO variables, "relationship"        -> CORRELATION\n'+
+   '              +-- means are whole numbers -> Method 1 (actual mean)\n'+
+   '              +-- means are fractional    -> Method 2 (direct)\n'+
+   '              +-- assumed means given     -> Method 3 (assumed mean)\n</div>';
 
-  h += '<h2>Decision tree — which chart or graph?</h2>'+
+  h += '<h2>Which chart or graph?</h2>'+
    '<div class="dtree">How many variables must be shown?\n'+
    '     |\n'+
-   '     +-- ONE variable  -> UNIVARIATE\n'+
-   '     |        +-- shape of a continuous distribution -> HISTOGRAM\n'+
-   '     |        +-- compare shapes of two distributions -> FREQUENCY POLYGON\n'+
-   '     |        +-- cumulative / locate median graphically -> OGIVE\n'+
-   '     |        +-- quartiles and outliers -> BOX PLOT\n'+
-   '     |        +-- categorical data -> BAR DIAGRAM (gaps between bars)\n'+
-   '     |        +-- parts of one whole -> PIE DIAGRAM\n'+
+   '     +-- ONE  -> UNIVARIATE\n'+
+   '     |     +-- shape of a continuous distribution -> HISTOGRAM\n'+
+   '     |     +-- compare two distributions          -> FREQUENCY POLYGON\n'+
+   '     |     +-- cumulative / median graphically    -> OGIVE\n'+
+   '     |     +-- quartiles and outliers             -> BOX PLOT\n'+
+   '     |     +-- categorical data                   -> BAR DIAGRAM (gaps)\n'+
+   '     |     +-- parts of one whole                 -> PIE DIAGRAM\n'+
    '     |\n'+
-   '     +-- TWO variables -> SCATTER PLOT\n'+
-   '     |\n'+
-   '     +-- THREE variables in one chart -> BUBBLE CHART (3rd = size)\n'+
-   '     |\n'+
-   '     +-- MANY variables, all pairs -> SCATTER MATRIX\n'+
-   '</div>';
+   '     +-- TWO   -> SCATTER PLOT\n'+
+   '     +-- THREE in one chart -> BUBBLE CHART (3rd = size)\n'+
+   '     +-- MANY, all pairs    -> SCATTER MATRIX\n</div>';
 
-  h += '<h2>Decision tree — Module 1 validation questions</h2>'+
+  h += '<h2>Module 1 validation questions</h2>'+
    '<div class="dtree">What does the question give you?\n'+
    '     |\n'+
-   '     +-- N and a percentage / ratio  -> HOLD-OUT arithmetic\n'+
-   '     |         Train = p x N,  Test = (1-p) x N\n'+
+   '     +-- N and a percentage / ratio -> HOLD-OUT arithmetic\n'+
+   '     |        Train = p x N,  Test = (1-p) x N\n'+
    '     |\n'+
-   '     +-- N and a value of k          -> K-FOLD arithmetic\n'+
-   '     |         Fold = N/k,  Test = N/k,  TRAIN = N - N/k\n'+
+   '     +-- N and a value of k         -> K-FOLD arithmetic\n'+
+   '     |        Fold = N/k,  Test = N/k,  TRAIN = N - N/k\n'+
    '     |\n'+
-   '     +-- N and "leave one out"       -> LOOCV\n'+
-   '     |         Train = n-1,  Test = 1,  Iterations = n\n'+
+   '     +-- N and "leave one out"      -> LOOCV\n'+
+   '     |        Train = n-1,  Test = 1,  Iterations = n\n'+
    '     |\n'+
-   '     +-- Original set + a sample     -> BOOTSTRAP / OOB\n'+
-   '     |         OOB = what is MISSING from the sample\n'+
+   '     +-- Original set + a sample    -> BOOTSTRAP / OOB\n'+
+   '     |        OOB = what is MISSING from the sample\n'+
    '     |\n'+
-   '     +-- "which technique and why?"  -> JUDGEMENT, not arithmetic\n'+
-   '               huge dataset      -> hold-out\n'+
-   '               tiny dataset      -> LOOCV\n'+
-   '               imbalanced classes-> stratified k-fold\n'+
-   '               small + expensive -> bootstrap\n'+
-   '</div>';
+   '     +-- "which technique and why?" -> JUDGEMENT, not arithmetic\n'+
+   '              huge dataset       -> hold-out\n'+
+   '              tiny dataset       -> LOOCV\n'+
+   '              imbalanced classes -> stratified k-fold\n'+
+   '              small + expensive  -> bootstrap\n</div>';
 
-  /* Per-topic recognition guides */
-  h += '<h2>Recognition guide by topic</h2><p class="lead" style="margin-top:-.3rem">Category &rarr; clues &rarr; typical wording &rarr; first move &rarr; method &rarr; trap.</p>';
+  /* Compact lookup: one line per topic, linking straight to it */
+  h += '<h2>Clue &rarr; topic lookup</h2>'+
+    '<p class="lead" style="margin-top:-.4rem">The single strongest clue for each topic, and the first move to make. '+
+    'The full recognition guide lives on each topic page.</p>';
   MODULES.forEach(m => {
-    h += '<h3>Module '+m.num+'</h3>';
+    h += '<h3>Module '+m.num+'</h3><div class="scroll"><table class="t"><thead><tr>'+
+      '<th style="min-width:190px">Topic</th><th>Strongest clue</th><th>First move</th><th></th></tr></thead><tbody>';
     topicsOf(m.id).forEach(t => {
-      h += '<details><summary>'+statusDot(t.id)+' '+t.title+' '+classPill(t.classification)+prioPill(t.priority)+'</summary><div class="dbody">'+
-        '<div class="box recog"><h5>Recognition clues</h5><ul style="margin:0">'+t.recognition.clues.map(c=>'<li>'+c+'</li>').join("")+'</ul></div>'+
-        '<div class="box neutral"><h5>Typical wording</h5><ul style="margin:0">'+t.recognition.wording.map(w=>'<li><i>&ldquo;'+esc(w)+'&rdquo;</i></li>').join("")+'</ul></div>'+
-        '<div class="box tip"><h5>First thing to identify</h5><p style="margin:0">'+t.recognition.firstStep+'</p></div>'+
-        '<div class="box exam"><h5>Method</h5><p style="margin:0">'+t.recognition.method+'</p></div>'+
-        '<div class="box mistake"><h5>Common trap</h5><p style="margin:0">'+t.recognition.trap+'</p></div>'+
-        '<div class="btn-row"><button class="small" data-topic="'+t.id+'">Open full topic</button></div>'+
-        '</div></details>';
+      h += '<tr><td><b>'+t.title+'</b></td>'+
+        '<td>'+t.recognition.clues[0]+'</td>'+
+        '<td>'+t.recognition.firstStep+'</td>'+
+        '<td><button class="small" data-topic="'+t.id+'">Open</button></td></tr>';
     });
+    h += '</tbody></table></div>';
   });
   return h;
 }
-
-/* ------------------------------ PRACTICE ---------------------------- */
-let prFilter = {module:"all", diff:"all", type:"all", status:"all"};
-function vPractice(){
-  let list = ALL_PRACTICE.slice();
-  if(prFilter.module !== "all") list = list.filter(p => p.m === prFilter.module);
-  if(prFilter.diff   !== "all") list = list.filter(p => p.d === prFilter.diff);
-  if(prFilter.type   !== "all") list = list.filter(p => {
-    const t = TOPIC_BY_ID[p.topic];
-    return prFilter.type === "theory" ? t.type === "theory" : t.type !== "theory";
-  });
-  if(prFilter.status !== "all") list = list.filter(p => prFilter.status === "done" ? P.practice[p.id] : !P.practice[p.id]);
-
-  const pr = practiceProgress();
-  let h = '<h1>Practice</h1><p class="lead">'+ALL_PRACTICE.length+' questions, kept deliberately small and high-value. '+
-    'Every one is either drawn from the source material or modelled on a pattern that appears in it &mdash; there is no filler here. '+
-    '<b>Attempt each on paper before revealing the solution.</b></p>';
-  h += '<div class="card tight"><div class="badge-row"><b>Attempted</b><span style="margin-left:auto;font-weight:800;color:var(--accent)">'+
-    pr.done+' / '+pr.total+'</span></div>'+pbar(pr.pct, barClass(pr.pct))+'</div>';
-
-  h += '<div class="toolbar">'+
-   '<label for="pm">Module</label><select id="pm" data-pf="module">'+
-     '<option value="all"'+(prFilter.module==="all"?" selected":"")+'>All</option>'+
-     MODULES.map(m=>'<option value="'+m.id+'"'+(prFilter.module===m.id?" selected":"")+'>Module '+m.num+'</option>').join("")+'</select>'+
-   '<label for="pd">Difficulty</label><select id="pd" data-pf="diff">'+
-     '<option value="all"'+(prFilter.diff==="all"?" selected":"")+'>All</option>'+
-     Object.keys(DIFF_LABEL).map(k=>'<option value="'+k+'"'+(prFilter.diff===k?" selected":"")+'>'+DIFF_LABEL[k]+'</option>').join("")+'</select>'+
-   '<label for="pt">Type</label><select id="pt" data-pf="type">'+
-     '<option value="all"'+(prFilter.type==="all"?" selected":"")+'>All</option>'+
-     '<option value="theory"'+(prFilter.type==="theory"?" selected":"")+'>Theory</option>'+
-     '<option value="ps"'+(prFilter.type==="ps"?" selected":"")+'>Problem-solving</option></select>'+
-   '<label for="ps">Status</label><select id="ps" data-pf="status">'+
-     '<option value="all"'+(prFilter.status==="all"?" selected":"")+'>All</option>'+
-     '<option value="todo"'+(prFilter.status==="todo"?" selected":"")+'>Not attempted</option>'+
-     '<option value="done"'+(prFilter.status==="done"?" selected":"")+'>Attempted</option></select>'+
-   '<span class="count">'+list.length+' of '+ALL_PRACTICE.length+'</span></div>';
-
-  if(!list.length) return h + '<div class="empty">No practice questions match these filters.</div>';
-
-  MODULES.forEach(m => {
-    const sub = list.filter(p => p.m === m.id);
-    if(!sub.length) return;
-    h += '<h2>Module '+m.num+'</h2>';
-    const byTopic = {};
-    sub.forEach(p => { (byTopic[p.topic] = byTopic[p.topic] || []).push(p); });
-    Object.keys(byTopic).forEach(tid => {
-      const t = TOPIC_BY_ID[tid];
-      h += '<h3 style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+t.title+' '+classPill(t.classification)+
-        '<button class="small" data-topic="'+tid+'" style="margin-left:auto">Open topic</button></h3>';
-      byTopic[tid].forEach(p => { h += practiceCard(p); });
-    });
-  });
-  return h;
-}
-
-/* -------------------------- IMPORTANT QUESTIONS --------------------- */
-let iqFilter = {module:"all", prio:"all", type:"all", src:"all"};
-function vImportant(){
-  let list = ALL_QUESTIONS.slice();
-  if(iqFilter.module !== "all") list = list.filter(q => q.m === iqFilter.module);
-  if(iqFilter.prio   !== "all") list = list.filter(q => q.priority === iqFilter.prio);
-  if(iqFilter.src    !== "all") list = list.filter(q => q.source === iqFilter.src);
-  if(iqFilter.type   !== "all") list = list.filter(q => {
-    const t = TOPIC_BY_ID[q.topic];
-    return iqFilter.type === "theory" ? t.type === "theory" : t.type !== "theory";
-  });
-
-  let h = '<h1>Important Questions</h1><p class="lead">Questions grouped by module, topic and priority. '+
-    'Each carries an honest label: <b>From source material</b> means the question form appears in the lecture decks, the class notes or CIA-2. '+
-    '<b>Likely exam pattern</b> means it is a prediction based on teacher emphasis and the official focus list &mdash; useful, but not a guarantee.</p>';
-
-  h += '<div class="banner alert"><b>An honest caveat.</b> No previous-year MSE paper for this course was in the material provided, '+
-    'so nothing here is a past-paper question except where it is explicitly drawn from <b>CIA-2</b>, which was a real class assessment. '+
-    'Priorities are inferred from teacher emphasis, repetition across both divisions, and the official focus list &mdash; not from inside knowledge.</div>';
-
-  h += '<div class="toolbar">'+
-   '<label for="im">Module</label><select id="im" data-if="module">'+
-     '<option value="all"'+(iqFilter.module==="all"?" selected":"")+'>All</option>'+
-     MODULES.map(m=>'<option value="'+m.id+'"'+(iqFilter.module===m.id?" selected":"")+'>Module '+m.num+'</option>').join("")+'</select>'+
-   '<label for="ip">Priority</label><select id="ip" data-if="prio">'+
-     '<option value="all"'+(iqFilter.prio==="all"?" selected":"")+'>All</option>'+
-     '<option value="high"'+(iqFilter.prio==="high"?" selected":"")+'>High</option>'+
-     '<option value="medium"'+(iqFilter.prio==="medium"?" selected":"")+'>Medium</option></select>'+
-   '<label for="it">Type</label><select id="it" data-if="type">'+
-     '<option value="all"'+(iqFilter.type==="all"?" selected":"")+'>All</option>'+
-     '<option value="theory"'+(iqFilter.type==="theory"?" selected":"")+'>Theory</option>'+
-     '<option value="ps"'+(iqFilter.type==="ps"?" selected":"")+'>Problem-solving</option></select>'+
-   '<label for="is">Source</label><select id="is" data-if="src">'+
-     '<option value="all"'+(iqFilter.src==="all"?" selected":"")+'>All</option>'+
-     '<option value="source"'+(iqFilter.src==="source"?" selected":"")+'>From source material</option>'+
-     '<option value="predicted"'+(iqFilter.src==="predicted"?" selected":"")+'>Likely exam pattern</option></select>'+
-   '<span class="count">'+list.length+' of '+ALL_QUESTIONS.length+'</span></div>';
-
-  if(!list.length) return h + '<div class="empty">No questions match these filters.</div>';
-
-  ["high","medium","low"].forEach(pr => {
-    const sub = list.filter(q => q.priority === pr);
-    if(!sub.length) return;
-    const head = pr === "high" ? "🔴 High priority" : pr === "medium" ? "🟡 Medium priority" : "⚪ Lower priority";
-    const note = pr === "high" ? "Strongly supported by teacher emphasis, repetition, commonality between the two divisions, or direct appearance in CIA-2."
-              : pr === "medium" ? "Useful and examinable, but less central than the high-priority list." : "Worth knowing once the higher-priority material is secure.";
-    h += '<h2>'+head+' <span class="pill marks">'+sub.length+' questions</span></h2><p class="lead" style="margin-top:-.3rem">'+esc(note)+'</p>';
-    MODULES.forEach(m => {
-      const ms = sub.filter(q => q.m === m.id);
-      if(!ms.length) return;
-      h += '<h3>Module '+m.num+'</h3>';
-      const byTopic = {};
-      ms.forEach(q => { (byTopic[q.topic] = byTopic[q.topic] || []).push(q); });
-      Object.keys(byTopic).forEach(tid => {
-        const t = TOPIC_BY_ID[tid];
-        h += '<div class="card"><div class="badge-row" style="margin-bottom:7px">'+
-          '<b style="font-size:.93rem">'+t.title+'</b>'+classPill(t.classification)+typePill(t.type)+
-          '<span style="margin-left:auto"><button class="small" data-topic="'+tid+'">Open</button></span></div>';
-        byTopic[tid].forEach(q => {
-          h += '<div style="padding:7px 0;border-top:1px solid var(--border)">'+
-            '<div style="font-size:.9rem;font-weight:600">'+esc(q.q)+'</div>'+
-            '<div class="badge-row" style="margin-top:5px">'+pill("marks",q.marks+" marks")+diffPill(q.d)+srcPill(q.source)+'</div></div>';
-        });
-        h += '</div>';
-      });
-    });
-  });
-  return h;
-}
-
 /* ------------------------------- QUIZ ------------------------------- */
 /* quizState: {ids:[indexes], answers:[], checked:[], done:false} */
 let quizState = null;
@@ -5684,7 +5372,7 @@ function vQuiz(){
       wrong.forEach(x => {
         const t = TOPIC_BY_ID[x.q.t];
         if(!t || seen[t.id]) return; seen[t.id] = 1;
-        h += '<div class="card tight"><div class="badge-row" style="margin-bottom:5px">'+pill("high","Missed")+classPill(t.classification)+prioPill(t.priority)+
+        h += '<div class="card tight"><div class="badge-row" style="margin-bottom:5px">'+pill("high","Missed")+prioPill(t.priority)+
           '<span style="margin-left:auto"><button class="small" data-topic="'+t.id+'">Review</button></span></div>'+
           '<p style="margin:0;font-weight:650;font-size:.92rem">'+t.title+'</p>'+
           '<p class="muted" style="margin:3px 0 0">Recommended: recognition clues &rarr; solved example &rarr; practice questions.</p></div>';
@@ -5734,22 +5422,6 @@ function vQuiz(){
   return h;
 }
 
-/* -------------------------- QUICK REVISION -------------------------- */
-function vRevision(){
-  let h = '<h1>Quick Revision</h1><p class="lead">The 30&ndash;60 minute pass. Deliberately much shorter than the full notes &mdash; '+
-    'formulas, traps, comparison tables and the interpretation sentences that carry marks.</p>';
-  const done = REVISION.filter((r,i)=>P.revision["rev"+i]).length;
-  h += '<div class="card tight"><div class="badge-row"><b>Sections revised</b><span style="margin-left:auto;font-weight:800;color:var(--accent)">'+
-    done+' / '+REVISION.length+'</span></div>'+pbar(Math.round(done/REVISION.length*100), barClass(Math.round(done/REVISION.length*100)))+'</div>';
-  REVISION.forEach((r,i) => {
-    const id = "rev"+i, d = !!P.revision[id];
-    h += '<div class="card"><div class="badge-row" style="margin-bottom:8px"><h3 style="margin:0;flex:1">'+esc(r.h)+'</h3>'+
-      '<button class="small '+(d?"sel-good":"")+'" data-revdone="'+id+'">'+(d?"✓ Revised":"Mark revised")+'</button></div>'+
-      r.b+'</div>';
-  });
-  return h;
-}
-
 /* --------------------------- FORMULA SHEET -------------------------- */
 let fmFilter = "all";
 function vFormula(){
@@ -5770,40 +5442,6 @@ function vFormula(){
     });
     h += '</tbody></table></div>';
   });
-  return h;
-}
-
-/* ---------------------------- FLASHCARDS ---------------------------- */
-let fcState = {order:null, i:0, flipped:false, module:"all"};
-function fcDeck(){
-  let d = FLASHCARDS.map((c,i)=>i);
-  if(fcState.module !== "all") d = d.filter(i => FLASHCARDS[i].m === fcState.module);
-  return d;
-}
-function vFlashcards(){
-  const deck = fcState.order && fcState.order.length ? fcState.order : fcDeck();
-  if(!fcState.order || !fcState.order.length){ fcState.order = deck; fcState.i = 0; }
-  const card = FLASHCARDS[fcState.order[Math.min(fcState.i, fcState.order.length-1)]];
-  const t = TOPIC_BY_ID[card.t];
-
-  let h = '<h1>Flashcards</h1><p class="lead">'+FLASHCARDS.length+' cards on definitions, formulas, differences and thresholds. '+
-    'Click the card to flip it. Use these for recall, not for first learning.</p>';
-  h += '<div class="toolbar"><label for="fcm">Module</label><select id="fcm" data-fcm="1">'+
-    '<option value="all"'+(fcState.module==="all"?" selected":"")+'>All</option>'+
-    MODULES.map(m=>'<option value="'+m.id+'"'+(fcState.module===m.id?" selected":"")+'>Module '+m.num+'</option>').join("")+
-    '</select><span class="count">Card '+(fcState.i+1)+' of '+fcState.order.length+'</span></div>';
-
-  h += '<div class="fc" data-fcflip="1" role="button" tabindex="0" aria-label="Flashcard, click to flip">'+
-    '<div class="fq">'+esc(card.q)+'</div>'+
-    (fcState.flipped ? '<div class="fa">'+esc(card.a)+'</div>' : '<div class="hintline">Click to reveal the answer</div>')+
-    '</div>';
-  h += '<div class="btn-row"><button data-fcnav="prev">&larr; Previous</button>'+
-    '<button class="primary" data-fcflip="1">'+(fcState.flipped?"Hide answer":"Show answer")+'</button>'+
-    '<button data-fcnav="next">Next &rarr;</button>'+
-    '<button data-fcnav="shuffle">Shuffle</button>'+
-    (t ? '<button class="small" data-topic="'+t.id+'" style="margin-left:auto">Open topic: '+esc(clip(strip(t.title),28))+'</button>' : '')+
-    '</div>';
-  h += pbar(Math.round((fcState.i+1)/fcState.order.length*100));
   return h;
 }
 
@@ -5828,8 +5466,8 @@ function vCompare(){
    '<div class="stat"><div class="num" style="color:var(--good)">'+nCommon+'</div><div class="label">Common A+B</div><div class="sub">Highest priority</div></div>'+
    '<div class="stat"><div class="num" style="color:var(--accent)">'+nB+'</div><div class="label">COMP B only</div><div class="sub">Still your syllabus</div></div>'+
    '<div class="stat"><div class="num" style="color:var(--ink-mute)">'+nA+'</div><div class="label">COMP A only</div><div class="sub">Awareness</div></div>'+
-   '<div class="stat"><div class="num">'+commonProgress().pct+'%</div><div class="label">Your coverage</div>'+
-     '<div class="sub">of all '+TOPICS.length+' topics</div>'+pbar(commonProgress().pct, barClass(commonProgress().pct))+'</div>'+
+   '<div class="stat"><div class="num">'+overallProgress().pct+'%</div><div class="label">Your coverage</div>'+
+     '<div class="sub">across all '+TOPICS.length+' topics</div>'+pbar(overallProgress().pct, barClass(overallProgress().pct))+'</div>'+
    '</div>';
 
   h += '<div class="box tip"><h5>Your priority order</h5>'+
@@ -5872,94 +5510,64 @@ function vCompare(){
     'Treat the <b>common</b> column as reliable and the single-division columns as a guide rather than a guarantee.</div>';
   return h;
 }
-
 /* ----------------------------- EXAM MODE ---------------------------- */
+/* Deliberately contains nothing that exists elsewhere: no formulas, no
+   worked examples, no recognition trees. It is a prioritised running
+   order plus the timing rules. */
 function vExam(){
-  const hi = TOPICS.filter(t => t.classification === "common" && t.priority === "high");
-  const hib = TOPICS.filter(t => hasBExtras(t) && t.priority === "high");
-  const keyEx = ALL_EXAMPLES.filter(e => {
-    const t = TOPIC_BY_ID[e.topic];
-    return t.priority === "high" && t.classification === "common";
+  const ov = overallProgress();
+  const order = TOPICS.slice().sort((a,b) => {
+    const pr = t => (t.priority === "high" ? 0 : t.priority === "medium" ? 1 : 2);
+    const st = t => (topicStatus(t.id) === "done" ? 1 : 0);      /* unfinished first */
+    const tr = t => (trackOf(t) === "numerical" ? 0 : 1);        /* numericals first */
+    return st(a)-st(b) || pr(a)-pr(b) || tr(a)-tr(b);
   });
-  const hvQ = ALL_QUESTIONS.filter(q => q.priority === "high" && TOPIC_BY_ID[q.topic].classification === "common");
+  const left = order.filter(t => topicStatus(t.id) !== "done");
 
-  let h = '<h1>Exam Mode</h1><p class="lead">Only the highest-value material, in the order you should meet it if time is short. '+
-    'Everything below is either <b>Common A+B</b> or <b>COMP B high priority</b>. Nothing optional appears on this page.</p>';
+  let h = '<h1>Exam Mode</h1><p class="lead">A running order for the time you have left, and the timing rules. '+
+    'Formulas are in <b>Formulae</b>, recognition trees are in <b>Recognition</b>, and every worked question sits on its own topic page — '+
+    'none of it is repeated here.</p>';
 
-  h += '<div class="banner alert"><b>Time check.</b> '+EXAM.marks+' marks in '+EXAM.duration+' is roughly <b>3 minutes per mark</b>. '+
-    'A 10-mark question deserves about 30 minutes; a 5-mark part about 15. If you are 10 minutes into a 5-mark part, move on and come back.</div>';
+  h += '<div class="banner alert"><b>Timing.</b> '+EXAM.marks+' marks in '+EXAM.duration+' is about <b>3 minutes per mark</b>. '+
+    'A 10-mark question deserves roughly 30 minutes, a 5-mark part about 15. If you are 10 minutes into a 5-mark part, leave it and come back.</div>';
 
-  /* 1 priority topics */
-  h += '<h2>1 &middot; Common A+B, high priority — do these first</h2>';
-  h += '<div class="grid two">';
-  hi.forEach(t => {
-    h += '<div class="topic c-common"><div class="th"><div class="tt">'+statusDot(t.id)+' '+t.title+'</div></div>'+
-      '<div class="badge-row" style="margin-bottom:6px">'+typePill(t.type)+pill("marks",t.marks+" marks")+statusPill(t.id)+'</div>'+
-      '<p class="tsum" style="margin-bottom:6px">'+esc(t.summary)+'</p>'+
-      '<button class="small primary" data-topic="'+t.id+'">Open</button></div>';
-  });
-  h += '</div>';
+  h += '<div class="card tight"><div class="badge-row"><b>'+ov.done+' of '+ov.total+' questions worked</b>'+
+    '<span style="margin-left:auto;font-weight:800;color:var(--accent)">'+ov.pct+'%</span></div>'+pbar(ov.pct, barClass(ov.pct))+'</div>';
 
-  h += '<h2>2 &middot; Topics with COMP B-only content inside them</h2>'+
-    '<p class="lead" style="margin-top:-.3rem">These topics are common to both divisions, but each contains sub-topics that appear in the COMP B material only. '+
-    'Do not skip them just because they are not in the COMP A deck &mdash; COMP B is your syllabus.</p><div class="card">';
-  hib.forEach(t => {
-    h += '<div style="padding:8px 0;border-top:1px solid var(--border)">'+
-      '<div class="badge-row" style="margin-bottom:4px">'+statusPill(t.id)+
-      '<b style="font-size:.9rem">'+statusDot(t.id)+' '+t.title+'</b>'+
-      '<span style="margin-left:auto"><button class="small" data-topic="'+t.id+'">Open</button></span></div>'+
-      '<ul class="list" style="margin:.2rem 0 0">'+t.bExtras.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div>';
-  });
-  h += '</div>';
+  h += '<h2>Running order</h2><p class="lead" style="margin-top:-.4rem">'+
+    (left.length
+      ? 'Unfinished topics first, highest priority first, numericals ahead of theory — because numericals carry the working marks and take longer.'
+      : 'Everything is worked. Use this list to re-check the high-priority topics, then take the quiz.')+'</p>';
 
-  /* 3 formulas */
-  h += '<h2>3 &middot; The formulas you cannot look up</h2>'+REVISION[1].b;
-
-  /* 4 recognition */
-  h += '<h2>4 &middot; Recognition in one screen</h2>'+
-   '<div class="scroll"><table class="t"><thead><tr><th>If the question says…</th><th>It is asking for…</th></tr></thead><tbody>'+
-   '<tr><td>“most common value”, “which size to stock”</td><td>Mode</td></tr>'+
-   '<tr><td>extreme values present, or open-end classes</td><td>Median (and Bowley for skewness)</td></tr>'+
-   '<tr><td>“consistency”, two datasets with different means</td><td>Coefficient of variation</td></tr>'+
-   '<tr><td>“middle 50%”, “semi-interquartile”</td><td>Quartile deviation</td></tr>'+
-   '<tr><td>classes written 10–19, 20–29 (a gap)</td><td>Inclusive — apply the correction factor first</td></tr>'+
-   '<tr><td>two classes tie for maximum frequency</td><td>Bimodal — use Sk = 3(Mean − Median)/σ</td></tr>'+
-   '<tr><td>“compare the two coefficients”</td><td>Explain that Pearson sees the tails, Bowley sees only the middle 50%</td></tr>'+
-   '<tr><td>“peakedness”, “β₂”</td><td>Kurtosis: >3 lepto, =3 meso, &lt;3 platy</td></tr>'+
-   '<tr><td>two columns of paired data</td><td>Karl Pearson&rsquo;s r — pick the method from whether the means are whole</td></tr>'+
-   '<tr><td>“identify outliers”, “box plot”</td><td>Q₁ − 1.5×IQR and Q₃ + 1.5×IQR</td></tr>'+
-   '<tr><td>N and k given</td><td>k-fold: train = N − N/k</td></tr>'+
-   '<tr><td>original set + a bootstrap sample</td><td>OOB = what is missing from the sample</td></tr>'+
-   '<tr><td>past tense (“last quarter”, “why did”)</td><td>Data Analytics</td></tr>'+
-   '<tr><td>future tense (“will”, “predict”, “likely to”)</td><td>Data Science</td></tr>'+
-   '<tr><td>“no labels given”, “automatically groups”</td><td>Clustering, not classification</td></tr>'+
-   '<tr><td>records count vs attributes count</td><td>Volume vs Dimensionality</td></tr>'+
-   '</tbody></table></div>';
-
-  /* 5 essential solved examples */
-  h += '<h2>5 &middot; Essential solved examples</h2><p class="lead" style="margin-top:-.3rem">'+keyEx.length+' worked examples from the highest-priority common topics.</p>';
-  keyEx.forEach(e => { h += exampleCard(e, true); });
-
-  /* 6 mistakes */
-  h += '<h2>6 &middot; The mistakes that cost the most</h2>'+REVISION[2].b;
-
-  /* 7 interpretation */
-  h += '<h2>7 &middot; Interpretation sentences</h2>'+REVISION[4].b;
-
-  /* 8 comparison tables */
-  h += '<h2>8 &middot; Comparison tables to have ready</h2>'+REVISION[3].b;
-
-  /* 9 high value questions */
-  h += '<h2>9 &middot; High-value questions</h2><div class="card">';
-  const byT = {};
-  hvQ.forEach(q => { (byT[q.topic] = byT[q.topic] || []).push(q); });
-  Object.keys(byT).forEach(tid => {
-    h += '<div style="padding:8px 0;border-top:1px solid var(--border)"><b style="font-size:.9rem">'+TOPIC_BY_ID[tid].title+'</b><ul class="list" style="margin:.35rem 0 0">'+
-      byT[tid].map(q => '<li>'+esc(q.q)+' <span class="pill marks">'+q.marks+' marks</span> '+srcPill(q.source)+'</li>').join("")+'</ul></div>';
+  h += '<div class="card">';
+  order.forEach((t,i) => {
+    const tp = topicProgress(t);
+    h += '<div style="padding:9px 0'+(i?';border-top:1px solid var(--border)':'')+'">'+
+      '<div class="badge-row" style="margin-bottom:4px">'+
+        '<b style="font-size:.92rem;flex:1">'+statusDot(t.id)+' '+t.title+'</b>'+
+        prioPill(t.priority)+
+        '<span class="pill low">M'+t.m.slice(1)+' &middot; '+(trackOf(t)==="numerical"?"Numerical":"Theory")+'</span>'+
+        '<button class="small" data-topic="'+t.id+'">Open</button></div>'+
+      '<div class="qmeter">'+pbar(tp.pct, barClass(tp.pct))+'<span class="qn">'+tp.done+' / '+tp.total+'</span></div>'+
+      '</div>';
   });
   h += '</div>';
 
-  h += '<h2>10 &middot; The last thirty minutes</h2>'+REVISION[6].b;
+  h += '<h2>The last thirty minutes</h2><div class="card"><ol class="list" style="margin-bottom:0">'+
+   '<li>The Module 2 formula block — mean, median, mode, σ, both skewness formulas, r.</li>'+
+   '<li>The correction factor, and the fact that it applies whenever classes have a gap.</li>'+
+   '<li>Mean–median–mode ordering for positive and negative skew.</li>'+
+   '<li>β₂ thresholds: &gt; 3 leptokurtic, = 3 mesokurtic, &lt; 3 platykurtic.</li>'+
+   '<li>Box plot fences: Q₁ − 1.5×IQR and Q₃ + 1.5×IQR.</li>'+
+   '<li>k-fold: train = N − N/k.</li>'+
+   '<li>Data Science vs Data Analytics.</li>'+
+   '<li>The interpretation sentences — after every number, write what it means.</li>'+
+   '</ol></div>';
+
+  h += '<div class="btn-row" style="margin-top:14px">'+
+    '<button data-go="formula">Open Formulae</button>'+
+    '<button data-go="recognition">Open Recognition</button>'+
+    '<button data-go="quiz">Take the quiz</button></div>';
   return h;
 }
 
@@ -5969,21 +5577,24 @@ function searchIndex(){
   const idx = [];
   TOPICS.forEach(t => {
     const m = moduleOf(t.m);
-    idx.push({kind:"Topic", path:"Module "+m.num+" → "+strip(t.title), title:strip(t.title),
+    const base = "Module "+m.num+" → "+strip(t.title);
+    idx.push({kind:"Topic", path:base, title:strip(t.title),
       text:strip(t.whatIs)+" "+strip(t.concept)+" "+t.needToKnow.map(strip).join(" ")+" "+t.summary, go:{topic:t.id}});
-    (t.examples||[]).forEach(e => idx.push({kind:"Solved example", path:"Module "+m.num+" → "+strip(t.title)+" → Solved Examples",
+    (t.examples||[]).forEach(e => idx.push({kind:"Worked example", path:base+" → Practice",
       title:e.title, text:strip(e.q)+" "+e.category+" "+strip(e.answer), go:{topic:t.id, anchor:"ex_"+e.id}}));
-    (t.practice||[]).forEach(p => idx.push({kind:"Practice", path:"Module "+m.num+" → "+strip(t.title)+" → Practice",
+    (t.practice||[]).forEach(p => idx.push({kind:"Practice", path:base+" → Practice",
       title:clip(strip(p.q),80), text:strip(p.q)+" "+strip(p.a), go:{topic:t.id, anchor:"pr_"+p.id}}));
-    (t.questions||[]).forEach(q => idx.push({kind:"Important question", path:"Module "+m.num+" → "+strip(t.title),
+    (t.questions||[]).forEach(q => idx.push({kind:"Likely question", path:base,
       title:q.q, text:q.q, go:{topic:t.id}}));
-    idx.push({kind:"Recognition guide", path:"Recognition → "+strip(t.title), title:"How to recognise: "+strip(t.title),
-      text:t.recognition.clues.map(strip).join(" ")+" "+t.recognition.wording.join(" ")+" "+strip(t.recognition.trap), go:{view:"recognition"}});
+    idx.push({kind:"Recognition", path:base+" → Question recognition", title:"How to recognise: "+strip(t.title),
+      text:t.recognition.clues.map(strip).join(" ")+" "+t.recognition.wording.join(" ")+" "+strip(t.recognition.trap),
+      go:{topic:t.id}});
   });
   FORMULAE.forEach(g => g.items.forEach(it => idx.push({kind:"Formula", path:"Formulae → "+strip(g.g), title:strip(it.f),
     text:strip(it.f)+" "+strip(it.m)+" "+strip(it.w), go:{view:"formula"}})));
-  FLASHCARDS.forEach(c => idx.push({kind:"Flashcard", path:"Flashcards", title:c.q, text:c.q+" "+c.a, go:{view:"flashcards"}}));
-  QUIZ.forEach((q,i) => idx.push({kind:"Quiz question", path:"Quiz", title:q.q, text:q.q+" "+q.e, go:{view:"quiz"}}));
+  REVIEW.forEach(r => idx.push({kind:"Quick Review", path:"Module "+r.m.slice(1)+" → Quick Review", title:strip(r.h),
+    text:strip(r.b), go:{view:r.m, sub:"review"}}));
+  QUIZ.forEach(q => idx.push({kind:"Quiz question", path:"Quiz", title:q.q, text:q.q+" "+q.e, go:{view:"quiz"}}));
   AB_MAP.rows.forEach(r => idx.push({kind:"A vs B", path:"COMP A vs COMP B", title:strip(r.topic),
     text:strip(r.topic)+" "+strip(r.note), go:{view:"compare"}}));
   return idx;
@@ -5999,7 +5610,7 @@ function highlight(text, q){
 }
 function vSearch(){
   if(!SEARCH_INDEX) SEARCH_INDEX = searchIndex();
-  let h = '<h1>Search</h1><p class="lead">Searches topics, solved examples, practice questions, recognition guides, formulas, flashcards, quiz questions and the A-vs-B map.</p>';
+  let h = '<h1>Search</h1><p class="lead">Searches topics, worked examples, practice questions, recognition clues, formulas and quick review.</p>';
   h += '<div class="toolbar"><input type="search" id="searchInput" placeholder="Search everything…" value="'+esc(searchQ)+'" '+
     'style="flex:1;min-width:220px;font-size:.95rem;padding:8px 11px" autocomplete="off"><span class="count" id="searchCount"></span></div>';
   h += '<div id="searchResults"></div>';
@@ -6028,12 +5639,13 @@ function renderSearchResults(){
   if(!scored.length){ box.innerHTML = '<div class="empty">Nothing found for &ldquo;'+esc(searchQ)+'&rdquo;.</div>'; return; }
   box.innerHTML = scored.slice(0,60).map(s => {
     const it = s.it;
-    const snip = clip(it.text, 190);
-    const go = it.go.topic ? ' data-topic="'+it.go.topic+'"'+(it.go.anchor?' data-anchor="'+it.go.anchor+'"':'') : ' data-go="'+it.go.view+'"';
+    const go = it.go.topic
+      ? ' data-topic="'+it.go.topic+'"'+(it.go.anchor?' data-anchor="'+it.go.anchor+'"':'')
+      : ' data-go="'+it.go.view+'"'+(it.go.sub?' data-gosub="'+it.go.sub+'"':'');
     return '<div class="sr-item"'+go+' role="button" tabindex="0">'+
       '<div class="sr-path">'+pill("marks",it.kind)+' '+esc(it.path)+'</div>'+
       '<div class="sr-title">'+highlight(it.title, searchQ)+'</div>'+
-      '<div class="sr-snip">'+highlight(snip, searchQ)+'</div></div>';
+      '<div class="sr-snip">'+highlight(clip(it.text,190), searchQ)+'</div></div>';
   }).join("");
 }
 
@@ -6042,24 +5654,24 @@ function vSettings(){
   const ov = overallProgress(), qz = quizOverall();
   let h = '<h1>Settings &amp; Progress</h1>';
   h += '<div class="banner info"><b>Privacy.</b> Your study progress is stored locally in your browser using <code>localStorage</code>. '+
-    'This website does not require an account and does not send your study progress to a server. '+
-    'Everyone who opens this page sees the same study material, but each browser keeps its own independent progress.</div>';
+    'This site does not require an account and does not send your progress to a server. '+
+    'Everyone who opens the page sees the same material; each browser keeps its own independent progress.</div>';
 
-  h += '<h2>Your progress summary</h2><div class="scroll"><table class="t"><tbody>'+
-   '<tr><td><b>COMP B readiness</b></td><td>'+ov.pct+'% &mdash; '+ov.done+' complete, '+ov.prog+' in progress, '+ov.none+' not started (of '+ov.total+')</td></tr>'+
-   '<tr><td><b>Common A+B</b></td><td>'+commonProgress().pct+'%</td></tr>'+
-   '<tr><td><b>Topics with COMP B-only extras</b></td><td>'+bOnlyProgress().pct+'% ('+bExtraTopics().length+' topics, '+countBExtras()+' extra sub-topics)</td></tr>'+
-   '<tr><td><b>Solved examples reviewed</b></td><td>'+examplesProgress().done+' / '+examplesProgress().total+'</td></tr>'+
-   '<tr><td><b>Practice attempted</b></td><td>'+practiceProgress().done+' / '+practiceProgress().total+'</td></tr>'+
+  h += '<h2>Your progress</h2><div class="scroll"><table class="t"><tbody>'+
+   '<tr><td><b>Overall</b></td><td>'+ov.pct+'% &mdash; '+ov.done+' of '+ov.total+' questions, '+ov.topicsDone+' of '+ov.topics+' topics finished</td></tr>'+
+   '<tr><td><b>Numericals</b></td><td>'+trackProgress("numerical").pct+'%</td></tr>'+
+   '<tr><td><b>Theory</b></td><td>'+trackProgress("theory").pct+'%</td></tr>'+
+   MODULES.map(m => '<tr><td><b>Module '+m.num+'</b></td><td>'+moduleProgress(m.id).pct+'%</td></tr>').join("")+
    '<tr><td><b>Quiz accuracy</b></td><td>'+(qz.pct===null?"No quiz taken yet":qz.pct+"% ("+qz.c+" of "+qz.n+")")+'</td></tr>'+
    '<tr><td><b>Weak topics</b></td><td>'+weakTopics().length+'</td></tr>'+
    '<tr><td><b>First visit</b></td><td>'+esc(P.firstVisit||"—")+'</td></tr>'+
    '<tr><td><b>Study streak</b></td><td>'+(P.streak||0)+' day'+((P.streak||0)===1?"":"s")+'</td></tr>'+
-   '</tbody></table></div>';
+   '</tbody></table></div>'+
+   '<p class="muted">Progress is calculated from the questions you have marked done — never from opening a page.</p>';
 
   h += '<h2>Transfer your progress</h2><div class="card">'+
-   '<p style="margin-top:0">Export writes a JSON file containing only your progress &mdash; completion states, quiz scores and review flags. '+
-   'Import it in another browser or on another device to carry your progress across. Imported files are validated first, so a malformed file cannot break the app.</p>'+
+   '<p style="margin-top:0">Export writes a JSON file containing only your progress. Import it in another browser or on another device to carry it across. '+
+   'Imported files are validated first, so a malformed file cannot break the app.</p>'+
    '<div class="btn-row"><button class="primary" id="exportBtn">Export progress</button>'+
    '<button id="importBtn">Import progress</button>'+
    '<input type="file" id="importFile" accept="application/json,.json" hidden></div></div>';
@@ -6069,32 +5681,28 @@ function vSettings(){
    '</div></div>';
 
   h += '<h2>Reset</h2><div class="card" style="border-left:4px solid var(--bad)">'+
-   '<p style="margin-top:0">This clears your completion states, quiz scores, reviewed examples and attempted practice <b>in this browser only</b>. '+
-   'The study material is untouched, and nobody else&rsquo;s progress is affected. It cannot be undone &mdash; export first if you may want it back.</p>'+
+   '<p style="margin-top:0">Clears your marked questions and quiz scores <b>in this browser only</b>. '+
+   'The study material is untouched and nobody else is affected. This cannot be undone &mdash; export first if you may want it back.</p>'+
    '<button class="sel-bad" id="resetBtn">Reset my progress</button></div>';
 
-  h += '<h2>About this site</h2><div class="card"><p style="margin-top:0">Built from the material provided for '+EXAM.code+' '+EXAM.title+':</p>'+
-   '<ul class="list"><li>The official syllabus and the MSE syllabus sheet (scope and focus list)</li>'+
-   '<li>The COMP B Module 1 and Module 2 lecture decks</li>'+
-   '<li>The COMP A Module 1 and Module 2 decks, plus the Central Tendency deck &mdash; used for the comparison map</li>'+
-   '<li>The teacher&rsquo;s formula sheet</li>'+
-   '<li>The handwritten class notes</li>'+
-   '<li>CIA-2, a real class assessment</li></ul>'+
-   '<p class="muted" style="margin-bottom:0">Where a question is a prediction rather than something taken from the source material, it is labelled '+
-   '<span class="pill pred">Likely exam pattern</span> rather than presented as a past paper. No previous-year MSE paper was available.</p></div>';
+  h += '<h2>About</h2><div class="card"><p style="margin-top:0">'+EXAM.code+' '+EXAM.title+' &middot; MSE &middot; '+
+   EXAM.marks+' marks &middot; '+EXAM.duration+' &middot; '+EXAM.scope+'. Primary class: '+EXAM.primaryClass+'.</p>'+
+   '<p>Built from the official syllabus and MSE scope sheet, the COMP B and COMP A lecture decks, the teacher&rsquo;s formula sheet, '+
+   'the handwritten class notes, and CIA&#8209;2.</p>'+
+   '<p class="muted" style="margin-bottom:0">Questions taken from that material are labelled '+
+   '<span class="pill src">From source material</span>; predictions are labelled '+
+   '<span class="pill pred">Likely exam pattern</span>. No previous-year MSE paper was available, and nothing here claims to be one.</p></div>';
   return h;
 }
-
 /* ------------------------------ ROUTER ------------------------------ */
 let view = "dashboard";
 let currentTopic = null;
 let pendingAnchor = null;
 
 const NAV_FOR = {
-  dashboard:"dashboard", modules:"modules", topic:"modules", examples:"examples",
-  recognition:"recognition", practice:"practice", important:"important", quiz:"quiz",
-  revision:"revision", formula:"formula", flashcards:"flashcards", compare:"compare",
-  exam:"exam", search:null, settings:null
+  dashboard:"dashboard", m1:"m1", m2:"m2", topic:null,
+  recognition:"recognition", quiz:"quiz", formula:"formula",
+  exam:"exam", compare:"compare", search:null, settings:null
 };
 
 function render(){
@@ -6102,16 +5710,12 @@ function render(){
   let h = "";
   switch(view){
     case "dashboard":   h = vDashboard(); break;
-    case "modules":     h = vModules(); break;
+    case "m1":          h = vModule("m1"); break;
+    case "m2":          h = vModule("m2"); break;
     case "topic":       h = vTopic(currentTopic); break;
-    case "examples":    h = vExamples(); break;
     case "recognition": h = vRecognition(); break;
-    case "practice":    h = vPractice(); break;
-    case "important":   h = vImportant(); break;
     case "quiz":        h = vQuiz(); break;
-    case "revision":    h = vRevision(); break;
     case "formula":     h = vFormula(); break;
-    case "flashcards":  h = vFlashcards(); break;
     case "compare":     h = vCompare(); break;
     case "exam":        h = vExam(); break;
     case "search":      h = vSearch(); break;
@@ -6119,7 +5723,8 @@ function render(){
     default:            h = vDashboard();
   }
   app.innerHTML = h;
-  const active = NAV_FOR[view];
+  let active = NAV_FOR[view];
+  if(view === "topic" && currentTopic && TOPIC_BY_ID[currentTopic]) active = TOPIC_BY_ID[currentTopic].m;
   $$("#mainNav button").forEach(b => b.classList.toggle("active", b.dataset.go === active));
   if(view === "search"){
     const inp = $("#searchInput");
@@ -6141,50 +5746,46 @@ function goto(v, opts){
   render();
 }
 function openTopic(id, anchor){
-  if(!TOPIC_BY_ID[id]) return;
+  const t = TOPIC_BY_ID[id];
+  if(!t) return;
   if(anchor) revealed[anchor] = true;
   goto("topic", {topic:id, anchor:anchor});
 }
+/* re-render without losing the reader's place */
+function rerender(){ const y = window.scrollY; render(); window.scrollTo(0, y); }
 
 /* ------------------------------ EVENTS ------------------------------ */
 document.addEventListener("click", function(e){
-  const el = e.target.closest("button, a, .sr-item, .fc");
+  const el = e.target.closest("button, a, .sr-item");
   if(!el) return;
   const d = el.dataset;
 
-  if(d.go){ e.preventDefault(); goto(d.go); return; }
-  if(d.module){ modFilters.module = d.module; goto("modules"); return; }
   if(d.topic){ openTopic(d.topic, d.anchor); return; }
+  if(d.sub && d.mid){ subTab[d.mid] = d.sub; if(view === d.mid) rerender(); else goto(d.mid); return; }
+  if(d.go){
+    e.preventDefault();
+    if(d.gosub && subTab[d.go] !== undefined) subTab[d.go] = d.gosub;
+    goto(d.go);
+    return;
+  }
 
-  /* reveal toggles */
+  /* reveal toggles (solutions, hints, answer skeletons) */
   if(d.reveal){
     const id = d.reveal;
     if(revealed[id]) delete revealed[id]; else revealed[id] = true;
-    const y = window.scrollY;
-    render();
-    window.scrollTo(0, y);
+    rerender();
     return;
   }
-  /* topic status */
-  if(d.status && d.id){
-    if(d.status === "none") delete P.topics[d.id]; else P.topics[d.id] = d.status;
-    P.lastStudied = d.id; save();
-    const y = window.scrollY; render(); window.scrollTo(0, y);
-    toast(d.status === "done" ? "Marked complete." : d.status === "progress" ? "Marked in progress." : "Marked not started.");
-    return;
-  }
-  /* example / practice / revision flags */
+  /* question completion — the only thing that moves progress */
   if(d.exdone){
-    if(P.examples[d.exdone]) delete P.examples[d.exdone]; else P.examples[d.exdone] = true;
-    save(); const y = window.scrollY; render(); window.scrollTo(0, y); return;
+    if(P.examples[d.exdone]) delete P.examples[d.exdone];
+    else { P.examples[d.exdone] = true; if(currentTopic) P.lastStudied = currentTopic; }
+    save(); rerender(); return;
   }
   if(d.prdone){
-    if(P.practice[d.prdone]) delete P.practice[d.prdone]; else P.practice[d.prdone] = true;
-    save(); const y = window.scrollY; render(); window.scrollTo(0, y); return;
-  }
-  if(d.revdone){
-    if(P.revision[d.revdone]) delete P.revision[d.revdone]; else P.revision[d.revdone] = true;
-    save(); const y = window.scrollY; render(); window.scrollTo(0, y); return;
+    if(P.practice[d.prdone]) delete P.practice[d.prdone];
+    else { P.practice[d.prdone] = true; if(currentTopic) P.lastStudied = currentTopic; }
+    save(); rerender(); return;
   }
 
   /* quiz */
@@ -6192,10 +5793,7 @@ document.addEventListener("click", function(e){
   if(d.quizreset){ quizState = null; goto("quiz"); return; }
   if(d.qopt !== undefined && d.qi !== undefined){
     const i = +d.qi;
-    if(quizState && !quizState.checked[i]){
-      quizState.answers[i] = +d.qopt;
-      const y = window.scrollY; render(); window.scrollTo(0, y);
-    }
+    if(quizState && !quizState.checked[i]){ quizState.answers[i] = +d.qopt; rerender(); }
     return;
   }
   if(d.qcheck !== undefined){
@@ -6208,30 +5806,13 @@ document.addEventListener("click", function(e){
     const correct = quizState.answers[i] === q.a;
     const bump = (obj, k) => { const v = obj[k] || {c:0,n:0}; v.n++; if(correct) v.c++; obj[k] = v; };
     bump(P.quizTopic, q.t); bump(P.quizStage, q.stage);
-    save();
-    const y = window.scrollY; render(); window.scrollTo(0, y);
+    save(); rerender();
     return;
   }
   if(d.quizfinish){ if(quizState){ quizState.done = true; save(); goto("quiz"); } return; }
 
-  /* flashcards */
-  if(d.fcflip){ fcState.flipped = !fcState.flipped; const y = window.scrollY; render(); window.scrollTo(0, y); return; }
-  if(d.fcnav){
-    const n = fcState.order.length;
-    if(d.fcnav === "next") fcState.i = (fcState.i + 1) % n;
-    else if(d.fcnav === "prev") fcState.i = (fcState.i - 1 + n) % n;
-    else if(d.fcnav === "shuffle"){
-      const a = fcState.order.slice();
-      for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
-      fcState.order = a; fcState.i = 0; toast("Deck shuffled.");
-    }
-    fcState.flipped = false;
-    const y = window.scrollY; render(); window.scrollTo(0, y);
-    return;
-  }
-
   /* theme */
-  if(d.theme){ setTheme(d.theme); const y = window.scrollY; render(); window.scrollTo(0, y); return; }
+  if(d.theme){ setTheme(d.theme); rerender(); return; }
 
   /* topbar icons */
   if(el.id === "searchBtn"){ goto("search"); return; }
@@ -6240,7 +5821,7 @@ document.addEventListener("click", function(e){
     const cur = document.documentElement.getAttribute("data-theme");
     const isDark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     setTheme(isDark ? "light" : "dark");
-    const y = window.scrollY; render(); window.scrollTo(0, y);
+    rerender();
     return;
   }
   /* settings buttons */
@@ -6249,30 +5830,20 @@ document.addEventListener("click", function(e){
   if(el.id === "resetBtn"){ askReset(); return; }
 });
 
-/* keyboard: Enter/Space on search results and flashcards */
 document.addEventListener("keydown", function(e){
   if(e.key === "/" && view !== "search" && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){
     e.preventDefault(); goto("search"); return;
   }
-  if((e.key === "Enter" || e.key === " ")){
-    const el = e.target.closest(".sr-item, .fc");
+  if(e.key === "Enter" || e.key === " "){
+    const el = e.target.closest(".sr-item");
     if(el){ e.preventDefault(); el.click(); }
-  }
-  if(view === "flashcards" && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){
-    if(e.key === "ArrowRight"){ e.preventDefault(); document.querySelector('[data-fcnav="next"]').click(); }
-    if(e.key === "ArrowLeft"){ e.preventDefault(); document.querySelector('[data-fcnav="prev"]').click(); }
   }
 });
 
 document.addEventListener("change", function(e){
   const d = e.target.dataset;
-  if(d.mf){ modFilters[d.mf] = e.target.value; render(); return; }
-  if(d.pf){ prFilter[d.pf] = e.target.value; render(); return; }
-  if(d.if){ iqFilter[d.if] = e.target.value; render(); return; }
-  if(d.exf){ exFilter[d.exf] = e.target.value; render(); return; }
   if(d.fmf !== undefined){ fmFilter = e.target.value; render(); return; }
   if(d.qs){ quizSetup[d.qs] = d.qs === "n" ? +e.target.value : e.target.value; render(); return; }
-  if(d.fcm){ fcState.module = e.target.value; fcState.order = fcDeck(); fcState.i = 0; fcState.flipped = false; render(); return; }
   if(e.target.id === "importFile" && e.target.files && e.target.files[0]){
     doImport(e.target.files[0]); e.target.value = "";
   }
@@ -6285,7 +5856,7 @@ document.addEventListener("input", function(e){
 function doExport(){
   try{
     const payload = Object.assign({}, P, {
-      _app:"ads-study-hub", _course:EXAM.code, _exportedAt:new Date().toISOString()
+      _app:"ads-study-guide", _course:EXAM.code, _exportedAt:new Date().toISOString()
     });
     const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
     const url = URL.createObjectURL(blob), a = document.createElement("a");
@@ -6310,7 +5881,7 @@ function doImport(file){
   r.readAsText(file);
 }
 function askReset(){
-  const ok = confirm("Reset all your ADS study progress?\n\nThis clears completion states, quiz scores, reviewed examples and attempted practice in THIS BROWSER only.\n\nThe study material is not affected, and nobody else's progress is affected.\n\nThis cannot be undone. Export first if you may want it back.");
+  const ok = confirm("Reset all your ADS study progress?\n\nThis clears every question you have marked done and all quiz scores, in THIS BROWSER only.\n\nThe study material is not affected, and nobody else's progress is affected.\n\nThis cannot be undone. Export first if you may want it back.");
   if(!ok) return;
   try{ localStorage.removeItem(KEY); }catch(e){}
   P = blankProgress(); P.firstVisit = today();

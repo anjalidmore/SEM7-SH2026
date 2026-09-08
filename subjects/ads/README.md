@@ -1,34 +1,64 @@
-# ADS Study Hub — CEPEC7041 Applied Data Science
+# ADS MSE Study Guide — CEPEC7041 Applied Data Science
 
 Mid-semester exam preparation for **CEPEC7041 Applied Data Science**, built for **COMP B**.
-
-**Scope:** Module 1 and Module 2, all topics · 30 marks · 1.5 hours.
+Scope: Module 1 and Module 2, all topics · 30 marks · 1.5 hours.
 
 Open `index.html` in any browser, or publish it with GitHub Pages. It is a single
 self-contained static file — no backend, no build step, no dependencies.
 
 ---
 
-## What it is
+## How the site is organised
 
-A study system rather than a set of notes. Each of the 24 topics follows the same
-structure: what it is → what you need to know → **how to recognise the question** →
-how to approach it → concept → solved examples → exam answer at three lengths →
-common mistakes → practice → mark complete.
+Eight tabs, in a nav bar that stays pinned while you scroll. Everything lives in one of
+them, and nothing is repeated across them.
+
+| Tab | What is in it |
+|---|---|
+| **Dashboard** | Overall / numericals / theory readiness, per-module readiness, and one "study next" suggestion |
+| **Module 1** | Sub-tabs: Theory · Numericals · Quick Review |
+| **Module 2** | Sub-tabs: Theory · Numericals · Quick Review |
+| **Recognition** | The three-stage habit, three decision trees, and a clue → topic lookup table |
+| **Quiz** | 68 questions with explanations, feeding weak-topic detection |
+| **Formulae** | 61 formulas in 10 groups, each with what it means and when to use it |
+| **Exam Mode** | Timing rules and a prioritised running order — no formulas or worked examples, they already exist elsewhere |
+| **A vs B** | The one place COMP A / COMP B differences are discussed |
+
+Search (`/`) and Settings sit in the top-right icons.
+
+### Inside a topic
+
+Every topic page runs in the same order:
+
+1. **Concept** — what it is, how it works, what you must be able to do
+2. **How to write the answer** — at 2–3, 5 and 10 marks
+3. **Common mistakes**
+4. **Practice** — worked examples and practice questions together, *every solution hidden
+   until you ask for it*, so the worked examples double as practice
+5. **Question recognition** — clues, exam wording, the trap
+6. **Likely exam questions**
+
+Topics carry a single **priority** tag, derived from the learning outcomes. There are no
+per-topic marks tags, no A/B tags, and no separate Practice, Important-Questions,
+Flashcards or Revision tabs — the questions are in the modules, and priority already says
+what matters.
+
+---
+
+## Contents
 
 | | |
 |---|---|
-| Topics | 24 (8 in Module 1, 16 in Module 2) |
-| Solved examples | 36, each with recognition clues, steps, and the trap |
+| Topics | 24 — 8 in Module 1, 16 in Module 2 |
+| Split by track | 14 numerical, 10 theory |
+| Worked examples | 36, each with recognition clues, steps and the trap |
 | Practice questions | 79, with hints and hidden solutions |
-| Important questions | 95, labelled by source vs prediction |
-| Quiz questions | 68, tagged by skill and topic |
-| Flashcards | 45 |
-| Formulas | 61, each linked to its topic |
-
-Sections: Dashboard · Modules · Solved Examples · Question Recognition · Practice ·
-Important Questions · Quiz · Quick Revision · Formulae · Flashcards · COMP A vs COMP B ·
-Exam Mode · Search · Settings.
+| **Total markable questions** | **115** |
+| Likely exam questions | 95 — 88 from the source material, 7 labelled predictions |
+| Quiz questions | 68 |
+| Formulas | 61 |
+| Quick-review cards | 8 |
+| Learning outcomes covered | 10 of 10 |
 
 ---
 
@@ -45,47 +75,51 @@ Everything is traceable to the uploaded material:
 - `CIA-2.pdf` — a real class assessment, worked in full
 
 **Honesty about predictions.** No previous-year MSE paper was in the material provided.
-Questions taken from the source material are labelled *From source material*; everything
-else is labelled *Likely exam pattern*. Nothing is presented as a guaranteed question.
+Questions taken from the source material are labelled *From source material*; the seven
+that are not are labelled *Likely exam pattern*. Nothing is presented as a guaranteed or
+previous-year question.
 
 ---
 
 ## COMP A vs COMP B
 
 Both divisions follow the same syllabus, so at **topic** level the coverage is identical —
-all 24 topics are taught to COMP B, and 24 of 24 also appear in the COMP A material.
-
-The real differences are **inside** topics, at sub-topic level. The site records
-**14 sub-topics that appear in the COMP B material only** (weighted mean, coefficient of
+all 24 topics appear in both sets of material. The real differences are *inside* topics:
+**14 sub-topics appear in the COMP B material only** (weighted mean, coefficient of
 variation, the normal distribution equation and empirical rule, CRISP-DM/SEMMA/DMAIC/KDD,
-stratified k-fold, leave-P-out, ensemble modeling, Lorenz curve, and others), and
+stratified k-fold, leave-P-out, ensemble modeling, Lorenz curve, and others), and there are
 **4 places where COMP A goes further** (the Apollo Hospital case study, validation-split
 numericals, the Out-of-Bag term, and heavier coverage of ogives).
 
-Each is called out on its own topic page, so you never have to guess which half of a
-topic is which. The **COMP A vs COMP B** page has the full map.
+This is confined to the **A vs B** tab. It does not clutter the rest of the site.
 
 ---
 
 ## Progress tracking
 
-Progress is stored in your browser's `localStorage` under `ads_study_hub_cepec7041_v1`.
+Progress is stored in your browser's `localStorage` under `ads_study_guide_cepec7041_v2`.
 
 - **Shared by everyone:** all study content, questions, examples, quizzes.
-- **Private to each browser:** completion states, quiz scores, reviewed examples,
-  attempted practice, weak-topic detection, streak.
+- **Private to each browser:** which questions you have marked done, quiz scores,
+  weak-topic detection, streak.
 
-Nothing is sent to a server and no account is needed. A fresh browser starts at 0% —
-no progress is hard-coded, and every percentage is computed at render time.
-
-Opening a page never marks it complete. Only the explicit ☐ / ◐ / ✓ buttons do.
+**Progress is derived from individual questions, never from topics.** Marking a worked
+example or a practice question done is the only thing that moves a percentage; a topic
+counts as finished when all of its questions are marked. Opening a page never marks
+anything. Every percentage — overall, numericals, theory, per module, per topic — is
+computed at render time from those marks, so a fresh browser starts at 0% and no progress
+value is hard-coded anywhere.
 
 **Export / Import** (Settings) moves progress between browsers or devices as a JSON file.
 Imported files are validated field-by-field before being applied, so a malformed or
-tampered file cannot corrupt the app — unknown topic ids, invalid statuses and impossible
-quiz scores are all discarded.
+tampered file cannot corrupt the app — unknown ids and impossible quiz scores are discarded.
 
-**Reset** clears progress in the current browser only.
+**Reset** clears progress in the current browser only. The material is untouched and no
+one else is affected.
+
+Nothing is sent to a server and no account is needed. If `localStorage` is unavailable
+(private mode, strict `file://`), the site still renders and works — progress simply is
+not saved.
 
 ---
 
@@ -93,15 +127,15 @@ quiz scores are all discarded.
 
 ```
 git add index.html README.md
-git commit -m "ADS study hub"
+git commit -m "ADS MSE study guide"
 git push
 ```
 
 Then in the repository: **Settings → Pages → Source: deploy from branch → `main` / root**.
 
-The site will be served at `https://<username>.github.io/<repo>/`. Because everything
-lives in `index.html`, no further configuration is required, and it works equally well
-opened directly from disk with `file://`.
+The site is served at `https://<username>.github.io/<repo>/`. Because everything lives in
+`index.html`, no further configuration is required, and it works equally well opened
+directly from disk.
 
 ---
 
@@ -110,21 +144,23 @@ opened directly from disk with `file://`.
 | Key | Action |
 |---|---|
 | `/` | Jump to search |
-| `←` `→` | Previous / next flashcard |
-| `Enter` / `Space` | Activate a focused search result or flashcard |
+| `Enter` / `Space` | Open the focused search result |
 
 ---
 
 ## Verification
 
-The build was checked before release:
-
 - **56 numerical results** — every mean, median, mode, quartile, standard deviation,
   skewness coefficient, kurtosis and correlation in the site — were recomputed
-  independently and matched.
-- All 14 views and all 24 topic pages render without console errors.
-- Progress persistence, export/import validation and reset were tested through the UI.
-- Five malformed import payloads were rejected safely.
+  independently in Python and matched.
+- All 11 views, both module pages with all three sub-tabs each, and all 24 topic pages
+  render without console errors.
+- Progress was driven through the UI: marking a question raises every affected percentage,
+  unmarking it returns them exactly, and reset returns the browser to 0%.
+- Export/import validation was tested with nine payloads: unrelated JSON, arrays, strings,
+  numbers and empty objects are rejected outright; recognised files with unknown ids,
+  impossible quiz scores or bad field types are accepted with those fields discarded.
+- The site was re-tested with `localStorage` throwing on access; it still renders.
 - All 10 learning outcomes have at least one topic covering them.
 
 ## A note on the source material
