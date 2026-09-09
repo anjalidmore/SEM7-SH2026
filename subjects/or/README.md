@@ -13,35 +13,38 @@ behaves identically opened from disk (`file://`) and published on GitHub Pages.
 
 ## Read this first
 
-**Exam tomorrow. Open `index.html` → the Plan tab.** It has the evidence, the module
-priority, the LO table, the hour-by-hour schedule and the last-30-minutes checklist.
+**Open `index.html` → the Plan tab.**
 
-Resources are named `<module>.<nn> [LOs] <description>` — see `_LO-MAP.md`. The 78 pages of
-handwritten notes are in `_NOTES (highest priority)`.
+### The paper structure (teacher-stated) now drives everything
 
-### The finding that shapes the plan
-
-A third notes file (`N3`, 21 pp) devotes **8 pages to Module 2** and teaches three things no
-lecture deck mentions: **Kendall's notation (a/b/c):(d/e)**, **transient vs steady state**, and
-the full probability set. Topics in the notes but not the slides are the strongest
-examinability signal in the folder, so Module 2 runs **first** and gets **60 minutes**.
-
-It is still not the biggest block: Module 1 has 62 notes pages against Module 2's 8, and the
-past IA paper has no queuing question at all.
-
-| | Module 1 | Module 2 | Module 5 |
+| Question | From | Type | Marks per question |
 |---|---|---|---|
-| Notes pages | 62 | **8** | 29 |
-| Past IA paper marks | up to 14/20 | **0** | up to 6/20 |
-| Expected MSE marks | **14–17** | **5–8** | **7–9** |
-| Study time allocated | 130 min | 60 min | 55 min |
+| **Q1** | **Module 1 only** | **Theory only.** No numericals at all. | **2** |
+| **Q2** | Module 2 — Queuing | Numericals + theory, same format as the past IA paper | **4** |
+| **Q3** | Module 5 — Game Theory | Numericals + theory, same format as the past IA paper | **5** |
 
-### Still missing from the syllabus — no material anywhere
+**Every Module 1 numerical is now lowest priority** — simplex, Big M, two-phase, duality,
+graphical, formulation, transportation, MODI, Hungarian, sequencing, TSP, integer programming.
+They all still have full topic pages; they are ranked, not skipped.
 
-Revised simplex · symmetric/asymmetric dual · weak duality theorem · complementary slackness
-theorem · main duality theorem (shown numerically, never stated) · **sensitivity analysis
-(LO2)** · routing problem · decomposition algorithms. Partially covered: dual simplex (only
-inside Gomory's algorithm), multi-server queuing and constant-rate service (named, no formulas).
+**Q1 comes from the question bank.** All 11 questions in `or_important_questions.docx` are
+written up with 2-mark model answers on one page — the highest-value page on the site. Its
+three repeated themes (managerial decision-making ×3, objective vs constraints ×2, feasible vs
+optimal ×2) cover 7 of the 11 and all three theory parts of the past IA paper.
+
+### One thing to confirm
+
+You wrote "MOD 2 AND 3 have numericals + theory". I read that as **Questions 2 and 3**, drawn
+from **Modules 2 and 5** — it parallels "Mod 1 for Question 1", and Modules 1/2/5 are your
+stated scope. If you literally meant syllabus **Module 3 (Simulation / Monte-Carlo)**, there is
+**no material for it anywhere in this folder**. Say so and I will flag it rather than let you
+walk in unprepared.
+
+### Full resource coverage
+
+Every deck in the folder now has at least one topic page, including the seven that previously
+had none (transportation, stepping stone, MODI, Hungarian, sequencing, TSP, integer
+programming). Low-priority material is marked as such rather than omitted.
 
 ## Tab map
 
@@ -58,7 +61,7 @@ Dashboard | Plan | Module 1 | Module 2 | Module 5 | Recognition | Quiz | Formula
 | **Module 2** | Queuing Models — 5 topics, 19 markable questions, 23 quiz questions. |
 | **Module 5** | Game Theory. Sub-tabs: Numericals · Theory · Quick Review. |
 | **Recognition** | The read → classify → first move habit, four decision trees, and a clue → topic lookup per module. The index, not the content. |
-| **Quiz** | 72 single-answer MCQs, each tagged with a topic and one of four stages. |
+| **Quiz** | 158 MCQs in 8 sets of 20. A set is answered in full, submitted once, and scored out of 20. Reset button clears all quiz data. |
 | **Formulae** | 43 entries in 10 groups: the formula, what it means in words, and when you use it. |
 | **Exam Mode** | Time budget, running order, and the last-thirty-minutes discipline list. No formulas, no examples. |
 
@@ -77,7 +80,7 @@ cannot yet do.
 
 | Item | Count |
 |---|---|
-| Topics | **37** (Module 1: 20 · Module 2: 6 · Module 5: 11) |
+| Topics | **44** (Module 1: 27 · Module 2: 6 · Module 5: 11) |
 | — high priority | 18 |
 | — medium priority | 9 |
 | — low priority | 3 |
@@ -85,13 +88,13 @@ cannot yet do.
 | Theory track | 14 topics |
 | Worked examples | **51** |
 | Practice questions | **83** |
-| **Total markable questions** | **138** |
+| **Total markable questions** | **160** |
 | Likely exam questions | 59 (50 from source material, 9 predicted — 15%) |
-| Quiz MCQs | **133** |
+| Quiz MCQs | **158**, in 8 sets of 20 |
 | Formula entries | 43, in 10 groups |
 | Quick review cards | 18 (Module 1: 10 · Module 5: 8) |
 | Learning outcomes covered | 5 of 8 (LO1, LO3, LO6, LO7, LO8) |
-| File size | 462 KB, zero external requests |
+| File size | 568 KB, zero external requests |
 
 Every worked example has its solution hidden behind a button, so the usable question bank
 is all 112 items, not just the 69 practice questions.
