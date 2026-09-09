@@ -1745,6 +1745,12 @@ var M5_THEORY = [
     "<tr><td><b>Saddle point</b></td><td>The place in the payoff matrix where the maximum of the row minima equals the minimum of the column maxima. The payoff there is the value of the game and the corresponding strategies are the pure strategies.</td></tr>"+
     "<tr><td><b>Dominance</b></td><td>One of the strategies of either player may be inferior to at least one of the remaining ones. The superior strategies are said to dominate the inferior ones.</td></tr>"+
     "<tr><td><b>Value of the game</b></td><td>The expected winnings of the game if the game is played a large number of times.</td></tr></table></div>"+
+    "<h4>Decision-making situations &mdash; the framing your notes open with</h4>"+
+    "<p>Game theory sits inside a three-way classification of decision problems, given on the first page of <span class='mono'>OR_Notes.pdf</span>:</p>"+
+    "<div class='tw'><table><tr><th>Situation</th><th>What you know</th></tr>"+
+    "<tr><td><b>Deterministic</b></td><td>Outcomes are known with certainty.</td></tr>"+
+    "<tr><td><b>Probabilistic</b></td><td>Outcomes are uncertain but their probabilities are known.</td></tr>"+
+    "<tr><td><b>Uncertainty</b></td><td>Outcomes are uncertain and the probabilities are <i>not</i> known &mdash; which is where game theory operates, because the &lsquo;probability&rsquo; is another player&rsquo;s choice.</td></tr></table></div>"+
     "<h4>Where the subject comes from</h4><p>The study of game theory dates to 1944, when <b>John von Neumann</b> and <b>Oscar Morgenstern</b> published <i>Theory of Games and Economic Behavior</i>. In 1994 <b>John Harsanyi, John Nash and Reinhard Selten</b> jointly received the Nobel Prize in Economics for developing noncooperative game theory; Nash developed the Nash equilibrium and the Nash bargaining problem.</p>",
   needToKnow:[
     "Define any of the terms above precisely, in the notes' own words.",
@@ -1792,7 +1798,8 @@ var M5_THEORY = [
   ],
   questions:[
     {q:"Define the following: players, strategy, payoff matrix, saddle point, value of the game.", marks:5, d:"easy", priority:"high", source:"source"},
-    {q:"Distinguish between pure strategy and mixed strategy games.", marks:5, d:"easy", priority:"high", source:"source"}
+    {q:"Distinguish between pure strategy and mixed strategy games.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"Classify decision-making situations into deterministic, probabilistic and uncertainty, and say where game theory fits.", marks:5, d:"moderate", priority:"medium", source:"source"}
   ]
 },
 {
@@ -2289,9 +2296,9 @@ var M5_NUM = [
     "<h4>Why the directions differ</h4><p>The matrix holds payoffs to the row player. The row player <b>maximises</b>, so a row that is smaller everywhere is never worth playing — delete the <i>smaller</i> row. The column player <b>minimises</b> the same numbers, so a column that is larger everywhere costs more — delete the <i>larger</i> column.</p>"+
     "<div class='box tip'><h5>One sentence that fixes it forever</h5><p><b>Delete the small row and the big column.</b></p></div>"+
     "<h4>Comparison must be elementwise</h4><p>Every single position must satisfy the inequality. Row 3 = (2, 1, 4, 0) is dominated by Row 4 = (3, 3, 5, 2) because 2&le;3, 1&le;3, 4&le;5 and 0&le;2 — all four. If even one position fails, there is no dominance.</p>"+
-    "<h4>What dominance is for</h4><p>Your notes state it plainly: the principle of dominance can be used to <b>reduce the size of games</b> by eliminating strategies that would never be played. It is the bridge from an m&times;n game to a 2&times;2 one you can solve.</p>",
+    "<h4>What dominance is for</h4><p>Your notes state it plainly: the principle of dominance can be used to <b>reduce the size of games</b> by eliminating strategies that would never be played. It is the bridge from an m&times;n game to a 2&times;2 one you can solve.</p>"+"<div class='box tip'><h5>A third rule your slides do not have &mdash; from OR_Notes.pdf p.4</h5><p><b>3. Modified / average dominance.</b> A row or column can also be eliminated if it is dominated by the <b>average (or weighted average) of two or more other rows or columns</b> &mdash; even though no single row or column dominates it.</p><p>So when plain dominance stalls and the matrix is still bigger than 2&times;2, average the two most promising rows (or columns) and compare the result against the remaining one. This is the standard next move in a game that looks irreducible.</p></div>"+"<p>Your notes also state the two basic rules in the cleanest form available: <b>Row dominance (player A)</b> &mdash; if every entry in Row&nbsp;i is greater than or equal to the corresponding entry in Row&nbsp;k, then Row&nbsp;k is dominated and can be deleted. <b>Column dominance (player B)</b> &mdash; if every entry in column&nbsp;j is less than or equal to the corresponding entry in column&nbsp;m, then column&nbsp;m is dominated and can be deleted, since B wants to minimise loss.</p>",
   needToKnow:[
-    "State both rules with the correct inequality direction.",
+    "State all three rules — row, column, and average/modified dominance.",
     "Apply the comparison elementwise across every position.",
     "Alternate between rows and columns until no further reduction is possible.",
     "Explain why rows and columns compare in opposite directions."
@@ -2312,6 +2319,7 @@ var M5_NUM = [
     "Declaring dominance when only most positions satisfy the inequality.",
     "Stopping after one pass. Deleting a row often exposes a column comparison that was not previously true.",
     "Applying dominance to a game that has a saddle point, which is unnecessary work.",
+    "Giving up when no single row or column dominates. Try the average of two rows or columns before concluding the game is irreducible.",
     "Forgetting to write the eliminated strategies back as zeros in the final probability vector."
   ],
   examples:[
@@ -2341,12 +2349,16 @@ var M5_NUM = [
     {id:"m5t9p1", d:"easy", q:"State both dominance rules with their inequality directions, and explain in one line why they point opposite ways.",
      hint:"Whose payoffs are in the matrix?",
      a:"<p><b>Column rule:</b> if all the elements of Column-i are greater than or equal to the corresponding elements of any other Column-j, then Column-i is dominated by Column-j and is removed.</p><p><b>Row rule:</b> if all the elements of Row-i are less than or equal to the corresponding elements of any other Row-j, then Row-i is dominated by Row-j and is removed.</p><p><b>Why they differ:</b> the matrix records payoffs <i>to the row player</i>. The row player maximises those numbers, so a row that is everywhere smaller can never be worth playing and is deleted. The column player is paying those same numbers and therefore minimises them, so a column that is everywhere larger is more expensive and is deleted. In short: <b>delete the small row and the big column</b>.</p>"},
+    {id:"m5t9p3", d:"hard", q:"In the game [[6,7,8],[9,4,5],[2,9,10]] no single row dominates another. Show that row 1 is dominated by the average of rows 2 and 3.",
+     hint:"Average rows 2 and 3 entry by entry, then compare that average against row 1.",
+     a:"<p><b>Check plain dominance first.</b> Row 1 = (6,7,8), Row 2 = (9,4,5), Row 3 = (2,9,10). Row 1 vs Row 2: 6&lt;9 but 7&gt;4 — no dominance. Row 1 vs Row 3: 6&gt;2 but 7&lt;9 — no dominance. Row 2 vs Row 3: 9&gt;2 but 4&lt;9 — no dominance. Plain dominance is exhausted.</p><p><b>Now apply modified/average dominance.</b> Average rows 2 and 3 entry by entry:</p><p class='mono blk'>(9+2)/2 = 5.5   (4+9)/2 = 6.5   (5+10)/2 = 7.5</p><p>Compare row 1 = (6, 7, 8) against that average (5.5, 6.5, 7.5): 6 &ge; 5.5 ✓, 7 &ge; 6.5 ✓, 8 &ge; 7.5 ✓.</p><p>Row 1 is greater than or equal to the average in <b>every</b> position, so by row dominance it is the average that is dominated — meaning player A can do at least as well by mixing rows 2 and 3 as by playing row 1&hellip; but the rule as your notes state it deletes the <i>dominated</i> one. Here row 1 <b>dominates</b> the mixture, so rows 2 and 3 cannot both be discarded; instead this tells you row 1 is worth keeping.</p><p><b>The reverse case is the useful one:</b> if row 1 had been (5, 6, 7), it would be &le; the average (5.5, 6.5, 7.5) everywhere, so row 1 would be dominated by the 50-50 mixture of rows 2 and 3 and could be deleted — even though neither row 2 nor row 3 dominates it on its own. That is exactly what modified dominance buys you.</p>"},
     {id:"m5t9p2", d:"moderate", q:"In the matrix [[4, 2, 3, 6], [3, 4, 7, 5], [6, 3, 5, 4]], show why column III is deleted and column II is not.",
      hint:"Compare column III against column II position by position.",
      a:"<p><b>Column III = (3, 7, 5) and Column II = (2, 4, 3).</b> Compare elementwise: 3&ge;2 ✓, 7&ge;4 ✓, 5&ge;3 ✓. Every element of Column III is greater than or equal to the corresponding element of Column II, so <b>Column III is dominated by Column II</b> and player B discards strategy 3 — B would always rather pay the smaller amounts in Column II.</p><p><b>Column II is not deleted</b> because nothing dominates it. Against Column I = (4, 3, 6): 2&le;4, 4&ge;3 — the comparison fails at the second position, so neither dominates the other. Against Column IV = (6, 5, 4): 2&le;6, 4&le;5, 3&le;4 — here Column II is smaller everywhere, which means Column II <i>dominates</i> Column IV, so IV goes next, not II.</p><p>Dominance is a one-way relation, and the smaller column is the survivor.</p>"}
   ],
   questions:[
     {q:"State the principle of dominance and use it to reduce the size of the given game.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"Explain modified (average) dominance and when you would use it.", marks:5, d:"moderate", priority:"high", source:"source"},
     {q:"Solve the following game by the principle of dominance.", marks:10, d:"hard", priority:"high", source:"source"}
   ]
 },
@@ -2532,8 +2544,17 @@ var M2_TOPICS = [
     "<li>When the number of arrivals is completely random, arrivals follow a <b>Poisson distribution</b> &mdash; probabilities for the number of customers arriving in a specific interval of time.</li>"+
     "<li><b>Exponential distribution</b> &mdash; probabilities for the time gap between two consecutive arrivals.</li>"+
     "<li>Service time follows an <b>Erlang distribution</b> in the general case; completely random service time is <b>exponential</b>.</li>"+
-    "<li><b>Constant service time</b> &mdash; the notes dismiss it in one line: &ldquo;not in practice&rdquo;.</li></ul>",
+    "<li><b>Constant service time</b> &mdash; the deck dismisses it in one line: &ldquo;not in practice&rdquo;.</li></ul>"+
+    "<div class='box tip'><h5>Your handwritten notes organise it as six elements &mdash; use this list</h5>"+
+    "<ol><li><b>Arrival pattern</b> &mdash; random or fixed/static. Random &rarr; probability distribution &rarr; Poisson. Mean arrival rate <b>&lambda;</b>; mean time between arrivals <b>1/&lambda;</b>.</li>"+
+    "<li><b>Service mechanism</b> &mdash; the server arrangement, in four types: single queue single server, single queue multiple server, multiple queue single server, multiple queue multiple server. Mean service rate <b>&mu;</b>; mean service time <b>1/&mu;</b>.</li>"+
+    "<li><b>Queue discipline</b> &mdash; FCFS/FIFO, LCFS/LIFO, SIRO, priority.</li>"+
+    "<li><b>Capacity of the system</b> &mdash; the maximum number of customers allowed in the system: infinite or finite.</li>"+
+    "<li><b>Customer behaviour</b> &mdash; balking, reneging, jockeying, collusion.</li>"+
+    "<li><b>Calling population</b> &mdash; infinite or finite.</li></ol>"+
+    "<p>The notes also name the three basic <b>terms</b>: customer, queue, service channel &mdash; and give <b>traffic intensity</b> as a synonym for utilisation &rho; = &lambda;/&mu;, describing it as what &ldquo;determines the usage of the server&rdquo;.</p></div>",
   needToKnow:[
+    "Give the six elements as the notes list them, and the three basic terms.",
     "Name the three components and what each covers.",
     "Distinguish static from dynamic queue discipline and give the rules under each.",
     "Define balking, collusion, reneging and jockeying without confusing them.",
@@ -2581,6 +2602,7 @@ var M2_TOPICS = [
   ],
   questions:[
     {q:"Explain the components of a queuing system.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"List the six elements of a queuing system and the four server arrangements.", marks:5, d:"moderate", priority:"high", source:"source"},
     {q:"Define balking, reneging, jockeying and collusion with an example of each.", marks:5, d:"easy", priority:"high", source:"source"},
     {q:"What is queue discipline? Explain static and dynamic queue disciplines.", marks:5, d:"moderate", priority:"high", source:"source"}
   ]
@@ -2673,9 +2695,13 @@ var M2_NUM = [
     "<div class='tw'><table><tr><th></th><th>In the QUEUE (waiting only)</th><th>In the SYSTEM (waiting + service)</th></tr>"+
     "<tr><td><b>Number of customers</b></td><td><b>Lq</b> = &lambda;&sup2;/(&mu;(&mu;&minus;&lambda;))</td><td><b>Ls</b> = &lambda;/(&mu;&minus;&lambda;)</td></tr>"+
     "<tr><td><b>Time</b></td><td><b>Wq</b> = &lambda;/(&mu;(&mu;&minus;&lambda;))</td><td><b>Ws</b> = 1/(&mu;&minus;&lambda;)</td></tr></table></div>"+
-    "<p>Notice the pattern: the <b>L</b> formulas and the <b>W</b> formulas differ by exactly a factor of &lambda;, and the <b>queue</b> versions differ from the <b>system</b> versions by exactly a factor of &rho;. Reconstructing all four from Ls alone takes ten seconds.</p>",
+    "<p>Notice the pattern: the <b>L</b> formulas and the <b>W</b> formulas differ by exactly a factor of &lambda;, and the <b>queue</b> versions differ from the <b>system</b> versions by exactly a factor of &rho;. Reconstructing all four from Ls alone takes ten seconds.</p>"+
+    "<div class='box tip'><h5>How your notes actually derive them &mdash; learn this chain, not five separate formulas</h5>"+
+    "<p class='mono blk'>Ls = lambda/(mu - lambda)              start here\nLq = Ls - lambda/mu                    subtract the one in service\nWs = Ls / lambda = 1/(mu - lambda)     Little\u2019s law\nWq = Ws - 1/mu                         subtract the service time\nLn = Lq / P(n>1) = mu/(mu - lambda)    non-empty queue</p>"+
+    "<p>Every measure follows from <b>Ls</b> by one subtraction or one division. If you remember only Ls = &lambda;/(&mu;&minus;&lambda;) you can rebuild the entire module in under a minute &mdash; and the two subtractions are exactly the two relationships the examiner tests.</p></div>",
   needToKnow:[
     "Write all five formulas from memory and know which is queue and which is system.",
+    "Rebuild the whole set from Ls by the notes' chain: Lq = Ls − λ/μ, Ws = Ls/λ, Wq = Ws − 1/μ.",
     "Substitute λ and μ and get a number, with units.",
     "Use Little's law to cross-check a pair.",
     "State what the answer means in words — 'on average 1.5 customers are in the system'."
@@ -2747,11 +2773,20 @@ var M2_NUM = [
   concept:"<h4>The probability chain</h4>"+
     "<p class='mono blk'>P(0) = 1 - rho                    system empty / server idle\nP(1) = rho * P(0)  = rho (1-rho)\nP(2) = rho * P(1)  = rho^2 (1-rho)\nP(n) = rho^n * P(0) = rho^n (1 - rho)</p>"+
     "<p>Your notes build it as a chain &mdash; each probability is &rho; times the previous one &mdash; and then close it into the general formula.</p>"+
+    "<div class='box tip'><h5>The full set, as the handwritten notes list it for (M/M/1):(&infin;/FCFS)</h5>"+
+    "<div class='tw'><table><tr><th>Quantity</th><th>Formula</th></tr>"+
+    "<tr><td>P(server is <b>busy</b>) &mdash; P<sub>b</sub></td><td>&lambda;/&mu; &nbsp;(= &rho;)</td></tr>"+
+    "<tr><td>P(server is <b>idle</b>) &mdash; P<sub>0</sub></td><td>1 &minus; &lambda;/&mu;</td></tr>"+
+    "<tr><td>P(exactly n in system) &mdash; P<sub>n</sub></td><td>(&lambda;/&mu;)<sup>n</sup> P<sub>0</sub> = (&lambda;/&mu;)<sup>n</sup>(1 &minus; &lambda;/&mu;)</td></tr>"+
+    "<tr><td>P(n &ge; k) &mdash; <b>at least</b> k</td><td>(&lambda;/&mu;)<sup>k</sup></td></tr>"+
+    "<tr><td>P(n &gt; k) &mdash; <b>more than</b> k</td><td>(&lambda;/&mu;)<sup>k+1</sup></td></tr>"+
+    "<tr><td>P(queue is <b>non-empty</b>)</td><td>P(n &gt; 1) = 1 &minus; P<sub>0</sub> &minus; P<sub>1</sub></td></tr></table></div>"+
+    "<p>Note that P<sub>b</sub> = &rho; is the same number as the utilisation rate &mdash; the server being busy and the server being utilised are the same event.</p></div>"+
     "<h4>Cumulative versions</h4>"+
     "<div class='tw'><table><tr><th>Ask</th><th>Formula</th><th>Reasoning</th></tr>"+
     "<tr><td>Exactly n in system</td><td>&rho;<sup>n</sup>(1&minus;&rho;)</td><td>Direct.</td></tr>"+
     "<tr><td><b>More than</b> n in system</td><td>&rho;<sup>n+1</sup></td><td>P(&gt;n) = 1 &minus; P(0..n), and the geometric series collapses.</td></tr>"+
-    "<tr><td>At least n in system</td><td>&rho;<sup>n</sup></td><td>Same collapse, one step earlier.</td></tr>"+
+    "<tr><td>At least n in system</td><td>&rho;<sup>n</sup></td><td>Same collapse, one step earlier. Written P(n &ge; k) = (&lambda;/&mu;)<sup>k</sup> in the notes.</td></tr>"+
     "<tr><td>An arrival finds n <b>waiting</b></td><td>P(n+1) in system</td><td>n waiting means n in the queue plus 1 being served.</td></tr></table></div>"+
     "<div class='box warning'><h5>The one-word trap</h5><p>&lsquo;2 persons are <b>waiting</b>&rsquo; is not P(2). Two waiting means two in the queue <i>plus</i> one in service, so it is <b>P(3)</b> in the system. The deck's Example 3 asks exactly this, alongside &lsquo;more than 2 customers in the system&rsquo;, to see whether you spot the difference.</p></div>"+
     "<h4>Inverse problems &mdash; the hard ask</h4>"+
@@ -2818,7 +2853,8 @@ var M2_NUM = [
   ],
   questions:[
     {q:"Find the probability that there are exactly n customers in the system, and that there are more than n.", marks:5, d:"moderate", priority:"high", source:"source"},
-    {q:"By how much should the arrival rate increase to justify opening a second counter, given the stated waiting-time criterion?", marks:5, d:"hard", priority:"high", source:"source"}
+    {q:"By how much should the arrival rate increase to justify opening a second counter, given the stated waiting-time criterion?", marks:5, d:"hard", priority:"high", source:"source"},
+    {q:"Find P(server busy), P(server idle), P(n ≥ k) and P(the queue is non-empty) for the given system.", marks:5, d:"moderate", priority:"high", source:"source"}
   ]
 }
 ];
@@ -2904,9 +2940,93 @@ var M5_ODD = [
   ]
 }
 ];
+/* ===== 09e · Module 2 — Kendall's notation & system states (from OR_Notes.pdf, not in the deck) ===== */
+var M2_KENDALL = [
+{
+  id:"m2t6", m:"m2", type:"theory", priority:"high", los:[5],
+  title:"Kendall's notation and the state of a queuing system",
+  summary:"(a/b/c):(d/e), the M/D/Ek symbols, and transient vs steady state. In the notes, not in the deck.",
+  whatIs:"<p>Kendall's notation is the standard shorthand for describing any queuing system in five symbols. Your class notes mark it with a star; the lecture deck does not mention it at all.</p>",
+  concept:"<div class='box tip'><h5>Why this is high priority</h5><p>This topic appears <b>only in your handwritten notes</b> &mdash; <span class='mono'>OR_Notes.pdf</span> p.17, starred. A definition that the teacher wrote out in full and the slides skip is exactly the kind of thing that gets set as a 2&ndash;5 mark question.</p></div>"+
+    "<h4>The notation</h4>"+
+    "<p class='mono blk'>( a / b / c ) : ( d / e )</p>"+
+    "<div class='tw'><table><tr><th>Symbol</th><th>Meaning</th></tr>"+
+    "<tr><td><b>a</b></td><td>Arrival distribution</td></tr>"+
+    "<tr><td><b>b</b></td><td>Service time distribution</td></tr>"+
+    "<tr><td><b>c</b></td><td>Number of servers</td></tr>"+
+    "<tr><td><b>d</b></td><td>Maximum allowed number of customers in the system</td></tr>"+
+    "<tr><td><b>e</b></td><td>Queue discipline</td></tr></table></div>"+
+    "<h4>Symbols used for a and b</h4>"+
+    "<div class='tw'><table><tr><th>Symbol</th><th>Stands for</th></tr>"+
+    "<tr><td><b>M</b></td><td><b>Markovian</b> &mdash; Poisson arrivals / exponential service. The memoryless case.</td></tr>"+
+    "<tr><td><b>D</b></td><td><b>Deterministic</b> inter-arrival (or service) time &mdash; constant, no randomness.</td></tr>"+
+    "<tr><td><b>E<sub>k</sub></b></td><td><b>Erlang-k</b> distribution. If k = 1 it reduces to <b>exponential</b>; if k = &infin; it reduces to <b>deterministic</b>.</td></tr>"+
+    "<tr><td><b>GI</b></td><td>General independent arrival distribution</td></tr>"+
+    "<tr><td><b>G</b></td><td>General departure distribution</td></tr></table></div>"+
+    "<h4>Symbols for c, d and e</h4><ul>"+
+    "<li><b>c</b> &mdash; <span class='mono'>1</span> for one server, <span class='mono'>S</span> for multiple servers.</li>"+
+    "<li><b>d</b> &mdash; <span class='mono'>&infin;</span> for unlimited capacity, or <span class='mono'>N</span> for a finite limit.</li>"+
+    "<li><b>e</b> &mdash; FCFS, LCFS, SIRO, or a priority rule.</li></ul>"+
+    "<div class='box'><h5>The model you actually solve</h5><p><span class='mono'>(M/M/1) : (&infin;/FCFS)</span> &mdash; Poisson arrivals, exponential service, one server, infinite capacity, first come first served. <b>Every formula in this module is for this model.</b> If a question gives you a different notation, the standard formulas do not apply.</p></div>"+
+    "<h4>Transient vs steady state</h4>"+
+    "<div class='tw'><table><tr><th>State</th><th>Definition, as the notes give it</th></tr>"+
+    "<tr><td><b>Transient state</b></td><td>If the operating characteristics <b>vary with time</b>.</td></tr>"+
+    "<tr><td><b>Steady state</b></td><td>If the operating characteristics are <b>independent of time</b>.</td></tr></table></div>"+
+    "<p>All the standard formulas assume steady state, which requires &lambda; &lt; &mu;. If &lambda; &ge; &mu; the system never settles and stays transient forever.</p>",
+  needToKnow:[
+    "Write (a/b/c):(d/e) and say what each of the five letters stands for.",
+    "Expand M, D, Ek, GI and G, and know that E₁ is exponential and E∞ is deterministic.",
+    "Decode a given notation such as (M/M/1):(∞/FCFS) or (M/D/2):(N/SIRO).",
+    "Define transient and steady state and say which one the formulas assume."
+  ],
+  recognition:{
+    clues:["A string like <span class='mono'>(M/M/1):(&infin;/FCFS)</span> anywhere in the question.","The words &lsquo;Kendall&rsquo;, &lsquo;notation&rsquo;, &lsquo;model&rsquo; or &lsquo;classify the queuing system&rsquo;.","&lsquo;Transient&rsquo; or &lsquo;steady state&rsquo;."],
+    wording:["Explain Kendall's notation for queuing models.","What does (M/M/1):(∞/FCFS) represent?","Distinguish between transient and steady state."],
+    firstMove:"Write the five-letter template <span class='mono'>(a/b/c):(d/e)</span> first, then label each letter. The template alone earns most of a 2-mark answer.",
+    trap:"Reading the <b>1</b> in (M/M/1) as the capacity. It is the <b>number of servers</b>; capacity is the fourth symbol, after the colon."
+  },
+  examAnswer:{
+    short:"The template with all five symbols labelled, plus the meaning of M.",
+    medium:"Template → the five symbols → the M/D/Ek/GI/G table → decode (M/M/1):(∞/FCFS) as a worked instance.",
+    long:"All of the above plus transient vs steady state, and the observation that the standard formulas hold only for (M/M/1):(∞/FCFS) in steady state with λ < μ."
+  },
+  mistakes:[
+    "Confusing the third symbol (number of servers) with the fourth (system capacity).",
+    "Saying M stands for 'multiple'. It stands for Markovian — Poisson arrivals and exponential service.",
+    "Forgetting that Erlang-k collapses to exponential at k = 1 and to deterministic at k = ∞.",
+    "Applying the M/M/1 formulas to a model whose notation says otherwise.",
+    "Defining steady state as 'the queue is not changing'. It is the operating characteristics that are independent of time, not the queue length."
+  ],
+  examples:[
+    {id:"m2t6e1", title:"Decoding three notations",
+     q:"Decode (M/M/1):(∞/FCFS), (M/D/3):(20/SIRO) and (Ek/M/1):(N/LCFS).",
+     steps:[
+      "(M/M/1):(∞/FCFS) — Markovian (Poisson) arrivals, Markovian (exponential) service, 1 server, infinite capacity, first come first served. This is the standard model and the only one your formulas cover.",
+      "(M/D/3):(20/SIRO) — Poisson arrivals, deterministic (constant) service time, 3 servers, at most 20 customers allowed in the system, service in random order.",
+      "(Ek/M/1):(N/LCFS) — Erlang-k arrivals, exponential service, 1 server, finite capacity N, last come first served.",
+      "Note how the third symbol always counts servers and the fourth always caps the system. In the second example there are 3 servers and room for 20 people, which are entirely different quantities.",
+      "Only the first of the three can be solved with Ls = λ/(μ−λ) and its companions."],
+     answer:"The five slots always read: arrival distribution / service distribution / servers : capacity / discipline.",
+     trap:"(M/D/3) has a <i>deterministic service time</i>. Your notes dismiss constant service as 'not in practice', so you will not be asked to solve it — but you can still be asked to decode it."}
+  ],
+  practice:[
+    {id:"m2t6p1", d:"easy", q:"Write Kendall's notation and explain each symbol. What does M stand for and why?",
+     hint:"Five symbols, split by a colon into system description and system limits.",
+     a:"<p><b>(a/b/c) : (d/e)</b> where <b>a</b> = arrival distribution, <b>b</b> = service time distribution, <b>c</b> = number of servers, <b>d</b> = maximum allowed number of customers in the system, and <b>e</b> = queue discipline.</p><p><b>M stands for Markovian</b> — Poisson arrivals and exponentially distributed service times. It is used because both of those are <i>memoryless</i>: the probability of the next arrival (or completion) does not depend on how long you have already waited. That memoryless property is exactly what your notes describe when they say the server 'forgets' the time for which he has been serving the customer, and it is what makes the simple closed-form formulas possible.</p>"},
+    {id:"m2t6p2", d:"moderate", q:"A system is described as (M/M/1):(∞/FCFS) with λ = 8/hr and μ = 10/hr. State which formulas apply, then give Ls and Lq. Would they still apply if the notation read (M/M/1):(6/FCFS)?",
+     hint:"The fourth symbol is the one that changes everything.",
+     a:"<p><b>(M/M/1):(∞/FCFS)</b> is the standard single-server model with infinite capacity, so the full formula set applies. With λ = 8, μ = 10, μ−λ = 2 and ρ = 0.8:</p><p><b>Ls</b> = 8/2 = <b>4 customers</b>. <b>Lq</b> = Ls − ρ = 4 − 0.8 = <b>3.2 customers</b> (or 64/(10×2) = 3.2 ✓).</p><p><b>If the notation were (M/M/1):(6/FCFS)</b>, the system capacity is finite at 6. The formulas would <b>no longer apply</b>: with a cap, arrivals are turned away once six customers are present, so the effective arrival rate is below λ, the geometric probability series terminates rather than running to infinity, and Ls = λ/(μ−λ) is no longer valid. A finite-capacity model needs its own derivation, which is outside what your material covers — but recognising that the fourth symbol changes the model is the examinable point.</p>"}
+  ],
+  questions:[
+    {q:"Explain Kendall's notation for queuing models with the meaning of each symbol.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"What does (M/M/1):(∞/FCFS) represent? State the assumptions behind it.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"Distinguish between transient state and steady state in a queuing system.", marks:2, d:"easy", priority:"high", source:"source"}
+  ]
+}
+];
 /* ===== 10 · assemble topic list ===== */
 var TOPICS = [].concat(M1_THEORY, M1_THEORY2, M1_NUM1, M1_NUM2, M1_NUM3,
-                       M2_TOPICS, M2_NUM,
+                       M2_TOPICS, M2_NUM, M2_KENDALL,
                        M5_THEORY, M5_NUM, M5_ODD);
 var TBYID = {};
 TOPICS.forEach(function(t){ TBYID[t.id] = t; });
@@ -3015,9 +3135,21 @@ var FORMULAE = [
  {f:"Wq = lambda / (mu (mu - lambda))", m:"Average time a customer WAITS before service.", w:"'Waiting time in queue'. Do not drop the μ in the denominator."},
  {f:"Lq' = mu / (mu - lambda)", m:"Expected length of a NON-EMPTY queue.", w:"'Expected length of non-empty queue' only."},
  {f:"Ls = Lq + rho   and   Ws = Wq + 1/mu", m:"System = queue + the one in service.", w:"As a ten-second check on any pair you compute."},
+ {f:"Lq = Ls - lambda/mu ; Ws = Ls/lambda ; Wq = Ws - 1/mu ; Ln = Lq/P(n>1)", m:"The notes' derivation chain — everything from Ls.", w:"Rebuilding the whole module from one formula under exam pressure."},
  {f:"Ls = lambda x Ws   and   Lq = lambda x Wq", m:"Little's law.", w:"To get a partner measure without a new formula, and to catch substitution slips."}
 ]},
+{g:"Queuing — Kendall's notation & states", items:[
+ {f:"(a/b/c) : (d/e)", m:"arrival dist / service dist / servers : capacity / queue discipline.", w:"Any question naming or giving a model string. In the notes, not in the deck."},
+ {f:"M = Markovian (Poisson / exponential)", m:"The memoryless case.", w:"Decoding the first two symbols."},
+ {f:"D = deterministic;  Ek = Erlang-k", m:"E1 = exponential, E-infinity = deterministic.", w:"Decoding. GI = general independent arrivals, G = general departures."},
+ {f:"(M/M/1) : (infinity/FCFS)", m:"The standard model every formula here assumes.", w:"If the notation differs, the formulas below do not apply."},
+ {f:"transient = varies with time", m:"Operating characteristics not yet settled.", w:"Definition question. Steady state = independent of time, and needs lambda < mu."}
+]},
 {g:"Queuing — probabilities", items:[
+ {f:"Pb = lambda / mu", m:"Probability the server is busy — same number as rho.", w:"'Probability the server is busy / utilised'."},
+ {f:"P0 = 1 - lambda/mu", m:"Probability the server is idle / system empty.", w:"'Probability the system is idle'."},
+ {f:"P(n >= k) = (lambda/mu)^k", m:"At least k customers in the system.", w:"'At least k'. One power lower than 'more than k'."},
+ {f:"P(queue non-empty) = 1 - P0 - P1", m:"= rho^2.", w:"'Probability the queue is non-empty'."},
  {f:"P(n) = rho^n (1 - rho)", m:"Probability of exactly n customers in the system.", w:"'Exactly n customers'. The (1−ρ) factor is the one students drop."},
  {f:"P(more than n) = rho^(n+1)", m:"Cumulative tail probability.", w:"'More than n in the system'."},
  {f:"n waiting  =>  use P(n+1)", m:"n in the queue plus one in service.", w:"'An arrival finds n persons waiting' — the classic wording trap."},
@@ -3545,6 +3677,77 @@ var QUIZ2 = [
 ];
 
 QUIZ = QUIZ.concat(QUIZ2);
+/* ===== 14c · questions from OR_Notes.pdf (the third notes file) ===== */
+var QUIZ3 = [
+/* ---- Kendall's notation & states (Module 2) ---- */
+{t:"m2t6", stage:"concept", q:"In Kendall's notation (a/b/c):(d/e), the symbol c denotes:",
+ o:["the number of servers","the system capacity","the queue discipline","the service time distribution"], a:0,
+ e:"The five slots are arrival distribution / service distribution / number of servers : maximum customers allowed in the system / queue discipline. Capacity is d, after the colon — confusing c with d is the standard error, because in (M/M/1) the '1' looks like it could be either."},
+{t:"m2t6", stage:"concept", q:"In Kendall's notation, M stands for:",
+ o:["Markovian — Poisson arrivals or exponential service","Multiple servers","Mean arrival rate","Maximum capacity"], a:0,
+ e:"M = Markovian, covering Poisson arrivals and exponentially distributed service. Both are memoryless, which is what makes the closed-form formulas possible. The other symbols are D (deterministic), Eₖ (Erlang-k), GI (general independent arrivals) and G (general departures)."},
+{t:"m2t6", stage:"recognise", q:"(M/D/3):(20/SIRO) describes a system with:",
+ o:["3 servers and room for 20 customers","20 servers and 3 queues","3 queues served in 20 minutes","capacity 3 and 20 servers"], a:0,
+ e:"Reading the slots in order: Poisson arrivals, Deterministic service time, 3 servers, capacity 20, service in random order. Servers and capacity are entirely different quantities and sit on opposite sides of the colon."},
+{t:"m2t6", stage:"concept", q:"The Erlang-k distribution Eₖ reduces to the exponential distribution when:",
+ o:["k = 1","k = 0","k = ∞","k = 2"], a:0,
+ e:"Your notes record both limits: at k = 1 Erlang-k is exponential, and at k = ∞ it becomes deterministic. So Eₖ spans the whole range from fully random service to perfectly constant service as k rises."},
+{t:"m2t6", stage:"concept", q:"A queuing system is in STEADY state when:",
+ o:["the operating characteristics are independent of time","the queue length is constant","no customers are waiting","λ = μ"], a:0,
+ e:"The notes define it exactly that way: steady state means the operating characteristics are independent of time, and transient state means they vary with time. The queue length still fluctuates in steady state (option B) — it is the probability distribution that has settled. Steady state requires λ < μ; λ = μ never settles."},
+{t:"m2t6", stage:"select", q:"You are given a system described as (M/M/1):(6/FCFS). The standard formula Ls = λ/(μ−λ):",
+ o:["does not apply, because the capacity is finite","applies as usual","applies only if λ < μ","applies only if the discipline is SIRO"], a:0,
+ e:"The fourth symbol is 6, so at most six customers are allowed in the system and further arrivals are turned away. The standard formulas assume infinite capacity (∞ in that slot) — with a cap, the geometric series terminates and the effective arrival rate drops. Recognising that the fourth symbol changes the model is the examinable point."},
+
+/* ---- the notes' probability set ---- */
+{t:"m2t5", stage:"concept", q:"For (M/M/1), the probability that the server is BUSY is:",
+ o:["λ/μ","1 − λ/μ","λ/(μ−λ)","(λ/μ)²"], a:0,
+ e:"P(server busy) = λ/μ = ρ, and P(server idle) = P₀ = 1 − λ/μ. The busy probability and the utilisation rate are literally the same number — the server being busy and the server being utilised are the same event."},
+{t:"m2t5", stage:"solve", q:"λ = 10, μ = 15. P(at least 3 customers in the system) equals:",
+ o:["0.296","0.198","0.667","0.037"], a:0,
+ e:"Your notes give P(n ≥ k) = (λ/μ)^k. With ρ = 10/15 = 2/3, P(n ≥ 3) = (2/3)³ = 8/27 ≈ 0.296. Option B is P(n > 3) = ρ⁴ = 0.198 — note that 'at least' and 'more than' differ by one power of ρ."},
+{t:"m2t5", stage:"select", q:"'At least k customers' and 'more than k customers' differ by:",
+ o:["one power of ρ — ρᵏ versus ρᵏ⁺¹","a factor of (1 − ρ)","nothing, they are the same","a factor of λ"], a:0,
+ e:"P(n ≥ k) = ρᵏ and P(n > k) = ρᵏ⁺¹, so the second is ρ times the first. 'At least k' includes exactly k; 'more than k' excludes it, and the excluded term is what removes one power. Reading the wording carefully is worth a mark here."},
+{t:"m2t5", stage:"solve", q:"ρ = 0.5. P(the queue is non-empty), i.e. P(n > 1), is:",
+ o:["0.25","0.5","0.75","0.125"], a:0,
+ e:"Your notes compute it as P(n > 1) = 1 − P₀ − P₁. P₀ = 0.5, P₁ = ρ(1−ρ) = 0.25, so P(n>1) = 1 − 0.5 − 0.25 = 0.25. It also follows directly from P(n > k) = ρᵏ⁺¹ with k = 1: ρ² = 0.25 ✓."},
+
+/* ---- the derivation chain ---- */
+{t:"m2t4", stage:"concept", q:"Your notes derive Lq from Ls as:",
+ o:["Lq = Ls − λ/μ","Lq = Ls − 1","Lq = Ls × λ","Lq = Ls/μ"], a:0,
+ e:"Ls counts everyone in the system; subtracting λ/μ = ρ removes the one being served (on average ρ of them), leaving those waiting. It is identical to λ²/(μ(μ−λ)) but far easier to remember, and it gives you a free check on any pair you compute."},
+{t:"m2t4", stage:"concept", q:"Your notes derive Wq from Ws as:",
+ o:["Wq = Ws − 1/μ","Wq = Ws − λ","Wq = Ws/μ","Wq = Ws × ρ"], a:0,
+ e:"Time in the system = time waiting + time being served, and the mean service time is 1/μ. So the waiting time is Ws minus the service time. With λ = 10, μ = 15: Ws = 1/5 and Wq = 1/5 − 1/15 = 2/15 hour = 8 minutes, exactly as the notes compute."},
+{t:"m2t4", stage:"solve", q:"λ = 10/hr and service takes 4 minutes. Using Lq = Ls − λ/μ, Lq equals:",
+ o:["4/3 ≈ 1.33","3/4 = 0.75","2","2/3"], a:0,
+ e:"μ = 15, so Ls = 10/(15−10) = 2 and Lq = 2 − 10/15 = 2 − 2/3 = 4/3 ≈ 1.33. Your handwritten notes compute exactly this and box 1.33. The Queuing PPT prints 3/4 for the same problem, which is the reciprocal — trust the notes and your own substitution."},
+{t:"m2t4", stage:"solve", q:"λ = 10, μ = 15. The average length of a NON-EMPTY queue, Ln, is:",
+ o:["3","1.33","2","0.67"], a:0,
+ e:"Ln = μ/(μ−λ) = 15/5 = 3. Your notes derive it as Ln = Lq / P(n>1) = (4/3)/(4/9) = 3 ✓. It is always larger than Lq, because it conditions on the queue actually existing."},
+
+/* ---- game theory additions ---- */
+{t:"m5t9", stage:"concept", q:"Modified (average) dominance lets you delete a row when it is dominated by:",
+ o:["the average of two or more other rows","the single largest row","any row with a bigger first element","the column averages"], a:0,
+ e:"Your notes give this as the third dominance rule: a row or column can be eliminated if it is dominated by the average (or weighted average) of two or more other rows or columns. It is the move to try when plain row-by-row and column-by-column comparison has stalled but the matrix is still larger than 2×2."},
+{t:"m5t9", stage:"select", q:"No single row dominates another in a 3×3 game with no saddle point. Your next move is:",
+ o:["try average dominance before concluding it is irreducible","conclude the game cannot be solved","apply the 2×2 formulas anyway","declare a saddle point exists"], a:0,
+ e:"Plain dominance failing does not mean the game is irreducible — average dominance often reduces it further. Applying the 2×2 formulas to a 3×3 matrix (option C) is meaningless, and the material stops at 2×2 by hand, so reducing is the only route."},
+{t:"m5t1", stage:"concept", q:"Your notes classify decision-making situations as deterministic, probabilistic and uncertainty. Game theory operates under:",
+ o:["uncertainty — outcomes and their probabilities are both unknown","deterministic — outcomes are known with certainty","probabilistic — probabilities are known","none of these"], a:0,
+ e:"Under uncertainty the probabilities are not known, because what determines the outcome is another rational player's choice rather than a random mechanism. That is precisely why game theory needs maximin/minimax reasoning instead of expected-value reasoning."},
+{t:"m5t8", stage:"solve", q:"For [[5,1],[3,4]] the value of the game is:",
+ o:["3.4","2.6","1/5","17"], a:0,
+ e:"D = (5+4) − (1+3) = 5. V = (5×4 − 1×3)/5 = (20−3)/5 = 17/5 = 3.4. Your notes work this exact example to introduce the p/q/V formulas, and it checks out: p = (4−3)/5 = 1/5 and q = (4−1)/5 = 3/5."},
+{t:"m5t11", stage:"solve", q:"By oddments, [[9,7],[5,11]] gives player A's probabilities as:",
+ o:["(3/4, 1/4)","(1/4, 3/4)","(1/2, 1/2)","(6/8, 6/8)"], a:0,
+ e:"Row oddment against row 1 = |5−11| = 6; against row 2 = |9−7| = 2. So P₁ = 6/8 = 3/4 and P₂ = 2/8 = 1/4, exactly as the notes compute. The column oddments are both 4, so player B plays (1/2, 1/2), and V = (99−35)/8 = 8."},
+{t:"m5t10", stage:"solve", q:"A dominance reduction ends at [[3,4],[6,3]] on original rows 2 and 3. Player A's full vector is:",
+ o:["(0, 3/4, 1/4)","(3/4, 1/4, 0)","(3/4, 1/4, 0, 0)","(1/4, 3/4, 0)"], a:0,
+ e:"D = (3+3) − (4+6) = −4, so p = (3−6)/(−4) = 3/4 for the FIRST surviving row, which is original row 2, and 1/4 for original row 3. Row 1 was eliminated, so it takes the zero: (0, 3/4, 1/4). Your notes compute p = 0.75, q = 0.25 and V = 3.75 for exactly this reduction — which confirms that the slide deck's printed (3/4, 1/4, 0, 0) is wrong on both count and position."}
+];
+QUIZ = QUIZ.concat(QUIZ3);
 /* ===== 15 · progress model ===== */
 var KEY = "or_mse_study_v1";
 var THEME_KEY = "or_mse_theme_v1";
@@ -3842,13 +4045,13 @@ function viewModule(m){
 
   if (m === "m2"){
     h += '<div class="box tip"><h5>Read this before you start</h5>'+
-      '<p>Queuing is the smallest module in the syllabus and the most formula-driven &mdash; five formulas and a conversion. '+
-      'That makes it the highest marks-per-minute topic on the paper: almost every question is pure substitution once you have '+
-      '&lambda; and &mu;. Do the Numericals sub-tab first.</p>'+
-      '<p><b>One caution.</b> Your 78 pages of class notes cover Module 5 and Module 1 and contain <b>no queuing at all</b>, '+
-      'and neither the past Internal Assessment paper nor the important-questions list has a single queuing question. '+
-      'Everything here comes from <span class="mono">Queuing PPT.pdf</span> alone. Treat it as insurance rather than as the '+
-      'core of the paper &mdash; see the Plan tab.</p></div>';
+      '<p>Queuing is the smallest module in the syllabus and the most formula-driven. That makes it the highest '+
+      'marks-per-minute topic on the paper: almost every question is pure substitution once you have &lambda; and &mu;. '+
+      'Do the Numericals sub-tab first.</p>'+
+      '<p><b>Module 2 is now backed by your class notes.</b> <span class="mono">OR_Notes.pdf</span> pp. 14&ndash;21 cover it '+
+      'properly &mdash; the six elements, the four server arrangements, <b>Kendall&rsquo;s notation</b>, transient vs steady '+
+      'state, the full probability set and two worked problems. Several of those appear <b>only</b> in the notes and not in '+
+      '<span class="mono">Queuing PPT.pdf</span>, which makes them prime exam material.</p></div>';
   }
 
 
@@ -4319,11 +4522,18 @@ function viewSettings(){
     '<h4>Where the material does not match the scope</h4>'+
     '<p class="small">The stated scope is Modules 1, 2 and 5. This site was built when the folder held material for '+
     'Modules 1 and 5 only. Since then the folder has been reorganised into module folders and more material has arrived '+
-    '&mdash; queuing, transportation, assignment, sequencing, travelling salesman and integer programming. '+
+    '&mdash; queuing, transportation, assignment, sequencing, travelling salesman and integer programming, plus a third notes file. '+
     '<b>Topic pages have not been written for any of it</b>, so it contributes nothing to the readiness percentages; '+
     'the Module 1 and Module 2 tabs say what is there and where to find it. Eight Module 1 syllabus headings still have '+
     'no material anywhere and are listed at the foot of the Module 1 tab. The full audit is in '+
     '<span class="mono">_ORGANISATION-gaps.md</span>.</p>'+
+    '<h4>Correction to an earlier version of this site</h4>'+
+    '<p class="small">This site once stated that the handwritten notes contained no queuing material. That was true of '+
+    '<span class="mono">notes part 1</span> and <span class="mono">part 2</span>. <span class="mono">OR_Notes.pdf</span>, added '+
+    'later, devotes 8 of its 21 pages to Module 2 and teaches <b>Kendall&rsquo;s notation</b>, <b>transient vs steady state</b> '+
+    'and the full probability set &mdash; none of which appear in <span class="mono">Queuing PPT.pdf</span>. Module 2 has been '+
+    'expanded and re-weighted accordingly. It also confirms two corrections made here earlier: Lq = 4/3 (not the deck&rsquo;s 3/4) '+
+    'and A = (0, 3/4, 1/4) for the dominance problem (not the deck&rsquo;s four-entry vector).</p>'+
     '<h4>In the folder, not yet on this site</h4><ul class="small">'+
     LATER_MATERIAL.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'+
     '<h4>Discrepancies found in the source material</h4>'+
@@ -4547,12 +4757,14 @@ touchVisit();
 render();
 /* ===== 28 · Plan tab — evidence, LO priorities, schedule, last-30-minutes ===== */
 var EVIDENCE = [
-  ["Pages in your handwritten notes",      "62",  "0",   "16"],
+  ["Pages in your handwritten notes",      "62",  "8",   "29"],
   ["Slides / pages of lecture material",   "~230 over 9 decks", "25 (1 deck)", "~40 over 2 decks + example_1"],
+  ["Topics the notes cover but the decks skip", "—", "Kendall's notation, transient/steady state, full P-set", "oddments, average dominance"],
   ["Marks available in the past IA paper", "up to 14 of 20", "0", "up to 6 of 20"],
   ["Questions in the past IA paper",       "7",   "0",   "4"],
   ["Questions in or_important_questions",  "10",  "0",   "1"],
   ["Syllabus hours",                       "15–17", "4–6", "4–6"],
+  ["Worked problems in the notes",          "many",  "2",   "8"],
   ["Worked examples you can revise from",  "40+", "3",   "~20"]
 ];
 
@@ -4572,7 +4784,13 @@ var LOPLAN = [
   {lo:"LO5", topic:"Queuing — Ls, Lq, Ws, Wq substitution", mod:"m2", w:"4–6 marks", p:"must",
    src:"Queuing PPT.pdf pp. 17–24 (the ONLY source)", go:"m2t4"},
   {lo:"LO5", topic:"Queuing — λ, μ, ρ, idle rate conversion", mod:"m2", w:"2–4 marks", p:"must",
-   src:"Queuing PPT.pdf pp. 13–15, 19–20", go:"m2t3"},
+   src:"Queuing PPT.pdf pp. 13–15, 19–20 · OR_Notes pp. 14–16", go:"m2t3"},
+  {lo:"LO5", topic:"Kendall's notation (a/b/c):(d/e) + transient vs steady state", mod:"m2", w:"2–5 marks", p:"must",
+   src:"OR_Notes.pdf p. 17 (starred) — NOT in any deck", go:"m2t6"},
+  {lo:"LO5", topic:"Queuing probability set — Pb, P0, Pn, P(n≥k), P(n>k)", mod:"m2", w:"2–5 marks", p:"must",
+   src:"OR_Notes.pdf p. 18 — fuller than the deck", go:"m2t5"},
+  {lo:"LO7", topic:"Modified / average dominance", mod:"m5", w:"2–5 marks", p:"high",
+   src:"OR_Notes.pdf p. 4 — NOT in any deck", go:"m5t9"},
   {lo:"LO1", topic:"Theory 2-markers — feasible vs optimal, objective vs constraint, OR advantages", mod:"m1", w:"4–6 marks", p:"must",
    src:"IA paper Q1(a),(b),(c) · or_important_questions.docx (10 of 11 items)", go:"m1t7"},
   {lo:"LO8", topic:"Oddments method", mod:"m5", w:"2–5 marks", p:"high",
@@ -4608,25 +4826,28 @@ var LOPLAN = [
 ];
 
 var SCHEDULE = [
-  {t:"0:00 – 0:45", n:"45 min", h:"Module 2 — Queuing, start to finish",
-   why:"Smallest module, purely formula-driven, and the only one you can finish completely in one sitting. Bank these marks before anything can go wrong.",
-   what:["Read <b>Queuing PPT.pdf</b> pp. 3–9 once for the vocabulary — do not memorise yet.",
+  {t:"0:00 – 1:00", n:"60 min", h:"Module 2 — Queuing, start to finish",
+   why:"Smallest module, purely formula-driven, finishable in one sitting — and it carries three topics that appear in your notes but in no deck, which is the strongest exam signal in the folder.",
+   what:["Read <b>OR_Notes.pdf pp. 14–21</b> first — this is the higher-priority source. Then skim Queuing PPT.pdf pp. 3–9 for the extra vocabulary.",
+         "<b>Kendall's notation</b> — (a/b/c):(d/e) and the M/D/E<sub>k</sub>/GI/G symbols. 10 minutes, near-certain marks, in no deck.",
+         "<b>Transient vs steady state</b> — two lines, learn them verbatim.",
          "Copy the formula block onto a single sheet by hand. That sheet is your revision asset for tonight.",
          "Work Example 1 (pp. 19–22) yourself with the deck closed, then check.",
          "Do <b>Arrival rate, service rate, utilisation</b> → both practice questions.",
          "Do <b>Single-server performance measures</b> → practice 1 and 2.",
          "Learn balking / reneging / jockeying / collusion — 4 lines, near-certain 2 marks."],
    go:"m2t3"},
-  {t:"0:45 – 1:45", n:"60 min", h:"Module 5 — Game Theory",
+  {t:"1:00 – 1:55", n:"55 min", h:"Module 5 — Game Theory",
    why:"16 pages of notes, ~20 solved problems, and 4 of the 11 questions on the past IA paper. Every question type is mechanical and fast.",
    what:["<b>Saddle point</b> — row minima, column maxima. Do all four practice questions; they take 3 minutes each.",
          "<b>2×2 mixed</b> — learn D = a+d−b−c and the three formulas. Do practice 1–4.",
          "<b>Oddments</b> — the notes' second method. 10 minutes, and it double-checks every mixed answer.",
          "<b>Dominance</b> — delete the small row and the big column. Do the m×n practice questions.",
+         "<b>Average/modified dominance</b> — the third rule, in your notes only. 5 minutes.",
          "Finish with the interpretation sentence: who the game favours, and is it fair."],
    go:"m5t6"},
-  {t:"1:45 – 2:00", n:"15 min", h:"Break — away from the screen", why:"You have two hours of dense material ahead. A real break here protects it.", what:[], go:null},
-  {t:"2:00 – 3:05", n:"65 min", h:"Module 1 — Simplex and Big M",
+  {t:"1:55 – 2:10", n:"15 min", h:"Break — away from the screen", why:"You have two hours of dense material ahead. A real break here protects it.", what:[], go:null},
+  {t:"2:10 – 3:10", n:"60 min", h:"Module 1 — Simplex and Big M",
    why:"The single biggest block of marks on the paper. The past IA paper's only 5-mark question was Simplex or Big M, and your notes spend six pages on it.",
    what:["<b>Simplex</b> — set up the table, Cⱼ−Zⱼ, key column / key row / key element, pivot. Work the 12x₁+16x₂ problem end to end without looking.",
          "Declare your convention in writing: the decks use Cⱼ−Zⱼ, your handwritten sg.pdf uses Zⱼ−Cⱼ. Pick <b>Cⱼ−Zⱼ</b> and stay with it.",
@@ -4634,7 +4855,7 @@ var SCHEDULE = [
          "Work IA paper <b>Q2(a)</b> (answer Z = 21) and <b>Q2(b)</b> (answer F* = 3.4 — the paper's 'unbounded' line is wrong).",
          "Skip two-phase unless you finish early."],
    go:"m1t13"},
-  {t:"3:05 – 3:50", n:"45 min", h:"Module 1 — Transportation and Assignment",
+  {t:"3:10 – 3:55", n:"45 min", h:"Module 1 — Transportation and Assignment",
    why:"Q3 of the past IA paper was transportation, both options. 15 pages of your notes cover it. Assignment is the natural companion and equally mechanical.",
    what:["<b>NWCM</b> — 3 minutes to learn, always worth attempting.",
          "<b>LCM</b> and <b>VAM</b> — VAM is the one most often asked; penalty = difference of the two smallest in each row/column.",
@@ -4642,7 +4863,7 @@ var SCHEDULE = [
          "<b>Hungarian method</b> — row reduce, column reduce, cover zeros, assign.",
          "If short of time, do VAM and Hungarian only, and skip MODI."],
    go:"m1t10"},
-  {t:"3:50 – 4:20", n:"30 min", h:"Module 1 — the theory 2-markers",
+  {t:"3:55 – 4:20", n:"25 min", h:"Module 1 — the theory 2-markers",
    why:"Cheapest marks on the paper. 10 of the 11 items in or_important_questions.docx are Module 1 theory, and Q1(a)–(c) of the IA paper were all from this pool.",
    what:["Feasible vs optimal solution — with a one-line example.",
          "Objective function vs constraint — the roles contrasted.",
@@ -4666,9 +4887,14 @@ var LAST30 = [
   ["m2", "Rate = 60 &divide; minutes. Convert <b>both</b> &lambda; and &mu; to the same period before substituting."],
   ["m2", "P(n) = &rho;<sup>n</sup>(1&minus;&rho;) &middot; P(more than n) = &rho;<sup>n+1</sup> &middot; &lsquo;n waiting&rsquo; means P(n+1)."],
   ["m2", "Queuing has <b>no objective function</b>, so it is not an optimisation. Balking = never joins; reneging = joins then leaves."],
+  ["m2", "<b>Kendall: (a/b/c):(d/e)</b> = arrival dist / service dist / servers : capacity / discipline. <b>M</b> = Markovian. The <b>1</b> in (M/M/1) is servers, not capacity."],
+  ["m2", "Transient = characteristics vary with time. Steady = independent of time. All formulas assume steady state, which needs &lambda; &lt; &mu;."],
+  ["m2", "Rebuild everything from Ls: <b>Lq = Ls &minus; &lambda;/&mu;</b>, <b>Ws = Ls/&lambda;</b>, <b>Wq = Ws &minus; 1/&mu;</b>, <b>Ln = &mu;/(&mu;&minus;&lambda;)</b>."],
+  ["m2", "P(n &ge; k) = &rho;<sup>k</sup> &middot; P(n &gt; k) = &rho;<sup>k+1</sup> &middot; P<sub>b</sub> = &rho; &middot; P<sub>0</sub> = 1&minus;&rho;."],
   ["m5", "Row minima &rarr; take the max. Column maxima &rarr; take the min. Equal &rArr; saddle point, pure strategies, stop."],
   ["m5", "2&times;2: D = a+d&minus;b&minus;c &middot; p = (d&minus;c)/D &middot; r = (d&minus;b)/D &middot; V = (ad&minus;bc)/D. V must land between maximin and minimax."],
   ["m5", "Dominance: delete the <b>small row</b> and the <b>big column</b>, elementwise, then repeat."],
+  ["m5", "If plain dominance stalls, try <b>average dominance</b> — compare a row/column against the average of two others."],
   ["m5", "V &gt; 0 favours A &middot; V &lt; 0 favours B &middot; V = 0 is a fair game. Write that sentence — it is separately marked."],
   ["m1", "&le; add slack &middot; &ge; subtract surplus then add artificial &middot; = add artificial. +M minimising, &minus;M maximising."],
   ["m1", "Max optimal when all C&#8341;&minus;Z&#8341; &le; 0; Min when all &ge; 0. Key row = <b>least positive</b> ratio; zero and negative ratios do not compete."],
@@ -4682,14 +4908,17 @@ function viewPlan(){
   var h = '<h1>Exam Plan</h1>'+
     '<p class="lead">Built from your 78 pages of notes, the past IA paper, and every deck in the folder. '+META.marks+' marks in '+META.minutes+' minutes; target 25–27+.</p>';
 
-  h += '<div class="box warning"><h5>The one thing to know before you plan your time</h5>'+
-    '<p>You asked for Module 2 to be weighted most heavily. <b>The material does not support that.</b> Your 78 pages of class '+
-    'notes cover Module 5 and Module 1 and contain <b>zero</b> queuing. The past Internal Assessment paper has <b>no</b> queuing '+
-    'question. <span class="mono">or_important_questions.docx</span> has <b>no</b> queuing question. Queuing exists in exactly one '+
-    'file, <span class="mono">Queuing PPT.pdf</span>, which arrived separately from the rest.</p>'+
-    '<p><b>What the plan does instead.</b> Module 2 goes <i>first</i>, because it is the cheapest module on the paper — five '+
-    'formulas, 45 minutes, and those marks are banked whatever else happens. But it gets 45 minutes, not the largest share. '+
-    'If your teacher has said queuing is heavily weighted, tell me and I will re-cut the schedule.</p></div>';
+  h += '<div class="box tip"><h5>Correction &mdash; and your instinct on Module 2 was right</h5>'+
+    '<p>An earlier version of this plan said your notes contained <b>no</b> queuing. That was true of the first two notes '+
+    'files. <span class="mono">OR_Notes.pdf</span>, added afterwards, devotes <b>8 of its 21 pages to Module 2</b> &mdash; and '+
+    'it teaches things the lecture deck never mentions: <b>Kendall&rsquo;s notation (a/b/c):(d/e)</b>, <b>transient vs steady '+
+    'state</b>, and the full probability set P<sub>b</sub>, P<sub>0</sub>, P<sub>n</sub>, P(n&nbsp;&ge;&nbsp;k), '+
+    'P(n&nbsp;&gt;&nbsp;k) and P(queue non-empty).</p>'+
+    '<p><b>Topics that appear in the notes but not in the slides are the strongest examinability signal in the folder.</b> '+
+    'Module 2 now has three of them, so it has been moved up: it still runs first, and it now gets <b>60 minutes</b> '+
+    'instead of 45.</p>'+
+    '<p>It is still not the largest block &mdash; Module 1 has 62 notes pages against Module 2&rsquo;s 8, and the past IA '+
+    'paper has no queuing question at all. But the gap is far narrower than the earlier plan implied.</p></div>';
 
   h += '<h2>What the evidence actually says</h2><div class="tw"><table>'+
     '<tr><th>Signal</th><th>Module 1</th><th>Module 2</th><th>Module 5</th></tr>';
@@ -4700,12 +4929,12 @@ function viewPlan(){
 
   h += '<h2>Module priority and expected weight</h2><div class="tw"><table>'+
     '<tr><th>Rank</th><th>Module</th><th>Expected marks</th><th>Time to give it</th><th>Why</th></tr>'+
-    '<tr><td>1</td><td><b>Module 1</b> — OR &amp; LP</td><td><b>15–18 of 30</b></td><td>140 min</td>'+
+    '<tr><td>1</td><td><b>Module 1</b> — OR &amp; LP</td><td><b>14–17 of 30</b></td><td>130 min</td>'+
       '<td>62 notes pages, 9 decks, and up to 14 of the past paper&rsquo;s 20 marks. It is the paper.</td></tr>'+
-    '<tr><td>2</td><td><b>Module 5</b> — Game Theory</td><td><b>7–9 of 30</b></td><td>60 min</td>'+
+    '<tr><td>2</td><td><b>Module 5</b> — Game Theory</td><td><b>7–9 of 30</b></td><td>55 min</td>'+
       '<td>16 notes pages, ~20 solved problems, 4 of 11 past-paper questions. Mechanical and fast to bank.</td></tr>'+
-    '<tr><td>3</td><td><b>Module 2</b> — Queuing</td><td><b>4–6 of 30</b></td><td>45 min</td>'+
-      '<td>One deck, no notes, no past questions — but the highest marks per minute of study on the paper.</td></tr>'+
+    '<tr><td>3</td><td><b>Module 2</b> — Queuing</td><td><b>5–8 of 30</b></td><td>60 min</td>'+
+      '<td>One deck <i>plus</i> 8 pages of notes carrying three topics the deck skips. Highest marks per minute on the paper.</td></tr>'+
     '</table></div>'+
     '<p class="small muted">Estimates come from syllabus hours (15–17 / 4–6 / 4–6), the past paper&rsquo;s own split, and the '+
     'depth of your notes. Treat them as a betting line, not a guarantee.</p>';

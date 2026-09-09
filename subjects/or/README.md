@@ -19,19 +19,22 @@ priority, the LO table, the hour-by-hour schedule and the last-30-minutes checkl
 Resources are named `<module>.<nn> [LOs] <description>` — see `_LO-MAP.md`. The 78 pages of
 handwritten notes are in `_NOTES (highest priority)`.
 
-### The finding that changes the plan
+### The finding that shapes the plan
 
-The notes cover **Module 5 (16 pp) and Module 1 (62 pp)** and contain **no queuing at all**.
-Neither does the past IA paper, nor the important-questions list. Queuing exists in exactly
-one file. So the plan puts Module 2 **first** — it is the cheapest module on the paper, five
-formulas and 45 minutes — but gives it 45 minutes rather than the largest share.
+A third notes file (`N3`, 21 pp) devotes **8 pages to Module 2** and teaches three things no
+lecture deck mentions: **Kendall's notation (a/b/c):(d/e)**, **transient vs steady state**, and
+the full probability set. Topics in the notes but not the slides are the strongest
+examinability signal in the folder, so Module 2 runs **first** and gets **60 minutes**.
+
+It is still not the biggest block: Module 1 has 62 notes pages against Module 2's 8, and the
+past IA paper has no queuing question at all.
 
 | | Module 1 | Module 2 | Module 5 |
 |---|---|---|---|
-| Notes pages | 62 | **0** | 16 |
+| Notes pages | 62 | **8** | 29 |
 | Past IA paper marks | up to 14/20 | **0** | up to 6/20 |
-| Expected MSE marks | **15–18** | **4–6** | **7–9** |
-| Study time allocated | 140 min | 45 min | 60 min |
+| Expected MSE marks | **14–17** | **5–8** | **7–9** |
+| Study time allocated | 130 min | 60 min | 55 min |
 
 ### Still missing from the syllabus — no material anywhere
 
@@ -74,7 +77,7 @@ cannot yet do.
 
 | Item | Count |
 |---|---|
-| Topics | **36** (Module 1: 20 · Module 2: 5 · Module 5: 11) |
+| Topics | **37** (Module 1: 20 · Module 2: 6 · Module 5: 11) |
 | — high priority | 18 |
 | — medium priority | 9 |
 | — low priority | 3 |
@@ -82,9 +85,9 @@ cannot yet do.
 | Theory track | 14 topics |
 | Worked examples | **51** |
 | Practice questions | **83** |
-| **Total markable questions** | **134** |
+| **Total markable questions** | **138** |
 | Likely exam questions | 59 (50 from source material, 9 predicted — 15%) |
-| Quiz MCQs | **113** |
+| Quiz MCQs | **133** |
 | Formula entries | 43, in 10 groups |
 | Quick review cards | 18 (Module 1: 10 · Module 5: 8) |
 | Learning outcomes covered | 5 of 8 (LO1, LO3, LO6, LO7, LO8) |

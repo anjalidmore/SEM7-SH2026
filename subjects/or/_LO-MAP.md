@@ -22,8 +22,12 @@ study order within each module.
 |---|---|---|
 | N1 … part 1 (10 pp) | LO6, LO7, LO8 | Module 5 only — intro, maximin/minimax, saddle point, pure & mixed strategy, expected-gain method |
 | N2 … part 2 (68 pp) | LO7, LO8 then LO1, LO3, LO5 | pp. 1–6 finish Module 5 (oddments, solved problems); pp. 7–68 are **all of Module 1** |
+| **N3 … 21 pp** | **LO6, LO7, LO8 + LO5** | **pp. 1–13 Game Theory (incl. average dominance); pp. 14–21 Module 2 Queuing** |
 
-**These contain no Module 2 / queuing content at all.**
+**N1 and N2 contain no queuing. N3 does** — 8 pages of it, including three topics that appear
+in no lecture deck: **Kendall's notation (a/b/c):(d/e)**, **transient vs steady state**, and the
+full probability set (Pb, P0, Pn, P(n≥k), P(n>k), P(queue non-empty)). N3 also adds
+**modified/average dominance** to Game Theory, likewise absent from every deck.
 
 ## Module 1
 
@@ -43,7 +47,7 @@ study order within each module.
 
 | File | LOs |
 |---|---|
-| 2.01 Queuing Models | LO5 — and it is the **only** queuing source in the folder |
+| 2.01 Queuing Models | LO5 — the deck. **N3 (notes) pp. 14–21 is the higher-priority queuing source** and covers more |
 
 ## Module 5
 
@@ -57,5 +61,5 @@ study order within each module.
 
 - **LO2 (sensitivity analysis)** — no material in any file.
 - **LO4 (network models)** — outside Modules 1, 2 and 5.
-- **LO5** is split: integer programming is well covered (1.17, notes pp. 55–68); the queuing
-  half rests entirely on 2.01, with no notes and no past-paper question behind it.
+- **LO5** is split: integer programming is well covered (1.17, N2 pp. 55–68); the queuing half is
+  covered by **2.01 plus N3 pp. 14–21**. There is still no past-paper queuing question.
