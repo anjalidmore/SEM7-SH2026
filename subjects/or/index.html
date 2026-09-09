@@ -54,8 +54,8 @@ code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .tab[aria-selected="true"],.tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:700}
 .iconbtn{
   background:none; border:1px solid var(--border); border-radius:7px; color:var(--muted);
-  font:400 .7rem/1 inherit; font-family:inherit; padding:7px 7px; cursor:pointer;
-  min-width:32px; min-height:32px;
+  font:400 .7rem/1 inherit; font-family:inherit; padding:0; cursor:pointer;
+  min-width:32px; min-height:32px; display:inline-flex; align-items:center; justify-content:center;
 }
 .iconbtn:hover{color:var(--text); border-color:var(--muted)}
 .navtools{display:flex; gap:4px}
@@ -200,9 +200,9 @@ th{font-weight:700; background:var(--border-2)}
     <button id="brand" data-go="dash">OR MSE Study Guide</button>
     <div id="tabs" role="tablist"></div>
     <div class="navtools">
-      <button class="iconbtn" data-act="search" aria-label="Search" title="Search ( / )">Find</button>
-      <button class="iconbtn" data-act="theme" aria-label="Theme" title="Theme">Theme</button>
-      <button class="iconbtn" data-go="settings" aria-label="Settings" title="Settings">Set</button>
+      <button class="iconbtn" data-act="search" aria-label="Search" title="Search ( / )"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" focusable="false" style="display:block"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="10.4" y1="10.4" x2="14" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <button class="iconbtn" data-act="theme" aria-label="Theme" title="Theme"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" focusable="false" style="display:block"><path d="M8 1.6a6.4 6.4 0 1 0 6.4 6.4A5 5 0 0 1 8 1.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+      <button class="iconbtn" data-go="settings" aria-label="Settings" title="Settings"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" focusable="false" style="display:block"><circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2.2 2.4"/></svg></button>
     </div>
   </div>
   <div class="navin"><div id="searchwrap"><input id="q" type="search" placeholder="Search topics, examples, questions, formulae…" autocomplete="off"></div></div>
@@ -2435,8 +2435,479 @@ var M5_NUM = [
   ]
 }
 ];
+/* ===== 09b · Module 2 — Queuing Models (from Queuing PPT.pdf) ===== */
+var M2_TOPICS = [
+{
+  id:"m2t1", m:"m2", type:"theory", priority:"high", los:[5],
+  title:"Queuing theory — definitions and why it exists",
+  summary:"What a queue is, why queuing theory is not an optimisation, and the three reasons to study it.",
+  whatIs:"<p>Queuing theory is a collection of mathematical models of various queuing systems. It is based on probability concepts, and it indicates the capability of a given system and the possible changes in its performance when the system is modified.</p>",
+  concept:"<h4>The definitions, verbatim</h4><ul>"+
+    "<li><b>Queuing theory</b> &mdash; a collection of mathematical models of various queuing systems, based on probability concepts.</li>"+
+    "<li><b>Queues / waiting lines</b> arise when <b>the demand for a service facility exceeds the capacity of that facility</b>.</li></ul>"+
+    "<div class='box warning'><h5>The line that is almost always asked</h5>"+
+    "<p>&ldquo;The application of queuing theory <b>cannot be viewed as an optimization process</b> because it does not have a maximization or minimization objective function.&rdquo; "+
+    "Queuing <i>describes</i> a system; it does not optimise one. This is the single most distinctive fact about the module and it separates it from every other topic in the syllabus.</p></div>"+
+    "<h4>Why we need queuing theory &mdash; three reasons</h4><ol>"+
+    "<li>To find out the <b>cost of offering the service</b>.</li>"+
+    "<li>To find out the <b>cost incurred due to delay</b> in service.</li>"+
+    "<li>To <b>allocate the resources</b>.</li></ol>"+
+    "<h4>Operating characteristics of a queuing system</h4>"+
+    "<div class='tw'><table><tr><th>Characteristic</th><th>What it tells you</th></tr>"+
+    "<tr><td><b>Queue length</b></td><td>The number of customers in the waiting line &mdash; reflects one of two conditions, short queues or long queues.</td></tr>"+
+    "<tr><td><b>Number of customers in the system</b></td><td>Those in the queue <i>and</i> those being served. A large value implies congestion, potential customer dissatisfaction and a need for more capacity.</td></tr>"+
+    "<tr><td><b>Waiting time in system</b></td><td>Total elapsed time from entry into the system until exit. Indicates problems with customers, server efficiency or capacity.</td></tr>"+
+    "<tr><td><b>Waiting time in queue</b></td><td>Time waiting for service. Long waits make customers perceive poor service quality and may indicate a need to adjust the service rate or the arrival rate.</td></tr>"+
+    "<tr><td><b>Service facility utilization</b></td><td>The percentage of time the facilities are busy.</td></tr></table></div>",
+  needToKnow:[
+    "Define queuing theory and state what causes a queue to form.",
+    "State why queuing is not an optimisation process — no maximisation or minimisation objective function.",
+    "Give the three reasons for studying queuing theory.",
+    "Name the five operating characteristics and say what each indicates."
+  ],
+  recognition:{
+    clues:["The word &lsquo;queue&rsquo;, &lsquo;waiting line&rsquo;, &lsquo;server&rsquo; or &lsquo;service facility&rsquo;.","A question asking what queuing theory <i>is</i> rather than for a number.","2&ndash;5 marks with no data given."],
+    wording:["Define queuing theory.","Why is queuing theory not considered an optimisation technique?","State the operating characteristics of a queuing system."],
+    firstMove:"Write the definition, then immediately the &lsquo;not an optimisation&rsquo; sentence &mdash; it is the highest-value line in the module.",
+    trap:"Describing queuing as a method for <i>minimising</i> waiting time. It has no objective function; it computes performance measures and leaves the decision to the manager."
+  },
+  examAnswer:{
+    short:"Definition + the cause of a queue (demand exceeds capacity) + the not-an-optimisation line.",
+    medium:"Definition → cause → not-an-optimisation with its reason → the three reasons for studying it → the five operating characteristics as a list.",
+    long:"All of the above plus the components of the system and one sentence on how the performance measures feed a capacity decision."
+  },
+  mistakes:[
+    "Saying queuing theory minimises waiting time. It has no objective function at all.",
+    "Confusing queue length (waiting only) with number in the system (waiting + being served).",
+    "Giving only one reason for studying queuing when the notes list three.",
+    "Treating 'utilization' as a count rather than as the percentage of time the facility is busy."
+  ],
+  examples:[
+    {id:"m2t1e1", title:"The 5-mark 'what is queuing theory' answer",
+     q:"Define queuing theory and explain why it is not an optimisation process. (5 marks)",
+     steps:[
+      "Definition: queuing theory is a collection of mathematical models of various queuing systems, based on probability concepts.",
+      "What it delivers: it gives an indication of the capability of a given system and the possible changes in its performance with modification to the system.",
+      "Cause of a queue: queues or waiting lines arise when the demand for a service facility exceeds the capacity of that facility.",
+      "The key distinction: the application of queuing theory cannot be viewed as an optimization process, because it does not have a maximization or minimization objective function — unlike LPP, transportation or assignment, which all optimise something.",
+      "What it is used for instead: to find the cost of offering the service, to find the cost incurred due to delay in service, and to allocate resources. The manager then trades these off; the model itself does not."],
+     answer:"Definition + capability statement + cause + the no-objective-function distinction + the three uses. Five separable points for five marks.",
+     trap:"Do not pad with the components of a queuing system unless asked. The examiner is testing whether you know queuing <i>describes</i> rather than <i>optimises</i>."}
+  ],
+  practice:[
+    {id:"m2t1p1", d:"easy", q:"State the five operating characteristics of a queuing system and what each one indicates.",
+     hint:"Two are about counts, two are about times, one is about the server.",
+     a:"<p><b>Queue length</b> — the number of customers in the awaiting line; reflects one of two conditions, short queues or long queues. <b>Number of customers in the system</b> — those in the queue and those being served; a large value implies congestion, potential customer dissatisfaction and a need for more capacity. <b>Waiting time in system</b> — total elapsed time from entry until exit; indicates problems with customers, server efficiency or capacity. <b>Waiting time in queue</b> — time waiting for service; long waits make customers perceive poor service quality and may indicate a need to adjust the service rate or the arrival rate. <b>Service facility utilization</b> — the percentage of time the facilities are busy.</p>"},
+    {id:"m2t1p2", d:"moderate", q:"Contrast queuing theory with linear programming in one paragraph. Why is queuing in an OR syllabus at all if it optimises nothing?",
+     hint:"Think about what each technique hands the decision maker.",
+     a:"<p>An LPP states an explicit objective function to be maximised or minimised subject to constraints, and returns a single optimal decision. Queuing theory has <b>no objective function</b>; it takes an arrival rate and a service rate and returns <i>performance measures</i> — Ls, Lq, Ws, Wq, utilisation and idle rate.</p><p>It belongs in OR because those measures are the inputs to a decision that <i>is</i> an optimisation: the notes give the three purposes as finding the cost of offering the service, finding the cost incurred due to delay, and allocating resources. Once you can price a server and price a minute of customer waiting, comparing a one-counter system against a two-counter system becomes a cost comparison. Queuing supplies the numbers; the manager supplies the objective. The Example 2 question — by how much must arrivals increase to justify a second counter — is exactly that decision in miniature.</p>"}
+  ],
+  questions:[
+    {q:"Define queuing theory. Why can it not be viewed as an optimisation process?", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"State the operating characteristics of a queuing system.", marks:5, d:"easy", priority:"high", source:"source"}
+  ]
+},
+{
+  id:"m2t2", m:"m2", type:"theory", priority:"high", los:[5],
+  title:"Components of a queuing system and customer behaviour",
+  summary:"Arrival pattern, queue discipline, service facility — plus balking, reneging, jockeying and collusion.",
+  whatIs:"<p>Every queuing system is described by three components: the <b>arrival pattern</b>, the <b>queue discipline</b> and the <b>service facility</b>. Customer behaviour sits inside the arrival pattern and carries four named terms that are near-certain short-answer material.</p>",
+  concept:"<h4>The three components</h4>"+
+    "<div class='tw'><table><tr><th>Component</th><th>What it covers</th></tr>"+
+    "<tr><td><b>Arriving pattern</b></td><td>The average rate at which customers arrive. Includes size of population (calling population &mdash; unlimited/infinite or limited/finite), pattern of arrivals, and behaviour of arrivals.</td></tr>"+
+    "<tr><td><b>Queue discipline</b></td><td>The method of choosing which customer is served next. The common method is <b>First Come First Serve</b>.</td></tr>"+
+    "<tr><td><b>Service facility</b></td><td>The number of customers served at a time and the statistical pattern of the time taken for service.</td></tr></table></div>"+
+    "<h4>Queue discipline &mdash; static and dynamic</h4>"+
+    "<div class='tw'><table><tr><th>Type</th><th>Rules</th></tr>"+
+    "<tr><td><b>Static</b><br><span class='muted small'>based on the individual customer's status</span></td><td>First In First Out (FIFO) &middot; Last In First Out (LIFO)</td></tr>"+
+    "<tr><td><b>Dynamic</b></td><td><b>SIRO</b> (Service In Random Order) &mdash; customers selected at random irrespective of arrival time.<br><b>Priority service</b> &mdash; customers grouped into priority classes on some attribute such as service time or urgency; FIFO is used within each class.<br><b>Pre-emptive priority (emergency)</b> &mdash; customers served immediately on priority after arrival, while the low-priority customer is still waiting.</td></tr></table></div>"+
+    "<h4>Customer behaviour &mdash; the four named terms</h4>"+
+    "<div class='box tip'><h5>Learn these four verbatim &mdash; they are the classic 2-mark question</h5>"+
+    "<div class='tw'><table><tr><th>Term</th><th>Definition</th></tr>"+
+    "<tr><td><b>Balking</b></td><td>Arriving customers <b>do not join the queue</b> &mdash; discouraged by the number already waiting or by the estimated excessive waiting time, they decide to return later.</td></tr>"+
+    "<tr><td><b>Collusion</b></td><td><b>Only one person joins</b> the queue but demands service <b>on behalf of several</b> customers.</td></tr>"+
+    "<tr><td><b>Reneging</b></td><td>Impatient customers who <b>join but will not wait</b> beyond a certain time and <b>leave the queue</b>.</td></tr>"+
+    "<tr><td><b>Jockeying</b></td><td>Customers keep <b>switching from one queue to another</b> in a multiple-service-centre system.</td></tr></table></div></div>"+
+    "<h4>Distributions</h4><ul>"+
+    "<li>When the number of arrivals is completely random, arrivals follow a <b>Poisson distribution</b> &mdash; probabilities for the number of customers arriving in a specific interval of time.</li>"+
+    "<li><b>Exponential distribution</b> &mdash; probabilities for the time gap between two consecutive arrivals.</li>"+
+    "<li>Service time follows an <b>Erlang distribution</b> in the general case; completely random service time is <b>exponential</b>.</li>"+
+    "<li><b>Constant service time</b> &mdash; the notes dismiss it in one line: &ldquo;not in practice&rdquo;.</li></ul>",
+  needToKnow:[
+    "Name the three components and what each covers.",
+    "Distinguish static from dynamic queue discipline and give the rules under each.",
+    "Define balking, collusion, reneging and jockeying without confusing them.",
+    "Say which distribution governs arrivals, inter-arrival gaps and service time."
+  ],
+  recognition:{
+    clues:["&lsquo;Components&rsquo;, &lsquo;structure&rsquo;, &lsquo;characteristics&rsquo; of a queuing system.","Any question naming balking, reneging or jockeying.","&lsquo;Queue discipline&rsquo; or &lsquo;FIFO / LIFO / SIRO&rsquo;."],
+    wording:["Explain the components of a queuing system.","Define balking, reneging, jockeying and collusion.","What is queue discipline? Explain its types."],
+    firstMove:"For a customer-behaviour question write the four terms as a table &mdash; one line each, no prose.",
+    trap:"Swapping <b>balking</b> and <b>reneging</b>. Balking = never joins. Reneging = joins, then leaves. The distinction is whether the customer ever entered the queue."
+  },
+  examAnswer:{
+    short:"The four behaviour terms, one line each. Or the three components, one line each.",
+    medium:"Three components with their sub-parts → queue discipline static vs dynamic with all five rules → the four behaviour terms.",
+    long:"All of the above, plus the distributions (Poisson for arrivals, exponential for inter-arrival gaps and random service, Erlang in general) and the service-configuration types."
+  },
+  mistakes:[
+    "Confusing balking with reneging — the most commonly examined trap in this module.",
+    "Listing FIFO as the only queue discipline. SIRO, priority and pre-emptive priority are all named.",
+    "Saying arrivals follow an exponential distribution. The <i>number</i> of arrivals is Poisson; the <i>time gap between</i> arrivals is exponential.",
+    "Forgetting collusion, which is the one behaviour term students omit."
+  ],
+  examples:[
+    {id:"m2t2e1", title:"Telling the four behaviours apart on one scenario",
+     q:"At a bank with three counters, describe a customer exhibiting each of balking, collusion, reneging and jockeying.",
+     steps:[
+      "Balking — a customer walks in, sees twenty people already waiting, estimates the wait is excessive, and leaves without joining any queue, deciding to return for service at a later time. The defining feature: they never joined.",
+      "Collusion — one member of a family of four joins the queue while the other three sit down; when they reach the counter they transact on behalf of all four. The defining feature: one person in the queue, several customers served.",
+      "Reneging — a customer joins the shortest queue, waits eight minutes, decides they will not wait beyond ten, and leaves. The defining feature: they joined and then abandoned.",
+      "Jockeying — a customer in counter 2's queue notices counter 1 moving faster, switches to it, then switches again to counter 3. The defining feature: switching between queues in a multiple-service-centre system.",
+      "The clean test: did they join? No → balking. Joined then left → reneging. Joined and moved → jockeying. One joined for many → collusion."],
+     answer:"Balking = never joins · Collusion = one joins for several · Reneging = joins then abandons · Jockeying = switches queues.",
+     trap:"Jockeying requires more than one queue to exist. In a single-queue system a customer cannot jockey, only renege."}
+  ],
+  practice:[
+    {id:"m2t2p1", d:"easy", q:"Define balking, collusion, reneging and jockeying.",
+     hint:"Order them by whether the customer joined the queue at all.",
+     a:"<p><b>Balking</b> — arriving customers are said to balk if they do not join the queue, because of their reluctance to wait, or because they are discouraged by the number of customers already in the system or by the estimated excessive waiting time, and decide to return for service at a later time.</p><p><b>Collusion</b> — customers may be in collusion, meaning that only one person will join the queue but will demand service on behalf of several customers.</p><p><b>Reneging</b> — impatient customers who will not wait beyond a certain time and leave the queue are said to renege.</p><p><b>Jockeying</b> — some customers keep switching over from one queue to another in a multiple service centre system.</p>"},
+    {id:"m2t2p2", d:"moderate", q:"Explain queue discipline and distinguish static from dynamic disciplines with all the rules under each.",
+     hint:"Static depends on arrival order; dynamic depends on something else.",
+     a:"<p><b>Queue discipline</b> is the method of choosing which customer to serve next from those waiting. The common method is First Come First Serve.</p><p><b>Static queuing discipline</b> is based on the individual customer's status — essentially, position in the arrival order. Its rules are <b>First In First Out (FIFO)</b> and <b>Last In First Out (LIFO)</b>.</p><p><b>Dynamic queuing discipline</b> selects on something other than arrival order:</p><ul><li><b>SIRO (Service In Random Order)</b> — customers are selected at random irrespective of their arrival time.</li><li><b>Priority service</b> — customers are grouped in priority classes on the basis of some attribute such as service time or urgency, and FIFO is used within each class.</li><li><b>Pre-emptive priority (or emergency)</b> — customers are served immediately on priority after arrival, while the low-priority customer is still waiting in the queue.</li></ul>"},
+    {id:"m2t2p3", d:"moderate", q:"Which distribution applies to (a) the number of arrivals in an interval, (b) the gap between two consecutive arrivals, (c) completely random service time? State the assumption behind (c).",
+     hint:"Two of the three are different views of the same random process.",
+     a:"<p><b>(a) Poisson distribution</b> — when the number of arrivals of customers is completely random, they follow a Poisson distribution, which gives probabilities for the number of customers that may arrive in a specific interval of time.</p><p><b>(b) Exponential distribution</b> — gives probabilities for the time gap between two consecutive arrivals.</p><p><b>(c) Exponential distribution</b> — completely random service time is exponential; in the general case service time follows an Erlang distribution.</p><p><b>The assumption behind (c)</b>, stated in the notes as three conditions: the server does not distinguish between the various arrivals; the server does not change the service time based on the previous arrival; and the server &lsquo;forgets&rsquo; the time for which he or she has been serving the customer. That last one is the memoryless property, and it is what makes the exponential distribution the right model.</p>"}
+  ],
+  questions:[
+    {q:"Explain the components of a queuing system.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"Define balking, reneging, jockeying and collusion with an example of each.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"What is queue discipline? Explain static and dynamic queue disciplines.", marks:5, d:"moderate", priority:"high", source:"source"}
+  ]
+}
+];
+/* ===== 09c · Module 2 — the numericals (the marks bank) ===== */
+var M2_NUM = [
+{
+  id:"m2t3", m:"m2", type:"problem-solving", priority:"high", los:[5],
+  title:"Arrival rate, service rate, utilisation and idle rate",
+  summary:"Convert times to rates, get ρ and 1−ρ. Every other queuing answer depends on getting this right.",
+  whatIs:"<p>Everything in this module is built from two numbers: <b>&lambda;</b> (average arrival rate) and <b>&mu;</b> (average service rate). Questions almost always give you <i>times</i>, so the first move is always a conversion.</p>",
+  concept:"<h4>The conversion</h4>"+
+    "<div class='box tip'><h5>Rate = 1 &divide; time, in matching units</h5>"+
+    "<p class='mono blk'>A customer arrives every 10 minutes  ->  lambda = 60/10 = 6 per hour\nService takes 6 minutes per customer  ->  mu = 60/6 = 10 per hour</p>"+
+    "<p>Your notes state the reciprocal relation directly: <i>service time and service rate are reciprocal to each other and either of them is sufficient to indicate the capacity of the facility</i>.</p></div>"+
+    "<h4>Worked conversion from the deck</h4><p>If a cashier can attend on average 5 customers in an hour, then <b>service rate = 5 customers/hour</b> and <b>service time = 60/5 = 12 minutes per customer</b>.</p>"+
+    "<h4>Utilisation and idle rate</h4>"+
+    "<p class='mono blk'>rho (utilisation rate) = lambda / mu\nidle rate            = 1 - rho\nP(0) = probability the system is idle = 1 - rho</p>"+
+    "<p><b>Average idle time of the server</b> over a period t is <span class='mono'>P(0) &times; t</span>. In the deck's Example 1, P(0) = 0.4 and t = 8 hours, so the server is idle 0.4 &times; 8 = <b>3.2 hours</b>.</p>"+
+    "<h4>What &rho; tells you</h4>"+
+    "<div class='tw'><table><tr><th>&rho;</th><th>Meaning</th></tr>"+
+    "<tr><td>&rho; &lt; 1</td><td>Server keeps up. Steady state exists and all the formulas apply.</td></tr>"+
+    "<tr><td>&rho; = 1</td><td>Arrival rate equals service rate &mdash; the queue grows without bound.</td></tr>"+
+    "<tr><td>&rho; &gt; 1</td><td>Failure of the service system: demand exceeds capacity, infinite queue.</td></tr></table></div>"+
+    "<div class='box warning'><h5>Rates scale, ratios do not</h5><p>If you rescale to a different period, &lambda; and &mu; both scale &mdash; but <b>&rho; does not change</b>. In Example 1, &rho; = 6/10 for one hour and 48/80 for eight hours, and both equal 0.6. That is why the deck reports the same &rho; = 0.6 for 1 hour, 15 minutes and 8 hours.</p></div>",
+  needToKnow:[
+    "Convert 'one customer every t minutes' into a rate per hour, and per any other period.",
+    "Compute ρ = λ/μ and the idle rate 1 − ρ.",
+    "Compute average idle time as P(0) × t.",
+    "Know that ρ is unchanged by the choice of time period."
+  ],
+  recognition:{
+    clues:["The question gives a <b>time</b> (&lsquo;every 10 minutes&rsquo;, &lsquo;takes 6 minutes&rsquo;) rather than a rate.","Asks for utilisation, idle rate, or the probability the system is idle.","Asks for the answer &lsquo;for 1 hour / 15 minutes / 8 hours&rsquo;."],
+    wording:["Find the average arrival rate for 1 hour, 15 minutes and 8 hours.","Find the utilization rate and the idle rate.","What is the probability that the system is idle? Find the average idle time of the server."],
+    firstMove:"Write &lambda; = &hellip; and &mu; = &hellip; in <i>per hour</i>, boxed, before computing anything else. Every later formula reads from those two numbers.",
+    trap:"Mixing units. If &lambda; is per hour and &mu; is per minute, every answer is wrong by a factor of 60. Convert both to the same period first, and state which period you are using."
+  },
+  examAnswer:{
+    short:"λ, μ, ρ = λ/μ and idle = 1 − ρ, with units stated.",
+    medium:"The conversion shown explicitly → ρ and idle rate → the interpretation sentence (server busy x% of the time, idle for y hours in an 8-hour shift).",
+    long:"This is the opening section of a full queuing question; do it in three lines and spend the rest on the performance measures."
+  },
+  mistakes:[
+    "Mixing per-minute and per-hour figures in the same formula.",
+    "Computing ρ = μ/λ instead of λ/μ. Utilisation must be below 1 for a working system — if you get 1.67, you inverted it.",
+    "Forgetting that the answer to 'find the arrival rate for 15 minutes' is λ scaled to 15 minutes, not λ per hour.",
+    "Reporting idle time as a probability rather than multiplying by the period to get hours."
+  ],
+  examples:[
+    {id:"m2t3e1", title:"Example 1 setup — the conversion, all three periods",
+     q:"At a bank counter, arrivals follow a Poisson distribution and on average a customer arrives every 10 minutes. The officer takes on average 6 minutes to serve a customer, exponentially distributed. Find λ and μ for 1 hour, 15 minutes and 8 hours, then the utilisation and idle rates.",
+     steps:[
+      "Arrival rate: one customer every 10 minutes. Per hour, λ = 60/10 = 6. Per 15 minutes, λ = 15/10 = 1.5. Per 8 hours, λ = (8 × 60)/10 = 48.",
+      "Service rate: 6 minutes per customer. Per hour, μ = 60/6 = 10. Per 15 minutes, μ = 15/6 = 2.5. Per 8 hours, μ = 480/6 = 80.",
+      "Utilisation ρ = λ/μ. For 1 hour: 6/10 = 0.6. For 15 minutes: 1.5/2.5 = 0.6. For 8 hours: 48/80 = 0.6.",
+      "Note that ρ is 0.6 in all three cases — the ratio is independent of the period chosen. This is the check that your conversions are consistent.",
+      "Idle rate = 1 − ρ = 1 − 0.6 = 0.4. This is also P(0), the probability of no customer in the system.",
+      "Average idle time of the server over an 8-hour day = P(0) × t = 0.4 × 8 = 3.2 hours."],
+     answer:"<b>λ = 6, 1.5, 48 and μ = 10, 2.5, 80</b> for 1 hour, 15 minutes and 8 hours. <b>ρ = 0.6</b> throughout, <b>idle rate = 0.4</b>, and the server is idle <b>3.2 hours</b> in an 8-hour day.",
+     trap:"ρ coming out the same for all three periods is not a coincidence — use it as your error check. If your three ρ values differ, one conversion is wrong."}
+  ],
+  practice:[
+    {id:"m2t3p1", d:"easy", q:"Customers arrive at a counter every 6 minutes on average and the server takes 5 minutes per customer. Find λ, μ, ρ and the idle rate per hour.",
+     hint:"Both figures are times; convert both to per-hour rates first.",
+     a:"<p><b>λ</b> = 60/6 = <b>10 per hour</b>. <b>μ</b> = 60/5 = <b>12 per hour</b>.</p><p><b>ρ</b> = λ/μ = 10/12 = <b>0.833</b> — the server is busy about 83.3% of the time.</p><p><b>Idle rate</b> = 1 − ρ = 1 − 0.833 = <b>0.167</b>, so the server is idle about 16.7% of the time. Over an 8-hour day that is 0.167 × 8 ≈ <b>1.33 hours</b>.</p><p>These are the deck's own Example figures for average arrival rate 10 and service rate 12, giving a utilisation rate of 0.833.</p>"},
+    {id:"m2t3p2", d:"moderate", q:"A service system has λ = 15 per hour and μ = 12 per hour. Compute ρ and explain what the answer means for the queue.",
+     hint:"Check whether ρ is below 1 before applying any other formula.",
+     a:"<p><b>ρ</b> = λ/μ = 15/12 = <b>1.25</b>.</p><p>Since ρ &gt; 1, the arrival rate exceeds the service rate. This is the <b>failure of the service system</b> case in your notes: customers arrive faster than they can be served, so the queue grows without bound and no steady state is ever reached.</p><p><b>Consequence for the exam:</b> none of the standard formulas apply. Ls = λ/(μ−λ) would give 15/(12−15) = −5, a negative number of customers, which is meaningless. A negative or infinite answer from these formulas is always the signal that ρ ≥ 1. The remedy in practice is to add a second server or increase the service rate.</p>"}
+  ],
+  questions:[
+    {q:"Find the average arrival rate and service rate for 1 hour, 15 minutes and 8 hours for the given system, and hence the utilisation and idle rates.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"Define utilisation rate and idle rate. What happens when λ ≥ μ?", marks:5, d:"moderate", priority:"high", source:"predicted"}
+  ]
+},
+{
+  id:"m2t4", m:"m2", type:"problem-solving", priority:"high", los:[5],
+  title:"Single-server performance measures — Ls, Lq, Ws, Wq",
+  summary:"Five formulas, pure substitution. The highest marks-per-minute topic in the whole syllabus.",
+  whatIs:"<p>Given &lambda; and &mu; for a single-server model, five formulas give every performance measure the exam can ask for. There is no method to choose and no algorithm to run &mdash; only substitution.</p>",
+  concept:"<div class='box tip'><h5>The whole module, in one block</h5>"+
+    "<p class='mono blk'>rho = lambda / mu                          utilisation\nP(0) = 1 - rho                             idle / system empty\nP(n) = rho^n * (1 - rho)                   exactly n in system\n\nLs  = lambda / (mu - lambda)               customers IN SYSTEM\nLq  = lambda^2 / (mu (mu - lambda))        customers IN QUEUE\nWs  = 1 / (mu - lambda)                    waiting time IN SYSTEM\nWq  = lambda / (mu (mu - lambda))          waiting time IN QUEUE\nLq' = mu / (mu - lambda)                   expected length of NON-EMPTY queue</p></div>"+
+    "<h4>The relationships worth knowing</h4>"+
+    "<div class='tw'><table><tr><th>Relation</th><th>Why it is useful</th></tr>"+
+    "<tr><td><b>Ls = Lq + &rho;</b></td><td>System = queue + the one being served (on average &rho; of them).</td></tr>"+
+    "<tr><td><b>Ws = Wq + 1/&mu;</b></td><td>Time in system = time waiting + time being served.</td></tr>"+
+    "<tr><td><b>Ls = &lambda; &times; Ws</b> and <b>Lq = &lambda; &times; Wq</b></td><td>Little's law. Your notes give it in the form <i>Wq = Lq / &lambda;</i> and <i>Ws = Ls / &lambda;</i> &mdash; so if you have one measure you can get its partner without a new formula.</td></tr>"+
+    "<tr><td><b>Lq = &rho; &times; Ls</b></td><td>A one-step shortcut once Ls is known.</td></tr></table></div>"+
+    "<h4>The four-way grid &mdash; the thing students get wrong</h4>"+
+    "<div class='tw'><table><tr><th></th><th>In the QUEUE (waiting only)</th><th>In the SYSTEM (waiting + service)</th></tr>"+
+    "<tr><td><b>Number of customers</b></td><td><b>Lq</b> = &lambda;&sup2;/(&mu;(&mu;&minus;&lambda;))</td><td><b>Ls</b> = &lambda;/(&mu;&minus;&lambda;)</td></tr>"+
+    "<tr><td><b>Time</b></td><td><b>Wq</b> = &lambda;/(&mu;(&mu;&minus;&lambda;))</td><td><b>Ws</b> = 1/(&mu;&minus;&lambda;)</td></tr></table></div>"+
+    "<p>Notice the pattern: the <b>L</b> formulas and the <b>W</b> formulas differ by exactly a factor of &lambda;, and the <b>queue</b> versions differ from the <b>system</b> versions by exactly a factor of &rho;. Reconstructing all four from Ls alone takes ten seconds.</p>",
+  needToKnow:[
+    "Write all five formulas from memory and know which is queue and which is system.",
+    "Substitute λ and μ and get a number, with units.",
+    "Use Little's law to cross-check a pair.",
+    "State what the answer means in words — 'on average 1.5 customers are in the system'."
+  ],
+  recognition:{
+    clues:["&lsquo;Average number of customers&rsquo; &rarr; an L formula.","&lsquo;Average waiting time&rsquo; or &lsquo;expected time&rsquo; &rarr; a W formula.","&lsquo;In the queue&rsquo; vs &lsquo;in the system&rsquo; decides which of the pair.","&lsquo;Non-empty queue&rsquo; &rarr; Lq&prime;."],
+    wording:["Find the average number of customers in the queue and in the system.","What is the expected waiting time in the queue?","Find the expected length of the non-empty queue."],
+    firstMove:"Write &lambda;, &mu; and (&mu; &minus; &lambda;) as three boxed numbers. Every formula uses (&mu; &minus; &lambda;) in its denominator, so computing it once prevents four chances to slip.",
+    trap:"Reading &lsquo;in the queue&rsquo; as &lsquo;in the system&rsquo;. Lq is always smaller than Ls, and Wq is always smaller than Ws &mdash; if your queue figure exceeds your system figure you have swapped them."
+  },
+  examAnswer:{
+    short:"The formula, the substitution, the number, the unit. Three lines.",
+    medium:"λ and μ stated → (μ−λ) computed once → each requested measure with its formula written before the substitution → a one-line interpretation of each.",
+    long:"All measures, plus Little's-law cross-checks, plus an interpretation paragraph on what the figures say about capacity."
+  },
+  mistakes:[
+    "Confusing Lq with Ls, or Wq with Ws. Always the queue version is smaller.",
+    "Using λ and μ in different time units, which corrupts every answer.",
+    "Forgetting to square λ in the Lq numerator.",
+    "Writing Wq = λ/(μ−λ) — the μ in the denominator is easy to drop, and it changes the answer by a factor of μ.",
+    "Giving a time without units. Ws = 0.0312 is meaningless unless you say hours."
+  ],
+  examples:[
+    {id:"m2t4e1", title:"Example 1 — all five measures, worked over 8 hours",
+     q:"For the bank counter with λ = 48 and μ = 80 per 8-hour day, find Ls, Lq, Ws, Wq and Lq′.",
+     steps:[
+      "First compute the denominator once: μ − λ = 80 − 48 = 32.",
+      "Ls = λ/(μ − λ) = 48/32 = 1.5, i.e. 3/2. On average 1.5 customers are in the system.",
+      "Lq = λ²/(μ(μ − λ)) = 48²/(80 × 32) = 2304/2560 = 0.9. On average 0.9 customers are waiting.",
+      "Cross-check with Ls = Lq + ρ: 0.9 + 0.6 = 1.5 ✓ — matches Ls exactly, so both are right.",
+      "Ws = 1/(μ − λ) = 1/32 = 0.0312 (of an 8-hour day). Wq = λ/(μ(μ − λ)) = 48/2560 = 0.0187.",
+      "Cross-check with Little's law: Ls = λ × Ws = 48 × 0.03125 = 1.5 ✓ and Lq = λ × Wq = 48 × 0.01875 = 0.9 ✓.",
+      "Lq′ = μ/(μ − λ) = 80/32 = 2.5 — the expected length of the queue when it is not empty."],
+     answer:"<b>Ls = 1.5 · Lq = 0.9 · Ws = 0.0312 · Wq = 0.0187 · Lq′ = 2.5.</b> Both cross-checks pass.",
+     trap:"Ws = 0.0312 is in units of the <i>8-hour day</i>, because λ and μ were expressed per 8 hours. In minutes that is 0.0312 × 480 = 15 minutes. Always state the unit — the marker cannot tell whether you understood otherwise."},
+    {id:"m2t4e2", title:"Example 2 — Lq when λ and μ come from mixed units",
+     q:"Arrivals at a bank payment counter follow a Poisson distribution averaging 10 per hour. Service time is negative exponential with an average of 4 minutes. Find the average number of customers in the queue.",
+     steps:[
+      "λ is already a rate: 10 per hour. μ is a time: 4 minutes per customer.",
+      "Convert μ to the same unit as λ: μ = 60/4 = 15 per hour. This conversion is the whole difficulty of the question.",
+      "μ − λ = 15 − 10 = 5.",
+      "Lq = λ²/(μ(μ − λ)) = 10²/(15 × 5) = 100/75 = 4/3 ≈ 1.33 customers.",
+      "Sanity check via ρ: ρ = 10/15 = 2/3, Ls = 10/5 = 2, and Lq = Ls − ρ = 2 − 2/3 = 4/3 ✓."],
+     answer:"<b>Lq = 4/3 ≈ 1.33 customers</b> waiting in the queue on average.",
+     trap:"<b>The deck prints this answer as 3/4.</b> Recomputing gives 100/75 = 4/3, and the cross-check Lq = Ls − ρ = 2 − 2/3 confirms 4/3. Note that 4/3 and 3/4 are reciprocals, so this looks like an inverted fraction in the slide. Use 4/3, and show the substitution so your working stands on its own."}
+  ],
+  practice:[
+    {id:"m2t4p1", d:"easy", q:"λ = 10 per hour, μ = 12 per hour. Find Ls, Lq, Ws and Wq, with units.",
+     hint:"Compute μ − λ once, then substitute four times.",
+     a:"<p>μ − λ = 12 − 10 = 2, and ρ = 10/12 = 0.833.</p><p><b>Ls</b> = λ/(μ−λ) = 10/2 = <b>5 customers</b> in the system.<br><b>Lq</b> = λ²/(μ(μ−λ)) = 100/(12×2) = 100/24 = <b>4.17 customers</b> waiting.<br><b>Ws</b> = 1/(μ−λ) = 1/2 = <b>0.5 hours = 30 minutes</b> in the system.<br><b>Wq</b> = λ/(μ(μ−λ)) = 10/24 = <b>0.417 hours = 25 minutes</b> waiting.</p><p><b>Checks:</b> Ls = Lq + ρ → 4.17 + 0.83 = 5 ✓. Ws = Wq + 1/μ → 0.417 + 0.083 = 0.5 ✓. Little's law: λWs = 10 × 0.5 = 5 = Ls ✓.</p><p>Note how heavily loaded this system is — ρ = 0.833 gives a 25-minute wait, whereas ρ = 0.6 in Example 1 gave 15 minutes. Waiting time rises very fast as ρ approaches 1.</p>"},
+    {id:"m2t4p2", d:"moderate", q:"A single clerk serves customers arriving every 5 minutes; service takes 3 minutes. Find all five measures per hour and interpret.",
+     hint:"Both are times. Convert both, then substitute.",
+     a:"<p><b>λ</b> = 60/5 = 12 per hour. <b>μ</b> = 60/3 = 20 per hour. μ − λ = 8. ρ = 12/20 = 0.6.</p><p><b>Ls</b> = 12/8 = <b>1.5 customers</b><br><b>Lq</b> = 144/(20×8) = 144/160 = <b>0.9 customers</b><br><b>Ws</b> = 1/8 = <b>0.125 hr = 7.5 min</b><br><b>Wq</b> = 12/160 = <b>0.075 hr = 4.5 min</b><br><b>Lq′</b> = 20/8 = <b>2.5 customers</b></p><p><b>Interpretation:</b> the clerk is busy 60% of the time and idle 40%. A customer spends 7.5 minutes in the system, of which 4.5 minutes is waiting and 3 minutes is the service itself (Ws − Wq = 1/μ = 3 min ✓). When a queue does exist it averages 2.5 people.</p><p>Note this has the same ρ = 0.6 as Example 1 and therefore the same Ls = 1.5 and Lq = 0.9 — the <i>counts</i> depend only on ρ, while the <i>times</i> depend on the actual rates.</p>"},
+    {id:"m2t4p3", d:"hard", q:"For a single-server system you are told only that Ls = 4 and ρ = 0.8. Recover λ, μ, Lq, Ws and Wq.",
+     hint:"Work backwards from Ls = λ/(μ−λ) and ρ = λ/μ.",
+     a:"<p>From ρ = λ/μ = 0.8 we get λ = 0.8μ, so μ − λ = 0.2μ.</p><p>From Ls = λ/(μ−λ) = 0.8μ/0.2μ = 4 ✓ — consistent, but it cancels, so Ls and ρ alone cannot fix the <i>scale</i>. We can only recover λ and μ up to a common factor. <b>Take μ as the unknown scale.</b></p><p>What <i>can</i> be recovered without the scale:</p><p><b>Lq</b> = Ls − ρ = 4 − 0.8 = <b>3.2 customers</b>.<br><b>Ws</b> = Ls/λ = 4/(0.8μ) = <b>5/μ</b>.<br><b>Wq</b> = Lq/λ = 3.2/(0.8μ) = <b>4/μ</b>.<br>Check: Ws − Wq = 5/μ − 4/μ = 1/μ ✓, exactly the service time.</p><p><b>The lesson:</b> counts (Ls, Lq) are determined by ρ alone; times (Ws, Wq) need an actual rate. If the question also told you μ = 10 per hour, then λ = 8, Ws = 0.5 hr and Wq = 0.4 hr.</p>"}
+  ],
+  questions:[
+    {q:"Find the average number of customers in the system and in the queue, and the average waiting times, for the given single-server system.", marks:10, d:"moderate", priority:"high", source:"source"},
+    {q:"State the formulas for Ls, Lq, Ws and Wq for a single-server model and explain what each measures.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"Verify Little's law for the given queuing system.", marks:5, d:"moderate", priority:"medium", source:"predicted"}
+  ]
+},
+{
+  id:"m2t5", m:"m2", type:"problem-solving", priority:"high", los:[5],
+  title:"Probability of n customers, and inverse (design) problems",
+  summary:"P(n) = ρⁿ(1−ρ), plus the harder ask: solve backwards for the arrival rate that justifies a second counter.",
+  whatIs:"<p>Two things sit on top of the standard formulas: the probability distribution of the number in the system, and the &lsquo;work backwards&rsquo; question that is the hardest thing this module asks.</p>",
+  concept:"<h4>The probability chain</h4>"+
+    "<p class='mono blk'>P(0) = 1 - rho                    system empty / server idle\nP(1) = rho * P(0)  = rho (1-rho)\nP(2) = rho * P(1)  = rho^2 (1-rho)\nP(n) = rho^n * P(0) = rho^n (1 - rho)</p>"+
+    "<p>Your notes build it as a chain &mdash; each probability is &rho; times the previous one &mdash; and then close it into the general formula.</p>"+
+    "<h4>Cumulative versions</h4>"+
+    "<div class='tw'><table><tr><th>Ask</th><th>Formula</th><th>Reasoning</th></tr>"+
+    "<tr><td>Exactly n in system</td><td>&rho;<sup>n</sup>(1&minus;&rho;)</td><td>Direct.</td></tr>"+
+    "<tr><td><b>More than</b> n in system</td><td>&rho;<sup>n+1</sup></td><td>P(&gt;n) = 1 &minus; P(0..n), and the geometric series collapses.</td></tr>"+
+    "<tr><td>At least n in system</td><td>&rho;<sup>n</sup></td><td>Same collapse, one step earlier.</td></tr>"+
+    "<tr><td>An arrival finds n <b>waiting</b></td><td>P(n+1) in system</td><td>n waiting means n in the queue plus 1 being served.</td></tr></table></div>"+
+    "<div class='box warning'><h5>The one-word trap</h5><p>&lsquo;2 persons are <b>waiting</b>&rsquo; is not P(2). Two waiting means two in the queue <i>plus</i> one in service, so it is <b>P(3)</b> in the system. The deck's Example 3 asks exactly this, alongside &lsquo;more than 2 customers in the system&rsquo;, to see whether you spot the difference.</p></div>"+
+    "<h4>Inverse problems &mdash; the hard ask</h4>"+
+    "<p>A design question fixes a <i>target</i> performance measure and asks for the rate that achieves it. The method is always the same:</p><ol>"+
+    "<li>Write the formula for the target measure.</li>"+
+    "<li>Convert the target to the same units as &mu; (10 minutes = 1/6 hour).</li>"+
+    "<li>Set formula = target and solve the resulting linear equation for &lambda;.</li>"+
+    "<li>Subtract the current &lambda; to answer &lsquo;by how much must it increase&rsquo;.</li></ol>",
+  needToKnow:[
+    "Write P(n) = ρⁿ(1−ρ) and compute it for a given n.",
+    "Convert 'more than n' and 'n waiting' into the right P.",
+    "Set a performance formula equal to a target and solve for λ.",
+    "Answer the actual question asked — an increase, not a new value."
+  ],
+  recognition:{
+    clues:["The word <b>probability</b> with a number of customers.","&lsquo;More than&rsquo;, &lsquo;at least&rsquo;, or &lsquo;finds n waiting&rsquo;.","&lsquo;By how much should &hellip; increase in order to justify &hellip;&rsquo; &mdash; an inverse problem.","A target given as a time (&lsquo;at least 10 minutes&rsquo;)."],
+    wording:["Find the probability that there are exactly 5 customers in the system.","Probability that there are more than 2 customers in the system.","Probability that an arrival finds that 2 persons are waiting for their turn.","By how much should the flow of arrivals increase in order to justify a second counter?"],
+    firstMove:"For a probability question, write &rho; first &mdash; every P is a power of it. For an inverse question, write the target formula and the target value on one line before touching algebra.",
+    trap:"Answering an inverse question with the new &lambda; when it asked <i>by how much</i> it should increase. The answer is the difference, not the level."
+  },
+  examAnswer:{
+    short:"ρ, then the single P computed, or the solved λ.",
+    medium:"For inverse: formula → target in consistent units → the equation → solved λ → the increase, stated in a sentence.",
+    long:"Combine with the standard measures — these questions usually form parts (iv), (v), (vi) of a larger queuing question."
+  },
+  mistakes:[
+    "Reading 'n waiting' as P(n) instead of P(n+1).",
+    "Leaving a target of '10 minutes' in minutes while μ is per hour.",
+    "Solving for λ and stopping, when the question asked for the increase.",
+    "Using P(n) = ρⁿ without the (1−ρ) factor — that is the 'at least n' formula, not 'exactly n'."
+  ],
+  examples:[
+    {id:"m2t5e1", title:"Example 1 (v) — probability of exactly 5 in the system",
+     q:"For the bank counter with λ = 6 and μ = 10 per hour, find the probability that there are exactly 5 customers in the system.",
+     steps:[
+      "ρ = λ/μ = 6/10 = 0.6.",
+      "P(0) = 1 − ρ = 0.4.",
+      "P(n) = ρⁿ(1 − ρ), so P(5) = (0.6)⁵ × 0.4.",
+      "(0.6)⁵ = 0.6 × 0.6 × 0.6 × 0.6 × 0.6 = 0.07776.",
+      "P(5) = 0.07776 × 0.4 = 0.031104 ≈ 0.0311."],
+     answer:"<b>P(5) = 0.0311</b>, about a 3.1% chance of finding exactly 5 customers in the system.",
+     trap:"Note that ρ = 0.6 whether you work per hour or per 8 hours, so this probability does not depend on the period. Do not recompute it for each period as if it changed."},
+    {id:"m2t5e2", title:"Example 2 — the inverse problem, in full",
+     q:"Arrivals average 10 per hour; service averages 4 minutes. The bank will open a second counter when the waiting time of a customer is at least 10 minutes. By how much should the flow of arrivals increase to justify the second counter?",
+     steps:[
+      "Current rates: λ = 10 per hour, μ = 60/4 = 15 per hour.",
+      "The target is on the waiting time in the QUEUE, so the formula is Wq = λ/(μ(μ − λ)).",
+      "Convert the target: 10 minutes = 10/60 = 1/6 hour, to match μ in per-hour units.",
+      "Set up the equation with λ now unknown: λ/(15(15 − λ)) = 1/6.",
+      "Cross-multiply: 6λ = 15(15 − λ) = 225 − 15λ.",
+      "Collect: 6λ + 15λ = 225, so 21λ = 225 and λ = 225/21 = 10.714.",
+      "Verify: Wq = 10.714/(15 × 4.286) = 10.714/64.29 = 0.1667 hour = 10 minutes ✓.",
+      "The question asks by how much arrivals must increase: 10.714 − 10 = 0.714 ≈ 0.7 per hour."],
+     answer:"The arrival rate must rise to about <b>10.7 per hour</b>, an increase of about <b>0.7 customers per hour</b>.",
+     trap:"Two traps in one question. First, the target is a <i>queue</i> waiting time, so use Wq and not Ws. Second, the answer is the <b>increase (0.7)</b>, not the new rate (10.7) — the deck states both, and only the increase answers the question as asked."}
+  ],
+  practice:[
+    {id:"m2t5p1", d:"moderate", q:"λ = 6, μ = 10 per hour. Find (a) P(more than 2 customers in the system) and (b) P(an arrival finds 2 persons waiting).",
+     hint:"One is a cumulative tail; the other needs you to convert 'waiting' into 'in system'.",
+     a:"<p>ρ = 6/10 = 0.6.</p><p><b>(a) More than 2 in the system.</b> P(&gt;n) = ρ<sup>n+1</sup>, so P(&gt;2) = ρ³ = 0.6³ = <b>0.216</b>.</p><p><i>Long way, as a check:</i> P(0)=0.4, P(1)=0.6×0.4=0.24, P(2)=0.36×0.4=0.144. Sum = 0.784. P(&gt;2) = 1 − 0.784 = 0.216 ✓.</p><p><b>(b) An arrival finds 2 persons waiting.</b> Two waiting means two in the queue plus one being served, so there are <b>3 in the system</b>.</p><p>P(3) = ρ³(1−ρ) = 0.216 × 0.4 = <b>0.0864</b>.</p><p>The two answers differ by exactly the factor (1−ρ) — worth noticing, because the wording is the only thing that distinguishes them.</p>"},
+    {id:"m2t5p2", d:"hard", q:"λ = 8 per hour and service takes 5 minutes. Management will add a server when the average number waiting exceeds 3. By how much must λ increase?",
+     hint:"Target is Lq = 3. Set up the quadratic carefully — it factorises.",
+     a:"<p>μ = 60/5 = <b>12 per hour</b>. Current Lq = 64/(12×4) = 64/48 = 1.33.</p><p><b>Set Lq = 3:</b> λ²/(12(12 − λ)) = 3 → λ² = 36(12 − λ) = 432 − 36λ → λ² + 36λ − 432 = 0.</p><p>Solve: λ = [−36 ± √(1296 + 1728)]/2 = [−36 ± √3024]/2. √3024 ≈ 54.99, so λ = (−36 + 54.99)/2 = <b>9.50 per hour</b> (the negative root is rejected).</p><p><b>Check:</b> μ − λ = 2.50, Lq = 90.25/(12 × 2.50) = 90.25/30 = 3.008 ≈ 3 ✓.</p><p><b>Increase required = 9.50 − 8 = 1.50 customers per hour.</b></p><p>Note this one is quadratic because Lq has λ², whereas the Wq target in Example 2 was linear. Read which measure the target is on before setting up.</p>"}
+  ],
+  questions:[
+    {q:"Find the probability that there are exactly n customers in the system, and that there are more than n.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"By how much should the arrival rate increase to justify opening a second counter, given the stated waiting-time criterion?", marks:5, d:"hard", priority:"high", source:"source"}
+  ]
+}
+];
+/* ===== 09d · Module 5 — oddments method (taught in the notes, not in the slides) ===== */
+var M5_ODD = [
+{
+  id:"m5t11", m:"m5", type:"problem-solving", priority:"high", los:[8],
+  title:"Oddments method for 2×2 mixed games",
+  summary:"The notes' second method: cross-differences give the probabilities directly, with no equations to solve.",
+  whatIs:"<p>The oddments method gets the same answer as the expected-gain method with no algebra at all &mdash; just four subtractions. Your class notes teach it as &ldquo;2nd Method&rdquo; on 18-7-26.</p>",
+  concept:"<div class='box tip'><h5>Why this topic matters more than its size suggests</h5>"+
+    "<p>The slide deck has a slide headed <b>&ldquo;By Using Oddments&rdquo;</b> but never shows the procedure. Your <b>handwritten notes do</b>. That combination &mdash; named in the slides, worked in the notes &mdash; is the strongest signal in the whole folder that a topic is examinable.</p></div>"+
+    "<h4>The rule, as the notes state it</h4>"+
+    "<p><i>&ldquo;Calculate oddments: take the higher value in that row and subtract it from the min value.&rdquo;</i> and crucially <i>&ldquo;the 1st row oddment ki value hum 2nd row ke aage likhenge&rdquo;</i> &mdash; <b>the oddment computed from one row is written against the other row</b>. That cross-over is the whole method.</p>"+
+    "<h4>The procedure &mdash; four steps</h4>"+
+    "<p>For the matrix <span class='mono'>[[a, b], [c, d]]</span> with rows X&#8321;, X&#8322; and columns Y&#8321;, Y&#8322;:</p><ol>"+
+    "<li><b>Row oddments.</b> Take the absolute difference across each row, then <b>swap</b> them.<br>"+
+    "<span class='mono'>oddment written against X&#8321; = |c &minus; d| &nbsp;&nbsp; oddment against X&#8322; = |a &minus; b|</span></li>"+
+    "<li><b>Column oddments.</b> Take the absolute difference down each column, then swap.<br>"+
+    "<span class='mono'>oddment against Y&#8321; = |b &minus; d| &nbsp;&nbsp; oddment against Y&#8322; = |a &minus; c|</span></li>"+
+    "<li><b>Probabilities.</b> Each oddment over the sum of its pair.<br>"+
+    "<span class='mono'>P&#8321; = odd(X&#8321;)/[odd(X&#8321;)+odd(X&#8322;)] &nbsp; and so on</span></li>"+
+    "<li><b>Value of the game.</b> Take any row or column and weight it by the <i>other</i> player's oddments:<br>"+
+    "<span class='mono'>V = (row entries &times; column oddments) / (sum of column oddments)</span></li></ol>"+
+    "<h4>The notes' worked example</h4>"+
+    "<p>Matrix <span class='mono'>[[4, 2], [0, 10]]</span>:</p>"+
+    "<div class='tw'><table><tr><th></th><th>Y&#8321;</th><th>Y&#8322;</th><th>Row oddment</th><th>Probability</th></tr>"+
+    "<tr><td><b>X&#8321;</b></td><td>4</td><td>2</td><td>|0&minus;10| = <b>10</b></td><td>P&#8321; = 10/12 = <b>5/6</b></td></tr>"+
+    "<tr><td><b>X&#8322;</b></td><td>0</td><td>10</td><td>|4&minus;2| = <b>2</b></td><td>P&#8322; = 2/12 = <b>1/6</b></td></tr>"+
+    "<tr><td><b>Col oddment</b></td><td>|2&minus;10| = <b>8</b></td><td>|4&minus;0| = <b>4</b></td><td></td><td></td></tr>"+
+    "<tr><td><b>Probability</b></td><td>8/12 = <b>2/3</b></td><td>4/12 = <b>1/3</b></td><td></td><td></td></tr></table></div>"+
+    "<p>Value, from the second row weighted by the column oddments: V = (0&times;8 + 10&times;4)/(8+4) = 40/12 = <b>10/3</b>.</p>"+
+    "<p>The notes give the answer as X = (5/6, 1/6) and Y = (2/3, 1/3), with V = 10/3 &asymp; 3.3.</p>"+
+    "<div class='box'><h5>Cross-check against the formula method</h5><p>D = 4 + 10 &minus; 2 &minus; 0 = 12; p = (10&minus;0)/12 = 10/12 ✓; r = (10&minus;2)/12 = 8/12 ✓; V = (40&minus;0)/12 = 10/3 ✓. The two methods are algebraically identical &mdash; oddments is just the formula with the arithmetic done in a different order.</p></div>",
+  needToKnow:[
+    "Compute the four oddments and write each against the OTHER row/column.",
+    "Turn oddments into probabilities by dividing by the pair's sum.",
+    "Compute V by weighting a row with the column oddments (or vice versa).",
+    "Know that oddments and the p/r/V formulas always agree — use one to check the other."
+  ],
+  recognition:{
+    clues:["A 2&times;2 game with no saddle point.","The question names the <b>oddments</b> method.","You want a fast answer and cannot risk an algebra slip."],
+    wording:["Solve the following game by the oddments method.","Using the solution procedure for a mixed strategy game, solve the following game.","Find the optimal strategies and value using oddments."],
+    firstMove:"Write the four differences in the margin before anything else: |c&minus;d|, |a&minus;b|, |b&minus;d|, |a&minus;c|. Then place each against the opposite row or column.",
+    trap:"Forgetting the swap. If you write |a&minus;b| against row 1 instead of row 2, both probabilities come out inverted &mdash; and they will still sum to 1, so the error is invisible unless you cross-check with V."
+  },
+  examAnswer:{
+    short:"The four oddments and the resulting probabilities.",
+    medium:"The oddments table with the swap visible → probabilities → V computed and cross-checked against the formula method → the interpretation sentence.",
+    long:"Use it as the finishing step of a dominance question, where its speed matters most."
+  },
+  mistakes:[
+    "Writing each oddment against its own row instead of the other one — the single fatal error in this method.",
+    "Forgetting the absolute value and carrying a negative oddment, giving a negative probability.",
+    "Weighting a row by the row oddments when computing V. A row is weighted by the COLUMN oddments.",
+    "Applying it to a game that has a saddle point — always run the maximin/minimax test first."
+  ],
+  examples:[
+    {id:"m5t11e1", title:"The same game both ways, side by side",
+     q:"Solve [[4, 2], [1, 10]] by the oddments method and check it against the expected-gain answer of p = 9/11, r = 8/11, V = 38/11.",
+     steps:[
+      "Saddle-point check first: row minima 2 and 1 give maximin 2; column maxima 4 and 10 give minimax 4. Not equal, so mixed strategies are needed.",
+      "Row oddments. From row 2: |1 − 10| = 9, written against row 1. From row 1: |4 − 2| = 2, written against row 2.",
+      "Probabilities for X: P₁ = 9/(9+2) = 9/11 and P₂ = 2/11. This matches the expected-gain Q = 9/11 ✓.",
+      "Column oddments. From column 2: |2 − 10| = 8, written against column 1. From column 1: |4 − 1| = 3, written against column 2.",
+      "Probabilities for Y: 8/(8+3) = 8/11 and 3/11. This matches the expected-gain P = 8/11 ✓.",
+      "Value, taking row 1 weighted by the column oddments: V = (4×8 + 2×3)/(8+3) = (32 + 6)/11 = 38/11.",
+      "Check with row 2: V = (1×8 + 10×3)/11 = (8 + 30)/11 = 38/11 ✓. Both rows agree, which confirms the oddments."],
+     answer:"<b>X = (9/11, 2/11), Y = (8/11, 3/11), V = 38/11 ≈ 3.45</b> — identical to the expected-gain method, in a fraction of the time.",
+     trap:"Computing V from both rows is free and catches everything. If the two rows disagree, an oddment is on the wrong side."}
+  ],
+  practice:[
+    {id:"m5t11p1", d:"easy", q:"Solve [[12, 4], [3, 7]] by oddments and check against D = 12, p = 1/3, r = 1/4, V = 6.",
+     hint:"Four differences, each written against the opposite row or column.",
+     a:"<p><b>Row oddments.</b> From row 2: |3 − 7| = 4 → against row 1. From row 1: |12 − 4| = 8 → against row 2.<br>P₁ = 4/(4+8) = <b>1/3</b> ✓, P₂ = 8/12 = 2/3.</p><p><b>Column oddments.</b> From column 2: |4 − 7| = 3 → against column 1. From column 1: |12 − 3| = 9 → against column 2.<br>Y₁ = 3/(3+9) = <b>1/4</b> ✓, Y₂ = 9/12 = 3/4.</p><p><b>Value</b>, row 1 weighted by column oddments: V = (12×3 + 4×9)/(3+9) = (36 + 36)/12 = 72/12 = <b>6</b> ✓.<br>Check with row 2: (3×3 + 7×9)/12 = (9 + 63)/12 = 72/12 = 6 ✓.</p><p>All three match the formula method exactly.</p>"},
+    {id:"m5t11p2", d:"moderate", q:"Solve [[20, 8], [−2, 10]] by oddments. Watch the negative entry.",
+     hint:"Absolute values throughout — a difference involving −2 is still positive.",
+     a:"<p><b>Row oddments.</b> From row 2: |−2 − 10| = 12 → against row 1. From row 1: |20 − 8| = 12 → against row 2.<br>P₁ = 12/24 = <b>1/2</b>, P₂ = <b>1/2</b>.</p><p><b>Column oddments.</b> From column 2: |8 − 10| = 2 → against column 1. From column 1: |20 − (−2)| = 22 → against column 2.<br>Y₁ = 2/24 = <b>1/12</b>, Y₂ = 22/24 = <b>11/12</b>.</p><p><b>Value</b>, row 1 weighted by column oddments: V = (20×2 + 8×22)/24 = (40 + 176)/24 = 216/24 = <b>9</b>.<br>Check with row 2: (−2×2 + 10×22)/24 = (−4 + 220)/24 = 216/24 = 9 ✓.</p><p>Matches the formula answer p = 1/2, r = 1/12, V = 9 exactly. The negative entry only matters inside the absolute value — |20 − (−2)| = 22, not 18.</p>"}
+  ],
+  questions:[
+    {q:"Solve the following game by the oddments method.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"Using the solution procedure for a mixed strategy game, solve the given 2×2 game.", marks:10, d:"moderate", priority:"high", source:"source"}
+  ]
+}
+];
 /* ===== 10 · assemble topic list ===== */
-var TOPICS = [].concat(M1_THEORY, M1_THEORY2, M1_NUM1, M1_NUM2, M1_NUM3, M5_THEORY, M5_NUM);
+var TOPICS = [].concat(M1_THEORY, M1_THEORY2, M1_NUM1, M1_NUM2, M1_NUM3,
+                       M2_TOPICS, M2_NUM,
+                       M5_THEORY, M5_NUM, M5_ODD);
 var TBYID = {};
 TOPICS.forEach(function(t){ TBYID[t.id] = t; });
 function topicsOf(m){ return TOPICS.filter(function(t){ return t.m === m; }); }
@@ -2466,6 +2937,16 @@ m1:[
  {t:"Three table symptoms", b:"Zero C&#8341;&minus;Z&#8341; under a <b>non-basic</b> variable &rarr; alternate optima. Tie in the ratio test &rarr; degeneracy (a basic variable at 0). Every key-column entry &le; 0 &rarr; unbounded. Artificial still basic and positive &rarr; infeasible."},
  {t:"Infeasible vs unbounded", b:"Infeasible = no point satisfies all constraints (artificial survives, or Phase 1 objective &gt; 0). Unbounded = plenty of feasible points but Z grows forever. Opposite problems, never interchange the words."}
 ],
+m2:[
+ {t:"The whole module in one block", b:"<span class='mono'>&rho;=&lambda;/&mu; &middot; P(0)=1&minus;&rho; &middot; P(n)=&rho;<sup>n</sup>(1&minus;&rho;) &middot; Ls=&lambda;/(&mu;&minus;&lambda;) &middot; Lq=&lambda;&sup2;/(&mu;(&mu;&minus;&lambda;)) &middot; Ws=1/(&mu;&minus;&lambda;) &middot; Wq=&lambda;/(&mu;(&mu;&minus;&lambda;)) &middot; Lq&prime;=&mu;/(&mu;&minus;&lambda;)</span>"},
+ {t:"Always convert first", b:"Rate = 60 &divide; (minutes per customer). &lambda; and &mu; must be in the same period or every answer is wrong. &rho; is the check: it comes out the same whichever period you use."},
+ {t:"Queue vs system", b:"L = number, W = time; q = waiting only, s = waiting + being served. The queue version is always the smaller. <b>Ls = Lq + &rho;</b> and <b>Ws = Wq + 1/&mu;</b> &mdash; use them to check any pair in five seconds."},
+ {t:"Little's law", b:"<b>Ls = &lambda;Ws</b> and <b>Lq = &lambda;Wq</b>. Given any one measure you can reach its partner without a new formula, and it catches substitution slips instantly."},
+ {t:"The wording traps", b:"&lsquo;More than n in system&rsquo; = &rho;<sup>n+1</sup>. &lsquo;An arrival finds n <b>waiting</b>&rsquo; = P(n+1), because n waiting means n queuing plus one in service. &lsquo;Exactly n&rsquo; = &rho;<sup>n</sup>(1&minus;&rho;)."},
+ {t:"Balking vs reneging", b:"<b>Balking</b> = sees the queue, never joins. <b>Reneging</b> = joins, then gives up and leaves. <b>Jockeying</b> = switches between queues. <b>Collusion</b> = one person queues on behalf of several."},
+ {t:"The line that earns a mark on its own", b:"Queuing theory <b>cannot be viewed as an optimization process because it has no maximization or minimization objective function</b>. It reports performance; the manager decides. Write this in any &lsquo;what is queuing theory&rsquo; answer."},
+ {t:"Inverse questions", b:"Target given as a time &rarr; convert to hours, set the formula equal to it, solve for &lambda;. A <b>Wq</b> target is linear; an <b>Lq</b> target is quadratic. Then answer what was asked &mdash; usually the <i>increase</i>, not the new rate."}
+],
 m5:[
  {t:"Do this to every game, first", b:"Row minima down the right, column maxima along the bottom. Maximin = max{row minima}, minimax = min{column maxima}. Order is <b>minimum then maximum</b> for rows — reversing it is the commonest error in the module."},
  {t:"The routing decision", b:"Maximin = minimax &rarr; saddle point, pure strategies, stop. Not equal and 2&times;2 &rarr; mixed formulas. Not equal and larger &rarr; dominance first. Never skip the test because the matrix is small."},
@@ -2474,7 +2955,8 @@ m5:[
  {t:"Writing the answer back", b:"After dominance, the probability vector must have one entry per <b>original</b> strategy, with 0 in every eliminated position, summing to 1. X = (0, 3/4, 1/4) for a three-strategy player, not (3/4, 1/4)."},
  {t:"The sign of V", b:"V &gt; 0 favourable to A · V &lt; 0 favourable to B · V = 0 a fair game, no player gains and no player loses. Always write this sentence — it carries its own mark."},
  {t:"Verify a mixed strategy in ten seconds", b:"Substitute the probabilities back. If A's expectation is not the same against every column of B, the vectors are wrong or swapped. This check catches the answer-key swap in your own notes."},
- {t:"What zero-sum commits you to", b:"One matrix records the whole game (Y's payoffs are the negatives). Interests are exactly opposed, so no cooperation. Row player maximises, column player minimises, on the same numbers."}
+ {t:"What zero-sum commits you to", b:"One matrix records the whole game (Y's payoffs are the negatives). Interests are exactly opposed, so no cooperation. Row player maximises, column player minimises, on the same numbers."},
+ {t:"Oddments &mdash; the notes' second method", b:"Four differences, each written against the <b>other</b> row/column: against X&#8321; put |c&minus;d|, against X&#8322; put |a&minus;b|, against Y&#8321; put |b&minus;d|, against Y&#8322; put |a&minus;c|. Probability = oddment &divide; pair sum. V = (row &times; column oddments) &divide; sum of column oddments. Compute V from both rows &mdash; they must agree."}
 ]
 };
 /* ===== 12 · formula / reference sheet ===== */
@@ -2519,6 +3001,28 @@ var FORMULAE = [
  {f:"Optimal Z (primal) = optimal W (dual)", m:"Strong duality.", w:"Verifying a primal–dual pair. The solution vectors are not equal, only the values."},
  {f:"Partner's variables = |Cⱼ − Zⱼ| under the slack columns", m:"The final table carries both solutions.", w:"Recovering the primal after solving the dual."}
 ]},
+{g:"Queuing — rates and utilisation", items:[
+ {f:"lambda = 60 / (minutes between arrivals)", m:"Average arrival rate.", w:"First line of every queuing question. Convert before anything else."},
+ {f:"mu = 60 / (minutes per service)", m:"Average service rate; service time and service rate are reciprocals.", w:"Same. λ and μ must share a time period."},
+ {f:"rho = lambda / mu", m:"Utilisation — fraction of time the server is busy.", w:"Always. It is also the check: ρ is identical whatever period you use."},
+ {f:"P(0) = 1 - rho", m:"Idle rate; probability the system is empty.", w:"Asked directly, and needed for every P(n)."},
+ {f:"idle time = P(0) x t", m:"Actual idle duration over a period t.", w:"When asked for the server's idle hours in a shift."}
+]},
+{g:"Queuing — single-server performance", items:[
+ {f:"Ls = lambda / (mu - lambda)", m:"Average number of customers in the SYSTEM.", w:"'Number in system' or 'length of system'."},
+ {f:"Lq = lambda^2 / (mu (mu - lambda))", m:"Average number of customers in the QUEUE.", w:"'Number waiting' or 'length of queue'. Remember to square λ."},
+ {f:"Ws = 1 / (mu - lambda)", m:"Average time a customer spends in the SYSTEM.", w:"'Waiting time in system' — includes the service itself."},
+ {f:"Wq = lambda / (mu (mu - lambda))", m:"Average time a customer WAITS before service.", w:"'Waiting time in queue'. Do not drop the μ in the denominator."},
+ {f:"Lq' = mu / (mu - lambda)", m:"Expected length of a NON-EMPTY queue.", w:"'Expected length of non-empty queue' only."},
+ {f:"Ls = Lq + rho   and   Ws = Wq + 1/mu", m:"System = queue + the one in service.", w:"As a ten-second check on any pair you compute."},
+ {f:"Ls = lambda x Ws   and   Lq = lambda x Wq", m:"Little's law.", w:"To get a partner measure without a new formula, and to catch substitution slips."}
+]},
+{g:"Queuing — probabilities", items:[
+ {f:"P(n) = rho^n (1 - rho)", m:"Probability of exactly n customers in the system.", w:"'Exactly n customers'. The (1−ρ) factor is the one students drop."},
+ {f:"P(more than n) = rho^(n+1)", m:"Cumulative tail probability.", w:"'More than n in the system'."},
+ {f:"n waiting  =>  use P(n+1)", m:"n in the queue plus one in service.", w:"'An arrival finds n persons waiting' — the classic wording trap."},
+ {f:"set formula = target, solve for lambda", m:"Inverse / design problem.", w:"'By how much must arrivals increase...'. A Wq target is linear in λ; an Lq target is quadratic. Answer the increase, not the level."}
+]},
 {g:"Game theory — pure strategies", items:[
  {f:"Maximin = max{row minima}", m:"The lower value of the game; player A's best worst case.", w:"First step on every game. Minimum of each row first, then the maximum of those."},
  {f:"Minimax = min{column maxima}", m:"The upper value of the game; player B's smallest maximum loss.", w:"First step on every game, alongside the maximin."},
@@ -2535,6 +3039,14 @@ var FORMULAE = [
 {g:"Game theory — dominance", items:[
  {f:"Column-i ≥ Column-j everywhere ⇒ delete Column-i", m:"The column player is minimising, so a larger column is never chosen.", w:"Reducing an m×n game. Compare every position."},
  {f:"Row-i ≤ Row-j everywhere ⇒ delete Row-i", m:"The row player is maximising, so a smaller row is never chosen.", w:"Reducing an m×n game. Alternate with the column rule until no reduction remains."}
+]},
+{g:"Game theory — oddments (2x2)", items:[
+ {f:"oddment against row 1 = |c - d|", m:"The difference from the OTHER row.", w:"Oddments method. The cross-over is the whole trick."},
+ {f:"oddment against row 2 = |a - b|", m:"Likewise, swapped.", w:"Same."},
+ {f:"oddment against col 1 = |b - d|", m:"Difference down the other column.", w:"Same."},
+ {f:"oddment against col 2 = |a - c|", m:"Likewise, swapped.", w:"Same."},
+ {f:"probability = oddment / (sum of the pair)", m:"Turns oddments into a mixed strategy.", w:"Step 3 of the method."},
+ {f:"V = (row x column oddments) / sum of column oddments", m:"Weight a row by the opponent's oddments.", w:"Step 4. Compute from both rows — they must agree."}
 ]},
 {g:"Interpreting the value", items:[
  {f:"V > 0", m:"Player A gains on average.", w:"Write: the game is favourable to player A."},
@@ -2897,6 +3409,142 @@ var QUIZ = [
     "recompute D"], a:0,
  e:"Summing to 1 is necessary but a swapped pair also sums to 1, so it catches nothing. Substituting back does: an optimal mix makes the player's expectation identical against every opponent strategy, and a swapped vector will not. This ten-second check catches the swapped answer key in your own notes."}
 ];
+/* ===== 14b · added question bank — Module 2 weighted, MSE difficulty ===== */
+var QUIZ2 = [
+/* ---------- MODULE 2 · QUEUING (22) ---------- */
+{t:"m2t1", stage:"concept", q:"Queuing theory is NOT considered an optimisation technique because:",
+ o:["it has no maximisation or minimisation objective function","its answers are probabilistic rather than exact","it applies only to single-server systems","the arrival rate is never known exactly"], a:0,
+ e:"Your notes state it directly: the application of queuing theory cannot be viewed as an optimization process because it does not have a maximization or minimization objective function. It computes performance measures; the manager supplies the objective. Being probabilistic (option B) is true but is not the stated reason."},
+{t:"m2t1", stage:"concept", q:"A queue forms when:",
+ o:["demand for a service facility exceeds the capacity of that facility","the service rate exceeds the arrival rate","the utilisation rate falls below 0.5","customers arrive in a Poisson pattern"], a:0,
+ e:"This is the definition in the notes. Option B is the opposite — when μ > λ the system copes. Poisson arrivals (D) describe randomness, not congestion; a queue can form under Poisson arrivals only because demand momentarily exceeds capacity."},
+{t:"m2t3", stage:"solve", q:"A customer arrives every 12 minutes and service takes 8 minutes. λ and μ per hour are:",
+ o:["λ = 5, μ = 7.5","λ = 12, μ = 8","λ = 7.5, μ = 5","λ = 0.083, μ = 0.125"], a:0,
+ e:"Rate = 60 ÷ minutes. λ = 60/12 = 5 per hour and μ = 60/8 = 7.5 per hour. Option C inverts them, which would give ρ = 1.5 and a system that never stabilises. Option D is per-minute rates, which are correct in principle but not what 'per hour' asked for."},
+{t:"m2t3", stage:"solve", q:"λ = 5 and μ = 7.5 per hour. The utilisation and idle rates are:",
+ o:["ρ = 0.667, idle = 0.333","ρ = 1.5, idle = −0.5","ρ = 0.333, idle = 0.667","ρ = 0.75, idle = 0.25"], a:0,
+ e:"ρ = λ/μ = 5/7.5 = 2/3 ≈ 0.667, and idle = 1 − ρ = 0.333. Option B is μ/λ — a utilisation above 1 always means you inverted the ratio, since a negative idle rate is impossible."},
+{t:"m2t3", stage:"concept", q:"You compute ρ for the same system per hour, per 15 minutes and per 8 hours. You should get:",
+ o:["the same value all three times","three values in the ratio 1 : 0.25 : 8","three values that sum to 1","ρ increasing with the length of the period"], a:0,
+ e:"λ and μ both scale by the same factor when you change the period, so their ratio is unchanged. In the deck's Example 1, ρ = 6/10 = 1.5/2.5 = 48/80 = 0.6. This makes ρ a free consistency check on your conversions — if the three values differ, one conversion is wrong."},
+{t:"m2t3", stage:"solve", q:"P(0) = 0.4 for a server working an 8-hour day. The average idle time is:",
+ o:["3.2 hours","0.4 hours","4.8 hours","0.05 hours"], a:0,
+ e:"Average idle time = P(0) × t = 0.4 × 8 = 3.2 hours, exactly as the deck computes it. Option C is the busy time (0.6 × 8 = 4.8). P(0) alone (option B) is a probability, not a duration — it must be multiplied by the period."},
+{t:"m2t4", stage:"select", q:"'Average number of customers waiting in the queue' is:",
+ o:["Lq = λ²/(μ(μ−λ))","Ls = λ/(μ−λ)","Wq = λ/(μ(μ−λ))","Lq′ = μ/(μ−λ)"], a:0,
+ e:"L = a number of customers, W = a time; q = queue only, s = system (queue + in service). 'Number' + 'in the queue' gives Lq. Option B is the number in the system, option C is the waiting time in the queue, and option D is the expected length of a non-empty queue."},
+{t:"m2t4", stage:"solve", q:"λ = 48, μ = 80 (per 8-hour day). Ls equals:",
+ o:["1.5","0.9","2.5","0.0312"], a:0,
+ e:"Ls = λ/(μ−λ) = 48/(80−48) = 48/32 = 1.5 customers. 0.9 is Lq, 2.5 is Lq′, and 0.0312 is Ws. Check with Ls = Lq + ρ: 0.9 + 0.6 = 1.5 ✓."},
+{t:"m2t4", stage:"solve", q:"λ = 48, μ = 80. Lq equals:",
+ o:["0.9","1.5","1.44","0.6"], a:0,
+ e:"Lq = λ²/(μ(μ−λ)) = 2304/(80×32) = 2304/2560 = 0.9. A common slip is forgetting to square λ, which gives 48/2560 = 0.0187 — that is Wq, not Lq. Cross-check: Lq = Ls − ρ = 1.5 − 0.6 = 0.9 ✓."},
+{t:"m2t4", stage:"concept", q:"Which relation is always true for a single-server queue?",
+ o:["Ls = Lq + ρ","Ls = Lq + 1","Lq = Ls + ρ","Ls = Lq × ρ"], a:0,
+ e:"The system holds everyone waiting plus whoever is in service, and the server is busy a fraction ρ of the time, so on average ρ customers are in service. Option B would be true only if the server were always busy (ρ = 1). Option C has the inequality backwards — Lq is always the smaller."},
+{t:"m2t4", stage:"concept", q:"Little's law, as your notes express it, states:",
+ o:["Wq = Lq/λ and Ws = Ls/λ","Wq = Lq/μ and Ws = Ls/μ","Lq = Ls × ρ","Ws = Wq × μ"], a:0,
+ e:"The notes give it as 'Wq = average number of customers in the queue ÷ average arrival rate'. Dividing a count by the arrival rate gives a time. Option B divides by the service rate, which is wrong. It is the fastest cross-check available: compute Ls and Ws independently, then verify Ls = λWs."},
+{t:"m2t4", stage:"solve", q:"λ = 10/hr and service takes 4 minutes. Lq equals:",
+ o:["4/3","3/4","2/3","10/15"], a:0,
+ e:"μ = 60/4 = 15 per hour, so μ−λ = 5 and Lq = 100/(15×5) = 100/75 = 4/3 ≈ 1.33. Cross-check: ρ = 2/3, Ls = 10/5 = 2, and Lq = Ls − ρ = 2 − 2/3 = 4/3 ✓. Note the Queuing deck prints this answer as 3/4, which is the reciprocal — recompute and use 4/3."},
+{t:"m2t4", stage:"solve", q:"λ = 12, μ = 20 per hour. The average time a customer spends in the SYSTEM is:",
+ o:["7.5 minutes","4.5 minutes","3 minutes","12.5 minutes"], a:0,
+ e:"Ws = 1/(μ−λ) = 1/8 hour = 7.5 minutes. Option B (4.5 min) is Wq, the waiting time only; the difference between them is exactly the service time 1/μ = 3 minutes (option C). Ws = Wq + 1/μ → 4.5 + 3 = 7.5 ✓."},
+{t:"m2t4", stage:"recognise", q:"Your computed Lq is larger than your Ls. This means:",
+ o:["you have swapped the two formulas","the system is overloaded","the arrival rate exceeds the service rate","nothing — it is possible when ρ > 0.5"], a:0,
+ e:"The queue is a subset of the system, so Lq < Ls always, for every ρ. Specifically Ls − Lq = ρ > 0. Getting Lq > Ls is always a formula swap, never a property of the system, so it is a reliable self-check."},
+{t:"m2t5", stage:"solve", q:"ρ = 0.6. The probability of exactly 5 customers in the system is:",
+ o:["0.0311","0.0778","0.216","0.4"], a:0,
+ e:"P(n) = ρⁿ(1−ρ) = 0.6⁵ × 0.4 = 0.07776 × 0.4 = 0.0311. Option B is 0.6⁵ alone — forgetting the (1−ρ) factor is the standard error. Option D is P(0)."},
+{t:"m2t5", stage:"solve", q:"ρ = 0.6. The probability of MORE THAN 2 customers in the system is:",
+ o:["0.216","0.144","0.784","0.0864"], a:0,
+ e:"P(more than n) = ρⁿ⁺¹ = 0.6³ = 0.216. Verify the long way: P(0)+P(1)+P(2) = 0.4 + 0.24 + 0.144 = 0.784, so the tail is 1 − 0.784 = 0.216 ✓. Option B is P(2) alone and option D is P(3)."},
+{t:"m2t5", stage:"recognise", q:"'The probability that an arrival finds 2 persons waiting for their turn' means:",
+ o:["P(3) — two in the queue plus one in service","P(2) — exactly two in the system","P(more than 2)","P(0) × 2"], a:0,
+ e:"Two people <i>waiting</i> means two in the queue, and there must also be someone being served, so the system holds three. This one-word distinction between 'waiting' and 'in the system' is exactly what Example 3 of the deck is testing when it asks both versions in consecutive parts."},
+{t:"m2t5", stage:"solve", q:"μ = 15/hr, λ = 10/hr. A second counter opens when Wq reaches 10 minutes. The required λ is:",
+ o:["10.71 per hour","12.5 per hour","10 per hour","14.3 per hour"], a:0,
+ e:"Convert the target: 10 min = 1/6 hour. Set λ/(15(15−λ)) = 1/6 → 6λ = 225 − 15λ → 21λ = 225 → λ = 10.714. The question in the deck then asks by how much arrivals must increase, which is 10.71 − 10 ≈ 0.7 per hour — answer the increase, not the level."},
+{t:"m2t5", stage:"select", q:"A design question sets a target on Lq rather than Wq. The equation you must solve is:",
+ o:["quadratic in λ, because Lq contains λ²","linear in λ, exactly as for Wq","independent of λ","solvable only by trial and error"], a:0,
+ e:"Lq = λ²/(μ(μ−λ)) has λ² in the numerator, so setting it equal to a target gives λ² + (target·μ)λ − (target·μ²) = 0, a quadratic. Wq = λ/(μ(μ−λ)) is linear in λ. Read which measure the target is on before setting up — it changes the algebra."},
+{t:"m2t2", stage:"recognise", q:"A customer sees a long queue and leaves WITHOUT joining. This is:",
+ o:["balking","reneging","jockeying","collusion"], a:0,
+ e:"Balking is refusing to join at all — the customer is discouraged by the number already waiting or by the estimated wait, and decides to return later. Reneging is joining and then abandoning. The test is simply whether they ever entered the queue."},
+{t:"m2t2", stage:"recognise", q:"A customer waits six minutes, becomes impatient and leaves the queue. This is:",
+ o:["reneging","balking","jockeying","priority service"], a:0,
+ e:"Reneging: impatient customers who will not wait beyond a certain time and leave the queue. They joined first, which is what separates it from balking. If they had moved to a different queue instead of leaving, that would be jockeying."},
+{t:"m2t2", stage:"concept", q:"Which is a DYNAMIC queue discipline?",
+ o:["Service In Random Order (SIRO)","First In First Out","Last In First Out","Arrival order"], a:0,
+ e:"Static disciplines are based on the customer's position in the arrival order — FIFO and LIFO. Dynamic disciplines select on something else: SIRO picks at random irrespective of arrival time, priority service groups by urgency or service time, and pre-emptive priority interrupts for emergencies."},
+{t:"m2t2", stage:"concept", q:"In a queuing system, the number of arrivals in an interval follows a Poisson distribution. The time BETWEEN two consecutive arrivals follows:",
+ o:["an exponential distribution","a Poisson distribution","a normal distribution","an Erlang distribution"], a:0,
+ e:"These are two views of the same random process: Poisson counts arrivals in a fixed interval, exponential measures the gap between them. Erlang is the general service-time distribution; completely random service time is the exponential special case."},
+
+/* ---------- MODULE 5 · added, incl. oddments (8) ---------- */
+{t:"m5t11", stage:"concept", q:"In the oddments method for [[a,b],[c,d]], the oddment written against ROW 1 is:",
+ o:["|c − d|, the difference across row 2","|a − b|, the difference across row 1","|a − c|, the difference down column 1","a + d − b − c"], a:0,
+ e:"The oddments cross over: the difference computed from one row is written against the OTHER row. Your notes say it explicitly — the first row's oddment value is written next to the second row. Failing to swap inverts both probabilities, and since they still sum to 1 the error is invisible without a cross-check."},
+{t:"m5t11", stage:"solve", q:"By oddments, [[4,2],[0,10]] gives player X's probabilities as:",
+ o:["(5/6, 1/6)","(1/6, 5/6)","(2/3, 1/3)","(1/2, 1/2)"], a:0,
+ e:"Row oddment against X₁ = |0−10| = 10; against X₂ = |4−2| = 2. So P₁ = 10/12 = 5/6 and P₂ = 2/12 = 1/6. Option B is the un-swapped (wrong) version, and option C is player Y's pair (2/3, 1/3) from the column oddments 8 and 4."},
+{t:"m5t11", stage:"solve", q:"For [[4,2],[0,10]] the column oddments are 8 and 4. The value of the game is:",
+ o:["10/3","40/8","12/40","5/6"], a:0,
+ e:"V = (row entries × column oddments) ÷ sum of column oddments. Taking row 2: (0×8 + 10×4)/12 = 40/12 = 10/3 ≈ 3.33. Check with row 1: (4×8 + 2×4)/12 = 40/12 ✓. Both rows must agree — if they do not, an oddment is on the wrong side."},
+{t:"m5t11", stage:"concept", q:"After computing a game by oddments you should verify by:",
+ o:["computing V from both rows and checking they agree","confirming the probabilities sum to 1","checking that all oddments are positive","confirming there is no saddle point"], a:0,
+ e:"Summing to 1 is automatic even when the oddments are swapped, so it catches nothing. Computing V from both rows is a genuine independent check, and it is free. Checking for a saddle point (option D) matters, but it belongs before you start, not after."},
+{t:"m5t8", stage:"solve", q:"For [[3,5],[4,2]] the value of the game is:",
+ o:["7/2","3","4","14"], a:0,
+ e:"No saddle point: maximin = 3, minimax = 4. D = 3+2−5−4 = −4, and V = (3×2 − 5×4)/(−4) = (6−20)/(−4) = 14/4 = 7/2 = 3.5. It lies between the maximin 3 and the minimax 4 ✓, which is the check that always applies."},
+{t:"m5t6", stage:"solve", q:"A game has row minima {−3, −1, 2, 12} and column maxima {15, 14, 18, 12, 20}. The value is:",
+ o:["12, and a saddle point exists","−3, the smallest row minimum","20, the largest column maximum","there is no saddle point"], a:0,
+ e:"Maximin = max{−3,−1,2,12} = 12; minimax = min{15,14,18,12,20} = 12. They are equal, so a saddle point exists at the cell where they meet and V = 12. This is Problem 1 in Game Theory_1.pptx and it is worked in your notes at B02."},
+{t:"m5t9", stage:"solve", q:"Column I = (3, 5, 3) and Column IV = (2, 4, 2). Which is deleted by dominance?",
+ o:["Column I, since every element is ≥ the corresponding element of Column IV","Column IV, since its elements are smaller","neither — dominance needs strict inequality","both, since they are proportional"], a:0,
+ e:"3≥2, 5≥4, 3≥2 — all three hold, so Column I is dominated by Column IV and the minimising column player discards it. The column player wants small payoffs, so the LARGER column goes. Dominance permits equality in a position; it only requires the inequality to hold everywhere."},
+{t:"m5t10", stage:"select", q:"A 3×4 game with no saddle point has been reduced by dominance to rows 2,3 and columns I,II. Player A's answer should be written:",
+ o:["a 3-entry vector with 0 in position 1","a 2-entry vector","a 4-entry vector","just the two probabilities, unlabelled"], a:0,
+ e:"Player A had three strategies, so the vector needs three entries — one per ORIGINAL strategy — with 0 wherever a strategy was eliminated. A four-entry vector would match B's strategy count, not A's. This mapping-back step is where marks are most often dropped in dominance questions."},
+
+/* ---------- MODULE 1 · harder, MSE-level (10) ---------- */
+{t:"m1t13", stage:"solve", q:"Max Z = 5x₁+4x₂ s.t. 6x₁+4x₂≤24, x₁+2x₂≤6, −x₁+x₂≤1. The optimum is:",
+ o:["x₁ = 3, x₂ = 1.5, Z = 21","x₁ = 4, x₂ = 0, Z = 20","x₁ = 0, x₂ = 3, Z = 12","x₁ = 2, x₂ = 3, Z = 22"], a:0,
+ e:"This is Q2(a) of your past Internal Assessment paper. The optimum is the intersection of 6x₁+4x₂=24 and x₁+2x₂=6, giving x₁=3, x₂=1.5 and Z = 15+6 = 21. Option D is infeasible: 6(2)+4(3) = 24 ✓ but x₁+2x₂ = 8 > 6 ✗."},
+{t:"m1t15", stage:"solve", q:"Min Z = 4x₁+x₂ s.t. 3x₁+x₂=3, 4x₁+3x₂≥6, x₁+2x₂≤4. The optimum is:",
+ o:["Z = 3.4 at (0.4, 1.8)","unbounded","Z = 3 at (1, 0)","infeasible"], a:0,
+ e:"This is Q2(b) of your past IA paper. Substituting x₂ = 3−3x₁ gives 0.4 ≤ x₁ ≤ 0.6 and Z = x₁+3, minimised at x₁ = 0.4 → Z = 3.4. Note the paper's own solution says 'unbounded' AND gives F* = 3.4 — the problem is bounded and 3.4 is correct, so trust the number and not that sentence."},
+{t:"m1t14", stage:"concept", q:"A MAXIMISATION simplex table shows Cⱼ−Zⱼ = (0, 0, −2, 0, −5). The table is:",
+ o:["optimal, and alternate optima exist","optimal with a unique solution","not optimal — x₂ should enter","unbounded"], a:0,
+ e:"All entries ≤ 0, so it is optimal for a maximisation. But two zeros sit under NON-basic variables, and a non-basic variable with a zero index entry can enter without changing Z — so alternate optima exist. Basic variables always show zero there and carry no information; you must check which columns are basic before concluding."},
+{t:"m1t8", stage:"select", q:"The constraint 3x₁ + x₂ = 3 in a Big M minimisation becomes:",
+ o:["3x₁ + x₂ + a₁ = 3, with +Ma₁ in the objective","3x₁ + x₂ + s₁ = 3","3x₁ + x₂ − s₁ + a₁ = 3","3x₁ + x₂ − s₁ = 3"], a:0,
+ e:"An EQUALITY constraint is already an equation, so it needs no slack or surplus — only an artificial variable to supply a starting basis column. Option C is the treatment for a ≥ constraint. Adding a surplus to an equality would change what the constraint means."},
+{t:"m1t10", stage:"solve", q:"A transportation problem has 4 sources and 5 destinations, and a solution with 7 allocated cells. It is:",
+ o:["degenerate, since m+n−1 = 8","non-degenerate, since 7 < 8","unbalanced","optimal"], a:0,
+ e:"m+n−1 = 4+5−1 = 8 allocations are needed for a non-degenerate basic feasible solution. Only 7 are present, so the solution is degenerate and an ε must be placed in an independent empty cell before MODI can run. This is exactly what Q3(b) of your past IA paper asked."},
+{t:"m1t10", stage:"select", q:"In VAM, the penalty for a row is:",
+ o:["the difference between the two smallest costs in that row","the largest cost in that row","the difference between the largest and smallest costs","the row's supply divided by its smallest cost"], a:0,
+ e:"VAM computes, for each row and column, the difference between its two smallest costs — the 'regret' incurred by not using the cheapest cell. Allocation is then made in the row or column with the LARGEST penalty, at its minimum-cost cell. Your notes record it as 'select any 2 minimum values & subtract them'."},
+{t:"m1t7", stage:"concept", q:"The clearest distinction between a feasible and an optimal solution is:",
+ o:["a feasible solution satisfies all constraints; an optimal one also gives the best objective value",
+    "a feasible solution is any corner point; an optimal one is interior",
+    "a feasible solution exists only for maximisation problems",
+    "they are the same thing for a bounded region"], a:0,
+ e:"This is Q1(b) of your past IA paper, worth 2 marks, and it recurs in or_important_questions.docx. Every optimal solution is feasible, but almost every feasible solution is not optimal. The mark scheme wants both definitions plus a one-line example."},
+{t:"m1t20", stage:"select", q:"The Hungarian method requires:",
+ o:["a square matrix with only non-negative elements","a square matrix that may contain negatives","any rectangular cost matrix","supplies and demands that balance"], a:0,
+ e:"Your notes state both conditions: only non-negative elements, and a square n×n matrix. A non-square problem needs a dummy row or column first, and a maximisation must be converted to a minimisation before the algorithm is applied. Option D describes the transportation problem, not assignment."},
+{t:"m1t17", stage:"solve", q:"The primal Max Z = 4x₁+5x₂ has 3 constraints. Its dual has:",
+ o:["3 variables and 2 constraints, and is a minimisation","2 variables and 3 constraints, and is a minimisation","3 variables and 2 constraints, and is a maximisation","2 variables and 2 constraints"], a:0,
+ e:"n variables and m constraints become m variables and n constraints, so 2 and 3 become 3 and 2. The sense always flips, so a maximisation primal has a minimisation dual. Your notes work exactly this example at B19."},
+{t:"m1t11", stage:"solve", q:"Corner points (0,0), (30,0), (20,30), (0,50) with Z = 4x + y. The maximum is:",
+ o:["120 at (30, 0)","110 at (20, 30)","50 at (0, 50)","180 at (20, 30)"], a:0,
+ e:"Z(30,0) = 120; Z(20,30) = 80+30 = 110; Z(0,50) = 50. The interior intersection does NOT win here, because the objective is heavily weighted towards x. Your notes work this at B12. Never assume the intersection corner is optimal — evaluate all of them."}
+];
+
+QUIZ = QUIZ.concat(QUIZ2);
 /* ===== 15 · progress model ===== */
 var KEY = "or_mse_study_v1";
 var THEME_KEY = "or_mse_theme_v1";
@@ -3193,27 +3841,16 @@ function viewModule(m){
   var h = '<h1>'+esc(moduleName(m))+' &middot; '+esc(moduleTitle(m))+'</h1>';
 
   if (m === "m2"){
-    h += '<p class="lead">Queuing material now exists in the folder, but no topic page has been built from it yet.</p>'+
-      '<div class="box warning"><h5>Material has arrived; topics have not been written</h5>'+
-      '<p>When this site was built the folder contained no queuing material at all, so no Module 2 topic was written. '+
-      'A queuing deck has since been added &mdash; <b>Module 2 - Queuing Models / Queuing PPT.pdf</b> &mdash; and it covers most '+
-      'of this module properly: definitions, the components of a queuing system, customer behaviour (balking, reneging, '+
-      'jockeying, collusion), arrival and service rates, utilisation and idle rate, the single-server formulas '+
-      '(P(n), Ls, Lq, Ws, Wq, Lq&prime;) and three worked examples.</p>'+
-      '<p>Study it from the folder directly. The topic pages, recognition clues and quiz questions for Module 2 have '+
-      '<b>not</b> been written, so this module contributes nothing to the readiness percentages on the Dashboard.</p></div>'+
-      '<h2>Module 2 syllabus contents, verbatim</h2><ul>';
-    M2_SYLLABUS.forEach(function(s){ h += '<li>'+esc(s)+'</li>'; });
-    h += '</ul>'+
-      '<div class="box"><h5>Two gaps remain inside the new deck</h5>'+
-      '<p><b>Multi-server models</b> appear only as a heading &mdash; every formula and all three worked examples are '+
-      'single-server. <b>Constant rate service</b> gets one line ("Constant Service Time: Not in practice") with no model '+
-      'and no formula. Both are named in the syllabus above.</p></div>'+
-      '<p class="small muted">Course outcome 5 &mdash; &ldquo;Analyse the applications of integer programming and a queuing model '+
-      'and compute important performance measures&rdquo; &mdash; is the outcome this module serves.</p>';
-    app.innerHTML = h;
-    return;
+    h += '<div class="box tip"><h5>Read this before you start</h5>'+
+      '<p>Queuing is the smallest module in the syllabus and the most formula-driven &mdash; five formulas and a conversion. '+
+      'That makes it the highest marks-per-minute topic on the paper: almost every question is pure substitution once you have '+
+      '&lambda; and &mu;. Do the Numericals sub-tab first.</p>'+
+      '<p><b>One caution.</b> Your 78 pages of class notes cover Module 5 and Module 1 and contain <b>no queuing at all</b>, '+
+      'and neither the past Internal Assessment paper nor the important-questions list has a single queuing question. '+
+      'Everything here comes from <span class="mono">Queuing PPT.pdf</span> alone. Treat it as insurance rather than as the '+
+      'core of the paper &mdash; see the Plan tab.</p></div>';
   }
+
 
   h += '<div class="card"><div class="qmeter" style="margin-top:0">'+
        bar(mp.pct)+'<span class="qn">'+mp.pct+'% &middot; '+mp.done+' / '+mp.total+' questions &middot; '+
@@ -3525,21 +4162,20 @@ function viewExam(){
       '<button class="btn" data-go="topic" data-id="'+esc(t.id)+'">Open</button></div>';
   });
 
-  h += '<h2>Last thirty minutes</h2>'+
-    '<p class="small muted">Habits, not formulas. Each of these is a place marks are lost after the method is already known.</p><ul>'+
-    '<li>Write the convention you are using at the top of every simplex answer. Half the sign errors in this paper come from not having done that.</li>'+
-    '<li>Fill in both margins of a payoff matrix before deciding anything. It costs thirty seconds and it chooses the method for you.</li>'+
-    '<li>Never call a corner value the optimum until you have said out loud whether the region is bounded.</li>'+
-    '<li>Define the variables in words, with units, before writing any algebra. That sentence carries its own mark.</li>'+
-    '<li>Answer in the language of the question: a production plan, a land allocation, a strategy for each player &mdash; not a bare number.</li>'+
-    '<li>Every solve ends with a substitution check back into the original constraints. Do it even when you are certain.</li>'+
-    '<li>State who the game favours, or which constraints bind. The interpreting sentence is separately marked.</li>'+
-    '<li>If a table stops making sense, name the case and move on. Naming it scores; silence does not.</li>'+
-    '<li>Budget by marks and abandon on time. An unfinished 10-mark answer outscores a perfect 5-mark one you ran over on.</li>'+
+  h += '<h2>Habits that protect marks</h2>'+
+    '<p class="small muted">The factual checklist lives on the Plan tab. These are the in-hall habits.</p><ul>'+
+    '<li>Write the convention you are using at the top of every simplex answer.</li>'+
+    '<li>Fill in both margins of a payoff matrix before deciding anything.</li>'+
+    '<li>Never call a corner value the optimum until you have said whether the region is bounded.</li>'+
+    '<li>Define the variables in words, with units, before any algebra.</li>'+
+    '<li>Answer in the language of the question, not as a bare number.</li>'+
+    '<li>Substitute back into the original constraints before moving on.</li>'+
+    '<li>Budget by marks and abandon on time.</li>'+
     '</ul>'+
     '<div class="btnrow"><button class="btn" data-go="formulae">Formulae</button>'+
     '<button class="btn" data-go="recog">Recognition</button>'+
-    '<button class="btn" data-go="quiz">Quiz</button></div>';
+    '<button class="btn" data-go="quiz">Quiz</button>'+
+    '<button class="btn pri" data-go="plan">Plan</button></div>';
   app.innerHTML = h;
 }
 /* ===== 25 · Search — indexes everything, navigates to the item's home ===== */
@@ -3754,7 +4390,7 @@ var tabsEl = document.getElementById("tabs");
 var searchWrap = document.getElementById("searchwrap");
 var qEl = document.getElementById("q");
 
-var NAV = [{k:"dash", label:"Dashboard"}]
+var NAV = [{k:"dash", label:"Dashboard"}, {k:"plan", label:"Plan"}]
   .concat(MODULES.map(function(m){ return {k:"mod", m:m.id, label:m.n}; }))
   .concat([{k:"recog", label:"Recognition"}, {k:"quiz", label:"Quiz"},
            {k:"formulae", label:"Formulae"}, {k:"exam", label:"Exam Mode"}]);
@@ -3788,6 +4424,7 @@ function render(){
     case "quiz":     viewQuiz(); break;
     case "formulae": viewFormulae(); break;
     case "exam":     viewExam(); break;
+    case "plan":     viewPlan(); break;
     case "settings": viewSettings(); break;
     case "search":   runSearch(view.q || ""); break;
     default:         viewDash();
@@ -3908,6 +4545,224 @@ applyTheme(loadTheme());
 P = loadProgress();
 touchVisit();
 render();
+/* ===== 28 · Plan tab — evidence, LO priorities, schedule, last-30-minutes ===== */
+var EVIDENCE = [
+  ["Pages in your handwritten notes",      "62",  "0",   "16"],
+  ["Slides / pages of lecture material",   "~230 over 9 decks", "25 (1 deck)", "~40 over 2 decks + example_1"],
+  ["Marks available in the past IA paper", "up to 14 of 20", "0", "up to 6 of 20"],
+  ["Questions in the past IA paper",       "7",   "0",   "4"],
+  ["Questions in or_important_questions",  "10",  "0",   "1"],
+  ["Syllabus hours",                       "15–17", "4–6", "4–6"],
+  ["Worked examples you can revise from",  "40+", "3",   "~20"]
+];
+
+var LOPLAN = [
+  {lo:"LO1", topic:"Simplex method — table, Cⱼ−Zⱼ, key row/column/element", mod:"m1", w:"6–8 marks", p:"must",
+   src:"Notes B13–B18 · OR - Simplex .pptx · handwritten sg.pdf · IA paper Q2(a)", go:"m1t13"},
+  {lo:"LO1", topic:"Big M / penalty method", mod:"m1", w:"5–6 marks", p:"must",
+   src:"Notes B16–B18 · OR - Big M Method.pptx · sg.pdf · IA paper Q2(b)", go:"m1t15"},
+  {lo:"LO3", topic:"Transportation — NWCM, LCM, VAM", mod:"m1", w:"5–10 marks", p:"must",
+   src:"Notes B22–B36 · Transportation Problem.pptx · IA paper Q3(a),(b)", go:"m1t10"},
+  {lo:"LO7", topic:"Saddle point / maximin–minimax", mod:"m5", w:"2–5 marks", p:"must",
+   src:"Notes A02–A05, B01–B02 · Game Theory_1.pptx · IA paper Q1(d),(g)", go:"m5t6"},
+  {lo:"LO8", topic:"2×2 mixed strategy — expected gain", mod:"m5", w:"2–5 marks", p:"must",
+   src:"Notes A06–A09 · Game Theory.pptx · IA paper Q1(f)", go:"m5t8"},
+  {lo:"LO7", topic:"Dominance reduction", mod:"m5", w:"2–5 marks", p:"must",
+   src:"Notes B03–B06 · Game Theory_1.pptx · example_1.pptx · IA paper Q1(e)", go:"m5t9"},
+  {lo:"LO5", topic:"Queuing — Ls, Lq, Ws, Wq substitution", mod:"m2", w:"4–6 marks", p:"must",
+   src:"Queuing PPT.pdf pp. 17–24 (the ONLY source)", go:"m2t4"},
+  {lo:"LO5", topic:"Queuing — λ, μ, ρ, idle rate conversion", mod:"m2", w:"2–4 marks", p:"must",
+   src:"Queuing PPT.pdf pp. 13–15, 19–20", go:"m2t3"},
+  {lo:"LO1", topic:"Theory 2-markers — feasible vs optimal, objective vs constraint, OR advantages", mod:"m1", w:"4–6 marks", p:"must",
+   src:"IA paper Q1(a),(b),(c) · or_important_questions.docx (10 of 11 items)", go:"m1t7"},
+  {lo:"LO8", topic:"Oddments method", mod:"m5", w:"2–5 marks", p:"high",
+   src:"Notes B01–B02 (slides name it but never show it)", go:"m5t11"},
+  {lo:"LO3", topic:"Assignment — Hungarian method", mod:"m1", w:"5–10 marks", p:"high",
+   src:"Notes B08–B09, B37–B46 · assignment prob_OR.pptx", go:"m1t20"},
+  {lo:"LO1", topic:"LPP formulation + graphical / corner point", mod:"m1", w:"5–10 marks", p:"high",
+   src:"Notes B10–B12 · Linear Prog GM.pptx", go:"m1t11"},
+  {lo:"LO5", topic:"Queuing terminology — balking, reneging, jockeying, collusion", mod:"m2", w:"2–5 marks", p:"high",
+   src:"Queuing PPT.pdf pp. 5–9", go:"m2t2"},
+  {lo:"LO1", topic:"Slack, surplus and artificial variables", mod:"m1", w:"2–5 marks", p:"high",
+   src:"Notes B13, B16 · every simplex deck", go:"m1t8"},
+  {lo:"LO1", topic:"Duality — write the dual", mod:"m1", w:"2–5 marks", p:"med",
+   src:"Notes B19–B21 · OR - Duality.pptx", go:"m1t17"},
+  {lo:"LO3", topic:"Transportation optimality — MODI / stepping stone", mod:"m1", w:"5–10 marks", p:"med",
+   src:"Notes B29–B36 · MODI.pptx · Stepping Stone Method.pptx", go:"m1t10"},
+  {lo:"LO1", topic:"Two-phase method", mod:"m1", w:"0–5 marks", p:"med",
+   src:"Notes B18 · OR - Big M Method.pptx", go:"m1t16"},
+  {lo:"LO6", topic:"Game theory terminology and zero-sum", mod:"m5", w:"2–4 marks", p:"med",
+   src:"Notes A01, A03 · Game Theory.pptx", go:"m5t1"},
+  {lo:"LO1", topic:"OR definitions, features, scope, limitations", mod:"m1", w:"2–5 marks", p:"med",
+   src:"Notes B07, B09 · Intro to OR.pptx", go:"m1t1"},
+  {lo:"LO5", topic:"Queuing — P(n) and inverse/design problems", mod:"m2", w:"2–5 marks", p:"med",
+   src:"Queuing PPT.pdf pp. 16, 21, 23–25", go:"m2t5"},
+  {lo:"LO3", topic:"Sequencing — Johnson's algorithm", mod:"m1", w:"0–5 marks", p:"low",
+   src:"Notes B47–B54 · Sequencing Problems.pptx", go:null},
+  {lo:"LO3", topic:"Travelling salesman", mod:"m1", w:"0–5 marks", p:"low",
+   src:"Notes B54–B60 · TSP.pptx", go:null},
+  {lo:"LO5", topic:"Integer programming — Gomory, branch & bound", mod:"m1", w:"0–5 marks", p:"low",
+   src:"Notes B55–B68 · OR - IPP.pptx", go:null},
+  {lo:"—",   topic:"Special cases — degeneracy, alternate optima, unbounded", mod:"m1", w:"0–2 marks", p:"low",
+   src:"Notes B18 · scattered in the decks", go:"m1t19"}
+];
+
+var SCHEDULE = [
+  {t:"0:00 – 0:45", n:"45 min", h:"Module 2 — Queuing, start to finish",
+   why:"Smallest module, purely formula-driven, and the only one you can finish completely in one sitting. Bank these marks before anything can go wrong.",
+   what:["Read <b>Queuing PPT.pdf</b> pp. 3–9 once for the vocabulary — do not memorise yet.",
+         "Copy the formula block onto a single sheet by hand. That sheet is your revision asset for tonight.",
+         "Work Example 1 (pp. 19–22) yourself with the deck closed, then check.",
+         "Do <b>Arrival rate, service rate, utilisation</b> → both practice questions.",
+         "Do <b>Single-server performance measures</b> → practice 1 and 2.",
+         "Learn balking / reneging / jockeying / collusion — 4 lines, near-certain 2 marks."],
+   go:"m2t3"},
+  {t:"0:45 – 1:45", n:"60 min", h:"Module 5 — Game Theory",
+   why:"16 pages of notes, ~20 solved problems, and 4 of the 11 questions on the past IA paper. Every question type is mechanical and fast.",
+   what:["<b>Saddle point</b> — row minima, column maxima. Do all four practice questions; they take 3 minutes each.",
+         "<b>2×2 mixed</b> — learn D = a+d−b−c and the three formulas. Do practice 1–4.",
+         "<b>Oddments</b> — the notes' second method. 10 minutes, and it double-checks every mixed answer.",
+         "<b>Dominance</b> — delete the small row and the big column. Do the m×n practice questions.",
+         "Finish with the interpretation sentence: who the game favours, and is it fair."],
+   go:"m5t6"},
+  {t:"1:45 – 2:00", n:"15 min", h:"Break — away from the screen", why:"You have two hours of dense material ahead. A real break here protects it.", what:[], go:null},
+  {t:"2:00 – 3:05", n:"65 min", h:"Module 1 — Simplex and Big M",
+   why:"The single biggest block of marks on the paper. The past IA paper's only 5-mark question was Simplex or Big M, and your notes spend six pages on it.",
+   what:["<b>Simplex</b> — set up the table, Cⱼ−Zⱼ, key column / key row / key element, pivot. Work the 12x₁+16x₂ problem end to end without looking.",
+         "Declare your convention in writing: the decks use Cⱼ−Zⱼ, your handwritten sg.pdf uses Zⱼ−Cⱼ. Pick <b>Cⱼ−Zⱼ</b> and stay with it.",
+         "<b>Big M</b> — ≥ gets −surplus +artificial; +M when minimising, −M when maximising. Compare M-coefficients first.",
+         "Work IA paper <b>Q2(a)</b> (answer Z = 21) and <b>Q2(b)</b> (answer F* = 3.4 — the paper's 'unbounded' line is wrong).",
+         "Skip two-phase unless you finish early."],
+   go:"m1t13"},
+  {t:"3:05 – 3:50", n:"45 min", h:"Module 1 — Transportation and Assignment",
+   why:"Q3 of the past IA paper was transportation, both options. 15 pages of your notes cover it. Assignment is the natural companion and equally mechanical.",
+   what:["<b>NWCM</b> — 3 minutes to learn, always worth attempting.",
+         "<b>LCM</b> and <b>VAM</b> — VAM is the one most often asked; penalty = difference of the two smallest in each row/column.",
+         "Check <b>m + n − 1</b> for degeneracy every time — the IA paper asked for exactly this.",
+         "<b>Hungarian method</b> — row reduce, column reduce, cover zeros, assign.",
+         "If short of time, do VAM and Hungarian only, and skip MODI."],
+   go:"m1t10"},
+  {t:"3:50 – 4:20", n:"30 min", h:"Module 1 — the theory 2-markers",
+   why:"Cheapest marks on the paper. 10 of the 11 items in or_important_questions.docx are Module 1 theory, and Q1(a)–(c) of the IA paper were all from this pool.",
+   what:["Feasible vs optimal solution — with a one-line example.",
+         "Objective function vs constraint — the roles contrasted.",
+         "Two advantages of OR in managerial decision-making.",
+         "Limitations of OR — the five, with the model-building framing sentence.",
+         "Slack vs surplus vs artificial — which constraint, added or subtracted, coefficient in Z.",
+         "Types of constraints in an LPP."],
+   go:"m1t7"},
+  {t:"4:20 – 5:00", n:"40 min", h:"Rapid revision — see the checklist below",
+   why:"Recall beats rereading. Everything in this block is retrieval, not new material.",
+   what:["Rewrite the queuing formula block from memory. Check. Repeat once.",
+         "Rewrite the 2×2 game block from memory: D, p, r, V.",
+         "Do the <b>Quiz</b> — 20 questions, and open any topic you get wrong.",
+         "Read the Last-30-minutes checklist below twice.",
+         "Skim <b>T13_IA_QP_3CO_solution.docx</b> once — it is the closest thing to a real paper you have."],
+   go:"quiz"}
+];
+
+var LAST30 = [
+  ["m2", "&rho; = &lambda;/&mu; &middot; Ls = &lambda;/(&mu;&minus;&lambda;) &middot; Lq = &lambda;&sup2;/(&mu;(&mu;&minus;&lambda;)) &middot; Ws = 1/(&mu;&minus;&lambda;) &middot; Wq = &lambda;/(&mu;(&mu;&minus;&lambda;)) &middot; Lq&prime; = &mu;/(&mu;&minus;&lambda;)"],
+  ["m2", "Rate = 60 &divide; minutes. Convert <b>both</b> &lambda; and &mu; to the same period before substituting."],
+  ["m2", "P(n) = &rho;<sup>n</sup>(1&minus;&rho;) &middot; P(more than n) = &rho;<sup>n+1</sup> &middot; &lsquo;n waiting&rsquo; means P(n+1)."],
+  ["m2", "Queuing has <b>no objective function</b>, so it is not an optimisation. Balking = never joins; reneging = joins then leaves."],
+  ["m5", "Row minima &rarr; take the max. Column maxima &rarr; take the min. Equal &rArr; saddle point, pure strategies, stop."],
+  ["m5", "2&times;2: D = a+d&minus;b&minus;c &middot; p = (d&minus;c)/D &middot; r = (d&minus;b)/D &middot; V = (ad&minus;bc)/D. V must land between maximin and minimax."],
+  ["m5", "Dominance: delete the <b>small row</b> and the <b>big column</b>, elementwise, then repeat."],
+  ["m5", "V &gt; 0 favours A &middot; V &lt; 0 favours B &middot; V = 0 is a fair game. Write that sentence — it is separately marked."],
+  ["m1", "&le; add slack &middot; &ge; subtract surplus then add artificial &middot; = add artificial. +M minimising, &minus;M maximising."],
+  ["m1", "Max optimal when all C&#8341;&minus;Z&#8341; &le; 0; Min when all &ge; 0. Key row = <b>least positive</b> ratio; zero and negative ratios do not compete."],
+  ["m1", "Transportation: check <b>m + n &minus; 1</b> allocations. Fewer &rArr; degenerate. VAM penalty = difference of the two smallest."],
+  ["m1", "Hungarian: row reduce, column reduce, cover all zeros with minimum lines, assign. Read the final cost from the <b>original</b> matrix."],
+  ["m1", "Feasible = satisfies all constraints. Optimal = feasible <i>and</i> best objective value. Always give a one-line example."],
+  ["m1", "Answer in the question's own words — a production plan, a schedule, a strategy per player — not a bare number."]
+];
+
+function viewPlan(){
+  var h = '<h1>Exam Plan</h1>'+
+    '<p class="lead">Built from your 78 pages of notes, the past IA paper, and every deck in the folder. '+META.marks+' marks in '+META.minutes+' minutes; target 25–27+.</p>';
+
+  h += '<div class="box warning"><h5>The one thing to know before you plan your time</h5>'+
+    '<p>You asked for Module 2 to be weighted most heavily. <b>The material does not support that.</b> Your 78 pages of class '+
+    'notes cover Module 5 and Module 1 and contain <b>zero</b> queuing. The past Internal Assessment paper has <b>no</b> queuing '+
+    'question. <span class="mono">or_important_questions.docx</span> has <b>no</b> queuing question. Queuing exists in exactly one '+
+    'file, <span class="mono">Queuing PPT.pdf</span>, which arrived separately from the rest.</p>'+
+    '<p><b>What the plan does instead.</b> Module 2 goes <i>first</i>, because it is the cheapest module on the paper — five '+
+    'formulas, 45 minutes, and those marks are banked whatever else happens. But it gets 45 minutes, not the largest share. '+
+    'If your teacher has said queuing is heavily weighted, tell me and I will re-cut the schedule.</p></div>';
+
+  h += '<h2>What the evidence actually says</h2><div class="tw"><table>'+
+    '<tr><th>Signal</th><th>Module 1</th><th>Module 2</th><th>Module 5</th></tr>';
+  EVIDENCE.forEach(function(r){
+    h += '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td></tr>';
+  });
+  h += '</table></div>';
+
+  h += '<h2>Module priority and expected weight</h2><div class="tw"><table>'+
+    '<tr><th>Rank</th><th>Module</th><th>Expected marks</th><th>Time to give it</th><th>Why</th></tr>'+
+    '<tr><td>1</td><td><b>Module 1</b> — OR &amp; LP</td><td><b>15–18 of 30</b></td><td>140 min</td>'+
+      '<td>62 notes pages, 9 decks, and up to 14 of the past paper&rsquo;s 20 marks. It is the paper.</td></tr>'+
+    '<tr><td>2</td><td><b>Module 5</b> — Game Theory</td><td><b>7–9 of 30</b></td><td>60 min</td>'+
+      '<td>16 notes pages, ~20 solved problems, 4 of 11 past-paper questions. Mechanical and fast to bank.</td></tr>'+
+    '<tr><td>3</td><td><b>Module 2</b> — Queuing</td><td><b>4–6 of 30</b></td><td>45 min</td>'+
+      '<td>One deck, no notes, no past questions — but the highest marks per minute of study on the paper.</td></tr>'+
+    '</table></div>'+
+    '<p class="small muted">Estimates come from syllabus hours (15–17 / 4–6 / 4–6), the past paper&rsquo;s own split, and the '+
+    'depth of your notes. Treat them as a betting line, not a guarantee.</p>';
+
+  var PL = {must:["🔴","MUST DO"], high:["🟠","HIGH"], med:["🟡","MEDIUM"], low:["🟢","LOW"]};
+  h += '<h2>LO-wise priority</h2><div class="tw"><table>'+
+    '<tr><th>LO</th><th>Topic</th><th>Module</th><th>Weight</th><th>Priority</th><th>Source</th><th></th></tr>';
+  LOPLAN.forEach(function(r){
+    h += '<tr><td>'+esc(r.lo)+'</td><td>'+esc(r.topic)+'</td><td>'+esc(moduleName(r.mod))+'</td><td>'+esc(r.w)+'</td>'+
+      '<td style="white-space:nowrap">'+PL[r.p][0]+' '+PL[r.p][1]+'</td><td class="small">'+esc(r.src)+'</td>'+
+      '<td>'+(r.go && TBYID[r.go] ? '<button class="btn" data-go="topic" data-id="'+esc(r.go)+'">Open</button>' : '<span class="muted small">folder only</span>')+'</td></tr>';
+  });
+  h += '</table></div>';
+
+  h += '<h2>The 5-hour schedule</h2>';
+  SCHEDULE.forEach(function(b){
+    h += '<div class="card'+(b.what.length ? ' hi' : '')+'"><div class="trow">'+
+      '<span class="pill">'+esc(b.t)+'</span><h3>'+esc(b.h)+'</h3><span class="pill">'+esc(b.n)+'</span></div>'+
+      '<p class="small muted" style="margin:4px 0 0">'+esc(b.why)+'</p>';
+    if (b.what.length){
+      h += '<ul class="small" style="margin:9px 0 0">';
+      b.what.forEach(function(x){ h += '<li>'+x+'</li>'; });
+      h += '</ul>';
+    }
+    if (b.go) h += '<div class="btnrow"><button class="btn" data-go="'+(TBYID[b.go] ? 'topic" data-id="'+esc(b.go) : esc(b.go))+'">Start here</button></div>';
+    h += '</div>';
+  });
+
+  h += '<h2>If you run out of time, drop these</h2>'+
+    '<div class="box"><p>In this order, and without guilt: <b>integer programming</b> (Gomory, branch &amp; bound) → '+
+    '<b>travelling salesman</b> → <b>sequencing</b> → <b>two-phase method</b> (Big M covers the same ground) → '+
+    '<b>MODI / stepping stone</b> (an initial basic feasible solution by VAM still earns most of a transportation question) → '+
+    '<b>duality beyond writing the dual</b> → <b>special cases</b>. None of these appears in the past paper, and together they '+
+    'are worth less than the queuing module you can finish in 45 minutes.</p></div>';
+
+  h += '<h2>Last 30 minutes — the whole checklist</h2>'+
+    '<p class="small muted">Nothing new here. If you cannot reproduce a line from memory, open its topic; otherwise move on.</p>';
+  ["m2","m5","m1"].forEach(function(m){
+    h += '<h3>'+esc(moduleName(m))+'</h3><ul class="small">';
+    LAST30.filter(function(r){ return r[0] === m; }).forEach(function(r){ h += '<li>'+r[1]+'</li>'; });
+    h += '</ul>';
+  });
+
+  h += '<h2>How to spend the 90 minutes in the hall</h2>'+
+    '<div class="box tip"><h5>Order of attack</h5>'+
+    '<p><b>1.</b> Read the whole paper first — 3 minutes. <b>2.</b> Do <b>queuing</b> and the <b>game theory</b> questions first: '+
+    'they are the fastest marks and finishing them early buys calm. <b>3.</b> Then the big Module 1 numerical you are most '+
+    'confident in. <b>4.</b> Then the theory 2-markers. <b>5.</b> Leave the longest, least certain numerical for last.</p>'+
+    '<p><b>Budget by marks:</b> '+(META.minutes/META.marks).toFixed(1)+' minutes per mark. A 10-mark question deserves '+
+    Math.round(10*META.minutes/META.marks)+' minutes; if you are '+Math.round(5*META.minutes/META.marks)+' minutes into a '+
+    '5-mark part with no end in sight, write what you have and move on. An unfinished 10-mark answer outscores a perfect '+
+    '5-mark one you ran over on.</p>'+
+    '<p><b>To reach 25–27:</b> you need roughly 85–90%. That means every queuing and game theory mark, both theory 2-markers, '+
+    'and one large Module 1 numerical fully correct. It does <b>not</b> require integer programming, sequencing or TSP.</p></div>';
+
+  app.innerHTML = h;
+}
 </script>
 </body>
 </html>

@@ -11,52 +11,48 @@ behaves identically opened from disk (`file://`) and published on GitHub Pages.
 
 ---
 
-## Read this first — the folder has changed since this site was built
+## Read this first
 
-The folder is now organised into module folders (`Module 1 - …`, `Module 2 - Queuing Models`,
-`Module 5 - Game Theory`, plus `_Syllabus` and `_Duplicate copies`). See
-**`_ORGANISATION.md`** for how every document was classified and **`_ORGANISATION-gaps.md`**
-for the full syllabus-vs-material audit.
+**Exam tomorrow. Open `index.html` → the Plan tab.** It has the evidence, the module
+priority, the LO table, the hour-by-hour schedule and the last-30-minutes checklist.
 
-This site was built when the folder held material for **Modules 1 and 5 only**. More material
-has since arrived — queuing, transportation, assignment, sequencing, travelling salesman,
-integer programming, and a past Internal Assessment paper with solutions. **No topic pages
-have been written for any of it**, so it contributes nothing to the readiness percentages.
-The Module 1 and Module 2 tabs say what is there and point at the folder.
+Resources are named `<module>.<nn> [LOs] <description>` — see `_LO-MAP.md`. The 78 pages of
+handwritten notes are in `_NOTES (highest priority)`.
 
-### Still missing from the syllabus — 8 Module 1 headings, no material anywhere
+### The finding that changes the plan
 
-1. Revised simplex method
-2. Symmetric and asymmetric dual
-3. Weak duality theorem
-4. Complimentary slackness theorem
-5. Main duality theorem *(demonstrated numerically in the duality deck, never stated as a theorem)*
-6. Sensitivity analysis
-7. Routing problem *(named on one recap slide, never taught)*
-8. Introduction to decomposition algorithms
+The notes cover **Module 5 (16 pp) and Module 1 (62 pp)** and contain **no queuing at all**.
+Neither does the past IA paper, nor the important-questions list. Queuing exists in exactly
+one file. So the plan puts Module 2 **first** — it is the cheapest module on the paper, five
+formulas and 45 minutes — but gives it 45 minutes rather than the largest share.
 
-Partially covered: the **dual simplex method** (Module 1) appears only as a sub-step inside
-Gomory's algorithm; **multi-server queuing models** and **constant rate service** (Module 2)
-are named but have no formulas or worked example.
+| | Module 1 | Module 2 | Module 5 |
+|---|---|---|---|
+| Notes pages | 62 | **0** | 16 |
+| Past IA paper marks | up to 14/20 | **0** | up to 6/20 |
+| Expected MSE marks | **15–18** | **4–6** | **7–9** |
+| Study time allocated | 140 min | 45 min | 60 min |
 
-**Module 5 is completely covered — no material is missing.**
+### Still missing from the syllabus — no material anywhere
 
-Consequently **learning outcome 2 (sensitivity analysis) has no material.** LO3 (transportation
-and assignment) and LO5 (integer programming and queuing) now *do* have material in the folder,
-but no topic page on this site yet. LO4 (network models) is outside the three modules in scope.
+Revised simplex · symmetric/asymmetric dual · weak duality theorem · complementary slackness
+theorem · main duality theorem (shown numerically, never stated) · **sensitivity analysis
+(LO2)** · routing problem · decomposition algorithms. Partially covered: dual simplex (only
+inside Gomory's algorithm), multi-server queuing and constant-rate service (named, no formulas).
 
 ## Tab map
 
 ```
-Dashboard | Module 1 | Module 2 | Module 5 | Recognition | Quiz | Formulae | Exam Mode
+Dashboard | Plan | Module 1 | Module 2 | Module 5 | Recognition | Quiz | Formulae | Exam Mode
                                                      [ search · theme · settings ]
 ```
 
 | Tab | What it is for |
 |---|---|
 | **Dashboard** | Three readiness figures, one Study-next card, one card per module. Nothing else. |
+| **Plan** | The exam-prep dashboard: evidence, module priority, LO table, 5-hour schedule, last-30 checklist. |
 | **Module 1** | Introduction to OR & Linear Programming. Sub-tabs: Numericals · Theory · Quick Review. |
-| **Module 2** | Queuing Models — the honest gap notice and the syllabus contents. |
+| **Module 2** | Queuing Models — 5 topics, 19 markable questions, 23 quiz questions. |
 | **Module 5** | Game Theory. Sub-tabs: Numericals · Theory · Quick Review. |
 | **Recognition** | The read → classify → first move habit, four decision trees, and a clue → topic lookup per module. The index, not the content. |
 | **Quiz** | 72 single-answer MCQs, each tagged with a topic and one of four stages. |
@@ -78,21 +74,21 @@ cannot yet do.
 
 | Item | Count |
 |---|---|
-| Topics | **30** (Module 1: 20 · Module 5: 10) |
+| Topics | **36** (Module 1: 20 · Module 2: 5 · Module 5: 11) |
 | — high priority | 18 |
 | — medium priority | 9 |
 | — low priority | 3 |
 | Numericals track | 16 topics |
 | Theory track | 14 topics |
-| Worked examples | **43** |
-| Practice questions | **69** |
-| **Total markable questions** | **112** |
+| Worked examples | **51** |
+| Practice questions | **83** |
+| **Total markable questions** | **134** |
 | Likely exam questions | 59 (50 from source material, 9 predicted — 15%) |
-| Quiz MCQs | **72** |
+| Quiz MCQs | **113** |
 | Formula entries | 43, in 10 groups |
 | Quick review cards | 18 (Module 1: 10 · Module 5: 8) |
 | Learning outcomes covered | 5 of 8 (LO1, LO3, LO6, LO7, LO8) |
-| File size | 364 KB, zero external requests |
+| File size | 462 KB, zero external requests |
 
 Every worked example has its solution hidden behind a button, so the usable question bank
 is all 112 items, not just the 69 practice questions.
