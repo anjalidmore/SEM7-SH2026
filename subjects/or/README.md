@@ -11,32 +11,39 @@ behaves identically opened from disk (`file://`) and published on GitHub Pages.
 
 ---
 
-## Read this first — the scope does not match the material
+## Read this first — the folder has changed since this site was built
 
-The stated scope is Modules 1, 2 and 5. **Module 2 is Queuing Models, and this folder
-contains no queuing material at all.** Across all thirteen files, queuing appears exactly
-once, as a bullet on a syllabus-overview slide. There is no teaching content, no formula,
-no worked example, no exercise.
+The folder is now organised into module folders (`Module 1 - …`, `Module 2 - Queuing Models`,
+`Module 5 - Game Theory`, plus `_Syllabus` and `_Duplicate copies`). See
+**`_ORGANISATION.md`** for how every document was classified and **`_ORGANISATION-gaps.md`**
+for the full syllabus-vs-material audit.
 
-Nothing has been invented to fill that gap. The Module 2 tab lists the syllabus contents
-verbatim and says plainly that the material is missing, so you can source it elsewhere.
+This site was built when the folder held material for **Modules 1 and 5 only**. More material
+has since arrived — queuing, transportation, assignment, sequencing, travelling salesman,
+integer programming, and a past Internal Assessment paper with solutions. **No topic pages
+have been written for any of it**, so it contributes nothing to the readiness percentages.
+The Module 1 and Module 2 tabs say what is there and point at the folder.
 
-The same applies inside Module 1. These syllabus headings have no teaching material in the
-folder and therefore no topic on the site — they are listed at the foot of the Module 1 tab:
+### Still missing from the syllabus — 8 Module 1 headings, no material anywhere
 
-- Revised simplex method
-- Symmetric and asymmetric dual; weak duality, complementary slackness and main duality theorems
-- Dual simplex method
-- Sensitivity analysis
-- Transportation problem (NW corner rule, least cost, VAM, stepping stone, MODI)
-- Hungarian method algorithm; n jobs through two/m machines; routing and travelling salesman
-- Integer programming: Gomory's cutting plane, branch and bound, decomposition algorithms
+1. Revised simplex method
+2. Symmetric and asymmetric dual
+3. Weak duality theorem
+4. Complimentary slackness theorem
+5. Main duality theorem *(demonstrated numerically in the duality deck, never stated as a theorem)*
+6. Sensitivity analysis
+7. Routing problem *(named on one recap slide, never taught)*
+8. Introduction to decomposition algorithms
 
-Consequently **learning outcomes 2, 4 and 5 have no topic on this site.** LO2 is sensitivity
-analysis, LO4 is network models, LO5 is integer programming and queuing. None of the three
-is taught anywhere in the folder.
+Partially covered: the **dual simplex method** (Module 1) appears only as a sub-step inside
+Gomory's algorithm; **multi-server queuing models** and **constant rate service** (Module 2)
+are named but have no formulas or worked example.
 
----
+**Module 5 is completely covered — no material is missing.**
+
+Consequently **learning outcome 2 (sensitivity analysis) has no material.** LO3 (transportation
+and assignment) and LO5 (integer programming and queuing) now *do* have material in the folder,
+but no topic page on this site yet. LO4 (network models) is outside the three modules in scope.
 
 ## Tab map
 
@@ -94,21 +101,27 @@ is all 112 items, not just the 69 practice questions.
 
 ## Source files
 
-Everything on the site is traceable to one of these. Nothing else was used.
+The 14 documents these topic pages were written from. All now live under module folders.
 
+**`_Syllabus/`**
 1. `syllabus.pdf` — OEC7015 Operation Research (B.Tech Electrical Engineering, N-2024)
 2. `ce_syllabus_6a5726f4dd323.pdf` — the same OEC7015 syllabus (B.Tech Computer Engineering)
-3. `OR/Intro to OR.pptx` — 16 slides
-4. `OR/OR Introduction.pptx` — 31 slides
-5. `OR/Linear Prog GM.pptx` — 32 slides
-6. `OR/OR - Simplex Method.pptx` — 12 slides
-7. `OR/OR - Simplex  Example.pptx` — 9 slides
-8. `OR/OR - Big M Method.pptx` — 18 slides
-9. `OR/OR - Simplex .pptx` — 43 slides (a superset of files 6–8)
-10. `OR/OR - Duality.pptx` — 13 slides
-11. `OR/SIMPLEX & BIG M ADDITIONAL PROBLEM sg.pdf` — 4 scanned handwritten pages
-12. `OR/Game Theory.pptx` — 26 slides
-13. `OR/Game Theory_1.pptx` — 14 slides
+
+**`Module 1 - Introduction to OR & Linear Programming/`**
+3. `Intro to OR.pptx` — 16 slides
+4. `OR Introduction.pptx` — 31 slides
+5. `Linear Prog GM.pptx` — 32 slides
+6. `OR - Simplex Method.pptx` — 12 slides
+7. `OR - Simplex  Example.pptx` — 9 slides
+8. `OR - Big M Method.pptx` — 18 slides
+9. `OR - Simplex .pptx` — 43 slides (a superset of files 6–8)
+10. `OR - Duality.pptx` — 13 slides
+11. `SIMPLEX & BIG M ADDITIONAL PROBLEM sg.pdf` — 4 scanned handwritten pages
+
+**`Module 5 - Game Theory/`**
+12. `Game Theory.pptx` — 26 slides
+13. `Game Theory_1.pptx` — 14 slides
+14. `example_1.pptx` — 4 slides
 
 File 11 extracted as 152 characters of text, i.e. it is a scan. Its four pages were rendered
 to images at 130 dpi and read directly. It turned out to be one of the highest-signal files
@@ -118,6 +131,13 @@ problems in it are complete.
 Most payoff matrices and corner-point tables in the decks were embedded images rather than
 text. 92 of them were extracted and read to recover the actual numbers.
 
+### Material in the folder that no topic page covers yet
+
+`Transportation Problem.pptx` · `Stepping Stone Method.pptx` · `MODI.pptx` ·
+`Transportation Problems.docx` · `assignment prob_OR.pptx` · `Sequencing Problems.pptx` ·
+`TSP.pptx` · `OR - IPP.pptx` · `T13_IA_QP_3CO_solution.docx` ·
+`or_imporatnt _questions.docx` · `Queuing PPT.pdf`
+
 ### Source vs prediction
 
 Two labels are used, consistently, and only on likely-exam-question rows:
@@ -125,8 +145,11 @@ Two labels are used, consistently, and only on likely-exam-question rows:
 - **From source material** — the question exists in a file in the folder.
 - **Likely exam pattern** — the question was written to match the pattern of those questions.
 
-**There is no previous-year paper in this folder.** Nothing on the site is labelled
-"previous year", and nothing is described as guaranteed or certain to be asked.
+**There is no previous-year MSE paper in this folder.** A past *Internal Assessment I* paper
+with solutions and rubrics has since been added (`Module 1 …/T13_IA_QP_3CO_solution.docx`), but
+it is a different assessment — 20 marks in 1 hour against the MSE's 30 marks in 1.5 hours — and
+no question on this site is drawn from it. Nothing on the site is labelled "previous year", and
+nothing is described as guaranteed or certain to be asked.
 
 ### How priority is derived
 
@@ -239,6 +262,13 @@ short note explaining the discrepancy. None was silently "corrected".
    [[6, 3, −1, 0, −3], [3, 2, −4, 2, −1]]. The value must be negative: the row minima give a
    maximin of −3 and the column maxima a minimax of −1, so the value is bracketed below zero.
    The correct value is **−11/5**. The quoted p = 3/5 and r = 2/5 are both correct.
+
+Three more were found in the past Internal Assessment paper that arrived later, and are
+recorded in `_ORGANISATION.md`: Q2(b) states "the solution is unbounded" and then gives
+F* = 3.4 at (0.4, 1.8) — recomputation confirms the problem is **bounded** and F* = 3.4 is
+correct, so the "unbounded" conclusion is wrong; Q3(a) gives both 1525 and 1510 as the total
+cost; Q3(b) says the solution is degenerate and then that it is non-degenerate. Its Q2(a)
+(Z = 21) and Q1(e) (V = 27/4) both verify exactly.
 
 Two smaller labelling slips are noted on the relevant topic pages rather than listed here:
 `example_1.pptx` justifies a column deletion as "Column-1 ≥ Column-3" when the comparison

@@ -234,19 +234,31 @@ var LOS = [
 ];
 
 var SOURCES = [
-  "syllabus.pdf — OEC7015 Operation Research (B.Tech Electrical Engineering, N-2024)",
-  "ce_syllabus_6a5726f4dd323.pdf — the same OEC7015 syllabus (B.Tech Computer Engineering)",
-  "OR/Intro to OR.pptx",
-  "OR/OR Introduction.pptx",
-  "OR/Linear Prog GM.pptx",
-  "OR/OR - Simplex Method.pptx",
-  "OR/OR - Simplex  Example.pptx",
-  "OR/OR - Big M Method.pptx",
-  "OR/OR - Simplex .pptx",
-  "OR/OR - Duality.pptx",
-  "OR/SIMPLEX & BIG M ADDITIONAL PROBLEM sg.pdf (scanned handwritten notes)",
-  "OR/Game Theory.pptx",
-  "OR/Game Theory_1.pptx"
+  "_Syllabus/syllabus.pdf — OEC7015 Operation Research (B.Tech Electrical Engineering, N-2024)",
+  "_Syllabus/ce_syllabus_6a5726f4dd323.pdf — the same OEC7015 syllabus (B.Tech Computer Engineering)",
+  "Module 1 …/Intro to OR.pptx",
+  "Module 1 …/OR Introduction.pptx",
+  "Module 1 …/Linear Prog GM.pptx",
+  "Module 1 …/OR - Simplex Method.pptx",
+  "Module 1 …/OR - Simplex  Example.pptx",
+  "Module 1 …/OR - Big M Method.pptx",
+  "Module 1 …/OR - Simplex .pptx",
+  "Module 1 …/OR - Duality.pptx",
+  "Module 1 …/SIMPLEX & BIG M ADDITIONAL PROBLEM sg.pdf (scanned handwritten notes)",
+  "Module 5 - Game Theory/Game Theory.pptx",
+  "Module 5 - Game Theory/Game Theory_1.pptx",
+  "Module 5 - Game Theory/example_1.pptx"
+];
+
+/* Material that arrived after this site was written. It is filed in the module folders
+   and audited in _ORGANISATION-gaps.md, but no topic page has been built for it yet. */
+var LATER_MATERIAL = [
+  "Module 1 …/Transportation Problem.pptx, Stepping Stone Method.pptx, MODI.pptx, Transportation Problems.docx",
+  "Module 1 …/assignment prob_OR.pptx, Sequencing Problems.pptx, TSP.pptx",
+  "Module 1 …/OR - IPP.pptx (Gomory's cutting plane and branch and bound, both worked)",
+  "Module 1 …/T13_IA_QP_3CO_solution.docx — a past Internal Assessment I paper with solutions",
+  "Module 1 …/or_imporatnt _questions.docx",
+  "Module 2 - Queuing Models/Queuing PPT.pdf"
 ];
 
 var MODULES = [
@@ -269,12 +281,24 @@ var M2_SYLLABUS = [
 /* Module 1 syllabus headings that have no teaching material in the folder. */
 var M1_GAPS = [
   "Revised simplex method",
-  "Symmetric and asymmetric dual, weak duality theorem, complementary slackness theorem, main duality theorem",
-  "Dual simplex method",
+  "Symmetric and asymmetric dual",
+  "Weak duality theorem",
+  "Complementary slackness theorem",
+  "Main duality theorem (demonstrated numerically in the duality deck, never stated as a theorem)",
   "Sensitivity analysis",
-  "Transportation problem (NW corner rule, least cost, VAM, stepping stone, MODI)",
-  "Hungarian method algorithm; n jobs through two/m machines; routing and travelling salesman",
-  "Integer programming: Gomory's cutting plane, branch and bound, decomposition algorithms"
+  "Routing problem (named on one recap slide, never taught)",
+  "Introduction to decomposition algorithms"
+];
+
+/* In the folder, but no topic page written yet — see _ORGANISATION-gaps.md */
+var M1_UNBUILT = [
+  "Transportation problem — formulation, unbalanced, NW corner rule, least cost, VAM",
+  "Optimality tests — stepping stone method and MODI",
+  "Assignment problem — Hungarian method algorithm",
+  "Sequencing — n jobs through two and m machines, graphical two jobs m machines",
+  "Travelling salesman problem",
+  "Integer programming — types, Gomory's cutting plane, branch and bound",
+  "Dual simplex method (taught only as a sub-step of Gomory's algorithm)"
 ];
 /* ===== 03 · Module 1 — theory topics ===== */
 var M1_THEORY = [
@@ -3169,18 +3193,24 @@ function viewModule(m){
   var h = '<h1>'+esc(moduleName(m))+' &middot; '+esc(moduleTitle(m))+'</h1>';
 
   if (m === "m2"){
-    h += '<p class="lead">This module is in the stated exam scope, but the folder contains no queuing material.</p>'+
-      '<div class="box warning"><h5>Nothing has been written for this module</h5>'+
-      '<p>Module 2 of the OEC7015 syllabus is Queuing Models, and the MSE scope you gave covers Modules 1, 2 and 5. '+
-      'Across all thirteen files in this folder, queuing appears once — as a single bullet on a syllabus-overview slide. '+
-      'There is no teaching content, no formula, no worked example and no exercise.</p>'+
-      '<p>Rather than invent material, this page lists the syllabus contents verbatim so you can see exactly what is missing '+
-      'and source it elsewhere. Nothing on this site has been generated for these headings.</p></div>'+
+    h += '<p class="lead">Queuing material now exists in the folder, but no topic page has been built from it yet.</p>'+
+      '<div class="box warning"><h5>Material has arrived; topics have not been written</h5>'+
+      '<p>When this site was built the folder contained no queuing material at all, so no Module 2 topic was written. '+
+      'A queuing deck has since been added &mdash; <b>Module 2 - Queuing Models / Queuing PPT.pdf</b> &mdash; and it covers most '+
+      'of this module properly: definitions, the components of a queuing system, customer behaviour (balking, reneging, '+
+      'jockeying, collusion), arrival and service rates, utilisation and idle rate, the single-server formulas '+
+      '(P(n), Ls, Lq, Ws, Wq, Lq&prime;) and three worked examples.</p>'+
+      '<p>Study it from the folder directly. The topic pages, recognition clues and quiz questions for Module 2 have '+
+      '<b>not</b> been written, so this module contributes nothing to the readiness percentages on the Dashboard.</p></div>'+
       '<h2>Module 2 syllabus contents, verbatim</h2><ul>';
     M2_SYLLABUS.forEach(function(s){ h += '<li>'+esc(s)+'</li>'; });
-    h += '</ul><p class="small muted">Course outcome 5 &mdash; &ldquo;Analyse the applications of integer programming and a queuing model '+
-      'and compute important performance measures&rdquo; &mdash; is the outcome this module serves. It has no topic on this site '+
-      'because it has no material in the folder.</p>';
+    h += '</ul>'+
+      '<div class="box"><h5>Two gaps remain inside the new deck</h5>'+
+      '<p><b>Multi-server models</b> appear only as a heading &mdash; every formula and all three worked examples are '+
+      'single-server. <b>Constant rate service</b> gets one line ("Constant Service Time: Not in practice") with no model '+
+      'and no formula. Both are named in the syllabus above.</p></div>'+
+      '<p class="small muted">Course outcome 5 &mdash; &ldquo;Analyse the applications of integer programming and a queuing model '+
+      'and compute important performance measures&rdquo; &mdash; is the outcome this module serves.</p>';
     app.innerHTML = h;
     return;
   }
@@ -3208,9 +3238,14 @@ function viewModule(m){
   }
 
   if (m === "m1"){
-    h += '<h2>Syllabus headings with no material here</h2>'+
-      '<p class="small muted">These are named in the Module 1 syllabus but the folder contains no teaching content for them, '+
-      'so no topic has been written. Source them elsewhere if they are examinable for you.</p><ul class="small muted">';
+    h += '<h2>In the folder, but no topic page yet</h2>'+
+      '<p class="small muted">Material for these arrived after this site was written. It is filed under '+
+      '<b>Module 1 - Introduction to OR &amp; Linear Programming</b> &mdash; study it from the folder directly.</p><ul class="small muted">';
+    M1_UNBUILT.forEach(function(g){ h += '<li>'+esc(g)+'</li>'; });
+    h += '</ul>'+
+      '<h2>Syllabus headings with no material anywhere</h2>'+
+      '<p class="small muted">Named in the Module 1 syllabus, but no file in the folder teaches them. '+
+      'Source them elsewhere if they are examinable for you.</p><ul class="small muted">';
     M1_GAPS.forEach(function(g){ h += '<li>'+esc(g)+'</li>'; });
     h += '</ul>';
   }
@@ -3625,9 +3660,11 @@ function viewSettings(){
     '<p><b>'+esc(META.code)+' &middot; '+esc(META.course)+'</b><br>'+
     esc(META.exam)+' &middot; '+META.marks+' marks &middot; '+(META.minutes/60)+' hours &middot; '+esc(META.scope)+'.<br>'+
     '<span class="muted">'+esc(META.scopeNote)+'</span></p>'+
-    '<p><b>There is no previous-year paper in this folder.</b> Nothing on this site is labelled &lsquo;previous year&rsquo; '+
-    'and nothing is described as guaranteed. Questions carry one of two labels: '+
-    '<i>From source material</i> means the question appears in a file in the folder; '+
+    '<p><b>There is no previous-year MSE paper in this folder.</b> A past <i>Internal Assessment I</i> paper with '+
+    'solutions has since been added (Module 1 folder, <span class="mono">T13_IA_QP_3CO_solution.docx</span>), but that is a '+
+    'different assessment &mdash; 20 marks in 1 hour, against this exam&rsquo;s 30 marks in 1.5 hours &mdash; and no question on '+
+    'this site is drawn from it. Nothing here is labelled &lsquo;previous year&rsquo; and nothing is described as guaranteed. '+
+    'Questions carry one of two labels: <i>From source material</i> means the question appears in a file in the folder; '+
     '<i>Likely exam pattern</i> means it was written to match the pattern of those questions.</p>'+
     '<p><b>Priority is derived, not chosen.</b> A topic is <i>high</i> if it appears in a teacher-stated focus list, '+
     'serves two or more learning outcomes, has three or more worked examples in the source, or is explicitly weighted. '+
@@ -3644,10 +3681,15 @@ function viewSettings(){
   });
   h += '</ol>'+
     '<h4>Where the material does not match the scope</h4>'+
-    '<p class="small">The stated scope is Modules 1, 2 and 5. Module 2 is Queuing Models and the folder contains no '+
-    'queuing material at all &mdash; see the Module 2 tab. Several Module 1 syllabus headings are also unsupported and '+
-    'are listed at the foot of the Module 1 tab. Learning outcomes 2, 4 and 5 have no topic on this site because '+
-    'no file in the folder teaches them.</p>'+
+    '<p class="small">The stated scope is Modules 1, 2 and 5. This site was built when the folder held material for '+
+    'Modules 1 and 5 only. Since then the folder has been reorganised into module folders and more material has arrived '+
+    '&mdash; queuing, transportation, assignment, sequencing, travelling salesman and integer programming. '+
+    '<b>Topic pages have not been written for any of it</b>, so it contributes nothing to the readiness percentages; '+
+    'the Module 1 and Module 2 tabs say what is there and where to find it. Eight Module 1 syllabus headings still have '+
+    'no material anywhere and are listed at the foot of the Module 1 tab. The full audit is in '+
+    '<span class="mono">_ORGANISATION-gaps.md</span>.</p>'+
+    '<h4>In the folder, not yet on this site</h4><ul class="small">'+
+    LATER_MATERIAL.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'+
     '<h4>Discrepancies found in the source material</h4>'+
     '<p class="small">Four were found and are noted on the relevant topic pages, with the teacher’s figures presented as authoritative:</p>'+
     '<ul class="small">'+
@@ -3655,7 +3697,11 @@ function viewSettings(){
     '<li>A dominance problem prints X = (3/4, 1/4, 0, 0) &mdash; four entries for a three-strategy player. V = 15/4 is correct.</li>'+
     '<li>A second dominance problem gives V = 5 correctly but prints player A’s and player B’s probability vectors swapped.</li>'+
     '<li>One answer key prints V = 11/5 where the value is negative, &minus;11/5; the row minima and column maxima bracket the value below zero.</li>'+
-    '</ul></div>';
+    '</ul>'+
+    '<p class="small">Three more were found in the past Internal Assessment paper added later: Q2(b) states &ldquo;the solution '+
+    'is unbounded&rdquo; and then gives F* = 3.4 at (0.4, 1.8) &mdash; recomputation confirms the problem is <b>bounded</b> and '+
+    'F* = 3.4 is right, so the &ldquo;unbounded&rdquo; conclusion is wrong; Q3(a) gives both 1525 and 1510 as the total cost; '+
+    'and Q3(b) says the solution is degenerate and then that it is non-degenerate. Its Q2(a) and Q1(e) answers both verify exactly.</p></div>';
   app.innerHTML = h;
 }
 
