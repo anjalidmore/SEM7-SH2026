@@ -55,7 +55,7 @@ Dashboard | Plan | Module 1 | Module 2 | Module 5 | Recognition | Quiz | Formula
 
 | Tab | What it is for |
 |---|---|
-| **Dashboard** | Three readiness figures, one Study-next card, one card per module. Nothing else. |
+| **Dashboard** | Three readiness figures and one card per module. Nothing else — no Study-next, no weak areas. |
 | **Plan** | The exam-prep dashboard: evidence, module priority, LO table, 5-hour schedule, last-30 checklist. |
 | **Module 1** | Introduction to OR & Linear Programming. Sub-tabs: Numericals · Theory · Quick Review. |
 | **Module 2** | Queuing Models — 5 topics, 19 markable questions, 23 quiz questions. |
@@ -176,6 +176,10 @@ const KEY = "or_mse_study_v1";
   lastStudied, streak, lastVisit, firstVisit }
 ```
 
+- **Readiness counts exam-priority topics only.** The Dashboard and module tabs measure over the
+  27 high-priority topics — the material actually on this paper. The 17 low-priority topics (the
+  Module 1 numerical track) keep full pages and can still be marked done, but they do not dilute
+  the figures. Settings shows both the exam-priority and whole-syllabus numbers.
 - **Nothing is hardcoded.** A brand-new browser opens at 0%. Every percentage on the site is
   computed at render time from that browser's own storage.
 - **Progress comes from questions, not pages.** Opening a topic marks nothing. The only
@@ -186,10 +190,6 @@ const KEY = "or_mse_study_v1";
 - Every storage read and write is wrapped in `try/catch`. If storage throws — private mode,
   a strict `file://` context — the site still renders and is fully usable; progress simply
   is not saved and one toast says so. This is tested.
-
-**Study next** is deterministic, first match wins, and the rule is stated on the site:
-weakest quiz topic → a started high-priority topic → an unstarted high-priority topic
-(numericals before theory) → any topic with unfinished questions → take the quiz → Exam Mode.
 
 **Import** is validated. Anything that is not a recognisable progress file is rejected
 outright rather than silently wiping progress to 0%; what is accepted is sanitised — unknown

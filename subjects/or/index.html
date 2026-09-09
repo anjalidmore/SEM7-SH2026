@@ -4501,16 +4501,29 @@ function progressOf(list){
   list.forEach(function(t){ var p = topicProgress(t); done += p.done; total += p.total; });
   return { done:done, total:total, pct: total ? Math.round(done*100/total) : 0 };
 }
-function overallProgress(){ return progressOf(TOPICS); }
-function moduleProgress(m){ return progressOf(topicsOf(m)); }
+/* Readiness is measured over EXAM-PRIORITY topics only — the high-priority set.
+   Low-priority topics (the Module 1 numerical track) keep full pages and can still be
+   marked done; they simply do not dilute the readiness figures. */
+function examTopics(){
+  return TOPICS.filter(function(t){ return t.priority === "high"; });
+}
+function excludedCount(m){
+  return TOPICS.filter(function(t){ return t.priority === "low" && (!m || t.m === m); }).length;
+}
+function overallProgress(){ return progressOf(examTopics()); }
+function allProgress(){ return progressOf(TOPICS); }
+function moduleProgress(m){
+  return progressOf(topicsOf(m).filter(function(t){ return t.priority === "high"; }));
+}
+function moduleProgressAll(m){ return progressOf(topicsOf(m)); }
 function trackProgress(track){
-  return progressOf(TOPICS.filter(function(t){ return t.type === track; }));
+  return progressOf(examTopics().filter(function(t){ return t.type === track; }));
 }
 function moduleTrackProgress(m, track){
   return progressOf(TOPICS.filter(function(t){ return t.m === m && t.type === track; }));
 }
 function topicsFinished(m){
-  var ts = topicsOf(m), n = 0;
+  var ts = topicsOf(m).filter(function(t){ return t.priority === "high"; }), n = 0;
   ts.forEach(function(t){ if (topicStatus(t.id) === "done") n++; });
   return { done:n, total:ts.length };
 }
@@ -4531,33 +4544,6 @@ function weakTopics(){
   return out;
 }
 function band(pct){ return pct < 34 ? "b-bad" : (pct < 67 ? "b-warn" : ""); }
-
-/* Study-next: first match wins. Deterministic and stated on the Dashboard. */
-function studyNext(){
-  var w = weakTopics();
-  if (w.length) return { t: TBYID[w[0].id], why:"weakest quiz topic" };
-
-  var started = TOPICS.filter(function(t){
-    return t.priority === "high" && topicStatus(t.id) === "progress";
-  });
-  if (started.length) return { t: started[0], why:"high-priority topic already started" };
-
-  var order = ["problem-solving","theory"];
-  for (var i = 0; i < order.length; i++){
-    var un = TOPICS.filter(function(t){
-      return t.priority === "high" && t.type === order[i] && topicStatus(t.id) === "none"
-             && topicProgress(t).total > 0;
-    });
-    if (un.length) return { t: un[0], why:"unstarted high-priority topic" };
-  }
-  var any = TOPICS.filter(function(t){
-    var p = topicProgress(t); return p.total > 0 && p.done < p.total;
-  });
-  if (any.length) return { t: any[0], why:"topic with unfinished questions" };
-
-  if (quizAccuracy().n === 0) return { quiz:true, why:"every question is marked — take the quiz" };
-  return { exam:true, why:"everything is marked — open Exam Mode" };
-}
 /* ===== 17 · helpers and shared components ===== */
 function esc(s){
   return String(s == null ? "" : s)
@@ -4615,39 +4601,28 @@ function markCount(){
   TOPICS.forEach(function(t){ n += qIdsOf(t).length; });
   return n;
 }
-/* ===== 18 · Dashboard — kept deliberately sparse ===== */
+/* ===== 18 · Dashboard — readiness over exam-priority topics only ===== */
 function viewDash(){
   var o = overallProgress();
   var pn = trackProgress("problem-solving");
   var th = trackProgress("theory");
+  var ex = excludedCount(null);
+
   var h = '<h1>'+esc(META.course)+'</h1>'+
-    '<p class="lead">Progress comes only from questions you mark done, and is stored in this browser alone.</p>'+
+    '<p class="lead">Readiness counts only the topics on this paper. Progress comes from questions you mark done, '+
+    'and is stored in this browser alone.</p>'+
     '<div class="grid3">'+
       statCard(o.pct, "Overall readiness", o.done+" of "+o.total+" questions", o.pct)+
       statCard(pn.pct, "Numericals readiness", pn.done+" of "+pn.total+" questions", pn.pct)+
       statCard(th.pct, "Theory readiness", th.done+" of "+th.total+" questions", th.pct)+
     '</div>';
 
-  var nx = studyNext();
-  h += '<div class="card hi"><h3 style="margin-top:0">Study next</h3>';
-  if (nx.t){
-    h += '<div class="qmeter" style="margin-top:4px"><span class="qn" style="flex:1">'+
-         esc(moduleName(nx.t.m))+' &middot; '+esc(nx.t.title)+'</span>'+
-         '<button class="btn pri" data-go="topic" data-id="'+esc(nx.t.id)+'">Open</button></div>';
-  } else if (nx.quiz){
-    h += '<div class="qmeter" style="margin-top:4px"><span class="qn" style="flex:1">Take the quiz</span>'+
-         '<button class="btn pri" data-go="quiz">Open</button></div>';
-  } else {
-    h += '<div class="qmeter" style="margin-top:4px"><span class="qn" style="flex:1">Exam Mode</span>'+
-         '<button class="btn pri" data-go="exam">Open</button></div>';
-  }
-  h += '</div>';
-
   MODULES.forEach(function(m){
-    var mp = moduleProgress(m.id), tf = topicsFinished(m.id);
+    var mp = moduleProgress(m.id), tf = topicsFinished(m.id), lo = excludedCount(m.id);
     var sub = mp.total
       ? mp.done+" of "+mp.total+" questions &middot; "+tf.done+" of "+tf.total+" topics finished"
-      : "no material in this folder";
+      : "no exam-priority topics";
+    if (lo) sub += ' <span class="muted">&middot; '+lo+' low-priority not counted</span>';
     h += '<div class="card"><div class="qmeter" style="margin-top:0">'+
       '<span class="qn" style="flex:1;white-space:normal"><b>'+esc(m.n)+'</b> &middot; '+esc(m.title)+
       '<br><span class="muted">'+sub+'</span></span>'+
@@ -4656,17 +4631,9 @@ function viewDash(){
       bar(mp.pct)+'</div>';
   });
 
-  var w = weakTopics();
-  if (w.length){
-    h += '<h2>Weak areas</h2>';
-    w.slice(0,5).forEach(function(x){
-      var t = TBYID[x.id];
-      h += '<div class="card"><div class="qmeter" style="margin-top:0">'+
-        '<span class="qn" style="flex:1;white-space:normal">'+esc(t.title)+
-        ' <span class="muted">&middot; '+x.pct+'% over '+x.n+' quiz questions</span></span>'+
-        '<button class="btn" data-go="topic" data-id="'+esc(t.id)+'">Open</button></div></div>';
-    });
-  }
+  if (ex) h += '<p class="small muted">'+ex+' low-priority topics are excluded from every figure above. '+
+    'They are still on the module tabs and can still be marked done. See the Plan tab for why.</p>';
+
   app.innerHTML = h;
 }
 /* ===== 19 · Module tab ===== */
@@ -4688,9 +4655,13 @@ function viewModule(m){
   }
 
 
+  var lo = excludedCount(m);
   h += '<div class="card"><div class="qmeter" style="margin-top:0">'+
        bar(mp.pct)+'<span class="qn">'+mp.pct+'% &middot; '+mp.done+' / '+mp.total+' questions &middot; '+
-       tf.done+' / '+tf.total+' topics finished</span></div></div>';
+       tf.done+' / '+tf.total+' topics finished</span></div>'+
+       (lo ? '<p class="small muted" style="margin:9px 0 0">Exam-priority topics only. '+lo+
+             ' low-priority topics in this module are listed below but excluded from the figure.</p>' : '')+
+       '</div>';
 
   var cur = subTab[m] || TRACKS[0].id;
   h += '<div class="subtabs" role="tablist">';
@@ -5144,17 +5115,21 @@ function runSearch(qs){
 }
 /* ===== 26 · Settings ===== */
 function viewSettings(){
-  var o = overallProgress(), acc = quizAccuracy(), w = weakTopics();
-  var h = '<h1>Settings</h1><h2>Progress</h2><div class="tw"><table>'+
+  var o = overallProgress(), all = allProgress(), acc = quizAccuracy(), w = weakTopics();
+  var h = '<h1>Settings</h1><h2>Progress</h2>'+
+    '<p class="small muted">Readiness figures count <b>exam-priority topics only</b>. The whole-syllabus row counts every topic, '+
+    'including the '+excludedCount(null)+' low-priority ones.</p><div class="tw"><table>'+
     '<tr><th>Measure</th><th>Value</th></tr>'+
-    '<tr><td>Overall</td><td>'+o.pct+'% ('+o.done+' of '+o.total+' questions)</td></tr>';
+    '<tr><td><b>Overall readiness</b> (exam priority)</td><td>'+o.pct+'% ('+o.done+' of '+o.total+' questions)</td></tr>'+
+    '<tr><td>Whole syllabus (all topics)</td><td>'+all.pct+'% ('+all.done+' of '+all.total+' questions)</td></tr>';
   TRACKS.forEach(function(tr){
     var p = trackProgress(tr.id);
     h += '<tr><td>'+esc(tr.label)+'</td><td>'+p.pct+'% ('+p.done+' of '+p.total+')</td></tr>';
   });
   MODULES.forEach(function(m){
-    var p = moduleProgress(m.id);
-    h += '<tr><td>'+esc(m.n)+'</td><td>'+(p.total ? p.pct+'% ('+p.done+' of '+p.total+')' : 'no material') +'</td></tr>';
+    var p = moduleProgress(m.id), pa = moduleProgressAll(m.id), lo = excludedCount(m.id);
+    h += '<tr><td>'+esc(m.n)+'</td><td>'+(p.total ? p.pct+'% ('+p.done+' of '+p.total+')' : 'no exam-priority topics')+
+      (lo ? ' <span class="muted">&middot; all topics '+pa.pct+'%</span>' : '')+'</td></tr>';
   });
   h += '<tr><td>Quiz accuracy</td><td>'+(acc.n ? acc.pct+'% over '+acc.n+' answers' : 'not attempted')+'</td></tr>'+
     '<tr><td>Weak topics</td><td>'+(w.length ? w.length+' below 60%' : 'none')+'</td></tr>'+
@@ -5195,6 +5170,9 @@ function viewSettings(){
     '<p><b>Progress model.</b> Only marking an individual question moves a percentage. Opening a page marks nothing. '+
     'A topic counts as finished when all of its questions are marked. Every percentage on this site is computed at '+
     'render time from this browser’s own storage, so a new browser opens at 0%.</p>'+
+    '<p><b>What readiness counts.</b> The Dashboard and the module tabs measure readiness over <b>high-priority topics only</b> '+
+    '&mdash; the material actually on this paper. The '+excludedCount(null)+' low-priority topics (the Module 1 numerical track) '+
+    'have full pages and can still be marked done, but they do not dilute the figures. Settings shows both.</p>'+
     '<h4>Built from these files</h4><ul class="small">';
   SOURCES.forEach(function(s){ h += '<li>'+esc(s)+'</li>'; });
   h += '</ul><h4>Learning outcomes</h4><ol class="small">';
@@ -5267,7 +5245,7 @@ function doImport(file){
   r.readAsText(file);
 }
 function doReset(){
-  var o = overallProgress();
+  var o = allProgress();
   var msg = "This clears all progress in this browser: "+o.done+" marked question"+(o.done === 1 ? "" : "s")+
             ", your quiz record and your streak. Other devices are not affected. This cannot be undone.";
   if (!window.confirm(msg)) return;
