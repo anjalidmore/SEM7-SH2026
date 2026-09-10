@@ -236,10 +236,39 @@ var COURSE={
   ]
 };
 var MODULES=[
-  {id:"m1", n:1, title:"Fundamentals of Neural Network", est:"≈ 6 marks"},
-  {id:"m2", n:2, title:"Training, Optimization and Regularization of DNN", est:"≈ 13 marks"},
-  {id:"m3", n:3, title:"Convolutional Neural Networks (CNN)", est:"≈ 11 marks"}
+  {id:"m1", n:1, title:"Fundamentals of Neural Network", marks:8,  fmt:"2 questions of 4 marks", ans:4, choice:false},
+  {id:"m2", n:2, title:"Training, Optimization and Regularization of DNN", marks:12, fmt:"3 questions of 4 marks", ans:4, choice:false},
+  {id:"m3", n:3, title:"Convolutional Neural Networks (CNN)", marks:10, fmt:"2 of 3 questions, 5 marks each", ans:5, choice:true}
 ];
+
+/* The paper structure, stated by the lecturer. This is the top authority for priority. */
+var PAPER=[
+  {q:"Q1", from:"m1", fmt:"2 sub questions", each:4, marks:8,  choice:"no choice"},
+  {q:"Q2", from:"m2", fmt:"3 sub questions", each:4, marks:12, choice:"no choice"},
+  {q:"Q3", from:"m3", fmt:"3 sub questions set", each:5, marks:10, choice:"answer any 2 of 3"}
+];
+var PAPER_NOTES=[
+  "Every question is written against a learning outcome, so revise by outcome rather than by slide order.",
+  "Application questions are expected: you are given a situation and asked to decide something about it.",
+  "CNN architecture is important.",
+  "LO 3.2 is important.",
+  "LO 3.3 will carry a 5 mark question for certain."
+];
+
+/* Expected marks per learning outcome, derived from the paper structure above. */
+var LO_META={
+ "1.1":{exp:2.7, of:8,  note:""},
+ "1.2":{exp:3.5, of:8,  note:"The largest Module 1 outcome and the one whose verb is determine."},
+ "1.3":{exp:1.8, of:8,  note:""},
+ "2.1":{exp:3,   of:12, note:""},
+ "2.2":{exp:3,   of:12, note:"Written as an application outcome: choose components for a given problem context."},
+ "2.3":{exp:3,   of:12, note:""},
+ "2.4":{exp:3,   of:12, note:"Written as a comparison outcome: select the best method among alternatives."},
+ "3.1":{exp:1,   of:10, note:"Feeds LO 3.2, which is the outcome that carries the marks."},
+ "3.2":{exp:3,   of:10, note:"Named important by the lecturer.", flag:"important"},
+ "3.3":{exp:5,   of:10, note:"A 5 mark question for certain, and CNN architecture was named important.", flag:"certain"},
+ "3.4":{exp:1,   of:10, note:"Counts as CNN architecture, which was named important."}
+};
 var TRACKS={a:{k:"problem-solving",label:"Problem solving"}, b:{k:"theory",label:"Theory"}};
 
 var LOS={
@@ -258,18 +287,19 @@ var LOS={
 
 /* Evidence the priority ranking is built from: all counts are real, taken from the folder. */
 var EVIDENCE=[
- {m:"m1", hrs:"4 to 6", slides:67, los:"1.1, 1.2, 1.3 (3)", worked:6, qbank:"none in folder", pp:"none in folder", est:"≈ 6"},
- {m:"m2", hrs:"10 to 12", slides:292, los:"2.1, 2.2, 2.3, 2.4 (4) + LO 1.2", worked:11, qbank:"none in folder", pp:"none in folder", est:"≈ 13"},
- {m:"m3", hrs:"8 to 10", slides:83, los:"3.1, 3.2, 3.3, 3.4 (4)", worked:6, qbank:"none in folder", pp:"none in folder", est:"≈ 11"}
+ {m:"m1", hrs:"4 to 6", slides:67, los:"1.1, 1.2, 1.3 (3)", worked:6, marks:"8", fmt:"2 x 4"},
+ {m:"m2", hrs:"10 to 12", slides:292, los:"2.1, 2.2, 2.3, 2.4 (4) + LO 1.2", worked:11, marks:"12", fmt:"3 x 4"},
+ {m:"m3", hrs:"8 to 10", slides:83, los:"3.1, 3.2, 3.3, 3.4 (4)", worked:6, marks:"10", fmt:"2 of 3 x 5"}
 ];
 
 var PRIORITY_RULE=[
- "No paper structure was given, so priority could not be set from the paper. It is derived from the folder instead, first rule wins.",
- "<b>high</b>: the topic serves 2 or more learning outcomes; <b>or</b> the source contains 3 or more worked numeric examples for it; <b>or</b> the syllabus states it with a doing verb (compute, determine, apply, compare) inside a module the syllabus weights heavily by teaching hours.",
- "<b>medium</b>: a named syllabus topic with real teaching material behind it, but taught descriptively.",
- "<b>low</b>: four slides or fewer, definitional or background only."
+ "The lecturer stated the paper structure, so priority is set from the paper. First rule wins.",
+ "<b>Rule 1, the paper.</b> An outcome the lecturer named carries its topics to high: LO 3.3 is a certain 5 marks, LO 3.2 was called important, and CNN architecture was called important.",
+ "<b>Rule 2, expected marks.</b> Each outcome is given an expected mark value from the paper structure, and the topics most likely to be the whole question for that outcome are high.",
+ "<b>medium</b>: supporting material for its outcome, more likely part of an answer than a whole question.",
+ "<b>low</b>: thin in the folder and not named by the lecturer."
 ];
-var CONFIRM="You left <b>PAPER STRUCTURE</b> as the template text and <b>HIGHEST-PRIORITY FILES</b> blank, and the form carried TARGET SCORE twice. I read that as: no per-question breakdown was stated, no file was singled out, study time is 3 hours and the target is 27/30. Priority is therefore derived from the syllabus's own teaching-hour split and the decks' evidence rather than from the paper. If your teacher did state a question-by-question breakdown, tell me and the whole ranking changes.";
+var CONFIRM="Your note reads <b>LO2 with an arrow to chap3</b> and <b>LO3 for sure 5 marks, chap3</b>. I have read those as the outcomes of chapter 3, so LO 3.2 and LO 3.3, because both sit under the boxed note about CNN architecture, which is Module 3. The alternative reading is the Module 2 outcomes LO 2.2 and LO 2.3. If you meant that instead, say so and the Module 3 weighting moves to Module 2. Everything else in your note is unambiguous and is applied exactly as written.";
 /* ============================ MODULE 1 TOPICS ============================ */
 var M1=[
 {id:"m1t1",m:"m1",title:"Biological Neuron and the Artificial Model",type:"theory",priority:"medium",los:["1.1"],
@@ -3060,6 +3090,796 @@ var PLAN_LAST30=[
  "L1 pulls by a constant so weights reach zero. L2 pulls in proportion so they never do.",
  "Dropout is off at test time. Batch norm switches to running averages."
 ];
+/* ============ PHASE 13 PATCH: paper structure, core examples, application questions ============ */
+var PATCH={};
+
+/* ---------------- MODULE 1: answers are 4 marks (Q1 is 2 sub questions of 4) ---------------- */
+PATCH.m1t1={pri:"medium",
+ core:{t:"The core idea: a neuron is a tally that only shouts once",
+  b:"<p>Rest your hand on a warm mug. Thousands of skin receptors send small signals up the same neuron. Nothing happens. Rest it on a hot pan and the same receptors fire hard and together, the neuron's tally crosses its threshold, and it fires once, at full strength, and you pull your hand away.</p>"+
+    "<p>Two things in that story are the whole topic. First, the neuron <b>accumulates</b> rather than passing signal straight through, which is the summation. Second, it fires <b>all or nothing</b> rather than a little bit for a warm mug and a lot for a hot pan, which is the threshold. A warm mug does not produce a small twitch. It produces nothing at all.</p>"},
+ app:{q:"A wearable device detects a fall using five accelerometer readings. The designer says: each reading arrives on its own wire, each wire is scaled by how reliable that sensor is, the scaled readings are added, and an alarm sounds only if the total passes a set level. For each of those four design decisions, determine which part of the biological neuron it corresponds to.",
+  hint:"Walk the signal from where it arrives to where it leaves the cell.",
+  a:"<p>Each reading on its own wire corresponds to a <b>dendrite</b>, which is the path an incoming signal takes to reach the cell.</p>"+
+    "<p>Scaling each wire by sensor reliability corresponds to the <b>synapse</b>. The synapse is the junction that strengthens or weakens a signal as it passes, so it is the weight, not the input.</p>"+
+    "<p>Adding the scaled readings corresponds to the <b>soma</b>, the cell body, which accumulates whatever arrives.</p>"+
+    "<p>Sounding the alarm only once the total passes a set level corresponds to the <b>axon</b> together with the threshold. The axon fires all or nothing, which is exactly why an alarm either sounds or does not, rather than getting gradually louder as the total rises.</p>"+
+    "<p>The design is an artificial neuron: y = f(sum of w times x), with f a threshold.</p>"}};
+
+PATCH.m1t2={pri:"high",
+ core:{t:"The core idea: the deck's football decision",
+  b:"<p>The deck asks whether you will watch a random football game on TV. The inputs are Boolean facts: is it a premier league game, is it raining, is my favourite team playing. Each is 0 or 1. There are no weights, so every fact counts once. You add them up and watch the game if the total reaches some number you pick, say 2.</p>"+
+    "<p>That is the entire McCulloch-Pitts neuron. What makes it worth studying is what it cannot say. It cannot say that your favourite team playing matters more than the rain, because there is no place in g(x) = sum of x to put that. And it cannot learn the number 2 from watching you. A person has to choose it.</p>"},
+ app:{q:"A hostel gate is to open when at least two of three ID readers confirm a valid card. Each reader outputs 1 for a valid card and 0 otherwise, and all three readers are equally trusted. Determine whether an M-P neuron is sufficient for this, and if it is, give theta.",
+  hint:"Check the two restrictions first: are the inputs Boolean, and are all inputs equally important?",
+  a:"<p><b>It is sufficient.</b> Check the restrictions against the requirement.</p>"+
+    "<p>The inputs are Boolean, since each reader outputs 0 or 1, so the first restriction is satisfied. All three readers are equally trusted, so the absence of weights costs nothing here, and the second restriction is satisfied. The rule wanted is a plain count of how many readers agree, which is exactly what g(x) computes.</p>"+
+    "<p><b>theta = 2.</b> The gate opens when g(x) is at least 2, so y = 1 for the rows with two or three ones and y = 0 for the rows with zero or one. This is the majority function on three inputs.</p>"+
+    "<p>Worth stating in an answer: had one reader been more trusted than the others, or had a reader returned a confidence score between 0 and 1, an M-P neuron would no longer be sufficient and a perceptron would be required.</p>"}};
+
+PATCH.m1t3={pri:"high",
+ core:{t:"The core idea: theta is the number of switches you demand",
+  b:"<p>Picture a room lit by three switches wired into one lamp. If the lamp needs all three switches on, that is AND, and the number you are demanding is 3. If any single switch lights it, that is OR, and the number you are demanding is 1.</p>"+
+    "<p>That number is theta, and it is the only thing you get to choose in an M-P neuron. Every gate question reduces to one sentence: how many inputs must be on before this fires. For n inputs, AND always needs theta = n and OR always needs theta = 1, whatever n is.</p>"+
+    "<p>NOT breaks the pattern, and the reason is worth carrying. Thresholding a count is monotone: turning an input on can never turn the output off. NOT does exactly that, so no theta can produce it. It needs an inhibitory input, which vetoes before the count is even looked at.</p>"},
+ app:{q:"A drone must abort its flight if any one of three critical sensors reports a fault. Each sensor outputs 1 for a fault. Determine the M-P configuration that produces the abort signal, and then determine the configuration for a separate signal that is 1 only when all three sensors are healthy.",
+  hint:"Write each requirement as: how many inputs must be on for the output to be 1?",
+  a:"<p><b>Abort signal.</b> Abort when at least one fault is present, so the count of faults must reach 1. Three excitatory inputs with <b>theta = 1</b>. This is OR over the fault lines, giving y = 1 for every row except all zeros.</p>"+
+    "<p><b>All healthy signal.</b> This must be 1 exactly when no fault is present, which is the single row where the fault count is 0. That is NOR over the fault lines, so use three inhibitory inputs with theta = 0. With no fault, nothing vetoes and the count of 0 meets theta = 0, so the output is 1. Any fault vetoes and forces 0.</p>"+
+    "<p>The trap to avoid: theta = 0 with excitatory inputs fires on every row, because a count is never negative. It is the inhibition, not the threshold, that makes the all healthy signal work. Equivalently, the all healthy signal is just NOT of the abort signal, and NOT always needs inhibition.</p>"}};
+
+PATCH.m1t4={pri:"medium",
+ core:{t:"The core idea: every input counts once, and that is fatal",
+  b:"<p>Try to flag spam with an M-P neuron. The inputs are word-present flags: does the mail contain free, does it contain meeting, does it contain the.</p>"+
+    "<p>g(x) counts them. So the word the, which appears in almost every message, contributes exactly as much evidence as the word free. There is nowhere in g(x) = sum of x to record that one word is informative and the other is noise, because there is no coefficient to record it with.</p>"+
+    "<p>That single missing coefficient is the reason the perceptron exists. Adding weights fixes the importance problem, the real-valued input problem and the fixed slope problem in one move. It does not fix the fourth limitation, learning, because a weight you still have to choose by hand is no better than a theta you have to choose by hand.</p>"},
+ app:{q:"A credit scoring system uses annual income in rupees, number of missed payments, and a Boolean flag for whether the applicant already holds an account. Determine whether an M-P neuron can be used for this system, and state which limitation stops you first.",
+  hint:"Check the inputs before you think about the decision boundary.",
+  a:"<p><b>It cannot be used</b>, and the restriction that stops you first is the Boolean input restriction.</p>"+
+    "<p>Annual income is a real number in the hundreds of thousands and missed payments is a count. Neither is 0 or 1, so the model rejects two of the three inputs before any classification is attempted. Only the account holder flag is admissible.</p>"+
+    "<p>Suppose you crudely threshold the first two into Boolean flags anyway. The <b>no weights</b> restriction bites next: a missed payment would then count exactly as much as holding an account, which no credit model would accept. Third, <b>theta is set by hand</b>, so nothing is fitted to the applicants you actually have. Fourth, if approval depends on the combination of income and missed payments rather than on either alone, the fixed slope boundary cannot express it.</p>"+
+    "<p>Answering the order matters here. Students often jump to the XOR limitation, but the data never reaches the boundary question, because it is rejected at the input stage.</p>"}};
+
+PATCH.m1t5={pri:"high",
+ core:{t:"The core idea: weights are trust, bias is how easily you are convinced",
+  b:"<p>Three friends recommend a film. You do not count recommendations, you weigh them: the friend whose taste matches yours counts 2, the friend who likes everything counts 0.2, the friend whose taste is the opposite of yours counts minus 1, because their approval is evidence against.</p>"+
+    "<p>Those numbers are the weights, and the negative one is the point: a perceptron can represent evidence against, which an M-P neuron cannot.</p>"+
+    "<p>The bias is separate. It is how much total enthusiasm you need before you go. A bias of minus 3 makes you hard to convince, a bias of 0 makes you go on the slightest hint. Geometrically the weights set the orientation of the line and the bias slides it. Without a bias every line is forced through the origin, which is an arbitrary place for it to be.</p>"},
+ app:{q:"A spam filter uses w = (2.0, -1.5, 0.8) for the features (contains the word free, contains the word meeting, sender is unknown) with b = -0.5. An email contains free, does not contain meeting, and comes from an unknown sender. Determine the classification, and then determine what happens to the same email if the bias is changed to -3.0.",
+  hint:"Substitute every term before simplifying, and remember the features are 1 or 0 here.",
+  a:"<p><b>With b = -0.5.</b> The feature vector is x = (1, 0, 1).</p>"+
+    "<p>z = 2.0(1) + (-1.5)(0) + 0.8(1) + (-0.5) = 2.0 + 0 + 0.8 - 0.5 = <b>2.3</b>. Since 2.3 is at least 0, y = 1, so the email is <b>classified as spam</b>.</p>"+
+    "<p><b>With b = -3.0.</b> z = 2.0 + 0 + 0.8 - 3.0 = <b>-0.2</b>. Since -0.2 is below 0, y = 0, so the same email is now classified as not spam.</p>"+
+    "<p>What this shows is what the bias controls. The weights did not change, so the orientation of the boundary is identical and the filter still regards free as evidence for spam and meeting as evidence against. Lowering the bias slid the boundary away from the origin, which means more total evidence is now demanded before the filter will commit. In deployment terms, a more negative bias buys fewer false positives at the cost of more spam getting through.</p>"}};
+
+PATCH.m1t6={pri:"high",
+ core:{t:"The core idea: a zero weight is a sentence the M-P neuron cannot say",
+  b:"<p>A student passes if their exam mark is high enough. Attendance is recorded but is irrelevant to passing.</p>"+
+    "<p>A perceptron says this in one number: set the attendance weight to 0. The input is still fed in, still multiplied, and contributes exactly nothing.</p>"+
+    "<p>An M-P neuron cannot say it at all. In g(x) = sum of x, attendance contributes 1 whenever it is on, and there is no coefficient to switch off. Choosing theta = 1 gives OR and passes a student with attendance alone; choosing theta = 2 gives AND and fails a student with a high mark but poor attendance. Neither is the required function.</p>"+
+    "<p>Note this function is Boolean and linearly separable, so it looks like something the M-P neuron ought to manage. It fails on the equal importance restriction, not on separability. That distinction is usually worth a mark.</p>"},
+ app:{q:"You are told a classifier must treat one of its inputs as irrelevant, must accept a confidence score between 0 and 1 on another input, and must be trainable from 200 labelled examples. Determine which of the two models can meet each requirement, and identify the single change that accounts for most of the difference.",
+  hint:"Take the three requirements one at a time and ask what part of the equation each one needs.",
+  a:"<div class='scroll'><table><tr><th>Requirement</th><th>M-P neuron</th><th>Perceptron</th></tr>"+
+    "<tr><td>Treat an input as irrelevant</td><td>No. Every input contributes 1 when on, and there is no coefficient to zero.</td><td>Yes. Set that weight to 0.</td></tr>"+
+    "<tr><td>Accept a score between 0 and 1</td><td>No. Inputs must be Boolean.</td><td>Yes. Inputs are real valued.</td></tr>"+
+    "<tr><td>Train from 200 examples</td><td>No. theta is chosen by hand and nothing updates.</td><td>Yes, by the perceptron learning rule, provided the data is linearly separable.</td></tr></table></div>"+
+    "<p>The single change that accounts for most of it is replacing the plain count g(x) = sum of x with the weighted sum z = sum of w times x plus b. Real coefficients give irrelevance for free as a zero weight, make real valued inputs meaningful, and let the boundary tilt.</p>"+
+    "<p>It is worth being precise about the third requirement, because weights alone do not deliver it. Introducing weights does not introduce learning. What delivers trainability is folding theta into the bias as w0 = -theta on a constant input, so that the threshold becomes just another weight and the same update rule adjusts it.</p>"}};
+
+PATCH.m1t7={pri:"high",
+ core:{t:"The core idea: AND and OR are the same line in different places",
+  b:"<p>Plot the four corners of the unit square. For OR you must separate the single corner (0,0) from the other three, so the line sits between zero ones and one one: x1 + x2 = 0.5. For AND you must separate the single corner (1,1) from the other three, so the line sits between one one and two ones: x1 + x2 = 1.5.</p>"+
+    "<p>Both have w = (1, 1). Only the bias moved, from -0.5 to -1.5. AND and OR are not different mechanisms, they are the same boundary slid along.</p>"+
+    "<p>Two consequences fall out. Negating a gate flips the sign of every weight and of the bias, which turns OR into NOR and AND into NAND. And the solution is never unique: any bias strictly between -1 and -2 implements AND, so quoting -1.5 without saying so leaves a mark on the table.</p>"},
+ app:{q:"A machine safety interlock must energise only when both guard doors are closed. Each door sensor outputs 1 when closed. Determine suitable weights and a bias, verify all four rows, and then determine what to change so that the same circuit instead raises an alarm when at least one door is open.",
+  hint:"The first is AND. The second is the negation of the first.",
+  a:"<p>Interlock, which is AND. Take w1 = w2 = 1 and b = -1.5, so z = x1 + x2 - 1.5.</p>"+
+    "<div class='scroll'><table><tr><th>x1</th><th>x2</th><th>z</th><th>y</th></tr>"+
+    "<tr><td>0</td><td>0</td><td>-1.5</td><td>0</td></tr><tr><td>0</td><td>1</td><td>-0.5</td><td>0</td></tr>"+
+    "<tr><td>1</td><td>0</td><td>-0.5</td><td>0</td></tr><tr><td>1</td><td>1</td><td>0.5</td><td>1</td></tr></table></div>"+
+    "<p>The interlock energises on the last row only, as required. Any bias strictly between -1 and -2 works equally well.</p>"+
+    "<p>Alarm when at least one door is open. That condition is true exactly when the interlock condition is false, so it is NAND of the two sensors. Flip the sign of every parameter: w = (-1, -1), b = +1.5, giving z = 1.5 - x1 - x2. This outputs 1 on the first three rows and 0 on (1,1), which is the alarm behaviour wanted.</p>"+
+    "<p>The common error is flipping the weights but leaving the bias at -1.5, which gives a circuit that never fires. Both must flip.</p>"}};
+
+PATCH.m1t8={pri:"high",
+ core:{t:"The core idea: can one straight ruler split the two colours",
+  b:"<p>Scatter red and blue counters on a table. Linear separability asks one question: can you lay a single straight ruler down so that every red is on one side and every blue on the other. If yes, a perceptron can solve the problem exactly and the learning rule is guaranteed to find a boundary. If no, no single perceptron can ever do it, no matter how long you train.</p>"+
+    "<p>The trap in exam data is that a dataset can be separable on one feature while looking hopeless on another. In the deck's classroom table, attendance alone genuinely cannot split ready from not ready, because high attendance students appear in both classes. But study hours alone splits all eight students perfectly with a threshold at 2.5.</p>"+
+    "<p>So failure on the feature you reached for first is not failure overall. Test each feature alone before you conclude anything, because a single feature that works is itself a valid separating line: w = (0, 1) with b = -2.5.</p>"},
+ app:{q:"A quality control system inspects components on two measurements. The accepted parts are at (2,2), (3,3) and (4,4). The rejected parts are at (2,4), (3,5) and (1,3). Determine whether a single perceptron can classify this correctly, and if it can, give w and b and verify every point.",
+  hint:"Neither feature separates these on its own. Look at the relationship between the two measurements instead.",
+  a:"<p>First check each feature alone. Measurement one takes values 2, 3, 4 among accepted and 2, 3, 1 among rejected, so it overlaps and cannot separate. Measurement two takes 2, 3, 4 among accepted and 4, 5, 3 among rejected, so it also overlaps. Neither feature works alone, which is exactly why this needs a genuine two feature boundary.</p>"+
+    "<p>Look at the difference x2 - x1. For the accepted parts it is 0, 0, 0. For the rejected parts it is 2, 2, 2. That quantity separates the classes cleanly, with any threshold strictly between 0 and 2.</p>"+
+    "<p>Accepted parts must give z at least 0, so use z = 1 - (x2 - x1), which is w = (1, -1) and b = 1.</p>"+
+    "<div class='scroll'><table><tr><th>Point</th><th>Class</th><th>z = x1 - x2 + 1</th><th>Predicted</th></tr>"+
+    "<tr><td>(2,2)</td><td>accept</td><td>1</td><td>accept</td></tr><tr><td>(3,3)</td><td>accept</td><td>1</td><td>accept</td></tr>"+
+    "<tr><td>(4,4)</td><td>accept</td><td>1</td><td>accept</td></tr><tr><td>(2,4)</td><td>reject</td><td>-1</td><td>reject</td></tr>"+
+    "<tr><td>(3,5)</td><td>reject</td><td>-1</td><td>reject</td></tr><tr><td>(1,3)</td><td>reject</td><td>-1</td><td>reject</td></tr></table></div>"+
+    "<p>Yes, a single perceptron suffices. All six points are classified correctly, so the data is linearly separable and the perceptron learning rule will converge on it.</p>"}};
+
+PATCH.m1t9={pri:"high",
+ core:{t:"The core idea: the staircase light switch",
+  b:"<p>A staircase has one switch at the bottom and one at the top, and either one flips the light. The light is on when exactly one switch is up. Flip either switch and the state changes. Flip both and you are back where you started.</p>"+
+    "<p>That is XOR, and it is the cleanest way to feel why no line works. Knowing the bottom switch is up tells you nothing about the light, because the answer depends entirely on the top switch. Each input alone carries zero information, and all the information lives in the pair.</p>"+
+    "<p>A linear model computes w1x1 + w2x2, which is a sum of two separate contributions. There is no term in that expression for the pair, so it structurally cannot represent a rule that says it depends on the other one. This is the Interaction Principle, and the fix is not a cleverer slope. It is a hidden layer that builds a new feature.</p>"},
+ app:{q:"A fraud system flags a transaction when exactly one of two conditions holds: the transaction is from a foreign country, or the amount is unusually large. A transaction that is both foreign and large is a known customer travel pattern and is not flagged, and a transaction that is neither is normal. Determine whether a single perceptron can implement this rule, and determine the smallest network that can.",
+  hint:"Write the four cases as a truth table before deciding anything.",
+  a:"<p>Encode x1 = 1 for foreign and x2 = 1 for large. The rule gives (0,0) to 0, (1,0) to 1, (0,1) to 1 and (1,1) to 0.</p>"+
+    "<p>That is exactly <b>XOR</b>, so no single perceptron can implement it. The four requirements produce inconsistent inequalities: rows (1,0) and (0,1) demand w1 + b at least 0 and w2 + b at least 0, which add to w1 + w2 at least -2b, while row (1,1) demands w1 + w2 + b below 0, so w1 + w2 below -b. Together these force b above 0, contradicting row (0,0), which demands b below 0.</p>"+
+    "<p>The smallest network is one hidden layer of two units. Decompose XOR as OR combined with NAND under an AND:</p>"+
+    "<div class='eqb'>h1 = OR(x1, x2)    w = (1, 1),   b = -0.5\nh2 = NAND(x1, x2)  w = (-1, -1), b = +1.5\ny  = AND(h1, h2)   w = (1, 1),   b = -1.5</div>"+
+    "<p>Checking (1,1): h1 = 1, h2 = 0, so y = step(1 + 0 - 1.5) = 0, which correctly does not flag the travel pattern. Checking (1,0): h1 = 1, h2 = 1, so y = step(0.5) = 1, which flags it.</p>"+
+    "<p>The practical lesson for recognising these in an exam: wording such as exactly one of, either but not both, or a rule that reverses when a second condition also holds, is XOR in disguise. Check for it before assuming a line exists.</p>"}};
+
+PATCH.m1t10={pri:"medium",
+ core:{t:"The core idea: depth does not bend the line, it changes the space",
+  b:"<p>Return to the staircase. A single line fails because the two on states sit on opposite diagonals. Now let two hidden units each draw their own line and report which side you fell on. The first reports is at least one switch up. The second reports are the switches not both up.</p>"+
+    "<p>In that new two dimensional space of answers, the light on cases both sit at (1, 1) and the light off cases sit at (0, 1) and (1, 0). A single straight line separates them easily.</p>"+
+    "<p>So the hidden layer did not curve anything. It replaced the original features with derived features in which the problem became linearly separable. That is what depth buys, and it is why the activation must be non-linear: with linear activations, W2(W1x) = (W2W1)x, and a hundred layers collapse back to one.</p>"},
+ app:{q:"A team proposes a network with three hidden layers of 128 units each, all using the identity activation f(z) = z, for a problem known to be non-linearly separable. Determine whether this network can solve the problem, and determine the single change required.",
+  hint:"Substitute one layer into the next and see what is left.",
+  a:"<p><b>It cannot.</b> With identity activations the layers compose to a single linear map.</p>"+
+    "<div class='eqb'>y = W3(W2(W1x + b1) + b2) + b3\n  = (W3W2W1)x + (W3W2b1 + W3b2 + b3)\n  = W'x + b'</div>"+
+    "<p>The whole network is exactly equivalent to one linear layer with parameters W' and b'. It can therefore represent only linearly separable functions, and the problem was stated to be non-linearly separable, so it will fail regardless of training time. The roughly 50,000 parameters in the hidden layers buy no expressive power at all; they cost memory and computation while learning strictly less per parameter than a single layer would.</p>"+
+    "<p><b>The single change:</b> put a non-linear activation on the hidden layers, ReLU being the standard choice. The composition then no longer collapses, and each hidden unit contributes a genuinely new derived feature.</p>"+
+    "<p>Note what is not the fix. Adding more layers, widening them, or training longer all leave the collapse identity untouched. Depth is worth nothing without non-linearity, which is why activation functions are a structural requirement rather than a refinement.</p>"}};
+PATCH.m1t11={pri:"high",
+ core:{t:"The core idea: correct only when wrong, in proportion to what you used",
+  b:"<p>You are mixing a drink from three ingredients and a taster says it is too sweet. You do not adjust all three bottles equally. You pull back hardest on the bottle you poured most of, a little on the one you barely used, and not at all on the one you did not open.</p>"+
+    "<p>That is the rule. The change to w is eta times (t - y) times x. The factor x is the pour: an input that was 0 contributed nothing to the error, so its weight does not move at all.</p>"+
+    "<p>And if the taster says the drink is fine, you change nothing. (t - y) is 0 and every update is 0. The perceptron rule is silent on correct examples, which is the single sharpest difference from the delta rule and the most common place to lose a mark.</p>"},
+ app:{q:"An admissions model uses w = (0.4, 0.3, -0.2) for (test score, project score, backlogs) with b = -0.5 and eta = 0.2. An applicant with x = (0.8, 0.6, 1.0) should be admitted, so t = 1. Determine whether an update is needed, and if so give the updated weights and bias.",
+  hint:"Compute z and y first. Only then look at the error.",
+  a:"<p><b>Forward pass.</b> z = 0.4(0.8) + 0.3(0.6) + (-0.2)(1.0) + (-0.5) = 0.32 + 0.18 - 0.20 - 0.50 = <b>-0.20</b>.</p>"+
+    "<p>Since -0.20 is below 0, y = 0. The target is t = 1, so t - y = <b>+1</b> and <b>an update is needed</b>. The model wrongly rejected an applicant it should have admitted, so every weight on an active input must rise.</p>"+
+    "<p><b>Updates,</b> using delta w = eta(t - y)x with eta(t - y) = 0.2:</p>"+
+    "<div class='eqb'>w1 = 0.4 + 0.2(1)(0.8) = 0.4 + 0.16 = 0.56\nw2 = 0.3 + 0.2(1)(0.6) = 0.3 + 0.12 = 0.42\nw3 = -0.2 + 0.2(1)(1.0) = -0.2 + 0.20 = 0.00\nb  = -0.5 + 0.2(1)      = -0.30</div>"+
+    "<p>Check the correction moved the right way. New z = 0.56(0.8) + 0.42(0.6) + 0(1.0) - 0.30 = 0.448 + 0.252 - 0.30 = 0.40, which is at least 0, so this applicant is now admitted.</p>"+
+    "<p>Notice the backlog weight moved from -0.2 to exactly 0. The rule does not know backlogs are bad; it only knows this applicant had one and should have been admitted, so it reduced the penalty. One example never gives a sensible model, which is why training runs over the whole set repeatedly until a full pass produces no updates.</p>"}};
+
+PATCH.m1t12={pri:"high",
+ core:{t:"The core idea: were you wrong, against how wrong were you",
+  b:"<p>Two coaches watch you shoot at a target. The first says hit or miss. The second says you were 30 centimetres left. The first is the perceptron rule, the second is the delta rule.</p>"+
+    "<p>The equations look identical, delta w = eta(t - y)x, and that similarity is exactly what gets tested. The difference is entirely in what y is. Under the perceptron rule y is the thresholded 0 or 1, so (t - y) can only be -1, 0 or +1. Under the delta rule y is continuous, so (t - y) might be 0.03 or 0.87.</p>"+
+    "<p>Two consequences follow. The delta rule keeps correcting even when the classification is already right, because the error is rarely exactly zero. And because it is the gradient of a smooth loss rather than a hand designed patch, it extends to hidden layers, where no target exists but a gradient still does. That is why the delta rule leads somewhere and the perceptron rule does not.</p>"},
+ app:{q:"A single output unit produces the continuous value 0.9 for an example whose target is 1.0. The thresholded output is 1, which matches the target class. With eta = 0.1 and an input x1 = 2, determine the weight update under the perceptron rule and under the delta rule, and state which rule you must use if the unit sits in a hidden layer.",
+  hint:"Ask what y is under each rule before computing anything.",
+  a:"<p><b>Perceptron rule.</b> Here y is the thresholded output, which is 1. So t - y = 1 - 1 = 0, and delta w1 = 0.1 times 0 times 2 = <b>0</b>. No update at all. The rule is satisfied because the example is on the correct side of the boundary.</p>"+
+    "<p><b>Delta rule.</b> Here y is the continuous output, which is 0.9. So t - y = 1.0 - 0.9 = 0.1, and delta w1 = 0.1 times 0.1 times 2 = <b>0.02</b>. The weight rises slightly, pushing the output closer to the target even though the classification was already correct.</p>"+
+    "<p>In a hidden layer you must use the delta rule, and the reason is structural rather than a matter of preference. A hidden unit has no target t of its own, so there is nothing for the perceptron rule to compare against. What reaches a hidden unit is a gradient passed back through the layers above, and obtaining that gradient requires the output to be a differentiable function of the weights.</p>"+
+    "<p>A step activation fails this twice over: its derivative is 0 almost everywhere and undefined at the jump, so the update would be zero for essentially every weight and nothing would learn. This is precisely why sigmoid, tanh and ReLU exist, and why the delta rule, not the perceptron rule, is the ancestor of backpropagation.</p>"}};
+
+PATCH.m1t13={pri:"medium",
+ core:{t:"The core idea: each layer works on what the last layer found",
+  b:"<p>Show a face recognition network a photograph. The first hidden layer finds edges: light meeting dark at some angle. It has no idea what a face is. The second layer combines edges into corners and curves. The third assembles those into eyes, noses and mouths. The fourth puts parts into whole faces.</p>"+
+    "<p>No engineer wrote an eye detector. Each layer built its features from the previous layer's output, and the useful representation emerged from the data. That is hierarchical feature learning, and it is the single property that separates deep learning from classical machine learning, where a human decides what to measure.</p>"+
+    "<p>The price is stated honestly in the deck: it needs very large labelled datasets, it needs GPUs, and the learned representation resists explanation. On 400 rows of structured clinical data with a requirement to justify decisions, a decision tree beats a deep network on every axis that matters.</p>"},
+ app:{q:"A deep network must be deployed on a microcontroller with 2 MB of memory, on a dataset of 900 labelled vibration readings with 8 numeric features each, and an engineer must be able to explain any alarm it raises. Determine whether deep learning is the right choice, referring to specific advantages and drawbacks.",
+  hint:"Test each advantage of deep learning against this situation, then each drawback.",
+  a:"<p>Deep learning is the wrong choice here, and every one of its advantages fails to apply while three drawbacks bite.</p>"+
+    "<p>Advantages that do not apply. Automatic feature learning buys little when there are 8 well understood numeric features already. Accuracy scaling with data does not apply at 900 rows. Handling unstructured input is irrelevant, since this is structured tabular data. Architectural transfer is beside the point for a single fixed task.</p>"+
+    "<p><b>Drawbacks that bite.</b> Data hunger is decisive: 900 rows will overfit a deep network badly. Computational cost is decisive in a different way, since even a modest network plus its runtime is a poor fit for 2 MB, and the training itself needs hardware the device does not have. Black box behaviour is disqualifying, because the requirement to explain an alarm is stated as a hard constraint.</p>"+
+    "<p><b>What to use instead.</b> A decision tree or a small logistic regression on the 8 features. Both fit comfortably in 2 MB, both train on 900 rows without overfitting, and both are directly readable, so an engineer can point at the rule that fired.</p>"+
+    "<p>The general principle worth stating: match the method to the data shape, the data volume and the deployment constraint. Depth is the wrong tool for small, structured, interpretability critical problems, and saying so is the answer the question wants.</p>"}};
+
+PATCH.m1t14={pri:"medium",
+ core:{t:"The core idea: epochs count coverage, batches count updates",
+  b:"<p>You have 10,000 flashcards. Working through all 10,000 once is one epoch. If you review them in stacks of 100 and adjust your understanding after each stack, each stack is a batch and each adjustment is an iteration.</p>"+
+    "<p>One epoch therefore contains 10,000 divided by 100, which is 100 iterations. Train for 30 epochs and you make 3,000 adjustments, while each card is seen exactly 30 times.</p>"+
+    "<p>Halve the stack size to 50 and you make 6,000 adjustments, but each card is still seen exactly 30 times. Batch size changes update frequency, never coverage. That one sentence answers most questions on this topic.</p>"+
+    "<p>The other distinction to keep straight is parameters against hyperparameters. Weights and biases are learned by gradient descent, so they are parameters. Learning rate, batch size and number of layers are chosen by you before training, so they are hyperparameters, and no gradient ever updates them.</p>"},
+ app:{q:"A training log records: dataset 50,000 examples, batch size 250, trained for 40 epochs, final learning rate 0.001 after decay from 0.01. Determine the number of weight updates performed, how many times each example was seen, and classify each of the five quantities named as a parameter or a hyperparameter.",
+  hint:"Iterations per epoch is dataset size divided by batch size.",
+  a:"<p><b>Iterations per epoch</b> = 50,000 divided by 250 = <b>200</b>.</p>"+
+    "<p><b>Total weight updates</b> = 200 times 40 epochs = <b>8,000</b>.</p>"+
+    "<p><b>Each example is seen</b> once per epoch, so <b>40 times</b>.</p>"+
+    "<p>Check by a second route: 8,000 iterations times 250 examples per batch = 2,000,000 = 50,000 times 40. The two routes agree.</p>"+
+    "<div class='scroll'><table><tr><th>Quantity</th><th>Classification</th><th>Why</th></tr>"+
+    "<tr><td>Dataset size 50,000</td><td>Neither</td><td>A property of the data, not of the model or the training configuration.</td></tr>"+
+    "<tr><td>Batch size 250</td><td>Hyperparameter</td><td>Chosen before training; no gradient updates it.</td></tr>"+
+    "<tr><td>Epochs 40</td><td>Hyperparameter</td><td>Chosen before training, and often set by early stopping rather than fixed.</td></tr>"+
+    "<tr><td>Learning rate 0.01 decaying to 0.001</td><td>Hyperparameter</td><td>Chosen, and its decay schedule is also chosen. It is not learned.</td></tr>"+
+    "<tr><td>The weights and biases</td><td>Parameters</td><td>Fitted from data by the 8,000 updates counted above.</td></tr></table></div>"+
+    "<p>The practical consequence of the split: the parameters are all fitted in one training run, whereas finding good hyperparameters requires training repeatedly and comparing validation results, which is why hyperparameter tuning is expensive.</p>"}};
+
+PATCH.m1t15={pri:"medium",
+ core:{t:"The core idea: who decides what to measure",
+  b:"<p>Three spam filters. The first is a list of banned words written by an engineer: that is artificial intelligence, but nothing is learned. The second counts word frequencies chosen by an engineer and fits coefficients to them: that is machine learning, because the coefficients came from data. The third reads the raw message and works out for itself which patterns matter: that is deep learning.</p>"+
+    "<p>The boundary between the second and third is the whole distinction. In machine learning a human decides what to measure and the algorithm decides how to weigh it. In deep learning the network decides both.</p>"+
+    "<p>They are nested, not competing: DL sits inside ML sits inside AI. And note that a shallow neural network on hand chosen features is machine learning, not deep learning, so the test is not whether it is a neural network but whether the features are learned.</p>"},
+ app:{q:"Classify each of these as artificial intelligence only, machine learning but not deep learning, or deep learning, and justify each: (a) a chess engine using a hand written evaluation function and search, (b) a support vector machine trained on 30 engineered financial ratios, (c) a network trained end to end on raw ECG waveforms.",
+  hint:"Ask two questions in order: is anything learned from data, and are the features learned too?",
+  a:"<p>(a) Artificial intelligence only. The engine behaves intelligently by searching ahead, but the evaluation function is written by a human and nothing is fitted to data. Nothing is learned, so it is not machine learning.</p>"+
+    "<p>(b) Machine learning but not deep learning. The support vector machine fits its parameters from data, so it is machine learning. But the 30 financial ratios were engineered by a human, so the features are given rather than discovered. It is not deep learning, and this holds regardless of how well it performs.</p>"+
+    "<p><b>(c) Deep learning.</b> Training end to end on raw waveforms means the network receives no engineered features and must construct its own representation through its layers. Features are learned, so it is deep learning, and therefore also machine learning and artificial intelligence.</p>"+
+    "<p>Case (b) is the discriminating one and is where marks are usually lost. The test is not whether the model is a neural network. A two layer network on those same 30 engineered ratios would also be machine learning rather than deep learning, because a human still decided what to measure.</p>"}};
+
+PATCH.m1t16={pri:"high",
+ core:{t:"The core idea: two independent questions, not one list",
+  b:"<p>Train a CNN on photographs labelled cat or dog, with a loss measured against those labels. That is supervised learning. Now take the same convolution layers, put them in an autoencoder that compresses an image and rebuilds it, and measure the loss against the input itself. That is unsupervised learning.</p>"+
+    "<p>The architecture did not change. The paradigm did.</p>"+
+    "<p>This is why the deck insists on two independent axes. The paradigm is fixed by your data situation: if you have labels you can supervise, if you have none you cannot, whatever architecture you pick. The architecture is fixed by your data shape: grid data calls for convolution, sequences for recurrence, fixed vectors for an MLP.</p>"+
+    "<p>Mixing them into a single flat list, so that supervised sits alongside CNN, is the standard way to lose marks here, because it implies constraints that do not exist.</p>"},
+ app:{q:"A hospital has 1,000,000 unlabelled chest X-rays and 500 that a radiologist has labelled. Determine the learning paradigm and the network architecture you would choose, and explain why the two choices are made independently.",
+  hint:"Decide the paradigm from what labels you have, and the architecture from the shape of the data.",
+  a:"<p>Paradigm: semi-supervised, and in practice self-supervised pre-training followed by supervised fine tuning.</p>"+
+    "<p>The data situation forces this. Pure supervised learning on 500 images would overfit badly and waste the million unlabelled images, which carry a great deal of information about what X-rays look like. Pure unsupervised learning would never produce the diagnostic labels required. The standard route is to train on the million unlabelled images with a self-supervised objective such as predicting a masked patch, then fine tune on the 500 labelled ones.</p>"+
+    "<p>Architecture: a convolutional neural network. X-rays are grid structured images with strong local correlation, which is precisely the structure convolution is built to exploit through local receptive fields and weight sharing. A fully connected network would treat each pixel as independent, destroying spatial information and requiring vastly more parameters.</p>"+
+    "<p>Why the choices are independent. The paradigm answers where the training signal comes from, and here it comes from the data itself before it comes from the radiologist. The architecture answers what structure in the input to exploit, and that structure is the same whether or not labels exist. The identical CNN serves the self-supervised stage and the supervised stage, which is exactly the demonstration that architecture does not determine paradigm.</p>"}};
+/* ---------------- MODULE 2: answers are 4 marks (Q2 is 3 sub questions of 4) ---------------- */
+PATCH.m2t1={pri:"high",
+ core:{t:"The core idea: every layer is one matrix multiply",
+  b:"<p>A layer with 5 units fed by 4 inputs holds a 5 by 4 matrix. Multiply it by the 4 by 1 input and you get 5 numbers, add a 5 by 1 bias, apply the activation, pass it on. That is the whole layer.</p>"+
+    "<p>The shape rule is the thing to fix in memory, because it is where marks are won and lost: if layer L has m units and the layer before it has n, then W is <b>m by n</b> and b is m by 1. Read it as rows equal outputs. Writing it as n by m makes the multiplication fail to conform.</p>"+
+    "<p>Feed forward means no unit ever feeds its own layer or an earlier one, so the network is one composed function with no memory between examples. Allow those backward connections and you have a recurrent network, which is Module 5.</p>"},
+ app:{q:"A network for predicting student marks has 6 inputs, hidden layers of 10 and 4 units, and 1 output. Determine the dimensions of every weight matrix and bias vector, the total number of learnable parameters, and state which of those parameters would remain if the same architecture were used with all zero initialisation.",
+  hint:"Rows equal the units in this layer, columns equal the units in the previous one.",
+  a:"<p><b>Shapes.</b> Layer 1 goes 6 to 10, so W1 is 10 by 6 and b1 is 10 by 1. Layer 2 goes 10 to 4, so W2 is 4 by 10 and b2 is 4 by 1. Layer 3 goes 4 to 1, so W3 is 1 by 4 and b3 is 1 by 1.</p>"+
+    "<p><b>Parameter count.</b> Layer 1: 60 weights plus 10 biases = 70. Layer 2: 40 plus 4 = 44. Layer 3: 4 plus 1 = 5. Total 119 learnable parameters.</p>"+
+    "<p>With all zero initialisation the count is unchanged at 119, but the effective capacity collapses. Every unit in a layer computes the same zero pre-activation, so it produces the same output; identical outputs with identical outgoing weights earn identical gradients; identical gradients produce identical updates. The units stay identical for ever.</p>"+
+    "<p>So the 10 unit hidden layer behaves as a single unit and the 4 unit layer as a single unit, no matter how long you train. The symmetry never breaks. This is why weights must be initialised randomly, while biases may safely start at zero, since random weights alone are enough to break the symmetry.</p>"}};
+
+PATCH.m2t2={pri:"high",
+ core:{t:"The core idea: sum, squash, pass on, repeat",
+  b:"<p>Forward propagation is one loop with two lines in it. Take the weighted sum plus bias, apply the activation, hand the result to the next layer.</p>"+
+    "<p>The discipline that earns marks is layout. Compute every pre-activation in a layer first, then every activation, and only then move on. Doing one unit end to end before starting the next is where sign errors and wrong weight pairings creep in.</p>"+
+    "<p>The second discipline is precision. Round only at the end. In the deck's own example, rounding sigmoid(0.6) to 0.64 instead of 0.6457 shifts the output in the third decimal after a single layer. With weights above 1 in magnitude that error is multiplied at every layer, so by the fifth it is visible in the first decimal.</p>"},
+ app:{q:"A network has one hidden layer of two ReLU units with W = [[0.5, -1, 0.25], [1, 0.5, -0.5]] and b = (0.1, -0.2), and a linear output unit with w = (2, -1) and b = 0.5. For the input x = (1, 0, 2), determine the output, and determine which hidden unit will receive no gradient from this example and why.",
+  hint:"Compute both pre-activations first, then apply ReLU to each.",
+  a:"<p>Hidden pre-activations.</p>"+
+    "<div class='eqb'>z1 = 0.5(1) + (-1)(0) + 0.25(2) + 0.1 = 0.5 + 0 + 0.5 + 0.1 = 1.1\nz2 = 1(1) + 0.5(0) + (-0.5)(2) + (-0.2) = 1 + 0 - 1 - 0.2 = -0.2</div>"+
+    "<p><b>Activations.</b> a1 = ReLU(1.1) = 1.1. a2 = ReLU(-0.2) = 0.</p>"+
+    "<p><b>Output.</b> z = 2(1.1) + (-1)(0) + 0.5 = 2.2 + 0 + 0.5 = <b>2.7</b>, and the activation is linear so the output is 2.7.</p>"+
+    "<p>The second hidden unit receives no gradient from this example. Its pre-activation is negative, so ReLU outputs 0 and the derivative of ReLU is 0 there. The gradient reaching its incoming weights is the error signal multiplied by that derivative multiplied by the input, and the zero derivative kills the product regardless of the other two factors.</p>"+
+    "<p>On this one example that is healthy sparsity rather than a fault, since the unit may well be active on other inputs. It becomes the dying ReLU problem only if the unit is negative for every example in the dataset, at which point it never receives gradient again and can never recover.</p>"}};
+
+PATCH.m2t3={pri:"high",
+ core:{t:"The core idea: without a bend, depth is an illusion",
+  b:"<p>Stack two linear layers and multiply them out: W2(W1x + b1) + b2 = (W2W1)x + (W2b1 + b2). The result is a single linear map. Not approximately, exactly.</p>"+
+    "<p>So a hundred linear layers represent exactly what one layer represents, which is the linearly separable functions. XOR stays impossible. The extra parameters cost memory and time and buy nothing.</p>"+
+    "<p>The activation is the bend that stops the composition collapsing, and that is why it is a structural requirement rather than a refinement.</p>"+
+    "<p>The linear activation still has one correct home: the output of a regression problem, where the answer can be any real number and squashing it through a sigmoid would cap it at 1. Its second flaw is subtler and worth a mark: its derivative is a constant 1, so the gradient carries no information about how strongly a unit was activated, and every unit is updated as though equally responsible.</p>"},
+ app:{q:"A colleague proposes a network for predicting house prices: four hidden layers using f(z) = z, and a sigmoid on the output because it keeps values tidy. Determine what is wrong with each of the two choices and what you would use instead.",
+  hint:"One choice destroys expressive power. The other destroys the range of the answer.",
+  a:"<p>The hidden layers are wrong. With f(z) = z throughout, the four layers compose to a single affine map W'x + b'. The network can represent only linear functions of the inputs, so it will underfit any non-linear relationship between house features and price, and no amount of extra width or training will help. Use <b>ReLU</b> on the hidden layers, which is the standard default because its derivative is exactly 1 for positive inputs, so gradients pass back undiminished, and it costs one comparison to compute.</p>"+
+    "<p>The output sigmoid is wrong. Sigmoid has range (0, 1), so the network can never predict a price above 1. Every genuine price saturates the unit, and once saturated the derivative approaches 0, so the gradient vanishes exactly where the error is largest and the model cannot even learn to correct itself. Use a <b>linear output</b>, whose unbounded range is what regression needs, paired with <b>mean squared error</b>.</p>"+
+    "<p>The general rule the question is testing: hidden layers are chosen for gradient behaviour, output layers are chosen for the range the answer must span. The proposal has them the wrong way round on both counts.</p>"}};
+
+PATCH.m2t4={pri:"high",
+ core:{t:"The core idea: an S curve is flat at both ends, and flat means no learning",
+  b:"<p>Sigmoid squashes any number into (0, 1) and tanh into (-1, +1). Both are useful because they bound the output. Both are dangerous for the same reason: to fit an infinite range into a finite one, the curve must flatten at both ends.</p>"+
+    "<p>Flat means the derivative is near zero. Backpropagation multiplies by that derivative once per layer crossed. Sigmoid's derivative never exceeds 0.25, so five layers scale the gradient by at most 0.25 to the fifth, about one thousandth, and that is the best case. Away from the origin it is far worse.</p>"+
+    "<p>Tanh's derivative reaches 1.0 at the origin, four times better, and it is zero centred, which removes the zig-zag updates sigmoid causes by making every gradient on a unit's incoming weights share a sign. But tanh still saturates, so it reduces the problem rather than removing it. Removing it needs an activation whose derivative does not decay, which is ReLU.</p>"},
+ app:{q:"A 12 layer network using sigmoid throughout trains for many epochs, but the weights in the first three layers barely change while the last layers learn normally. Determine the cause, quantify it, and determine two changes that would fix it.",
+  hint:"Count how many activation derivatives the gradient must pass through to reach layer 1.",
+  a:"<p>Cause: vanishing gradients. To reach layer 1 from the output, the gradient crosses 11 activation layers and is multiplied by sigmoid's derivative at each one.</p>"+
+    "<p><b>Quantified.</b> Sigmoid's derivative is at most 0.25, at z = 0. Even in that best case the gradient at layer 1 is scaled by 0.25 to the eleventh power, roughly 2 times 10 to the minus 7. Realistically units sit away from the origin, where the derivative is nearer 0.1, giving 10 to the minus 11. The early layers receive effectively no signal, so they stay near their random initialisation while the later layers, which the gradient reaches almost intact, train normally. That is exactly the pattern described.</p>"+
+    "<p>Fix one: change the activation to ReLU. Its derivative is exactly 1 for positive pre-activations, so the gradient passes back undiminished however deep the network. This is the single most effective change.</p>"+
+    "<p>Fix two: add batch normalization to the hidden layers. It standardises each layer's pre-activations, which keeps them near zero where any activation has its largest derivative, and stops the distribution drifting into the saturated tails during training.</p>"+
+    "<p>Switching to tanh would help a little, since its peak derivative is 1.0 rather than 0.25, but it saturates too, so at 12 layers it only delays the problem.</p>"}};
+
+PATCH.m2t5={pri:"high",
+ core:{t:"The core idea: a one way valve that can jam shut",
+  b:"<p>ReLU is max(0, z): let positives through unchanged, block negatives. That gives three wins at once. The derivative is exactly 1 on the positive side, so gradients survive depth. It costs one comparison, with no exponential. And roughly half the units output exactly 0 for any given input, which is efficient and mildly regularising.</p>"+
+    "<p>The failure is the valve jamming. If one oversized update pushes a unit's weights so that z is negative for every training input, its output is always 0, so its derivative is always 0, so its gradient is always 0, so its weights never change again. It cannot escape, because escaping would require the gradient that has just become zero.</p>"+
+    "<p>Leaky ReLU gives the negative side a small slope alpha, so the derivative there is alpha rather than 0 and a stranded unit can climb back. The deck writes max(0.1x, x) on the lecturer's own slide, so alpha = 0.1, while a generated slide uses 0.01. State which you are using.</p>"},
+ app:{q:"After training a network with ReLU and a learning rate of 0.5, an engineer finds that 40 percent of the hidden units output exactly 0 for every example in the training set. Determine whether this is sparsity or a fault, determine the likely cause, and give two fixes.",
+  hint:"The discriminating question is whether the same units are silent for every input, or different units for different inputs.",
+  a:"<p>This is a fault, not sparsity, and the distinguishing test is in the wording: the units are zero <i>for every example</i>.</p>"+
+    "<p>Healthy sparsity means that for any given input many units are silent, but which units are silent varies from input to input, so each unit is active on some part of the data. Here the same 40 percent are silent everywhere, so their pre-activation is negative across the whole dataset. Their derivative is 0 everywhere, so they receive no gradient, so their weights are frozen. They are dead, and the effective network is 40 percent smaller than the one that was built.</p>"+
+    "<p>Likely cause: the learning rate of 0.5 is far too large. A single oversized step drove those units' weights and biases strongly negative, and once negative they were stranded with no gradient to bring them back.</p>"+
+    "<p>Fix one: reduce the learning rate, to something nearer 0.01, or use a decay schedule. This removes the cause rather than the symptom, and is why dying ReLU is usually a learning rate problem rather than a flaw in ReLU.</p>"+
+    "<p>Fix two: switch to Leaky ReLU, with alpha of 0.1 or 0.01. The negative side then has derivative alpha rather than 0, so the dead units keep receiving a fraction of the gradient and can recover. The cost is that alpha is one more hyperparameter with no principled value: too small and recovery is impractically slow, too large and the function drifts back towards linear.</p>"}};
+
+PATCH.m2t6={pri:"high",
+ core:{t:"The core idea: shares of one pie",
+  b:"<p>Softmax takes any list of scores and turns it into shares of a single pie. Exponentiate each score so everything is positive, then divide by the total so the shares add to exactly 1.</p>"+
+    "<p>Two properties follow, and both get examined. The outputs are a valid probability distribution, which is what a multi-class classifier must produce. And they are <b>coupled</b>: raising one probability necessarily lowers the others, because the pie is one pie.</p>"+
+    "<p>That coupling is the whole basis of the softmax against sigmoid decision. Use softmax when exactly one class is correct, because if it is this then it is not that. Use an independent sigmoid on each output when several labels can be true at once, because a student can be both distracted and sleepy and forcing those to compete would be wrong.</p>"+
+    "<p>The exponential is not decoration. Plain normalisation by the sum fails outright on negative scores, and can divide by zero.</p>"},
+ app:{q:"A system must tag a lecture recording with any of eight topics it covers, and a separate system must assign each student one of five grades from A to E. Determine the output activation, the number of output units and the loss function for each, and explain why the two answers differ.",
+  hint:"Ask, for each task, whether two labels can be true at the same time.",
+  a:"<p>Topic tagging: eight independent sigmoid units, with binary cross entropy on each. A recording can cover several topics at once, so the labels are not mutually exclusive. This is multi-label. Each output is a separate yes or no probability, and the eight need not sum to 1.</p>"+
+    "<p>Grading: softmax with five units, and categorical cross entropy. A student receives exactly one grade, so the categories are mutually exclusive. This is multi-class single label. Softmax couples the five outputs so that they sum to 1, which correctly encodes that raising the probability of B must lower the probability of A.</p>"+
+    "<p><b>Why they differ.</b> The two tasks look almost identical, since both have several categories, and this is exactly what the question tests. The discriminating question is whether two labels can be true simultaneously.</p>"+
+    "<p>Putting softmax on the tagging task would be a real error, not a stylistic one: the sum to 1 constraint would mean that detecting one topic strongly must suppress the others, so a recording genuinely covering three topics could never report high confidence on all three. Conversely, independent sigmoids on the grading task would permit the model to assign high probability to both A and E at once, which is meaningless.</p>"}};
+PATCH.m2t7={pri:"high",
+ core:{t:"The core idea: one table answers a whole family of questions",
+  b:"<p>Choosing components is two separate decisions with different criteria. Hidden layers are chosen for <b>gradient behaviour</b>, so ReLU by default. The output layer is chosen for the <b>shape of the answer</b>.</p>"+
+    "<div class='scroll'><table><tr><th>Task</th><th>Output</th><th>Units</th><th>Loss</th></tr>"+
+    "<tr><td>Regression</td><td>Linear</td><td>1</td><td>MSE</td></tr>"+
+    "<tr><td>Binary</td><td>Sigmoid</td><td>1</td><td>Binary cross entropy</td></tr>"+
+    "<tr><td>Multi-class, one label</td><td>Softmax</td><td>C</td><td>Categorical cross entropy</td></tr>"+
+    "<tr><td>Multi-label</td><td>Sigmoid on each</td><td>C</td><td>Binary cross entropy on each</td></tr></table></div>"+
+    "<p>Learn it as one object, because activation and loss are chosen together rather than separately. The pairings are not conventions: with sigmoid and binary cross entropy the saturating derivative factor cancels algebraically, leaving a gradient proportional simply to the error. Break the pair and the network trains slowly or not at all while nothing looks wrong in the architecture.</p>"},
+ app:{q:"A smart classroom system has four jobs: predict a student's final percentage, decide whether a student needs intervention, sort each student into one of four performance bands, and detect which of six behaviours a student is showing at a moment. Determine the output activation, unit count and loss for each.",
+  hint:"Classify each job as regression, binary, multi-class or multi-label before choosing anything.",
+  a:"<div class='scroll'><table><tr><th>Job</th><th>Type</th><th>Output</th><th>Units</th><th>Loss</th></tr>"+
+    "<tr><td>Predict final percentage</td><td>Regression</td><td>Linear</td><td>1</td><td>MSE</td></tr>"+
+    "<tr><td>Needs intervention or not</td><td>Binary</td><td>Sigmoid</td><td>1</td><td>Binary cross entropy</td></tr>"+
+    "<tr><td>One of four performance bands</td><td>Multi-class, single label</td><td>Softmax</td><td>4</td><td>Categorical cross entropy</td></tr>"+
+    "<tr><td>Which of six behaviours</td><td>Multi-label</td><td>Sigmoid on each</td><td>6</td><td>Binary cross entropy on each</td></tr></table></div>"+
+    "<p>Reasoning for the two that are easily confused. The performance band job has four mutually exclusive outcomes, since a student sits in exactly one band, so softmax is right and its sum to 1 coupling is a feature. The behaviour job allows several to be true at once, since a student can be distracted and sleepy simultaneously, so the six outputs must be independent.</p>"+
+    "<p><b>On the binary job,</b> one sigmoid unit is enough rather than two softmax units, because the probability of not needing intervention is one minus the probability of needing it. Using softmax with two units is not wrong but is unnecessary.</p>"+
+    "<p>On the regression job, a percentage is bounded in practice, but the output must still be linear. A sigmoid would cap predictions at 1 and saturate, killing the gradient exactly where the error is largest.</p>"}};
+
+PATCH.m2t8={pri:"high",
+ core:{t:"The core idea: squaring makes one big miss matter more than many small ones",
+  b:"<p>Predictions are out by 3, -5, 5 and -3. Average the raw errors and you get exactly 0, which would report a perfect model. Square them first and you get 9, 25, 25, 9, averaging 17. Squaring removes the sign so opposite errors cannot cancel.</p>"+
+    "<p>It also punishes disproportionately: an error of 10 costs 100 while an error of 1 costs 1, so the model is pushed hardest at its worst predictions. And it is smooth everywhere, unlike the absolute value, which has an undefined derivative at zero error.</p>"+
+    "<p>The half in E = half times (t - y) squared exists only so the 2 from differentiating cancels. It is cosmetic.</p>"+
+    "<p>The thing to remember about where MSE belongs: paired with a sigmoid output its gradient carries a factor of the sigmoid derivative, so a confidently wrong network gets a vanishing correction exactly when it most needs a large one. MSE is for regression with a linear output.</p>"},
+ app:{q:"A model predicts final marks 72, 85, 60 and 91 where the true marks are 75, 80, 65 and 88. Determine the mean squared error and state what the root of it tells you. Then determine whether MSE would be appropriate if the same network were changed to predict pass or fail with a sigmoid output.",
+  hint:"Errors first, then squares, then the mean. For the second part think about the gradient.",
+  a:"<p><b>Errors (t - y):</b> 75 - 72 = 3, 80 - 85 = -5, 65 - 60 = 5, 88 - 91 = -3.</p>"+
+    "<p><b>Squares:</b> 9, 25, 25, 9. Sum = 68. <b>MSE = 68 / 4 = 17.</b></p>"+
+    "<p>RMSE = square root of 17 = 4.12 marks. That is the interpretable figure: the model is typically about 4 marks out. Note the raw errors sum to exactly 0, so averaging them without squaring would have reported a perfect model. This is precisely why squaring is necessary.</p>"+
+    "<p>For pass or fail with a sigmoid output, MSE is not appropriate. Use binary cross entropy.</p>"+
+    "<p>The reason is the gradient. With a sigmoid output the MSE gradient carries a factor of the sigmoid derivative, which is y(1 - y). Suppose the network predicts 0.99 when the target is 0. That factor is 0.99 times 0.01 = 0.0099, so the gradient is about 0.0098, nearly zero. The more confidently wrong the network is, the smaller its correction becomes, and it gets stuck being badly wrong.</p>"+
+    "<p>With binary cross entropy that saturating factor cancels algebraically, leaving a gradient of simply y minus t, which is 0.99 here. The correction is large exactly when the error is large, which is the behaviour you want.</p>"}};
+
+PATCH.m2t9={pri:"high",
+ core:{t:"The core idea: how surprised were you by the right answer",
+  b:"<p>Cross entropy measures surprise. If the true class is dog and your model gave dog a probability of 0.98, you were barely surprised and the loss is small: minus log(0.98) is about 0.02. If you gave dog 0.01, you were very surprised and the loss is large: minus log(0.01) is about 4.6.</p>"+
+    "<p>For a one hot target the formula collapses to something you should be able to write instantly: the loss is minus log of the probability assigned to the correct class, and nothing else. Every other class contributes a term multiplied by a target of 0.</p>"+
+    "<p>That collapse is why cross entropy is preferred over MSE for classification. It only asks about the correct class, and its gradient does not vanish when the model is confidently wrong, because the log blows up as the assigned probability approaches zero.</p>"},
+ app:{q:"A four class classifier outputs the probabilities [0.775, 0.116, 0.039, 0.070] for an example whose true class is the first. Determine the cross entropy loss in bits, and then determine what the loss would be if the same model had assigned the correct class only 0.039 instead. Comment on what the comparison shows.",
+  hint:"With a one hot target, only the correct class contributes.",
+  a:"<p>Confident and correct. The target is one hot on the first class, so every other term is multiplied by 0 and the loss is minus log2(0.775).</p>"+
+    "<p>log2(0.775) = ln(0.775) / ln(2) = -0.2549 / 0.6931 = -0.3677, so the loss is <b>0.3677 bits</b>. Confirmed by independent recomputation. A quick sanity check: the four probabilities sum to 1.000 as they must.</p>"+
+    "<p><b>Confident and wrong.</b> If the correct class had received only 0.039, the loss would be minus log2(0.039) = <b>4.68 bits</b>.</p>"+
+    "<p>What the comparison shows. The probability fell by a factor of about 20, but the loss rose by a factor of about 13, and more importantly the gradient rises without bound as the assigned probability approaches zero. Cross entropy therefore never stops caring: the worse the model's confidence in the truth, the harder it is pushed.</p>"+
+    "<p>Contrast MSE on the same pair of cases. Its penalty is bounded, and combined with a saturating output activation its gradient shrinks as the model becomes more confidently wrong. That is the concrete reason classification uses cross entropy and regression uses MSE.</p>"}};
+
+PATCH.m2t10={pri:"high",
+ core:{t:"The core idea: blame, shared out backwards",
+  b:"<p>A prediction is wrong. Which weight is at fault? Backpropagation answers that, and the answer is the chain rule.</p>"+
+    "<p>A weight deep in the network affects the loss only through everything downstream of it. So its share of the blame is the product of every local derivative along the path from it to the loss: how the loss changes with the output, how the output changes with its pre-activation, how that changes with the previous activation, and so on back.</p>"+
+    "<p>Two facts fall out of that product and both are examined. Every activation on the path must be differentiable, which is why the step function cannot be used. And because the terms multiply, a chain of small derivatives shrinks the gradient geometrically, which is the vanishing gradient problem in one sentence.</p>"+
+    "<p>Keep the division of labour straight: backpropagation <b>computes</b> gradients, the optimizer <b>applies</b> them. Saying backpropagation updates the weights loses a mark.</p>"},
+ app:{q:"A network predicts that a student needs no intervention when in fact they do. An engineer asks which of the input weights is responsible. Determine how backpropagation answers this, and determine what would happen to the answer if the hidden layer used a step activation instead of a sigmoid.",
+  hint:"Responsibility is a partial derivative. Ask what that derivative is made of.",
+  a:"<p><b>How it answers.</b> Responsibility is measured by the partial derivative of the loss with respect to each weight. Backpropagation computes it by the chain rule, working backwards from the output.</p>"+
+    "<p>It first forms the error signal at the output, the derivative of the loss with respect to the output pre-activation. It then passes that signal back through each layer, multiplying at each step by the outgoing weight and by the derivative of that unit's activation, which produces the error signal for each hidden unit. Finally, the gradient on any particular weight is that unit's error signal multiplied by the activation feeding it.</p>"+
+    "<p>The weight with the largest magnitude gradient is the one most responsible, and its sign says which way it must move. Note that a weight whose input was 0 gets a gradient of 0: it contributed nothing, so it is not to blame, which is the same proportional blame principle as the perceptron rule.</p>"+
+    "<p>With a step activation the method breaks entirely. The step has derivative 0 everywhere except at the jump, where it is undefined. Every gradient in the chain is multiplied by that 0, so every gradient becomes 0 and the loss appears completely insensitive to every weight.</p>"+
+    "<p>The engineer's question would then have no answer: no weight would be identified as responsible, and no weight would ever be updated. This is exactly why differentiable activations exist and why the perceptron learning rule, which is not a gradient method, cannot be extended to hidden layers.</p>"}};
+
+PATCH.m2t11={pri:"high",
+ core:{t:"The core idea: step downhill, and mind the minus",
+  b:"<p>The gradient points uphill, towards greater loss. You want less loss, so you step the other way. That is the entire content of the rule:</p>"+
+    "<div class='eqb'>W_new = W_old - eta times dE/dW</div>"+
+    "<p>The minus sign is the most commonly dropped mark on this topic. The deck itself prints the rule once without it, on slide 159, while every worked example on slides 139 and 140 subtracts. Use the subtracting form.</p>"+
+    "<p>Read the two factors separately. The gradient decides the <b>direction</b> and the relative size of each weight's move. The learning rate eta decides how far you actually go. A large gradient with a tiny eta still barely moves; a small gradient with a huge eta can overshoot the minimum entirely.</p>"},
+ app:{q:"A weight is currently 0.80 and its gradient is 0.50. Determine the updated weight for eta = 0.20 and for eta = 1.00, and determine which of the two learning rates is the safer choice and why.",
+  hint:"Apply the rule twice, then think about what happens on the step after this one.",
+  a:"<p><b>With eta = 0.20:</b> W = 0.80 - 0.20 times 0.50 = 0.80 - 0.10 = <b>0.70</b>.</p>"+
+    "<p><b>With eta = 1.00:</b> W = 0.80 - 1.00 times 0.50 = 0.80 - 0.50 = <b>0.30</b>. Both figures confirmed by independent recomputation.</p>"+
+    "<p>The safer choice is eta = 0.20. Both steps move in the correct direction, since both subtract a positive gradient, so on this single step the larger rate simply travels further and might look faster.</p>"+
+    "<p>The risk appears on the following steps. If the minimum lies between 0.30 and 0.80, the large step has jumped past it, and the gradient at the new position now points back the other way. The next large step jumps back past it again, and the weight oscillates around the minimum without settling, or diverges outright if the loss surface is steep.</p>"+
+    "<p>The small step approaches the minimum gradually and settles. Its cost is time, since reaching the minimum takes many more updates.</p>"+
+    "<p>This is the trade-off that motivates learning rate decay: start large to cover ground quickly, then shrink so the final approach can settle rather than oscillate.</p>"}};
+
+PATCH.m2t12={pri:"high",
+ core:{t:"The core idea: how much evidence before you change your mind",
+  b:"<p>Three ways to mark a set of exam scripts and adjust your marking scheme. Read every script before adjusting: that is batch gradient descent, giving a smooth accurate direction but one slow update per pass. Adjust after every single script: that is stochastic, giving very fast noisy updates. Adjust after every 32 scripts: that is mini-batch.</p>"+
+    "<p>Mini-batch wins in practice and the reason is worth stating. It keeps most of the noise reduction of averaging while updating hundreds of times per epoch, and a batch of 32 or 64 maps onto how a GPU actually processes data in parallel, which is why powers of two are conventional.</p>"+
+    "<p>The noise in stochastic descent is not purely a cost. It can knock the parameters out of a poor local minimum, which pure batch descent, following the exact average direction, will sit in for ever.</p>"},
+ app:{q:"A dataset has 60,000 examples. Determine the number of weight updates in one epoch for batch, stochastic and mini-batch of 128 gradient descent, and determine which you would choose for this dataset and why.",
+  hint:"Updates per epoch is dataset size divided by the number of examples per update.",
+  a:"<div class='scroll'><table><tr><th>Variant</th><th>Examples per update</th><th>Updates per epoch</th></tr>"+
+    "<tr><td>Batch</td><td>60,000</td><td><b>1</b></td></tr>"+
+    "<tr><td>Stochastic</td><td>1</td><td><b>60,000</b></td></tr>"+
+    "<tr><td>Mini-batch of 128</td><td>128</td><td>60,000 / 128 = <b>469</b> (468 full batches plus a partial one)</td></tr></table></div>"+
+    "<p>Choose mini-batch of 128.</p>"+
+    "<p>Batch descent is impractical at this size: one update per epoch means the model would need thousands of epochs to converge, and computing the gradient over all 60,000 examples before moving once is a poor use of the work done.</p>"+
+    "<p>Stochastic descent gives 60,000 updates per epoch but each is based on a single example, so the direction is very noisy and the loss will jump around rather than descend cleanly. It also cannot use the hardware efficiently, since one example at a time leaves a GPU almost idle.</p>"+
+    "<p>Mini-batch of 128 gives 469 updates per epoch, which is enough to converge in a reasonable number of epochs, while averaging over 128 examples removes most of the noise. The batch also fills the hardware, since 128 examples are processed in parallel, so each update costs little more wall clock time than a single example would.</p>"+
+    "<p>It retains a useful amount of noise as well, which helps escape poor local minima that full batch descent would settle into.</p>"}};
+PATCH.m2t13={pri:"high",
+ core:{t:"The core idea: the size of your stride down a hill",
+  b:"<p>Walking down a valley in fog. Tiny steps get you there eventually but take all day. Enormous steps carry you straight across the valley floor and up the far slope, and the next enormous step carries you back, so you bounce for ever without reaching the bottom.</p>"+
+    "<p>That bouncing is the signature to recognise: a training loss that oscillates or rises rather than descending means the learning rate is too large. A loss that falls but painfully slowly means it is too small.</p>"+
+    "<p>Decay resolves the tension rather than compromising. Start large to cross the landscape quickly, then shrink so the final approach can settle into the minimum instead of stepping over it. The deck's phrasing is that a constant learning rate poses a dilemma to the analyst, and decay is the answer to that dilemma.</p>"},
+ app:{q:"During training the loss falls for the first two epochs, then oscillates between 0.8 and 1.4 for the next thirty without improving. Determine the most likely cause, determine two fixes, and state what a different symptom, a loss that decreases smoothly but is still far from zero after 200 epochs, would indicate instead.",
+  hint:"Oscillation and slowness are opposite symptoms of the same hyperparameter.",
+  a:"<p>Most likely cause: the learning rate is too large. The early fall shows the direction is right, so the gradient computation is working. The subsequent oscillation shows each step is overshooting the minimum, landing on the opposite slope, and being sent back by the next step. The loss cannot settle because the stride is larger than the basin it is trying to enter.</p>"+
+    "<p>Fix one: reduce the learning rate, typically by a factor of ten, to see whether the oscillation resolves into a smooth descent.</p>"+
+    "<p>Fix two: add learning rate decay, so the rate starts at its current value and shrinks over epochs. This keeps the fast early progress that was working for the first two epochs while allowing the later approach to settle. An adaptive optimizer such as Adam achieves a similar effect by scaling the step per parameter.</p>"+
+    "<p>The contrasting symptom. A loss that decreases smoothly but is still far from zero after 200 epochs is the opposite fault: the learning rate is too small, so each step barely moves and convergence is impractically slow. It can also indicate underfitting, meaning the network lacks the capacity to represent the pattern at all, which is distinguished by the training loss plateauing at a high value rather than merely descending slowly.</p>"+
+    "<p>The diagnostic in one line: oscillating means too large, crawling means too small, plateauing high means too small a model.</p>"}};
+
+PATCH.m2t14={pri:"high",
+ core:{t:"The core idea: a ball has momentum, a walker does not",
+  b:"<p>Plain gradient descent in a narrow ravine bounces from wall to wall, because the steepest direction points across the ravine rather than along it. Progress along the floor is painfully slow.</p>"+
+    "<p>Momentum accumulates a velocity: V becomes beta times V minus alpha times the gradient, and W becomes W plus V. The side to side components alternate in sign and cancel out; the consistent along the floor component accumulates. The ball rolls through the ravine instead of ricocheting, and it carries enough speed to roll over small bumps and out of shallow local minima.</p>"+
+    "<p>Nesterov adds one refinement, described in the deck as look before you leap. It evaluates the gradient at the position momentum is about to carry it to, rather than where it currently is. If that lookahead point is already climbing the far slope, the correction is applied before overshooting rather than after, so it slows down into minima instead of sailing past them.</p>"},
+ app:{q:"An optimization problem has a long narrow ravine: the loss changes steeply across the valley and very gently along it. Plain gradient descent oscillates across the valley and barely advances along it. Determine which optimizer you would choose and why, and determine what Nesterov adds beyond plain momentum.",
+  hint:"Ask what happens to the across the valley component when successive gradients point in opposite directions.",
+  a:"<p>Choose momentum based gradient descent, and in practice Nesterov accelerated gradient.</p>"+
+    "<p>Why it fixes the ravine. The velocity term accumulates a running combination of past gradients. The across the valley components alternate in sign on successive steps, since the optimizer bounces from one wall to the other, so when accumulated they largely cancel. The along the valley component points the same way at every step, so it accumulates and grows.</p>"+
+    "<p>The net effect is that oscillation is damped while the useful direction is amplified, which is exactly the ravine problem. Plain gradient descent cannot do this because it has no memory: each step sees only the current gradient, which points across the valley.</p>"+
+    "<p><b>What Nesterov adds.</b> Plain momentum computes the gradient at the current position and then adds the velocity, so on a step that is about to overshoot it discovers the overshoot only afterwards. Nesterov first moves provisionally by the velocity, then computes the gradient at that lookahead position, then completes the step.</p>"+
+    "<p>If the lookahead lands on the opposite slope, the gradient there already points back and the step is corrected before the overshoot happens rather than after. This gives a more directionally stable trajectory and less overshoot near a minimum, which matters most when momentum has built up a large velocity.</p>"}};
+
+PATCH.m2t15={pri:"high",
+ core:{t:"The core idea: give every parameter its own learning rate",
+  b:"<p>A rare feature appears in one example in a thousand. With a single global learning rate its weight is updated a thousand times less often than a common feature's, so it barely learns.</p>"+
+    "<p>AdaGrad fixes this by dividing each parameter's step by the square root of its accumulated squared gradients. Parameters that have received large or frequent gradients get smaller steps; rare ones keep large steps. Its flaw is that the accumulator only ever grows, so eventually every step is divided by a huge number and learning stops entirely.</p>"+
+    "<p>RMSProp replaces the running total with a running average that forgets old gradients, so the denominator can shrink again and learning does not stall.</p>"+
+    "<p>Adam combines that with momentum: it keeps a running average of the gradient itself, which is momentum, and of the squared gradient, which is RMSProp. Both averages start at zero and are therefore biased towards zero early on, which is why Adam applies bias correction to the first few steps.</p>"},
+ app:{q:"A text classifier uses a vocabulary of 50,000 words, most of which appear in very few documents. Training with plain stochastic gradient descent leaves the rare word weights close to their initial values. Determine which optimizer would address this, explain the mechanism, and state one drawback of the most obvious choice.",
+  hint:"The problem is that different parameters need different step sizes.",
+  a:"<p>Use an adaptive optimizer: AdaGrad in principle, Adam in practice.</p>"+
+    "<p><b>The mechanism.</b> Adaptive methods divide each parameter's step by the square root of its own accumulated squared gradient. A common word's weight receives a gradient in nearly every batch, so its accumulator is large and its effective step is scaled down. A rare word's weight receives a gradient only occasionally, so its accumulator stays small and its effective step stays large.</p>"+
+    "<p>Each parameter therefore gets a learning rate matched to how much evidence it has seen, which is exactly what sparse text features need. This is why AdaGrad was originally designed with sparse problems in mind.</p>"+
+    "<p>Drawback of AdaGrad specifically. Its accumulator is a running sum that only ever increases, so the denominator grows without bound. After enough updates every effective learning rate has been driven towards zero and the model stops learning, even if it has not converged. On a long training run this is fatal.</p>"+
+    "<p><b>The fix.</b> RMSProp replaces the sum with an exponentially decaying average, so old gradients are forgotten and the denominator can fall again. Adam adds momentum on top of that, plus bias correction to compensate for both averages starting at zero, and is the sensible default here.</p>"}};
+
+PATCH.m2t16={pri:"high",
+ core:{t:"The core idea: memorising past papers against understanding the subject",
+  b:"<p>Two students. The first memorises every answer in ten past papers and scores full marks on those papers, then fails the real exam because the questions are worded differently. The second learns the underlying method, scores slightly less on the past papers, and does well in the exam.</p>"+
+    "<p>The first is overfitting: excellent on training data, poor on unseen data, because it learned the noise and the specific wording rather than the pattern. The second generalises.</p>"+
+    "<p>Underfitting is the opposite student, who has not learned even the past papers and does badly on both.</p>"+
+    "<p>The diagnostic is therefore always two numbers, never one. Training performance alone tells you nothing. A large gap between training and validation means overfitting. Both poor means underfitting. Both good and close means a good fit. The deck's own example is a model at 99.9 percent in the lab and 61 percent in deployment, which is the signature of overfitting.</p>"},
+ app:{q:"Three models report the following. Model A: training accuracy 99 percent, validation 62 percent. Model B: training 68 percent, validation 66 percent. Model C: training 91 percent, validation 89 percent. Determine the condition of each and state one specific action for A and one for B.",
+  hint:"Look at the gap and at the absolute level, in that order.",
+  a:"<div class='scroll'><table><tr><th>Model</th><th>Gap</th><th>Level</th><th>Condition</th></tr>"+
+    "<tr><td>A</td><td>37 points, very large</td><td>Training very high</td><td><b>Overfitting</b></td></tr>"+
+    "<tr><td>B</td><td>2 points, small</td><td>Both low</td><td><b>Underfitting</b></td></tr>"+
+    "<tr><td>C</td><td>2 points, small</td><td>Both high</td><td><b>Good fit</b></td></tr></table></div>"+
+    "<p><b>Model A</b> has learned the training set almost perfectly but transfers badly, which means it has fitted noise and example specific detail rather than the pattern. Action: add regularization. Dropout on the fully connected layers is the usual first move, or an L2 penalty, or data augmentation to enlarge the effective training set. Early stopping would also help, since the gap will have opened at a particular epoch and training was continued past it.</p>"+
+    "<p><b>Model B</b> transfers well but has not learned much to transfer, so the fault is capacity or training rather than generalisation. Action: increase capacity or train longer. Add layers or units, train for more epochs, or reduce regularization if any is applied, since regularization deliberately restricts capacity and would make underfitting worse.</p>"+
+    "<p><b>Model C</b> needs nothing. Both figures are high and close, which is the target state.</p>"+
+    "<p>Note that A has the best training accuracy of the three and is the worst model. That is the reason the diagnosis always requires both numbers.</p>"}};
+
+PATCH.m2t17={pri:"high",
+ core:{t:"The core idea: the archer who is consistent against the archer who is accurate",
+  b:"<p>One archer puts every arrow in a tight cluster, half a metre left of the bullseye. Low variance, high bias: consistent and consistently wrong, because the aim is systematically off. That is an over simple model, and it underfits.</p>"+
+    "<p>Another archer scatters arrows all over the target, averaging out at the bullseye. Low bias, high variance: right on average but unreliable on any single shot, because tiny changes in stance move the arrow a long way. That is an over complex model, and it overfits.</p>"+
+    "<p>Bias is error from wrong assumptions, variance is sensitivity to the particular training sample. They trade off: reducing one usually raises the other, which is why the goal is the balance point rather than the minimum of either. Total error is bias squared plus variance plus irreducible noise, and no model can go below that noise floor.</p>"},
+ app:{q:"A model is retrained five times on five different random samples of the same data. Version one predicts almost identically each time but is consistently 15 percent below the true values. Version two predicts wildly differently each time but averages close to the truth. Determine which suffers from high bias and which from high variance, and determine what to change in each case.",
+  hint:"Consistency across retrainings measures variance. Systematic offset measures bias.",
+  a:"<p>Version one: high bias, low variance. It is stable across retrainings, so it barely depends on which sample it saw, which is low variance. But it is systematically 15 percent off, which is a wrong assumption baked into the model rather than sensitivity to data. This is underfitting.</p>"+
+    "<p>Version two: low bias, high variance. It averages close to the truth, so its assumptions are not systematically wrong, but it changes wildly with the sample, which means it is fitting the particular noise in whichever sample it received. This is overfitting.</p>"+
+    "<p>What to change for version one. Increase capacity: more layers or units, or richer features, or a less restrictive model family. Also reduce any regularization in use, since regularization deliberately adds bias in exchange for lower variance, which is the wrong direction here. Training longer may help if it stopped early.</p>"+
+    "<p>What to change for version two. Reduce effective capacity or add constraints: L1 or L2 regularization, dropout, early stopping, or more training data, which is the one intervention that reduces variance without adding bias. Data augmentation approximates that when more real data is unavailable.</p>"+
+    "<p>The general shape worth stating: almost every regularization technique in this module trades a little extra bias for a larger reduction in variance, and is worth applying only when variance is the dominant term.</p>"}};
+PATCH.m2t18={pri:"high",
+ core:{t:"The core idea: a constant pull reaches zero, a proportional pull never does",
+  b:"<p>Both add a penalty on the weights to the loss, so the optimizer must justify every weight it keeps large. The difference is in the pull each one applies.</p>"+
+    "<p>L1 penalises the absolute value, so its gradient is a constant sign, the same size whatever the weight is. A weight of 0.001 is pulled just as hard as a weight of 5, so small weights are dragged all the way to exactly zero. That is why L1 produces sparse models and performs automatic feature selection.</p>"+
+    "<p>L2 penalises the square, so its gradient is proportional to the weight. As a weight shrinks the pull shrinks with it, approaching zero as the weight approaches zero. Weights get small but never exactly zero, so L2 shrinks everything smoothly and shares influence out rather than eliminating features.</p>"+
+    "<p>Choose by what you want: L1 to select features and get a smaller model, L2 to stop any single feature dominating.</p>"},
+ app:{q:"A model uses 5,000 input features and the team believes only about 50 matter. They want the deployed model to be small and to tell them which features were kept. Determine which regularization to use and why, and determine what would happen if lambda were set far too large.",
+  hint:"Ask which penalty can drive a weight to exactly zero.",
+  a:"<p>Use L1 regularization. The requirement has two parts and L1 serves both.</p>"+
+    "<p><b>Why L1.</b> Its gradient is a constant pull independent of the weight's size, so weights supported by little evidence are driven to exactly 0 rather than merely made small. Features with a weight of exactly 0 contribute nothing and can be dropped, which makes the deployed model smaller and directly answers which features were kept. This is automatic feature selection.</p>"+
+    "<p><b>Why not L2.</b> Its pull is proportional to the weight, so it shrinks as the weight shrinks and never reaches zero. All 5,000 features would be retained with small weights, so the model would be no smaller and would give no clean answer about which features mattered.</p>"+
+    "<p>If lambda is far too large. The penalty dominates the data term, so the optimizer minimises the loss mostly by shrinking weights rather than by fitting. With L1 that means driving nearly all 5,000 weights to zero, including the 50 genuinely useful ones, and the model collapses towards predicting a constant.</p>"+
+    "<p>In bias and variance terms, raising lambda trades variance for bias. A little is beneficial, but too much pushes the model into severe underfitting, where both training and validation performance are poor. The symptom is a training loss that will not fall no matter how long you train.</p>"}};
+
+PATCH.m2t19={pri:"high",
+ core:{t:"The core idea: a team where random members are absent from every rehearsal",
+  b:"<p>If the same five people always rehearse together, each learns to rely on the others: one always handles the difficult passage, so nobody else learns it. Now remove a random subset from every rehearsal. Nobody can rely on any particular colleague being present, so everyone learns the material.</p>"+
+    "<p>That is dropout. During training each unit is switched off with probability p, so units cannot co-adapt into fragile chains where one compensates for another. Each has to carry useful information on its own, and the network behaves like an average over many thinner networks.</p>"+
+    "<p>The detail that is always examined: dropout is on during training and off at test time. At test you want the full network and a deterministic answer. To keep the expected input to each unit consistent between the two regimes, activations are scaled, either by multiplying by (1 - p) at test or, more commonly, by dividing by (1 - p) during training.</p>"},
+ app:{q:"A network with dropout at p = 0.5 reaches 91 percent validation accuracy, but when deployed it gives a different answer each time it is shown the same image. Determine what has gone wrong and how to fix it, and determine what the correct behaviour at test time is.",
+  hint:"Ask what should have changed when the model moved from training to inference.",
+  a:"<p>What has gone wrong: dropout has been left active at inference. Units are still being switched off at random for each forward pass, so the same image is passed through a different randomly thinned network every time and produces a different answer.</p>"+
+    "<p><b>The fix:</b> put the model into evaluation mode before deploying, so the dropout layers become inactive. In practice this is one call, such as model.eval() in PyTorch or setting training to false in Keras, and forgetting it is a very common deployment bug.</p>"+
+    "<p>Correct behaviour at test time. All units are active, so the full network is used and the output is deterministic. The activations are scaled so that the expected input to each unit matches what it saw during training: either multiply activations by (1 - p) at test, or, in the usual inverted formulation, divide by (1 - p) during training and change nothing at test.</p>"+
+    "<p>Without that scaling, each unit at test would receive roughly twice the total input it was trained on at p = 0.5, which would push activations into the wrong range and degrade accuracy even after the randomness was removed.</p>"+
+    "<p>Note that the 91 percent validation figure was almost certainly measured correctly with dropout disabled, which is why the fault appeared only at deployment.</p>"}};
+
+PATCH.m2t20={pri:"medium",
+ core:{t:"The core idea: reuse one weight, or charge rent on every weight",
+  b:"<p>These are two different ways of limiting what the weights can do.</p>"+
+    "<p><b>Parameter sharing</b> forces one set of weights to be used in many places. A convolution filter that detects a vertical edge is applied at every position in the image rather than each position learning its own detector. That is a hard constraint: it cuts the parameter count dramatically and builds in the assumption that a useful pattern is useful wherever it appears.</p>"+
+    "<p><b>Weight decay</b> charges rent instead. At every update each weight is shrunk slightly towards zero, so a weight only stays large if the gradient keeps pushing it back up. Weights that the data does not support decay away.</p>"+
+    "<p>Weight decay applied at each step is mathematically the same thing as adding an L2 penalty to the loss: differentiating the L2 term gives a contribution proportional to the weight, which subtracts a fraction of the weight at every update. Same mechanism, described from two directions.</p>"},
+ app:{q:"Determine which of the two techniques is at work in each of these, and state what each one costs: (a) a convolution layer applies the same 3 by 3 filter at all 1,024 positions of a feature map, (b) after each update every weight is multiplied by 0.9999 before the gradient step is applied.",
+  hint:"One reuses weights, the other shrinks them.",
+  a:"<p>(a) Parameter sharing. One filter of 9 weights plus a bias is reused at every one of the 1,024 positions, rather than each position holding its own 10 parameters. The parameter count falls from 10,240 to 10, a reduction of about a thousandfold.</p>"+
+    "<p><b>Its cost</b> is that it hard codes an assumption: that a pattern worth detecting in one place is worth detecting everywhere. For natural images that is true, which is why CNNs work. For inputs where position carries fixed meaning, such as specific fields in a structured record, the assumption is wrong and sharing would prevent the model learning position specific behaviour.</p>"+
+    "<p><b>(b) Weight decay.</b> Multiplying by 0.9999 shrinks every weight by 0.01 percent per update regardless of the gradient, so weights the data does not actively support drift towards zero.</p>"+
+    "<p><b>Its cost</b> is bias. Shrinking every weight, including well supported ones, moves the model away from the best fit to the training data in exchange for lower variance. Set the decay too strong and the model underfits. The decay factor is also one more hyperparameter to tune.</p>"+
+    "<p>Worth adding: (b) is equivalent to adding an L2 penalty to the loss, since differentiating that penalty produces exactly a term proportional to the weight, which subtracts a constant fraction at every step.</p>"}};
+
+PATCH.m2t21={pri:"high",
+ core:{t:"The core idea: put every layer's inputs on the same scale",
+  b:"<p>Three teachers mark out of 100 but one marks generously around 85, another harshly around 40, and the third drifts over the term. Comparing raw marks is meaningless. Standardise each teacher's marks to zero mean and unit variance and they become comparable.</p>"+
+    "<p>Batch normalization does that to each layer's pre-activations, using the mean and variance of the current mini-batch. It matters because during training the distribution reaching a layer keeps shifting as the layers below it update, so each layer is chasing a moving target.</p>"+
+    "<p>It then applies a learned scale gamma and shift beta. Those exist because forcing every layer to zero mean and unit variance would be a real restriction: it would pin activations into the near linear middle of a sigmoid and remove the network's ability to use the saturating regions. Making gamma and beta learnable lets the network undo the normalisation where that is genuinely better, so normalisation becomes an option rather than a constraint.</p>"+
+    "<p>At test time there is no batch, so stored running averages from training are used instead.</p>"},
+ app:{q:"A batch normalized network gives excellent validation results but produces inconsistent predictions when serving single images one at a time in production. Determine the cause and the fix, and explain why gamma and beta are learned rather than fixed at 1 and 0.",
+  hint:"What statistics does batch normalization use, and what happens when the batch contains one item?",
+  a:"<p>Cause: the layer is still computing batch statistics at inference. With a batch of one image, the mean of the batch is that image's own value and the variance is zero, so the normalisation is meaningless and numerically unstable. Each image is effectively normalised against itself, so the same image can produce different outputs depending on how it is batched.</p>"+
+    "<p>Fix: switch the model to evaluation mode so that batch normalization uses the <b>running averages</b> of mean and variance accumulated during training, rather than the statistics of the current batch. Those running values are fixed constants at inference, which makes the output deterministic and independent of batch size. This is the same class of bug as leaving dropout active at test time.</p>"+
+    "<p>Why gamma and beta are learned. Forcing every layer's pre-activations to exactly zero mean and unit variance is itself a strong constraint. It would confine activations to the near linear central region of a sigmoid or tanh and prevent the network from using the saturating regions when those are genuinely useful, so normalisation could reduce the network's expressive power.</p>"+
+    "<p>Making the scale and shift learnable removes that risk. The network can rescale and re-centre each normalised value however training finds best, and in the limit it can learn gamma equal to the original standard deviation and beta equal to the original mean, undoing the normalisation entirely. Normalisation therefore becomes something the network may use rather than something imposed on it.</p>"}};
+
+PATCH.m2t22={pri:"high",
+ core:{t:"The core idea: stop at the turn, not at the bottom",
+  b:"<p>Watch two curves as training proceeds. Training loss falls steadily and keeps falling, because the model keeps fitting the training set better. Validation loss falls at first, reaches a minimum, then starts to rise.</p>"+
+    "<p>That turning point is the moment the model stops learning the pattern and starts learning the noise. Everything after it is overfitting. Early stopping means stopping there and keeping the weights from the minimum.</p>"+
+    "<p>The critical detail is which curve you watch. Training loss never turns, so it can never tell you when to stop; watching it would train for ever. You must monitor validation loss, on data the model does not train on.</p>"+
+    "<p>Patience is what makes it practical. Validation loss is noisy, so a single bad epoch is not the turn. Patience of, say, ten means stop only after ten consecutive epochs with no improvement, then restore the best weights.</p>"},
+ app:{q:"A training run records these validation losses by epoch: 0.62, 0.48, 0.39, 0.35, 0.34, 0.36, 0.35, 0.38, 0.41, 0.45. Training loss falls throughout. Determine the epoch at which training should stop, which weights should be deployed, and why monitoring the training loss would have given the wrong answer.",
+  hint:"Find the minimum of the validation curve, and be careful about the small rise and fall around it.",
+  a:"<p>The validation minimum is at epoch 5, with a loss of 0.34. After that the curve rises to 0.36, dips slightly to 0.35 at epoch 7 without beating 0.34, then climbs steadily to 0.45.</p>"+
+    "<p>Deploy the weights from epoch 5. That is the point of best generalisation. Note the dip at epoch 7 is exactly why patience exists: with patience of 1 the run would have stopped at epoch 6, and with patience of 3 or more it correctly continues, confirms no improvement, and restores epoch 5. Early stopping must save the best weights, not simply halt and keep whatever is current.</p>"+
+    "<p>Where training would have stopped in practice. With patience of 3, the counter starts at epoch 6 and reaches 3 at epoch 8, so training halts there and epoch 5's weights are restored.</p>"+
+    "<p>Why the training loss is useless here. It falls throughout, and it will continue falling for as long as training continues, because the model keeps fitting the training set more closely. It has no turning point, so it gives no stopping signal at all. Monitoring it would mean training indefinitely and deploying a heavily overfitted model, since the rise from 0.34 to 0.45 in validation loss between epochs 5 and 10 is invisible in the training curve.</p>"}};
+
+PATCH.m2t23={pri:"medium",
+ core:{t:"The core idea: a rotated cat is still a cat",
+  b:"<p>With only 100 images the network memorises those 100. Flip each one horizontally, rotate it a few degrees, crop it slightly, adjust the brightness, and you have thousands of images that are all still genuinely labelled cat. The network must now learn what makes a cat rather than which arrangement of pixels was image 47.</p>"+
+    "<p>Adding noise works on the same principle from the other direction: perturbing the inputs slightly means the model cannot rely on exact values, so it must find patterns robust to small changes.</p>"+
+    "<p>The judgement that gets examined is which transformations preserve the label. Horizontal flip is fine for cats and disastrous for handwritten digits, because a flipped 2 is not a 2 and a flipped 6 may read as a mirror image that never occurs. Vertical flip is wrong for street scenes. The rule is that an augmentation is valid only if a human would give the transformed image the same label.</p>"},
+ app:{q:"A team augments a handwritten digit dataset with horizontal flips, rotations of up to 15 degrees, small shifts, and inversion of black and white. Determine which of these four are valid and which are not, giving your reason for each.",
+  hint:"For each transformation ask whether a human would still assign the original label.",
+  a:"<p>Horizontal flip: not valid. A flipped 2 is not a 2, and a flipped 5 is not a 5. Worse, some flips produce shapes that resemble a different digit, so the network is trained on wrongly labelled examples and its accuracy falls. Digits are not left to right symmetric, which is exactly why an augmentation that is standard for photographs of cats is wrong here.</p>"+
+    "<p>Rotation up to 15 degrees: valid. People write at a slight slant, so a mildly rotated digit is still clearly the same digit and is the kind of variation the model will actually meet. Note the limit matters: rotating far enough would turn a 6 into a 9, so a large rotation range would be invalid for the same reason as the flip.</p>"+
+    "<p><b>Small shifts: valid.</b> A digit written slightly off centre is the same digit, and this teaches tolerance to position, which is genuinely useful.</p>"+
+    "<p>Inverting black and white: it depends, and the team should state which. If the system will only ever see dark ink on light paper, inversion creates images unlike anything at test time and wastes capacity. If it must handle both dark on light and light on dark, inversion is valid and useful.</p>"+
+    "<p>The general test to state in an answer: an augmentation is valid only if it preserves the label and produces variation the model will plausibly encounter.</p>"}};
+/* ------- MODULE 3: answers are 5 marks (Q3 is 2 of 3, five marks each) -------
+   The lecturer named LO 3.2 important, LO 3.3 a certain 5 marks, and CNN
+   architecture important, so those topics are ranked above the rest.        */
+PATCH.m3t1={pri:"medium",
+ core:{t:"The core idea: neighbouring pixels are related, and a dense layer throws that away",
+  b:"<p>Take a 100 by 100 photograph and feed it to a fully connected layer. It becomes 10,000 independent numbers in a row. The fact that pixel 4,001 sits directly below pixel 3,901 is gone, and the network must rediscover it from data.</p>"+
+    "<p>That is wasteful twice over. It needs enormous numbers of parameters, and it has to learn separately that an edge in the top left and an identical edge in the bottom right are the same thing.</p>"+
+    "<p>Convolution builds both facts in. A filter looks at a small neighbourhood, which respects locality, and the same filter is applied everywhere, which builds in that a pattern is a pattern wherever it appears. Layers then stack: edges, then corners and textures, then object parts, then whole objects.</p>"},
+ app:{q:"A team is choosing an architecture for three inputs: 64 by 64 grayscale X-rays, a sequence of daily temperature readings of varying length, and a fixed record of 12 numeric lab values. Determine the architecture for each and justify by naming the structure in the data that the architecture exploits.",
+  hint:"Ask what structure exists in each input, then match the architecture built for that structure.",
+  a:"<p><b>X-rays: a CNN.</b> The structure is a two dimensional grid with strong local correlation, meaning nearby pixels are related and distant ones usually are not. Convolution exploits that through local receptive fields, and weight sharing means one edge detector serves the whole image. A dense layer on 4,096 pixels would need thousands of times more parameters and would destroy the spatial arrangement.</p>"+
+    "<p>Temperature sequence: an RNN, LSTM or GRU. The structure is order and variable length. A recurrent network processes one reading at a time while carrying a hidden state, so it handles any length and remembers earlier context. A CNN assumes grid locality rather than sequence, and a dense layer requires a fixed size input and has no notion of order.</p>"+
+    "<p>Twelve lab values: a plain MLP. There is no spatial or temporal structure to exploit. The values are independent measurements in a fixed order, so a fully connected network is exactly right, and the specialised machinery of convolution or recurrence would buy nothing.</p>"+
+    "<p>The principle to state: choose the architecture whose built in assumption matches the structure actually present. Using a CNN on the lab values would impose a locality assumption that is simply false, since lab value 3 has no meaningful neighbour relationship with lab value 4.</p>"}};
+
+PATCH.m3t2={pri:"high",
+ core:{t:"The core idea: slide a small stencil, multiply, add",
+  b:"<p>A filter is a small grid of numbers. Lay it over a patch of the image, multiply each filter number by the pixel underneath, add the products, and write the single result into the output. Slide one step and repeat.</p>"+
+    "<p>That is all convolution is, and one worked cell fixes it. With the deck's sharpen filter, all minus one around a centre of 8, over the patch 21 19 17 / 71 76 73 / 153 164 164:</p>"+
+    "<div class='eqb'>8(76) - (21+19+17+71+73+153+164+164)\n= 608 - 682 = -74</div>"+
+    "<p>Read what that number means. The centre pixel, 76, is far darker than its neighbours, which average about 85. The filter reports a strongly negative value, so the output is not a picture any more, it is a map of where a chosen pattern occurs. A different filter reports a different pattern, which is why a layer has many.</p>"},
+ app:{q:"An edge detection filter has a row of minus one, a row of two, and a row of minus one. Determine what pattern it responds to and why, and determine its output on a patch where all nine pixels equal 100.",
+  hint:"Look at which rows are positive and which are negative, then think about what makes the sum large.",
+  a:"<p>The pattern: a horizontal edge, specifically a bright horizontal line one pixel thick.</p>"+
+    "<p>The middle row carries positive weights and the rows above and below carry negative ones. The sum is therefore large and positive when the middle row is much brighter than the rows on either side, which is exactly a bright horizontal stripe. It is large and negative for a dark stripe between bright rows, and near zero for a vertical edge, since a vertical edge affects all three rows equally and the positive and negative contributions cancel.</p>"+
+    "<p><b>On a uniform patch of 100:</b></p>"+
+    "<div class='eqb'>= 100(-1 -1 -1) + 100(2 + 2 + 2) + 100(-1 -1 -1)\n= 100(-3) + 100(6) + 100(-3)\n= -300 + 600 - 300 = 0</div>"+
+    "<p><b>The output is 0.</b> This is the important general property: the filter weights sum to zero, so any flat region produces zero regardless of how bright it is. The filter is blind to absolute brightness and responds only to change.</p>"+
+    "<p>That is what makes it an edge detector rather than a brightness meter, and it is why edge filters are conventionally built with weights summing to zero.</p>"}};
+
+PATCH.m3t3={pri:"medium",
+ core:{t:"The core idea: a filter is always as deep as its input",
+  b:"<p>A grayscale image has depth 1. A colour image has depth 3, one channel each for red, green and blue.</p>"+
+    "<p>The rule that follows is the one people forget: a filter spans the full depth of its input. A 3 by 3 filter on a colour image is not 9 weights, it is 3 by 3 by 3 = 27 weights plus a bias. It slides across width and height but never across depth, because it already covers all of it.</p>"+
+    "<p>Each filter produces one two dimensional output map, however deep its input was. So the output depth equals the number of filters, not the input depth. Sixteen filters on a colour image give an output of depth 16.</p>"+
+    "<p>That is why depth grows through a CNN while width and height shrink: each layer applies more filters than the last, trading spatial resolution for a richer description of what is present.</p>"},
+ app:{q:"A convolution layer applies 32 filters of size 5 by 5 to an input of shape 28 by 28 by 3. Determine the number of weights in a single filter, the total number of learnable parameters in the layer, and the depth of the output.",
+  hint:"A filter spans the full depth of its input. The output depth is set by something else entirely.",
+  a:"<p><b>Weights in one filter:</b> the filter spans the full input depth, so it is 5 by 5 by 3 = <b>75 weights</b>, plus 1 bias, giving 76 parameters per filter.</p>"+
+    "<p><b>Total learnable parameters:</b> 76 times 32 filters = <b>2,432</b>.</p>"+
+    "<p><b>Output depth: 32</b>, one map per filter. Each filter reduces its 5 by 5 by 3 window to a single number, so it produces one two dimensional map regardless of the input having been three channels deep.</p>"+
+    "<p>The two errors this question is built to catch. Forgetting the input depth gives 5 times 5 = 25 weights per filter and a total of 832, which is wrong by a factor of three. And assuming the output depth matches the input depth gives 3 rather than 32.</p>"+
+    "<p>State the general formula in an answer: parameters = (Fh times Fw times Cin + 1) times K, where Cin is the input depth and K the number of filters, and the output depth is K.</p>"}};
+
+PATCH.m3t4={pri:"high",
+ core:{t:"The core idea: give the border pixels a fair turn",
+  b:"<p>Slide a 3 by 3 filter over an image and ask how many times each pixel sits at the centre. A middle pixel is centred once. A corner pixel is never centred at all, because the filter would hang off the edge.</p>"+
+    "<p>Two problems follow. Border information is under used, and the output is smaller than the input, so a deep stack of layers shrinks the image away.</p>"+
+    "<p>Padding fixes both by adding a border of extra pixels, almost always zeros, so every original pixel can be a centre. Zero is chosen because it contributes nothing to the weighted sum.</p>"+
+    "<p>The value worth memorising is same padding, which keeps the output the same size as the input: <b>P = (F - 1) / 2</b>. So a 3 by 3 filter needs P = 1 and a 5 by 5 needs P = 2, which is why odd filter sizes are conventional. An even filter has no exact centre and no integer P.</p>"},
+ app:{q:"A network stacks six convolution layers of 5 by 5 filters with stride 1 on a 64 by 64 input. Determine the output size after all six layers with no padding, determine the padding needed to keep the size at 64, and state which choice you would make and why.",
+  hint:"With no padding each layer removes F - 1 from each dimension.",
+  a:"<p><b>With no padding.</b> Each layer takes the size from N to N - F + 1, which with F = 5 removes 4 from each dimension.</p>"+
+    "<div class='eqb'>64 to 60 to 56 to 52 to 48 to 44 to 40</div>"+
+    "<p>After six layers the output is <b>40 by 40</b>. The image has lost 24 pixels in each dimension, which is over a third of its area, and the outermost pixels of the original have contributed to very few outputs.</p>"+
+    "<p>Padding to preserve size. Same padding needs P = (F - 1) / 2 = (5 - 1) / 2 = <b>2</b>. Check with the formula: (64 - 5 + 2 times 2) / 1 + 1 = 63 + 1 = 64, so every layer preserves 64 by 64 and the output after six layers is still 64 by 64.</p>"+
+    "<p>Which to choose: use padding of 2. Two reasons. The shrinkage compounds with depth, so a deeper network would run out of image entirely, and padding removes that limit on how deep the network can be. And border pixels carry real information, which matters when the subject can appear near the edge of the frame.</p>"+
+    "<p>The cost is small: the padded zeros add computation but no parameters, since the filter weights are unchanged.</p>"}};
+
+PATCH.m3t5={pri:"high",
+ core:{t:"The core idea: how far the stencil jumps each time",
+  b:"<p>Stride is the step size of the slide. Stride 1 moves one pixel at a time and looks at almost every position. Stride 2 skips every other position, so the output is roughly half the size in each dimension and a quarter of the area.</p>"+
+    "<p>That downsampling is the point. A larger stride cuts the spatial size, which cuts computation and memory in every layer that follows, and it widens the effective receptive field, since each output now summarises a region further apart.</p>"+
+    "<p>The cost is resolution: skipped positions are never examined, so fine detail can be missed. Stride is therefore a deliberate trade of detail against cost, and it is one of the two ways a CNN reduces spatial size, the other being pooling.</p>"+
+    "<p>Note that stride can differ by axis. The deck's example uses stride 3 horizontally and 2 vertically, turning a 5 by 9 input into a 2 by 3 output.</p>"},
+ app:{q:"A layer applies 3 by 3 filters to a 224 by 224 input. Determine the output size for stride 1 and for stride 2, both without padding, and determine what is gained and lost by moving from stride 1 to stride 2.",
+  hint:"Use the output formula, and remember to take the floor when the division is not exact.",
+  a:"<p><b>Stride 1:</b> (224 - 3 + 0) / 1 + 1 = 221 + 1 = <b>222 by 222</b>.</p>"+
+    "<p><b>Stride 2:</b> floor((224 - 3 + 0) / 2) + 1 = floor(110.5) + 1 = 110 + 1 = <b>111 by 111</b>. The floor matters here, since 221 divided by 2 is not an integer; dropping it would give 111.5 and a meaningless answer.</p>"+
+    "<p><b>What is gained.</b> The output area falls from 222 squared, about 49,300 positions, to 111 squared, about 12,300, a reduction of roughly four times. Every subsequent layer then operates on a quarter of the data, so computation and activation memory fall sharply throughout the rest of the network. Each output also summarises a region further apart, so the effective receptive field grows faster with depth.</p>"+
+    "<p><b>What is lost.</b> Half the filter positions in each dimension are never evaluated, so any pattern that would have been detected only at a skipped position is missed. Fine detail suffers, which matters for tasks needing precise localisation.</p>"+
+    "<p>Note that the parameter count is identical in both cases, at 9 weights plus a bias per filter. Stride changes how often the filter is applied, never how many weights it has.</p>"}};
+PATCH.m3t6={pri:"high",
+ core:{t:"The core idea: one formula answers every sizing question in Module 3",
+  b:"<div class='eqb'>Output = floor((N - F + 2P) / S) + 1</div>"+
+    "<p>Read each term as a question. N is how big the input is. F is how much the filter consumes, so subtracting it accounts for the positions the filter cannot reach. 2P is what padding gives back, doubled because padding is added on both sides. Dividing by S counts how many positions you actually visit when jumping S at a time. The plus one counts the very first position, which the division misses.</p>"+
+    "<p>Two things are dropped constantly. The <b>floor</b>, which matters whenever the division is not exact. And the <b>plus one</b>, which is off by one on every single answer.</p>"+
+    "<p>The lecturer named this outcome important, so this formula is worth more marks than anything else in the module. Every LeNet and AlexNet dimension is this formula applied repeatedly.</p>"},
+ app:{q:"A layer receives a 32 by 32 by 3 input and applies 16 filters of 5 by 5 with stride 1 and padding 2. Determine the full output shape. Then determine the output shape after a following 2 by 2 max pooling layer with stride 2, and determine the padding that would have been needed to keep the convolution output at 32 by 32 had the stride been 2 instead.",
+  hint:"Apply the formula for the spatial dimensions, and get the depth from the number of filters.",
+  a:"<p><b>Convolution output.</b> Spatial: floor((32 - 5 + 2 times 2) / 1) + 1 = floor(31) + 1 = <b>32</b>. Depth equals the number of filters, so the output shape is <b>32 by 32 by 16</b>. Padding of 2 with a 5 by 5 filter is same padding, since P = (F - 1) / 2 = 2, so the size is preserved as expected.</p>"+
+    "<p>After 2 by 2 max pooling with stride 2. Pooling uses the same formula with F = 2, P = 0, S = 2: floor((32 - 2 + 0) / 2) + 1 = floor(15) + 1 = <b>16</b>. Pooling acts on each channel independently, so the depth is unchanged and the shape is <b>16 by 16 by 16</b>.</p>"+
+    "<p>With stride 2, keeping the output at 32. Solve floor((32 - 5 + 2P) / 2) + 1 = 32, which needs (27 + 2P) / 2 = 31, so 27 + 2P = 62 and <b>P = 17.5</b>.</p>"+
+    "<p>That is not an integer, so no padding preserves the size at stride 2. This is the general point worth stating: with stride S the output is roughly N / S, so a stride above 1 necessarily downsamples and no amount of padding can undo it. Padding controls the edge effect; only stride and pooling control the scale.</p>"}};
+
+PATCH.m3t7={pri:"high",
+ core:{t:"The core idea: the same nine weights, used everywhere",
+  b:"<p>A 3 by 3 filter has 9 weights whether the image is 10 by 10 or 10,000 by 10,000. The same 9 are reused at every position, so the parameter count depends on the architecture, never on the image size.</p>"+
+    "<div class='eqb'>Parameters = (Fh x Fw x Cin + 1) x K</div>"+
+    "<p>Cin is the term people drop, and it is the one that dominates in deeper layers. The plus one is the bias, one per filter.</p>"+
+    "<p>The comparison that shows why CNNs are trainable at all: a 32 by 32 by 3 input through 64 filters of 3 by 3 with same padding needs 64 times 28 = 1,792 parameters. A dense layer producing the same 65,536 outputs would need over 201 million. That is a factor of about 112,000, and it comes from weight sharing plus local connectivity together.</p>"+
+    "<p>Pooling layers have zero parameters. Max and average are fixed operations with nothing to learn.</p>"},
+ app:{q:"The deck sets this and does not answer it: given filters = 1, kernel size = (3,3) and input shape = (10,10,1), calculate the number of parameters and the output shape. Then determine both quantities for a second layer of 128 filters of 5 by 5 applied to an input of shape (14,14,64) with same padding.",
+  hint:"Cin comes from the third entry of the input shape. Where padding and stride are not stated, they are 0 and 1.",
+  a:"<p><b>The deck's exercise.</b> Fh = Fw = 3, Cin = 1 from the third entry of (10,10,1), K = 1. No padding or stride is stated, so P = 0 and S = 1.</p>"+
+    "<div class='eqb'>Parameters = (3 x 3 x 1 + 1) x 1 = 10\nOutput     = floor((10 - 3 + 0) / 1) + 1 = 8\nShape      = (8, 8, 1)</div>"+
+    "<p>10 parameters and output shape (8, 8, 1). Nine weights for the kernel plus one bias; the output is 8 rather than 10 because no padding was specified, and depth 1 because there is one filter.</p>"+
+    "<p><b>The second layer.</b> Fh = Fw = 5, Cin = 64, K = 128, same padding so P = 2.</p>"+
+    "<div class='eqb'>Weights per filter = 5 x 5 x 64 = 1,600, plus 1 bias = 1,601\nParameters = 1,601 x 128 = 204,928\nOutput = floor((14 - 5 + 4) / 1) + 1 = 14\nShape  = (14, 14, 128)</div>"+
+    "<p>204,928 parameters and output shape (14, 14, 128).</p>"+
+    "<p>Note what dominates. The input depth of 64 multiplies the cost: had the input been depth 3, the same layer would need only 9,728 parameters. Deep layers are expensive because of their input depth, not their spatial size, and the spatial size does not enter the parameter count at all.</p>"}};
+
+PATCH.m3t8={pri:"high",
+ core:{t:"The core idea: extract features, then classify them",
+  b:"<p>A CNN is two halves. The first half extracts features and the second half makes a decision.</p>"+
+    "<div class='eqb'>image -> [conv -> ReLU -> pool] repeated -> flatten -> fully connected -> softmax</div>"+
+    "<p>Each block does one job. <b>Convolution</b> detects patterns and produces a feature map. <b>ReLU</b> sets negative values to zero, which introduces the non-linearity without which the whole stack would collapse to one linear layer. <b>Pooling</b> downsamples, keeping whether a feature was present while discarding exactly where, which cuts computation and buys tolerance to small shifts.</p>"+
+    "<p>Repeating the block builds the hierarchy: edges, then shapes, then object parts. <b>Flatten</b> then turns the final maps into one long vector, and the <b>fully connected</b> layers combine those features into a class decision, with softmax turning scores into probabilities.</p>"+
+    "<p>The lecturer named CNN architecture important and LO 3.3 a certain 5 marks, so this pipeline is the single highest value thing in Module 3.</p>"},
+ app:{q:"A student proposes this architecture for classifying 28 by 28 grayscale digits into 10 classes: convolution, pooling, convolution, pooling, flatten, fully connected, softmax, with no activation functions anywhere. Determine what is wrong, determine where each missing piece belongs, and state what the output layer must be.",
+  hint:"Check the pipeline block by block against the standard order, and ask what happens with no non-linearity.",
+  a:"<p>The fault: there is no non-linearity anywhere. Convolution is a linear operation and pooling is a fixed selection, so with no activation the entire network reduces to a single linear map from pixels to class scores. It could then represent only linearly separable functions of the raw pixels, which is nowhere near enough for handwritten digits, and no amount of extra depth would help.</p>"+
+    "<p>Where the missing pieces belong. A ReLU after each convolution, before the pooling that follows it, giving conv, ReLU, pool, conv, ReLU, pool. A ReLU is also normally applied after each hidden fully connected layer. The corrected pipeline is:</p>"+
+    "<div class='eqb'>28x28x1 -> conv -> ReLU -> pool -> conv -> ReLU -> pool\n        -> flatten -> fully connected -> ReLU -> fully connected -> softmax</div>"+
+    "<p><b>The output layer.</b> Ten mutually exclusive classes, since a digit is exactly one of 0 to 9, so softmax with 10 units, trained with categorical cross entropy. The student had softmax correct.</p>"+
+    "<p>Two further points worth making. ReLU belongs after convolution rather than after pooling, because its job is to rectify the feature map that convolution produced. And the ordering conv, ReLU, pool is what the deck presents, though max pooling after ReLU gives the same result as ReLU after max pooling, since both are monotone.</p>"}};
+
+PATCH.m3t9={pri:"high",
+ core:{t:"The core idea: detect, then discard the negatives",
+  b:"<p>A convolution output can be negative, and a negative value means the patch is the opposite of the pattern the filter looks for. ReLU sets those to zero.</p>"+
+    "<p>Two reasons this matters. It is the non-linearity, without which the stack of convolutions collapses into a single linear operation and depth becomes meaningless. And it produces a rectified feature map that says only how strongly the pattern is present, with absence recorded as a clean zero rather than as negative evidence.</p>"+
+    "<p>The deck's phrasing is that ReLU performs an element wise operation and sets all negative pixels to 0, generating a rectified feature map. Element wise is the operative word: it acts on each value independently, so it changes no dimensions at all. A 28 by 28 by 16 feature map is still 28 by 28 by 16 after ReLU, and the layer adds zero parameters.</p>"},
+ app:{q:"A convolution produces the feature map values [-12, 5, -3, 40, 0, -74, 18]. Determine the rectified feature map, determine how the shape and parameter count change, and explain what would be lost if ReLU were removed from a five layer CNN.",
+  hint:"ReLU is element wise. Ask what that implies for dimensions.",
+  a:"<p><b>Rectified feature map:</b> [0, 5, 0, 40, 0, 0, 18]. Every negative becomes 0 and every non-negative passes through unchanged, including the existing 0.</p>"+
+    "<p><b>Shape:</b> unchanged. ReLU is applied to each value independently, so a map of any dimensions comes out with exactly those dimensions.</p>"+
+    "<p><b>Parameters:</b> <b>zero</b>. ReLU has nothing to learn; it is a fixed rule, in the same way that pooling is.</p>"+
+    "<p>Note that four of the seven values became 0, which is the sparsity ReLU produces. That is efficient and mildly regularising, and it is healthy provided different positions are zeroed for different inputs rather than the same unit being zero for every input, which would be a dead unit.</p>"+
+    "<p>If ReLU were removed from a five layer CNN. Convolution is linear and pooling is a fixed selection, so with no activation the five convolution layers compose into a single linear operation. The network could then represent only what one convolution layer can, and the four extra layers would contribute parameters and computation while adding no expressive power at all.</p>"+
+    "<p>The feature hierarchy would be lost with it: there would be no meaningful sense in which later layers build shapes out of edges, because the whole stack is one linear map from pixels to output.</p>"}};
+
+PATCH.m3t10={pri:"high",
+ core:{t:"The core idea: was the feature there, never mind exactly where",
+  b:"<p>Pooling takes a window and replaces it with one number. Max pooling keeps the largest value, which says the strongest evidence for this feature in this region. Average pooling takes the mean, which says the typical response.</p>"+
+    "<p>Work the deck's 4 by 4 example with 2 by 2 windows and stride 2. From [[32,10,11,17],[4,14,9,19],[20,4,16,27],[8,12,7,14]], the top left window is 32, 10, 4, 14, so max pooling gives 32 and average gives 60 / 4 = 15. Across all four windows: max gives [[32,19],[20,27]] and average gives [[15,14],[11,16]].</p>"+
+    "<p>What it buys: the spatial size drops fourfold, so all later layers are cheaper, and small shifts in the input stop mattering, because a feature moving one pixel within its window leaves the maximum unchanged. That is the spatial invariance that lets a CNN read a 7 written slightly left or right.</p>"+
+    "<p>Pooling has no parameters and does not mix channels.</p>"},
+ app:{q:"For the matrix [[1,3,2,4],[5,6,1,2],[7,8,9,3],[4,2,6,5]], determine the result of 2 by 2 max pooling with stride 2 and of 2 by 2 average pooling with stride 2. Then determine which you would choose for detecting whether a thin bright crack appears in a metal surface, and why.",
+  hint:"Take the four non-overlapping 2 by 2 windows, then think about what a thin bright feature does to a mean.",
+  a:"<p><b>Max pooling.</b> Top left window 1,3,5,6 gives 6. Top right 2,4,1,2 gives 4. Bottom left 7,8,4,2 gives 8. Bottom right 9,3,6,5 gives 9. Result <b>[[6,4],[8,9]]</b>.</p>"+
+    "<p><b>Average pooling.</b> Top left (1+3+5+6)/4 = 3.75. Top right (2+4+1+2)/4 = 2.25. Bottom left (7+8+4+2)/4 = 5.25. Bottom right (9+3+6+5)/4 = 5.75. Result [[3.75,2.25],[5.25,5.75]].</p>"+
+    "<p>For crack detection, choose max pooling.</p>"+
+    "<p>A thin bright crack occupies very few pixels in its window, so it is a small number of high values among many low ones. Max pooling keeps that high value intact, so the evidence of the crack survives into the next layer at full strength.</p>"+
+    "<p>Average pooling would dilute it. A single bright pixel of value 9 among three background pixels of value 1 averages to 3, so a strong local signal is reduced to a weak one, and after two pooling layers it could be indistinguishable from noise. Averaging is better suited to summarising a broad, spatially spread property such as overall texture or brightness.</p>"+
+    "<p>The general rule to state: max pooling preserves the strongest evidence and suits sparse, localised features, while average pooling smooths and suits diffuse ones.</p>"}};
+PATCH.m3t11={pri:"medium",
+ core:{t:"The core idea: unroll the maps, then let every feature vote",
+  b:"<p>After the last pooling layer you hold a stack of small feature maps, say 5 by 5 by 16. The fully connected layer expects a single list of numbers, so flattening reads the stack out in order into a vector of 5 times 5 times 16 = 400 values.</p>"+
+    "<p>Flatten has no parameters and changes no values. It only changes the shape.</p>"+
+    "<p>The fully connected layer then connects every one of those 400 values to every unit in the next layer, so any feature can influence any class. This is where the decision is actually made: the convolution half says what is present, the dense half says what that combination means.</p>"+
+    "<p>The parameter cost lands here. 400 into 120 units is 48,120 parameters, which is far more than any convolution layer in the same network, and it is why the dense layers hold most of a classic CNN's weights.</p>"},
+ app:{q:"A CNN's final pooling layer outputs 7 by 7 by 64. It is flattened and fed to a fully connected layer of 256 units, then to a 10 class output. Determine the flattened vector length and the parameters in each of the two dense layers, and determine why the input image size must be fixed for this architecture.",
+  hint:"Flatten multiplies the three dimensions. A dense layer costs inputs times outputs plus outputs.",
+  a:"<p><b>Flattened length:</b> 7 times 7 times 64 = <b>3,136</b>.</p>"+
+    "<p><b>First dense layer:</b> 3,136 times 256 weights plus 256 biases = 802,816 + 256 = <b>803,072 parameters</b>.</p>"+
+    "<p><b>Output layer:</b> 256 times 10 plus 10 = <b>2,570 parameters</b>.</p>"+
+    "<p>The first dense layer alone holds over 800,000 parameters, which in a typical CNN is more than all the convolution layers put together. This is why the dense half is where overfitting concentrates, and why dropout is normally applied there rather than in the convolution layers.</p>"+
+    "<p>Why the input size must be fixed. The first dense layer's weight matrix has exactly 3,136 columns, fixed when the network is built. That number came from the 7 by 7 spatial size of the final feature map, which in turn came from the input image size after every convolution and pooling stage.</p>"+
+    "<p>Feed a larger image and the final maps are larger, the flattened vector is longer than 3,136, and the multiplication does not conform, so the network simply cannot run. This is why architectures such as AlexNet specify a required input of 227 by 227, and it is the problem global average pooling was later introduced to remove, since it reduces each feature map to a single number regardless of its spatial size.</p>"}};
+
+PATCH.m3t12={pri:"high",
+ core:{t:"The core idea: one tool used a thousand times",
+  b:"<p>A fully connected layer gives every position its own weights, so it must learn separately that an edge at the top left and the same edge at the bottom right are both edges. A convolution layer learns one edge detector and applies it everywhere.</p>"+
+    "<p>The deck's phrasing is that we do not build 1,000 tools, we use one tool 1,000 times, and it lists three advantages: it reduces the number of weights to be learned, it makes feature search insensitive to feature location, and it increases model flexibility.</p>"+
+    "<p>The second of those is the one worth understanding. Because the same weights are applied everywhere, a pattern learned from examples where it appeared in one place is automatically detected when it appears somewhere else. The network gets translation tolerance for free, rather than needing training examples covering every position.</p>"+
+    "<p>This, together with local connectivity, is why a CNN needs thousands of parameters where a dense network would need hundreds of millions.</p>"},
+ app:{q:"A signature verification system must detect the same stroke pattern wherever it appears on the page. Determine whether weight sharing helps or hurts here. Then determine whether it would help or hurt for a system reading a fixed bank form where the account number always occupies the same box.",
+  hint:"Ask whether the meaning of a pattern depends on where it appears.",
+  a:"<p>Signature verification: weight sharing helps, and is essential. A stroke pattern means the same thing wherever on the page it falls, since signatures are written at different positions and sizes. Sharing one filter across all positions means a pattern learned from one location is detected at every location, so the system does not need training examples covering every possible placement. It also cuts the parameter count enormously, which matters because signature datasets are usually small.</p>"+
+    "<p>Fixed bank form: weight sharing is less appropriate, and can hurt. Here position carries meaning. The digits in the account number box mean something different from identical digits in the date box, and the useful information is partly which box a mark falls in.</p>"+
+    "<p>A shared filter is deliberately blind to position, so it reports the same response wherever a pattern occurs and cannot by itself distinguish the two boxes. The assumption built into weight sharing, that a pattern is equally meaningful everywhere, is simply false for this input.</p>"+
+    "<p>What to do instead for the form. Either crop each field and run a separate recogniser per box, which restores position information at the system level, or use locally connected layers, which the deck calls unshared convolution, where each position has its own weights. The cost of unshared layers is many more parameters and the loss of translation tolerance.</p>"+
+    "<p>The principle to state: weight sharing is a hard assumption that location does not change meaning. Where that holds it is a large win, and where it fails it is a genuine restriction.</p>"}};
+
+PATCH.m3t13={pri:"high",
+ core:{t:"The core idea: structure agnostic against structure aware",
+  b:"<p>The deck's line is that fully connected networks are structure agnostic, meaning no special assumptions are made about the input, while a CNN makes explicit assumptions that the inputs are images.</p>"+
+    "<p>Structure agnostic sounds like an advantage and is usually a disadvantage. Knowing nothing about the input means the network must discover from data that nearby pixels are related, which needs far more data and far more parameters.</p>"+
+    "<p>The two assumptions a CNN builds in are locality, so a unit looks only at a small neighbourhood, and translation invariance through weight sharing, so a pattern means the same thing anywhere. Both are true of images, which is why the assumptions pay.</p>"+
+    "<p>The deck's summary is worth quoting: an MLP asks what are the values, a CNN asks what pattern is present and where is it.</p>"},
+ app:{q:"For a 200 by 200 colour image classified into 5 classes, determine roughly how many parameters a single fully connected layer of 100 units would need against a convolution layer of 32 filters of 3 by 3, and use the comparison to explain why CNNs replaced dense networks for vision.",
+  hint:"Flatten the image for the dense layer. For the convolution layer remember the input depth.",
+  a:"<p>Fully connected layer. The input flattens to 200 times 200 times 3 = 120,000 values. Connecting all of these to 100 units needs 120,000 times 100 = 12,000,000 weights plus 100 biases, so about 12 million parameters in one layer.</p>"+
+    "<p><b>Convolution layer.</b> Each filter spans the full input depth, so it is 3 times 3 times 3 = 27 weights plus 1 bias = 28. With 32 filters that is 28 times 32 = <b>896 parameters</b>.</p>"+
+    "<p>The ratio is about <b>13,000 to 1</b>, and the convolution layer produces 32 full feature maps rather than 100 isolated numbers.</p>"+
+    "<p>Why this replaced dense networks for vision. Three consequences follow from that ratio.</p>"+
+    "<p>First, trainability. Twelve million parameters in one layer would need an enormous labelled dataset to fit without overfitting, and that data usually does not exist.</p>"+
+    "<p>Second, the dense layer destroys spatial structure. Flattening makes pixel 1 and pixel 201, which are vertically adjacent, no more related than pixel 1 and pixel 90,000. The network must rediscover adjacency from data, spending capacity on something convolution is given for free.</p>"+
+    "<p>Third, the dense layer has no translation tolerance. An object learned in one corner is not recognised in another, so training would need examples at every position, whereas weight sharing gives that tolerance by construction.</p>"}};
+
+PATCH.m3t14={pri:"low",
+ core:{t:"The core idea: three ways to relax the sharing rule",
+  b:"<p>Standard convolution shares one set of weights across every position. The variants change how much sharing there is.</p>"+
+    "<p><b>Full convolution</b> is about the edges rather than sharing: it pads so the filter may hang off the image, which prevents the output shrinking.</p>"+
+    "<p><b>Unshared convolution</b>, also called locally connected, keeps the local window but gives every position its own weights. So it is local like convolution but with no sharing, which sits between convolution and a fully connected layer. Use it when position carries meaning.</p>"+
+    "<p><b>Tiled convolution</b> is the compromise: cycle through a small set of filter groups as you move across the image, so nearby positions use different filters but the set repeats. It buys some position sensitivity at a fraction of the parameter cost of fully unshared.</p>"+
+    "<p>This topic is four slides with no worked numbers, and the lecturer did not name it, so it is the lowest priority material in the module.</p>"},
+ app:{q:"Determine which convolution variant is described in each case and state the parameter consequence: (a) each position of a 5 by 5 feature map has its own independent 3 by 3 weights, (b) filters cycle through a repeating set of two as the window moves across, (c) the filter is allowed to extend past the image border so the output does not shrink.",
+  hint:"Ask, for each, how much weight sharing remains.",
+  a:"<p>(a) Unshared convolution, also called locally connected. Connectivity is still local, since each unit sees only a 3 by 3 window, but there is no sharing at all.</p>"+
+    "<p>Parameter consequence: 25 positions times 9 weights plus a bias each, so 250 parameters where a shared filter would need 10. Twenty five times the cost, and translation tolerance is lost, since a pattern learned at one position is not detected at another.</p>"+
+    "<p>(b) Tiled convolution. Neighbouring positions use different filters but the set of filters repeats, so sharing exists across the whole image but only between positions that fall on the same tile.</p>"+
+    "<p>Parameter consequence: with a cycle of two, the cost is twice a standard convolution rather than twenty five times, so it sits between the two extremes. It buys a limited ability to treat neighbouring positions differently while keeping most of the parameter saving.</p>"+
+    "<p>(c) Full convolution. This is a padding choice rather than a sharing choice: the filter may hang off the border, so every input position can be a centre and the output does not shrink.</p>"+
+    "<p>Parameter consequence: <b>none</b>. Padding adds computation but no weights, since the filter itself is unchanged. This is the distinction the question is testing, because (a) and (b) change the sharing rule while (c) changes only the boundary handling.</p>"}};
+PATCH.m3t15={pri:"high",
+ core:{t:"The core idea: the pattern every CNN still follows",
+  b:"<p>LeNet-5 reads handwritten digits, and its shape is the template: convolution, subsample, convolution, subsample, then dense layers to a decision.</p>"+
+    "<div class='eqb'>32x32x1 -> C1 -> 28x28x6 -> S2 -> 14x14x6\n         -> C3 -> 10x10x16 -> S4 -> 5x5x16\n         -> C5 -> 120 -> F6 -> 84 -> output 10</div>"+
+    "<p>Every one of those numbers is the output formula with 5 by 5 filters, no padding and stride 1, so 32 goes to 28, then pooling halves it to 14, then 14 goes to 10, halved to 5, then 5 by 5 filters reduce it to 1. Verify them rather than memorising them.</p>"+
+    "<p>Watch the trade running down the chain: spatial size falls 32, 28, 14, 10, 5, 1 while depth rises 1, 6, 6, 16, 16, 120. The network progressively discards where in favour of what.</p>"+
+    "<p>LeNet used tanh, not ReLU. ReLU arrived with AlexNet.</p>"},
+ app:{q:"Verify the LeNet-5 dimension chain using the output formula, and determine what the output size after C1 would have been if the input had been 28 by 28 rather than 32 by 32, and what consequence that would have for the rest of the network.",
+  hint:"C1 and C3 use 5 by 5 filters with stride 1 and no padding. S2 and S4 halve the size.",
+  a:"<p><b>Verification,</b> using floor((N - F + 2P) / S) + 1 with P = 0 and S = 1 for convolutions, and 2 by 2 stride 2 for subsampling:</p>"+
+    "<div class='eqb'>C1: (32 - 5)/1 + 1 = 28   correct\nS2: (28 - 2)/2 + 1 = 14   correct\nC3: (14 - 5)/1 + 1 = 10   correct\nS4: (10 - 2)/2 + 1 = 5    correct\nC5: (5 - 5)/1 + 1  = 1    correct</div>"+
+    "<p>All five stages check out, which is what makes the chain worth reproducing in an answer rather than memorising.</p>"+
+    "<p>With a 28 by 28 input. C1 gives (28 - 5) / 1 + 1 = <b>24</b>, so the first feature maps are 24 by 24 by 6.</p>"+
+    "<p>Consequence for the rest. The whole chain shifts: S2 gives (24 - 2) / 2 + 1 = 12, C3 gives (12 - 5) + 1 = 8, S4 gives (8 - 2) / 2 + 1 = 4, and C5 with 5 by 5 filters then fails, because a 5 by 5 filter cannot be applied to a 4 by 4 map at all.</p>"+
+    "<p>So the architecture breaks. This is exactly why LeNet specifies a 32 by 32 input even though MNIST digits are 28 by 28: the images are padded by 2 pixels on each side precisely so that the chain terminates at 1 by 1 at C5. It is a concrete illustration that a CNN's input size is fixed by its architecture, not a free choice.</p>"}};
+
+PATCH.m3t16={pri:"high",
+ core:{t:"The core idea: the same pipeline, scaled up, plus four ideas that made it work",
+  b:"<p>AlexNet is LeNet's pipeline made large enough for 1000 class ImageNet photographs. Five convolution layers, three max pooling layers, then dense layers to a 1000 way softmax.</p>"+
+    "<div class='eqb'>227 -> Conv1 11x11 s4  -> 55 -> pool -> 27\n    -> Conv2 5x5 p2    -> 27 -> pool -> 13\n    -> Conv3,4,5 3x3 p1 -> 13 -> pool -> 6\n    -> flatten 6x6x256 = 9216 -> 4096 -> 4096 -> 1000</div>"+
+    "<p>Every figure verifies: (227-11)/4 + 1 = 55, (55-3)/2 + 1 = 27, (27+4-5)/1 + 1 = 27, (27-3)/2 + 1 = 13, (13+2-3)/1 + 1 = 13, (13-3)/2 + 1 = 6, and 6 times 6 times 256 = 9216.</p>"+
+    "<p>What made it work beyond scale: <b>ReLU</b> instead of tanh, which removed the vanishing gradient that had limited depth; <b>dropout</b> in the dense layers; <b>data augmentation</b>; and <b>GPU training</b>. Those four, not the architecture alone, are the answer to why AlexNet mattered.</p>"},
+ app:{q:"Determine why AlexNet requires a 227 by 227 input by computing the first layer output for 224 by 224 instead, and determine which single change from LeNet did most to make training a network this deep possible.",
+  hint:"Apply the formula to Conv1 with F = 11 and S = 4 for both input sizes.",
+  a:"<p><b>With 227 by 227.</b> (227 - 11) / 4 + 1 = 216 / 4 + 1 = 54 + 1 = <b>55</b>, an exact integer, and the rest of the chain follows cleanly to 27, 13 and 6.</p>"+
+    "<p><b>With 224 by 224.</b> (224 - 11) / 4 + 1 = 213 / 4 + 1 = 53.25 + 1 = 54.25. Not an integer. Taking the floor gives 54, but the division not being exact means the filter does not tile the input evenly and the final window runs off the edge, so the architecture as published does not line up.</p>"+
+    "<p>This is worth knowing because 224 is very widely quoted for AlexNet, including in some textbooks, and it does not produce the published dimensions. 227 is the figure that makes the chain work.</p>"+
+    "<p>The single change that mattered most: replacing tanh with ReLU.</p>"+
+    "<p>Tanh saturates, so its derivative approaches zero at both extremes, and backpropagation multiplies by that derivative once per layer. Across eight weight layers the gradient reaching the early convolutions would be negligible, so those layers would barely train. ReLU has derivative exactly 1 for positive pre-activations, so gradients pass back undiminished however deep the network, which is what made eight layers trainable at all.</p>"+
+    "<p>Dropout, data augmentation and GPU training were all necessary too, but they address overfitting and wall clock time. ReLU addressed the reason depth had not previously worked.</p>"}};
+
+PATCH.m3t17={pri:"medium",
+ core:{t:"The core idea: two milestones on one pipeline",
+  b:"<p>The deck is explicit that these are not two architectures to memorise separately but two points on the evolution of the same visual learning pipeline. LeNet is the micro scale foundation, AlexNet the macro scale version.</p>"+
+    "<div class='scroll'><table><tr><th>Feature</th><th>LeNet-5, 1998</th><th>AlexNet, 2012</th></tr>"+
+    "<tr><td>Task</td><td>Handwritten digits, 10 classes</td><td>ImageNet objects, 1000 classes</td></tr>"+
+    "<tr><td>Input</td><td>32 x 32 x 1 grayscale</td><td>227 x 227 x 3 colour</td></tr>"+
+    "<tr><td>Depth</td><td>Shallow, 2 conv layers</td><td>Deep, 5 conv layers</td></tr>"+
+    "<tr><td>Activation</td><td>tanh</td><td>ReLU</td></tr>"+
+    "<tr><td>Regularization</td><td>Essentially none</td><td>Dropout, data augmentation</td></tr>"+
+    "<tr><td>Hardware</td><td>CPU</td><td>GPU</td></tr></table></div>"+
+    "<p>The lesson to state: LeNet demonstrated that hierarchical visual features work; AlexNet demonstrated that the same idea scales, once ReLU, dropout and GPUs remove the obstacles to depth.</p>"},
+ app:{q:"A team must classify 64 by 64 colour images of machine parts into 12 classes, with 8,000 labelled examples. Determine whether a LeNet scale or an AlexNet scale architecture is more appropriate, and state which specific AlexNet innovations you would keep regardless.",
+  hint:"Weigh the dataset size and the input size against the capacity each architecture carries.",
+  a:"<p>Choose a LeNet scale architecture, modernised.</p>"+
+    "<p>Why not AlexNet scale. AlexNet holds roughly 60 million parameters, most of them in its 4096 unit dense layers, and it was designed for 1.2 million training images across 1000 classes. With 8,000 examples and 12 classes that capacity would overfit severely: the network could memorise the training set long before learning anything general. The 64 by 64 input is also far smaller than 227 by 227, so the aggressive early downsampling with 11 by 11 filters at stride 4 would discard most of the spatial detail immediately.</p>"+
+    "<p>Why LeNet scale fits. Two or three convolution blocks with modest filter counts, ending in a small dense layer, gives capacity proportionate to 8,000 examples and to a 64 by 64 input.</p>"+
+    "<p>What to keep from AlexNet regardless.</p>"+
+    "<p><b>ReLU</b> rather than LeNet's tanh, since there is no reason to accept vanishing gradients when the fix is free. <b>Dropout</b> in the dense layers, which is exactly where overfitting will concentrate and which matters more, not less, with a small dataset. <b>Data augmentation</b>, since 8,000 images is few and rotations, shifts and brightness changes are all label preserving for machine parts. And <b>GPU training</b>, which is now simply standard practice.</p>"+
+    "<p>The answer the question wants: take the scale from LeNet and the techniques from AlexNet.</p>"}};
 /* ===================== PROGRESS MODEL ===================== */
 var STORAGE_OK = true;
 function blankProgress(){
@@ -3402,6 +4222,71 @@ function visitorNote(){
     (done ? ICON.check + '<span>Owner notified</span>' : ICON.send + '<span>Notify the site owner you were here</span>')+
     '</button></div>';
 }
+/* ============ APPLY THE PATCH: paper driven priority, mark sizing, new content ============ */
+(function(){
+  var MIN_PER_MARK = COURSE.durationMin / COURSE.marks;   /* 90 / 30 = 3 */
+
+  function skeleton(t, marks){
+    var pts = (t.needToKnow || []).slice(0, marks);
+    while(pts.length < marks && t.recognition){
+      if(pts.length === marks - 1 && t.recognition.firstMove){ pts.push(t.recognition.firstMove); break; }
+      break;
+    }
+    var mins = Math.round(marks * MIN_PER_MARK);
+    return "<p class='small'>About " + mins + " minutes. " + marks + " things to cover:</p>" +
+      "<ol>" + pts.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ol>" +
+      (t.recognition && t.recognition.firstMove
+        ? "<p><b>Open with this:</b> " + t.recognition.firstMove + "</p>" : "");
+  }
+
+  TOPICS.forEach(function(t){
+    var p = PATCH[t.id];
+    var mod = moduleById(t.m);
+    var marks = mod.ans;                       /* 4 for Modules 1 and 2, 5 for Module 3 */
+
+    /* 1. priority, re-derived from the stated paper structure */
+    if(p && p.pri) t.priority = p.pri;
+
+    /* 2. the core intuition example */
+    if(p && p.core) t.core = p.core;
+
+    /* 3. the application question, kept in practice so progress still counts it */
+    if(p && p.app){
+      t.practice = t.practice || [];
+      t.practice.push({ id: t.id + "app", app: true, d: "application",
+                        q: p.app.q, hint: p.app.hint, a: p.app.a });
+    }
+
+    /* 4. answer skeletons re-sized to the marks this paper actually uses */
+    t.examAnswer = [{ marks: marks, body: skeleton(t, marks) }];
+
+    /* 5. likely exam questions carry the real mark value */
+    (t.questions || []).forEach(function(q){ q.marks = marks; });
+  });
+
+  /* LO roll up, used by the outcome view and by Settings */
+  window.LO_TOPICS = {};
+  TOPICS.forEach(function(t){
+    (t.los || []).forEach(function(l){ (LO_TOPICS[l] = LO_TOPICS[l] || []).push(t); });
+  });
+})();
+
+function loProgress(l){
+  var d=0, n=0;
+  (LO_TOPICS[l]||[]).forEach(function(t){ var p=topicProgress(t); d+=p.done; n+=p.total; });
+  return {done:d, total:n, pct: n? Math.round(d*100/n) : 0};
+}
+function loMarks(l){ return (LO_META[l] && LO_META[l].exp) || 0; }
+function loFlag(l){ return (LO_META[l] && LO_META[l].flag) || ""; }
+function loLabel(l){
+  var f = loFlag(l);
+  if(f === "certain") return "a certain 5 marks";
+  if(f === "important") return "named important";
+  return "about " + loMarks(l) + " of this module's " + LO_META[l].of + " marks";
+}
+function moduleLOs(m){
+  return Object.keys(LO_META).filter(function(l){ return LOS[l] && LOS[l].m === m; }).sort();
+}
 /* ===================== VIEWS: dashboard, module, topic ===================== */
 function viewDashboard(){
   var ov = overallProgress(), a = trackProgress(TRACKS.a.k), b = trackProgress(TRACKS.b.k);
@@ -3437,9 +4322,30 @@ function viewModule(id){
     '<div class="subtabs" role="tablist">'+
       '<button class="tab" role="tab" aria-selected="'+(cur===TRACKS.a.k)+'" data-sub="'+esc(id)+'|'+TRACKS.a.k+'">'+TRACKS.a.label+' ('+listA.length+')</button>'+
       '<button class="tab" role="tab" aria-selected="'+(cur===TRACKS.b.k)+'" data-sub="'+esc(id)+'|'+TRACKS.b.k+'">'+TRACKS.b.label+' ('+listB.length+')</button>'+
+      '<button class="tab" role="tab" aria-selected="'+(cur==="lo")+'" data-sub="'+esc(id)+'|lo">By outcome ('+moduleLOs(id).length+')</button>'+
       '<button class="tab" role="tab" aria-selected="'+(cur==="quick")+'" data-sub="'+esc(id)+'|quick">Quick review ('+(QUICK[id]||[]).length+')</button>'+
     '</div>';
-  if(cur==="quick"){
+  if(cur==="lo"){
+    h += '<p class="small">Every question on this paper is written against an outcome. '+
+      esc(moduleName(id))+' is worth '+m.marks+' marks, asked as '+esc(m.fmt)+
+      (m.choice?', and you answer only two of the three':'')+'.</p>';
+    moduleLOs(id).forEach(function(l){
+      var ts = sortTopics(LO_TOPICS[l]||[]);
+      var pr = loProgress(l);
+      h += '<div class="card'+(loFlag(l)?" hi":"")+'">'+
+        '<div class="top" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+          '<span style="font-weight:600">LO '+esc(l)+'</span>'+
+          pill(loFlag(l)==="certain"?"high":(loFlag(l)==="important"?"high":"medium"), loLabel(l))+
+          '<span class="small" style="margin-left:auto">'+pr.done+' / '+pr.total+' questions</span>'+
+        '</div>'+
+        '<p class="small">'+esc(LOS[l].t)+'</p>'+
+        (LO_META[l].note? '<p class="small"><b>'+esc(LO_META[l].note)+'</b></p>':'')+
+        bar(pr.pct)+
+        '<div class="btnrow">'+ts.map(function(t){
+          return '<button class="btn'+(t.priority==="high"?" pri":"")+'" data-go="topic" data-id="'+esc(t.id)+'">'+esc(t.title)+'</button>';
+        }).join("")+'</div></div>';
+    });
+  } else if(cur==="quick"){
     h += '<p class="small">Condensed cards for the night before.</p><div class="grid wide">';
     (QUICK[id]||[]).forEach(function(c){
       h += '<div class="card"><h3 style="margin-top:0">'+esc(c.t)+'</h3><div class="small">'+c.b+'</div></div>';
@@ -3454,7 +4360,8 @@ function viewModule(id){
 }
 
 var SECTIONS=[["s1","1. Concept"],["s2","2. How to write the answer"],["s3","3. Common mistakes"],
-              ["s4","4. Practice"],["s5","5. Question recognition"],["s6","6. Likely exam questions"]];
+              ["s4","4. Practice"],["sapp","Application question"],["s5","5. Question recognition"],
+              ["s6","6. Likely exam questions"]];
 
 function viewTopic(id){
   var t = topicById(id); if(!t) return '<h1>Not found</h1>';
@@ -3462,9 +4369,14 @@ function viewTopic(id){
   var h = '<button class="back" data-go="module" data-id="'+esc(t.m)+'">Back to '+esc(moduleShort(t.m))+'</button>'+
     '<h1>'+esc(t.title)+'</h1>'+
     '<div class="hdrmeta">'+pill(t.priority,t.priority)+loPills(t.los)+'</div>'+
+    '<p class="small">'+t.los.map(function(l){
+        return 'LO '+l+', '+loLabel(l)+'.'; }).join(' ')+
+      ' Answers on this paper are '+moduleById(t.m).ans+' marks.</p>'+
     '<div class="topicwrap"><div class="prose">';
 
-  h += '<h2 id="s1">1. Concept</h2>'+t.whatIs+t.concept;
+  h += '<h2 id="s1">1. Concept</h2>';
+  if(t.core) h += '<div class="card hi"><h4 style="margin-top:0">'+esc(t.core.t)+'</h4>'+t.core.b+'</div>';
+  h += t.whatIs+t.concept;
   if(t.needToKnow && t.needToKnow.length){
     h += '<div class="box"><h5>What you must be able to do</h5><ul>'+
       t.needToKnow.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></div>';
@@ -3492,11 +4404,27 @@ function viewTopic(id){
         '</div></div>';
     });
   }
-  if(t.practice && t.practice.length){
+  var plain = (t.practice||[]).filter(function(p){ return !p.app; });
+  var apps  = (t.practice||[]).filter(function(p){ return p.app; });
+  if(plain.length){
     h += '<h3>Practice questions</h3>';
-    t.practice.forEach(function(p){
+    plain.forEach(function(p){
       var mk = isMarked("pr", p.id);
       h += '<div class="card" id="'+esc(p.id)+'"><div class="hdrmeta">'+pill("", p.d)+'</div>'+
+        '<p>'+p.q+'</p><div class="btnrow">'+
+          '<button class="btn" data-rev="'+esc(p.id)+'">Show solution</button>'+
+          '<button class="btn" data-hint="'+esc(p.id)+'">Hint</button>'+
+          '<button class="btn'+(mk?" pri":"")+'" data-mark="pr|'+esc(p.id)+'" aria-pressed="'+mk+'">'+(mk?"Marked done":"Mark done")+'</button>'+
+        '</div>'+
+        '<div class="rev hide" id="hint_'+esc(p.id)+'">Hint. '+esc(p.hint)+'</div>'+
+        '<div class="rev hide" id="rev_'+esc(p.id)+'">'+p.a+'</div></div>';
+    });
+  }
+  if(apps.length){
+    h += '<h3 id="sapp">Application question</h3>';
+    apps.forEach(function(p){
+      var mk = isMarked("pr", p.id);
+      h += '<div class="card hi" id="'+esc(p.id)+'"><div class="hdrmeta">'+pill("high","application")+'</div>'+
         '<p>'+p.q+'</p><div class="btnrow">'+
           '<button class="btn" data-rev="'+esc(p.id)+'">Show solution</button>'+
           '<button class="btn" data-hint="'+esc(p.id)+'">Hint</button>'+
@@ -3649,9 +4577,14 @@ function viewExam(){
   });
   var h = '<h1>Exam mode</h1>'+
     '<div class="card"><h3 style="margin-top:0">Time budget</h3>'+
-    '<p>'+marks+' marks in '+mins+' minutes = '+perMark.toFixed(1)+' min per mark: about '+(perMark*5).toFixed(0)+
-    ' min for a 5-mark answer, '+(perMark*10).toFixed(0)+' for a 10-mark one. Keep '+Math.round(mins*0.1)+
-    ' min back to check.</p></div>'+
+    '<p>'+marks+' marks in '+mins+' minutes = <b>'+perMark.toFixed(1)+' min per mark</b>.</p>'+
+    '<div class="scroll"><table><tr><th>Question</th><th>From</th><th>Marks</th><th>Time</th></tr>'+
+    PAPER.map(function(p){
+      return '<tr><td>'+esc(p.q)+', '+esc(p.choice)+'</td><td>'+esc(moduleShort(p.from))+
+        '</td><td>'+p.marks+'</td><td>'+Math.round(p.marks*perMark)+' min</td></tr>';
+    }).join("")+'</table></div>'+
+    '<p class="small">Parts are '+MODULES[0].ans+' marks in Q1 and Q2, '+MODULES[2].ans+
+    ' in Q3. Read all of Q3 before choosing two. Keep '+Math.round(mins*0.1)+' min back.</p></div>'+
     '<h2>Running order</h2><div class="scroll"><table class="rowlist">'+
     '<tr><th></th><th>Topic</th><th>Pri</th><th>Mod</th><th>Qs</th><th></th></tr>'+
     list.map(function(t){
@@ -3663,7 +4596,7 @@ function viewExam(){
         '<td><button class="iconbtn" data-go="topic" data-id="'+esc(t.id)+'" aria-label="Open '+esc(t.title)+'" title="Open">'+ICON.chevron+'</button></td></tr>';
     }).join("")+'</table></div>'+
     '<h2>The last thirty minutes</h2><ol class="small">'+
-      PLAN_LAST30.map(function(x){ return '<li>'+x+'</li>'; }).join("")+'</ol>'+
+      PLAN_LAST30.slice(0,7).map(function(x){ return '<li>'+x+'</li>'; }).join("")+'</ol>'+
     '<div class="btnrow"><button class="btn" data-go="formulae">Formulae</button>'+
     '<button class="btn" data-go="recognition">Recognition</button>'+
     '<button class="btn" data-go="quiz">Quiz</button></div>';
@@ -3718,7 +4651,26 @@ function viewSettings(){
     '<button class="btn" data-resetall="1">Reset everything</button></div>'+
     '<input type="file" id="importFile" accept="application/json,.json" class="hide">';
 
-  h += '<h2>Where the priority ranking comes from</h2>'+
+  h += '<h2>The paper</h2>'+
+    '<div class="scroll"><table>'+
+    '<tr><th>Question</th><th>Drawn from</th><th>Format</th><th>Each</th><th>Marks</th><th>Choice</th></tr>'+
+    PAPER.map(function(p){
+      return '<tr><td>'+esc(p.q)+'</td><td>'+esc(moduleShort(p.from))+'</td><td>'+esc(p.fmt)+'</td>'+
+        '<td>'+p.each+' marks</td><td>'+p.marks+'</td><td>'+esc(p.choice)+'</td></tr>';
+    }).join("")+
+    '<tr><th>Total</th><th></th><th></th><th></th><th>30</th><th></th></tr></table></div>'+
+    '<ul class="small">'+PAPER_NOTES.map(function(n){ return '<li>'+esc(n)+'</li>'; }).join("")+'</ul>'+
+
+    '<h2>Marks by learning outcome</h2>'+
+    '<p class="small">Every question is written against an outcome, so this table is the ranking the site uses.</p>'+
+    '<div class="scroll"><table><tr><th>LO</th><th>Module</th><th>Expected marks</th><th>Topics</th><th>Outcome</th></tr>'+
+    Object.keys(LO_META).sort().map(function(l){
+      var n = (LO_TOPICS[l]||[]).length;
+      return '<tr><td>LO '+esc(l)+'</td><td>'+esc(moduleShort(LOS[l].m))+'</td>'+
+        '<td>'+esc(loLabel(l))+'</td><td>'+n+'</td><td class="small">'+esc(LOS[l].t)+'</td></tr>';
+    }).join("")+'</table></div>'+
+
+    '<h2>Where the priority ranking comes from</h2>'+
     '<p class="small">No paper structure was stated, so priority is derived from the folder. These are the real counts.</p>'+
     '<div class="scroll"><table>'+
     '<tr><th>Module</th><th>Syllabus hours</th><th>Slides</th><th>LOs served</th><th>Worked examples</th><th>Question bank</th><th>Past paper</th><th>Estimated marks</th></tr>'+
@@ -3736,7 +4688,7 @@ function viewSettings(){
     '<tr><td>Marks</td><td>'+COURSE.marks+'</td></tr>'+
     '<tr><td>Duration</td><td>'+(COURSE.durationMin/60)+' hours</td></tr>'+
     '<tr><td>Scope</td><td>'+esc(COURSE.scope)+'</td></tr>'+
-    '<tr><td>Paper structure</td><td>Not stated: see the note below</td></tr>'+
+    '<tr><td>Paper structure</td><td>Stated by the lecturer, see the table above</td></tr>'+
     '</table></div></div>'+
 
     '<div class="box warning"><h5>One thing to confirm</h5><p>'+CONFIRM+'</p></div>'+

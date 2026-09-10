@@ -7,52 +7,80 @@ No backend, no build step, no dependencies, no network requests. Open it from di
 
 ## The paper structure
 
-**Not stated.** You left the `PAPER STRUCTURE` field as the template text, so there is no per-question
-breakdown to build priority from. Everything below is derived from the syllabus's own evidence instead.
+Stated by the lecturer. This is the top authority for priority on the whole site.
+
+| Question | Drawn from | Format | Each | Marks | Choice |
+|---|---|---|---|---|---|
+| Q1 | Module 1 | 2 sub questions | 4 marks | **8** | no choice |
+| Q2 | Module 2 | 3 sub questions | 4 marks | **12** | no choice |
+| Q3 | Module 3 | 3 sub questions set | 5 marks | **10** | **answer any 2 of 3** |
+| | | | | **30** | |
+
+The lecturer also said, and the site applies without being asked:
+
+- Every question is written against a learning outcome, so revise by outcome.
+- Application questions are expected: you are given a situation and asked to decide something.
+- CNN architecture is important.
+- LO 3.2 is important.
+- LO 3.3 will carry a 5 mark question for certain.
 
 | | |
 |---|---|
-| Course | HMCAL703: Deep Learning |
-| Assessment | Mid-Semester Examination (MSE) |
+| Course | HMCAL703, Deep Learning |
+| Assessment | Mid-Semester Examination |
 | Marks | 30 |
 | Duration | 1.5 hours |
 | Scope | Modules 1, 2 and 3 |
-| Paper structure | **Not stated** |
 | Study time | 3 hours |
 | Target | 27 / 30 |
 
-The syllabus states that the *"Mid semester examination will be based on 40% to 50% syllabus"*. Modules 1 to 3
-of 6 is exactly 50%, which independently corroborates the stated scope.
+### What the stated paper changed
 
-Because no paper structure was given, **priority rule 1 never fired**: nothing could be ranked down on the
-grounds that it cannot appear. That is why 44 of the 56 topics are `high`: with all of Modules 1 to 3 in play,
-almost everything genuinely is examinable. The `low` bucket contains only material that is thin in the folder.
+The paper gives Module 1 more than the syllabus teaching hours suggested and Module 2 less, and it uses only
+two answer sizes.
 
-### Estimated mark split
+| Module | I had estimated | The paper says | Answer size |
+|---|---|---|---|
+| 1, Fundamentals of Neural Network | about 6 marks | **8 marks**, 2 parts | 4 marks |
+| 2, Training, Optimization and Regularization | about 13 marks | **12 marks**, 3 parts | 4 marks |
+| 3, Convolutional Neural Networks | about 11 marks | **10 marks**, 2 of 3 | 5 marks |
 
-| Module | Syllabus hours | Slides | LOs | Worked examples in source | Estimated marks |
-|---|---|---|---|---|---|
-| 1, Fundamentals of Neural Network | 4 to 6 | 67 | 3 | 6 | ≈ 6 |
-| 2, Training, Optimization and Regularization | **10 to 12** | **292** | 4 (+ LO 1.2) | 11 | **≈ 13** |
-| 3, Convolutional Neural Networks | 8 to 10 | 83 | 4 | 6 | ≈ 11 |
+Because the paper contains no 10 mark and no 2 mark question, **all 111 answer skeletons were rewritten**.
+Thirty nine had been written at 10 marks and 17 at 2 marks, and none of those could appear. Every skeleton is
+now sized to its module's real part value and states the minutes it is worth.
 
-Estimated pro-rata from the syllabus's teaching-hour allocation, corroborated by slide count. It is an
-estimate, not a statement of fact.
+### Marks by learning outcome
+
+Every question is written against an outcome, so this is the ranking the site now uses.
+
+| LO | Module | Expected | Note |
+|---|---|---|---|
+| 1.1 | 1 | about 2.7 of 8 | |
+| 1.2 | 1 | about 3.5 of 8 | Largest Module 1 outcome, and its verb is determine |
+| 1.3 | 1 | about 1.8 of 8 | |
+| 2.1 to 2.4 | 2 | about 3 each of 12 | Three of the four appear, since Q2 has three parts |
+| 3.1 | 3 | about 1 of 10 | Feeds LO 3.2 |
+| 3.2 | 3 | about 3 of 10 | **Named important** |
+| 3.3 | 3 | **5 of 10** | **A certain 5 marks**, and CNN architecture was named important |
+| 3.4 | 3 | about 1 of 10 | Counts as CNN architecture |
+
+Each module tab now has a **By outcome** sub-tab that groups its topics under their outcome, shows the mark
+weight, and links straight through.
 
 ---
 
-## ⚠ One thing to confirm
+## One thing to confirm
 
-You left **`PAPER STRUCTURE`** as the template text and **`HIGHEST-PRIORITY FILES`** blank, and the form
-carried **`TARGET SCORE` twice**: once filled as 27/30 and once left as an example.
+Your note reads **LO2 with an arrow to chap3** and **LO3 for sure 5 marks, chap3**. I have read those as the
+outcomes of chapter 3, so **LO 3.2 and LO 3.3**, because both sit under the boxed note about CNN architecture,
+which is Module 3 material.
 
-I read that as: no per-question breakdown was stated, no file was singled out as highest priority, study time
-is 3 hours and the target is 27/30. Priority is therefore derived from the syllabus's own teaching-hour split
-and the decks' evidence rather than from the paper.
-
-**If your teacher did state a question-by-question breakdown, tell me: the whole ranking changes.**
+The alternative reading is the Module 2 outcomes, LO 2.2 and LO 2.3. If you meant that, say so and the extra
+weight moves from Module 3 to Module 2. Everything else in the note is unambiguous and is applied exactly as
+written.
 
 This note also appears in Settings.
+
 
 ---
 
@@ -89,7 +117,7 @@ contains no second-division material.
 | Tab | What it is for |
 |---|---|
 | **Dashboard** | Three readiness figures and one card per module. Nothing else. Under 600 characters. |
-| **Module 1 to 3** | Topics split into *Problem solving* / *Theory* / *Quick Review* sub-tabs. |
+| **Module 1 to 3** | Topics split into *Problem solving*, *Theory*, *By outcome* and *Quick review* sub-tabs. |
 | **Recognition** | Four decision trees plus a clue then topic lookup. Teaches classifying a question, not the content. |
 | **Quiz** | 9 sets of exactly 20 questions, all 20 visible at once, submitted together. |
 | **Formulae** | 44 formulas in 8 groups, each with its meaning and when it applies. |
@@ -101,18 +129,21 @@ contains no second-division material.
 
 | | Count |
 |---|---|
-| **Topics** | **56**, Module 1: 16 · Module 2: 23 · Module 3: 17 |
-| By priority | 44 high · 11 medium · 1 low |
-| By track | 28 problem-solving · 28 theory |
-| **Worked examples** | **85** (every one hidden behind *Show solution*) |
-| **Practice questions** | **170** (each with a hint and a full worked answer) |
-| **Total markable questions** | **255**, of which 213 sit in high-priority topics |
+| **Topics** | **56**, Module 1: 16, Module 2: 23, Module 3: 17 |
+| By priority | 43 high, 12 medium, 1 low |
+| By track | 28 problem solving, 28 theory |
+| **Core examples** | **56**, one per topic, the concrete case that makes the topic click |
+| **Worked examples** | **85**, every one hidden behind Show solution |
+| **Practice questions** | **170**, each with a hint and a full worked answer |
+| **Application questions** | **56**, one per topic, given a situation and asked to decide |
+| **Total markable questions** | **311**, of which 252 sit in high priority topics |
+| **Answer skeletons** | **56**, all sized to 4 or 5 marks, matching the paper |
 | **Likely exam questions** | **140**, 123 from source material, **17 predicted (12.1%)** |
 | **Quiz MCQs** | **180**, in **9 sets of exactly 20** |
-| **Quick Review cards** | **36**, M1: 10 · M2: 14 · M3: 12 |
+| **Quick Review cards** | **36**, M1: 10, M2: 14, M3: 12 |
 | **Formulas** | **44** in 8 groups |
-| Recognition trees / clue rows | 4 trees · 47 clue rows |
-| **Learning outcomes covered** | **11 of 11** in scope, none unserved |
+| **Learning outcomes covered** | **11 of 11**, none unserved |
+
 
 ---
 
@@ -267,15 +298,16 @@ example with **α = 0.01**, giving f(−3) = −0.03. Both are standard in the l
 
 ## Testing
 
-Five suites, **390 assertions, all passing**. Four drive the DOM through jsdom by clicking; the fifth drives a
+Six suites, **453 assertions, all passing**. Five drive the DOM through jsdom by clicking; the sixth drives a
 real Chromium through Puppeteer, which is the only way to measure actual layout.
 
 | Suite | Assertions | Covers |
 |---|---|---|
-| `test.js` | 137 | Navigation, topic page structure, progress round trip, quiz, search, import validation, reset, storage failure, duplication, density, coverage |
+| `test.js` | 143 | Navigation, topic page structure, progress round trip, quiz, search, import validation, reset, storage failure, duplication, density, coverage |
 | `audit2.js` | 41 | Banned visual elements, colour tokens, table containment, emoji discipline, accessibility |
 | `final.js` | 45 | Self review: no seeded progress, one pill per card, keyboard reach, traceability, honesty of labelling |
-| `refine.js` | 121 | Every item in your refinement list: Plan removal, nav, mobile menu, screen use, overflow rules, icons, emoji, placeholder text, titles, favicon, typography, visitor note |
+| `refine.js` | 122 | The interface refinement list: nav, mobile menu, screen use, overflow, icons, emoji, placeholder text, titles, favicon, typography, visitor note |
+| `paper.js` | 56 | **The stated paper**: question shapes total 30, every skeleton sized 4 or 5, no 10 or 2 mark content left, outcome weighting, priority follows the lecturer's emphasis, a core example and an application question on all 56 topics, the By outcome tab |
 | `browser.js` | 46 | **Real Chromium**: measured overflow at 12 widths on 12 views, nav on one line, touch targets, zoom, sticky nav, screenshots |
 
 ### What the real browser found that jsdom could not
