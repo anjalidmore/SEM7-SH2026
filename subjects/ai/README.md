@@ -1,0 +1,93 @@
+# AI Study Site — CEPCC712 Artificial Intelligence
+
+Two self-contained, offline-capable study sites for **CEPCC712 Artificial Intelligence**
+(B.Tech Computer Engineering, Curriculum N-2024).
+
+| File | Scope | Use it for |
+|---|---|---|
+| **`mse.html`** | **Modules 1–3 only · 30 marks · 1.5 hrs** | Mid-Semester Exam prep. Built around the learning outcomes and the handwritten class notes. |
+| `index.html` | All six modules | The full course reference, for the ESE and general study. |
+
+Both are single files. No build step, no server, no dependencies.
+Open in a browser, or host the folder on GitHub Pages.
+
+## The MSE site (`mse.html`)
+
+Scope confirmed from the class notes: the MSE covers **Modules 1–3**, and the paper is
+**Q1 → Module 1, Q2 → Module 2, Q3 → Module 3**. The notes open with **"NO DIRECT QUESTIONS"**,
+so the whole site is built around applied, judgement-style questions rather than bookwork.
+
+- **Dashboard** — readiness, the module-by-module MSE brief transcribed verbatim, and one clear next step.
+- **Class Notes** — all 18 notebook pages transcribed, with the page reference kept on each card.
+- **Modules 1–3** — each opens on its **Learning Outcomes**, showing the syllabus's own action verb
+  and the exam form it implies, then Theory Q&A, Numericals and a quiz.
+- **Mock Paper** — a full 30-mark paper in the real structure, with a timer.
+- **Answer Guide** — how to match the verb, size answers to marks, and the five costliest errors.
+- **Coverage** — every outcome, what covers it, and how ready you are.
+
+Instead of a binary "done" checkbox, every item is self-rated **Got it / Shaky / Couldn't**,
+and that drives the readiness score, the weak-spot list and the next-step recommendation.
+Quiz mistakes automatically flag the tested topic as shaky.
+
+## Using it
+
+- **Local:** double-click `mse.html` (or `index.html`).
+- **GitHub Pages:** push this folder, then Settings → Pages → deploy from branch (root).
+  Both sites are static, so they work as-is at `/mse.html` and `/index.html`.
+
+## Your progress
+
+Progress is stored in **your own browser** via `localStorage`. There is no account,
+no backend and no telemetry — nothing you do is sent anywhere or visible to anyone else.
+
+- Everyone who opens the same link gets their own fresh 0% dashboard.
+- **Settings → Export progress** writes a JSON file; **Import** restores it on another
+  device or browser. Imported files are validated, so a malformed file is rejected
+  rather than corrupting what you already have.
+- **Settings → Reset my progress** clears only your browser's data, after confirmation.
+
+## What's inside the full-course site (`index.html`)
+
+| Section | What it does |
+|---|---|
+| Dashboard | Overall / theory / numerical / practice progress, weak topics, and one clear "study next" recommendation |
+| Modules 1–6 | Organised exactly as the official syllabus, with theory and numericals kept separate |
+| Study mode | Learn → Understand → Formula → Worked example → Exam answer → Common mistakes → Practice |
+| Learning outcomes | All 28 syllabus LOs with their Performance Indicators, Course Outcomes, mapped topics and LO-framed questions |
+| Numericals | Formula, every variable's meaning, when to use it, a fully worked example and graded practice |
+| Important questions | Filterable by module, outcome, priority, marks and type — each says *why* it is rated as it is |
+| Quizzes | MCQ, true/false, multi-select and numerical, with explanations; wrong answers feed weak-topic detection |
+| Flashcards | Definitions, formulas, FOL patterns, comparisons and exam traps |
+| Quick revision | Condensed sheets for the last 30 minutes, plus the diagrams worth drawing |
+| Formula sheet | Every formula supported by the uploaded material |
+| Syllabus coverage | An honest map of which topics have teacher material behind them |
+
+## Sources
+
+All academic content is derived from the uploaded course material:
+
+- `AI Syllabus.pdf` — the official syllabus (Curriculum N-2024)
+- Lecture decks — Chapter 1 (Fundamentals), Chapter 2 (uninformed + informed search),
+  Chapter 3 (Knowledge & Reasoning, Forward/Backward Chaining, Semantic Networks)
+- Handwritten class notes — `AI Notes.pdf`, `AI.pdf`
+- Assessments — `CIA 1.docx`, `CIA-02.docx`, `extra problems.docx`
+
+## Known coverage gaps
+
+These are **flagged in the site itself** rather than filled with generic textbook content:
+
+- **Module 4 — Planning** (state space, hierarchical, partial-order, multi-agent):
+  no lecture material was uploaded.
+- **Module 5** (Generative AI, Explainable AI, Responsible AI): no lecture material.
+  Related risk/ethics content from Chapter 1 is cross-linked.
+- **Module 6** (AI in real-world domains): no lecture material. Overlapping agentic-AI
+  content from Chapter 1 is cross-linked.
+
+Syllabus scope and learning outcomes for these are still listed so nothing is missed.
+Add the missing decks and these sections can be written up properly.
+
+## Accessibility
+
+Semantic HTML, keyboard-operable controls, visible focus states, ARIA labels on the
+status controls and progress bars, status communicated by text and shape as well as
+colour, and a `prefers-reduced-motion` fallback. Light, dark and system themes.
