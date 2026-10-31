@@ -1,464 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-subject="ai">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AI Study Hub — CEPCC712 Artificial Intelligence</title>
+<title>Artificial Intelligence · Semester 7</title>
 <meta name="description" content="Exam-preparation dashboard for CEPCC712 Artificial Intelligence (B.Tech Computer Engineering, N-2024). Progress is stored locally in your browser.">
+<link rel="stylesheet" href="../../shared/sem7.css">
+<script src="../../shared/sem7.js"></script>
 <style>
-/* ============================= DESIGN TOKENS ============================= */
-:root{
-  --bg:#fbfbfa; --surface:#ffffff; --surface-2:#f6f6f5; --surface-3:#efeff1;
-  --border:#e3e3e6; --border-strong:#cfcfd4;
-  --text:#191a1d; --text-2:#4a4c53; --muted:#74767e;
-  --accent:#4a48c4; --accent-text:#3a38a8; --accent-soft:#ecebfb; --accent-border:#c9c7f2;
-  --ok:#166534; --ok-soft:#e7f4ea; --ok-border:#bcdfc6;
-  --warn:#8a5300; --warn-soft:#fdf1de; --warn-border:#f0d7ae;
-  --danger:#a91d1d; --danger-soft:#fdeaea; --danger-border:#f2c4c4;
-  --radius:10px; --radius-sm:7px; --radius-lg:14px;
-  --shadow:0 1px 2px rgba(16,17,20,.05), 0 1px 3px rgba(16,17,20,.04);
-  --shadow-lg:0 4px 16px rgba(16,17,20,.08), 0 1px 3px rgba(16,17,20,.05);
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
-  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  color-scheme:light;
-}
-:root[data-theme="dark"]{
-  --bg:#0e1014; --surface:#161920; --surface-2:#1c2029; --surface-3:#242934;
-  --border:#2a2f3a; --border-strong:#3a4150;
-  --text:#e9eaee; --text-2:#c0c4cd; --muted:#8d939f;
-  --accent:#8b88f0; --accent-text:#a5a2f7; --accent-soft:#1e1d3a; --accent-border:#3b3878;
-  --ok:#6ee7a0; --ok-soft:#10241a; --ok-border:#1f4a32;
-  --warn:#f0bf72; --warn-soft:#2a1f0d; --warn-border:#553f18;
-  --danger:#f79191; --danger-soft:#2b1414; --danger-border:#5a2626;
-  --shadow:0 1px 2px rgba(0,0,0,.4);
-  --shadow-lg:0 6px 24px rgba(0,0,0,.45);
-  color-scheme:dark;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#0e1014; --surface:#161920; --surface-2:#1c2029; --surface-3:#242934;
-    --border:#2a2f3a; --border-strong:#3a4150;
-    --text:#e9eaee; --text-2:#c0c4cd; --muted:#8d939f;
-    --accent:#8b88f0; --accent-text:#a5a2f7; --accent-soft:#1e1d3a; --accent-border:#3b3878;
-    --ok:#6ee7a0; --ok-soft:#10241a; --ok-border:#1f4a32;
-    --warn:#f0bf72; --warn-soft:#2a1f0d; --warn-border:#553f18;
-    --danger:#f79191; --danger-soft:#2b1414; --danger-border:#5a2626;
-    --shadow:0 1px 2px rgba(0,0,0,.4);
-    --shadow-lg:0 6px 24px rgba(0,0,0,.45);
-    color-scheme:dark;
-  }
-}
-/* ============================= BASE ============================= */
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-img,svg{max-width:100%}
-h1,h2,h3,h4{margin:0;font-weight:650;letter-spacing:-.011em;line-height:1.25}
-h1{font-size:1.6rem} h2{font-size:1.22rem} h3{font-size:1.02rem} h4{font-size:.93rem}
-p{margin:0 0 .8em}
-ul,ol{margin:0 0 .8em;padding-left:1.25em}
-li{margin:.28em 0}
-a{color:var(--accent-text)}
-code,kbd{font-family:var(--mono);font-size:.88em;background:var(--surface-3);
-  padding:.1em .36em;border-radius:4px;border:1px solid var(--border)}
-hr{border:0;border-top:1px solid var(--border);margin:1.25rem 0}
-:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:4px}
-[hidden]{display:none !important}
-.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
-  clip:rect(0,0,0,0);white-space:nowrap;border:0}
-::selection{background:var(--accent-soft);color:var(--accent-text)}
-/* ============================= LAYOUT ============================= */
-.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--accent);color:#fff;
-  padding:.6rem 1rem;border-radius:0 0 var(--radius) 0;font-weight:600}
+/* AI only. Everything shared is in ../../shared/sem7.css */
+.skip{position:absolute; left:-9999px; top:0; z-index:200; background:var(--accent-ui); color:var(--on-accent);
+  padding:.6rem 1rem; border-radius:0 0 8px 0; font-weight:600}
 .skip:focus{left:0}
-.shell{display:flex;min-height:100vh}
-/* Sidebar */
-.side{width:240px;flex:0 0 240px;background:var(--surface);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:60}
-.brand{padding:1.05rem 1.05rem .85rem;border-bottom:1px solid var(--border)}
-.brand-code{font:600 .68rem/1 var(--mono);letter-spacing:.09em;color:var(--accent-text);
-  text-transform:uppercase;margin-bottom:.4rem}
-.brand-name{font-size:1.03rem;font-weight:680;letter-spacing:-.02em}
-.brand-sub{font-size:.74rem;color:var(--muted);margin-top:.18rem;line-height:1.35}
-.nav{padding:.6rem .55rem;flex:1}
-.nav-label{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--muted);padding:.7rem .5rem .3rem}
-.nav a{display:flex;align-items:center;gap:.55rem;padding:.47rem .55rem;border-radius:var(--radius-sm);
-  color:var(--text-2);text-decoration:none;font-size:.875rem;font-weight:500;position:relative}
-.nav a:hover{background:var(--surface-2);color:var(--text)}
-.nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent-text);font-weight:620}
-.nav a .ic{width:1.05rem;text-align:center;flex:0 0 auto;font-size:.95rem;opacity:.85}
-.nav a .lbl{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nav a .pct{margin-left:auto;font:600 .69rem/1 var(--mono);color:var(--muted);
-  background:var(--surface-3);padding:.2rem .3rem;border-radius:4px;min-width:2.4em;text-align:center}
-.nav a[aria-current="page"] .pct{background:var(--surface);color:var(--accent-text)}
-.side-foot{padding:.7rem .8rem 1rem;border-top:1px solid var(--border);font-size:.72rem;color:var(--muted)}
-/* Mobile nav */
-.mtop{display:none;position:sticky;top:0;z-index:70;background:var(--surface);
-  border-bottom:1px solid var(--border);padding:.55rem .75rem;align-items:center;gap:.6rem}
-.scrim{display:none;position:fixed;inset:0;background:rgba(10,11,14,.45);z-index:55}
-/* Main */
-.main{flex:1;min-width:0;display:flex;flex-direction:column}
-.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);padding:.6rem 1.35rem;display:flex;align-items:center;gap:.7rem}
-.wrap{max-width:920px;margin:0 auto;padding:1.5rem 1.35rem 5rem;width:100%}
-.wrap.wide{max-width:1100px}
-/* ============================= CONTROLS ============================= */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
-  padding:.44rem .8rem;border-radius:var(--radius-sm);border:1px solid var(--border-strong);
-  background:var(--surface);color:var(--text);font:inherit;font-size:.845rem;font-weight:550;
-  cursor:pointer;text-decoration:none;line-height:1.4;transition:background .12s,border-color .12s}
-.btn:hover{background:var(--surface-2);border-color:var(--muted)}
-.btn:active{transform:translateY(.5px)}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent-text);border-color:var(--accent-text);color:#fff}
-:root[data-theme="dark"] .btn-primary{color:#12131a}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-primary{color:#12131a}}
-.btn-sm{padding:.28rem .58rem;font-size:.785rem}
-.btn-danger{color:var(--danger);border-color:var(--danger-border)}
-.btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
-.btn-ghost{border-color:transparent;background:transparent}
-.btn-ghost:hover{background:var(--surface-2);border-color:var(--border)}
-.btn-row{display:flex;flex-wrap:wrap;gap:.5rem}
-.icon-btn{width:34px;height:34px;padding:0;flex:0 0 auto;font-size:1rem}
-select,input[type=text],input[type=search],input[type=number],textarea{
-  font:inherit;font-size:.855rem;padding:.4rem .55rem;border-radius:var(--radius-sm);
-  border:1px solid var(--border-strong);background:var(--surface);color:var(--text);max-width:100%}
-input[type=search]{-webkit-appearance:none}
-label{font-size:.8rem;font-weight:550;color:var(--text-2)}
-/* Search box */
-.searchbox{position:relative;flex:1;max-width:440px}
-.searchbox input{width:100%;padding-left:2rem}
-.searchbox .mag{position:absolute;left:.6rem;top:50%;transform:translateY(-50%);
-  color:var(--muted);font-size:.85rem;pointer-events:none}
-.results{position:absolute;top:calc(100% + .35rem);left:0;right:0;background:var(--surface);
-  border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:var(--shadow-lg);
-  max-height:70vh;overflow-y:auto;z-index:90;padding:.3rem}
+/* search: field under the bar, results drop down from it */
+.searchbox{position:relative}
+.searchbox input{width:100%; min-height:40px; font-size:.95rem}
+.results{position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--surface); border:1px solid var(--border-2);
+  border-radius:var(--radius); box-shadow:var(--shadow-lg); max-height:70vh; overflow-y:auto; z-index:90; padding:4px}
 .results:empty{display:none}
-.res{display:block;width:100%;text-align:left;padding:.5rem .6rem;border:0;background:none;
-  border-radius:var(--radius-sm);cursor:pointer;font:inherit;color:var(--text)}
-.res:hover,.res:focus{background:var(--accent-soft);outline:none}
-.res-t{font-weight:600;font-size:.86rem;margin-bottom:.12rem}
-.res-p{font-size:.73rem;color:var(--muted);font-family:var(--mono)}
-.res-s{font-size:.78rem;color:var(--text-2);margin-top:.2rem;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.res-none{padding:.8rem;color:var(--muted);font-size:.83rem;text-align:center}
-/* ============================= CARDS / SURFACES ============================= */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  padding:1rem 1.1rem;box-shadow:var(--shadow)}
-.card+.card{margin-top:.8rem}
-.card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem;margin-bottom:.7rem}
-.grid{display:grid;gap:.8rem}
+.res{display:block; width:100%; text-align:left; padding:8px 10px; border:0; background:none; border-radius:6px;
+  cursor:pointer; font:inherit; color:var(--text)}
+.res:hover,.res:focus{background:var(--surface-2); outline:none}
+.res-t{font-weight:600; font-size:.88rem}
+.res-p{font-size:.78rem; color:var(--muted)}
+.res-s{font-size:.8rem; color:var(--text-2); margin-top:2px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.res-none{padding:12px; color:var(--muted); font-size:.85rem; text-align:center}
+.card-h{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px}
+.card-h h3{margin:0}
 .g2{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 .g3{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
 .g4{grid-template-columns:repeat(auto-fit,minmax(135px,1fr))}
-.page-h{margin-bottom:1.3rem}
-.page-h .eyebrow{font:600 .69rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
-  color:var(--accent-text);margin-bottom:.45rem}
-.page-h p{color:var(--text-2);margin:.45rem 0 0;font-size:.9rem;max-width:65ch}
-.sec-h{display:flex;align-items:baseline;gap:.6rem;margin:1.7rem 0 .75rem;flex-wrap:wrap}
-.sec-h h2{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
-.sec-h .hint{font-size:.78rem;color:var(--muted)}
-/* ============================= BADGES ============================= */
-.badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.68rem;font-weight:650;
-  padding:.16rem .42rem;border-radius:5px;border:1px solid var(--border);
-  background:var(--surface-3);color:var(--text-2);white-space:nowrap;letter-spacing:.01em;
-  max-width:100%;overflow-wrap:anywhere}
-.badge.b-src{white-space:normal;text-align:left;line-height:1.35;display:inline-block}
-.b-high{background:var(--danger-soft);color:var(--danger);border-color:var(--danger-border)}
-.b-med{background:var(--warn-soft);color:var(--warn);border-color:var(--warn-border)}
-.b-low{background:var(--surface-3);color:var(--muted)}
-.b-theory{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent-border)}
-.b-num{background:var(--ok-soft);color:var(--ok);border-color:var(--ok-border)}
-.b-ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok-border)}
-.b-warn{background:var(--warn-soft);color:var(--warn);border-color:var(--warn-border)}
-.badges{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
-/* ============================= PROGRESS ============================= */
-.bar{height:7px;border-radius:99px;background:var(--surface-3);overflow:hidden;
-  border:1px solid var(--border)}
-.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;
-  transition:width .35s cubic-bezier(.4,0,.2,1)}
-.bar.ok>i{background:var(--ok)}
-.bar.sm{height:5px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  padding:.75rem .85rem;box-shadow:var(--shadow)}
-.stat .k{font-size:.7rem;font-weight:650;color:var(--muted);text-transform:uppercase;
-  letter-spacing:.05em;margin-bottom:.3rem}
-.stat .v{font:680 1.5rem/1 var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.stat .v small{font-size:.85rem;font-weight:550;color:var(--muted);letter-spacing:0}
-.stat .sub{font-size:.73rem;color:var(--muted);margin-top:.3rem}
-.stat .bar{margin-top:.5rem}
-.ring-wrap{display:flex;align-items:center;gap:1rem}
-.ring{flex:0 0 auto}
-.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
-.ring .trk{stroke:var(--surface-3)}
-.ring .val{stroke:var(--accent);transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1);
-  transform:rotate(-90deg);transform-origin:50% 50%}
-/* ============================= TOPIC ROWS ============================= */
-.trow{display:flex;align-items:flex-start;gap:.7rem;padding:.62rem .1rem;
-  border-bottom:1px solid var(--border)}
+.page-h{margin-bottom:20px}
+.page-h .eyebrow{font-size:.84rem; font-weight:550; color:var(--muted); margin-bottom:4px}
+.page-h p{color:var(--text-2); margin:6px 0 0; font-size:.92rem; max-width:72ch}
+.sec-h{display:flex; align-items:baseline; gap:10px; margin:30px 0 10px; padding-top:16px; border-top:1px solid var(--border); flex-wrap:wrap}
+.sec-h h2{flex:1 1 auto; min-width:0; margin:0; padding:0; border:0}
+.sec-h .hint{font-size:.8rem; color:var(--muted)}
+.badges{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.stat .v small{font-size:.85rem; font-weight:500; color:var(--muted)}
+.ring-wrap{display:flex; align-items:center; gap:16px}
+.big-score{font-size:2.4rem; font-weight:650; line-height:1; font-variant-numeric:tabular-nums}
+/* topic rows on a module page, with the three-state status control */
+.trow{display:flex; align-items:flex-start; gap:12px; padding:10px 2px; border-bottom:1px solid var(--border)}
 .trow:last-child{border-bottom:0}
-.trow-main{flex:1;min-width:0}
-.trow-t{font-weight:570;font-size:.9rem;margin-bottom:.25rem;display:block;text-align:left;
-  background:none;border:0;padding:0;color:var(--text);cursor:pointer;font-family:inherit;
-  line-height:1.4}
-.trow-t:hover{color:var(--accent-text);text-decoration:underline;text-underline-offset:2px}
+.trow-main{flex:1; min-width:0}
+.trow-t{display:block; text-align:left; background:none; border:0; padding:0; margin:0 0 4px; color:var(--text);
+  font:600 .92rem/1.4 var(--sans); cursor:pointer}
+.trow-t:hover{color:var(--accent-ui); text-decoration:underline}
 .trow.done .trow-t{color:var(--muted)}
-/* 3-state status control */
-.status{display:inline-flex;border:1px solid var(--border-strong);border-radius:var(--radius-sm);
-  overflow:hidden;flex:0 0 auto;background:var(--surface)}
-.status button{border:0;background:none;padding:.24rem .42rem;cursor:pointer;font-size:.8rem;
-  line-height:1.2;color:var(--muted);font-family:inherit;border-right:1px solid var(--border)}
+.status{display:inline-flex; flex:none; border:1px solid var(--border-2); border-radius:8px; overflow:hidden; background:var(--surface)}
+.status button{border:0; border-right:1px solid var(--border); background:none; padding:4px 9px; min-height:30px; cursor:pointer;
+  font:inherit; font-size:.82rem; color:var(--muted)}
 .status button:last-child{border-right:0}
-.status button:hover{background:var(--surface-2);color:var(--text)}
-.status button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-text);font-weight:700}
-.status button[aria-pressed="true"][data-s="done"]{background:var(--ok-soft);color:var(--ok)}
-.status button[aria-pressed="true"][data-s="prog"]{background:var(--warn-soft);color:var(--warn)}
-/* ============================= STUDY VIEW ============================= */
-.study-nav{display:flex;align-items:center;justify-content:space-between;gap:.6rem;
-  margin-bottom:1.1rem;flex-wrap:wrap}
-.crumb{font-size:.76rem;color:var(--muted);font-family:var(--mono)}
-.steps{display:flex;gap:.3rem;flex-wrap:wrap;margin:1rem 0 1.2rem;
-  border-bottom:1px solid var(--border);padding-bottom:.55rem}
-.steps button{border:1px solid transparent;background:none;padding:.3rem .6rem;border-radius:var(--radius-sm);
-  font:inherit;font-size:.82rem;font-weight:550;color:var(--muted);cursor:pointer}
-.steps button:hover{background:var(--surface-2);color:var(--text)}
-.steps button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent-text);
-  border-color:var(--accent-border);font-weight:650}
-.prose{font-size:.925rem;line-height:1.68;color:var(--text)}
-.prose>h4{margin:1.3rem 0 .5rem;font-size:.86rem;text-transform:uppercase;letter-spacing:.05em;
-  color:var(--muted);font-weight:700}
-.prose>h4:first-child{margin-top:0}
-.prose strong{font-weight:650}
-.prose em{font-style:italic;color:var(--text-2)}
-/* Callouts */
-.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:.6rem .8rem;
-  border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:.85rem 0;font-size:.87rem}
-.note.tip{border-left-color:var(--ok);background:var(--ok-soft)}
-.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
-.note.trap{border-left-color:var(--danger);background:var(--danger-soft)}
-.note-t{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;
-  display:block;margin-bottom:.25rem;opacity:.85}
-.note p:last-child,.note ul:last-child,.note ol:last-child{margin-bottom:0}
-/* Formula display */
-.fx{font-family:var(--serif);font-size:1.06rem;background:var(--surface-2);
-  border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .85rem;
-  margin:.7rem 0;overflow-x:auto;white-space:nowrap;text-align:center;font-style:italic}
-.fx.left{text-align:left;white-space:normal}
-/* Tables */
-.tw{overflow-x:auto;margin:.85rem 0;border:1px solid var(--border);border-radius:var(--radius);
-  background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:.845rem;min-width:min(100%,420px)}
-th,td{padding:.48rem .65rem;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
-th{background:var(--surface-2);font-weight:650;font-size:.76rem;text-transform:uppercase;
-  letter-spacing:.03em;color:var(--text-2);white-space:nowrap}
-tbody tr:last-child td{border-bottom:0}
-tbody tr:hover{background:var(--surface-2)}
-td code{white-space:nowrap}
-/* Details / progressive disclosure */
-details{border:1px solid var(--border);border-radius:var(--radius-sm);margin:.6rem 0;
-  background:var(--surface);overflow:hidden}
-details>summary{cursor:pointer;padding:.55rem .75rem;font-weight:580;font-size:.865rem;
-  list-style:none;display:flex;align-items:center;gap:.45rem;background:var(--surface-2)}
-details>summary::-webkit-details-marker{display:none}
-details>summary::before{content:"▸";font-size:.75rem;color:var(--muted);transition:transform .15s}
-details[open]>summary::before{transform:rotate(90deg)}
-details>summary:hover{background:var(--surface-3)}
-.det-body{padding:.75rem .85rem;border-top:1px solid var(--border)}
-.det-body>*:last-child{margin-bottom:0}
-/* Steps list for worked examples */
-.wsteps{counter-reset:ws;list-style:none;padding:0;margin:.7rem 0}
-.wsteps li{counter-increment:ws;position:relative;padding:.5rem 0 .5rem 2.1rem;
-  border-bottom:1px dashed var(--border)}
-.wsteps li:last-child{border-bottom:0}
-.wsteps li::before{content:counter(ws);position:absolute;left:0;top:.5rem;width:1.5rem;height:1.5rem;
-  border-radius:50%;background:var(--accent-soft);color:var(--accent-text);
-  font:700 .72rem/1.5rem var(--mono);text-align:center}
-.ans{background:var(--ok-soft);border:1px solid var(--ok-border);color:var(--ok);
-  border-radius:var(--radius-sm);padding:.55rem .8rem;font-weight:640;margin:.7rem 0;font-size:.9rem}
-/* Diagram container */
-.dia{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  padding:.9rem;margin:.9rem 0;overflow-x:auto}
-.dia svg{display:block;margin:0 auto;max-width:100%;height:auto}
-.dia-cap{font-size:.76rem;color:var(--muted);text-align:center;margin-top:.55rem;
-  padding-top:.5rem;border-top:1px solid var(--border)}
-.d-node{fill:var(--surface-2);stroke:var(--border-strong);stroke-width:1.5}
-.d-node-a{fill:var(--accent-soft);stroke:var(--accent-border);stroke-width:1.5}
-.d-node-g{fill:var(--ok-soft);stroke:var(--ok-border);stroke-width:1.5}
-.d-node-w{fill:var(--warn-soft);stroke:var(--warn-border);stroke-width:1.5}
-.d-txt{fill:var(--text);font:600 12px var(--sans);text-anchor:middle;dominant-baseline:middle}
-.d-txt-s{fill:var(--text-2);font:500 10.5px var(--sans);text-anchor:middle;dominant-baseline:middle}
-.d-lbl{fill:var(--muted);font:600 10px var(--mono);text-anchor:middle;dominant-baseline:middle}
-.d-h{fill:var(--accent-text);font:700 10.5px var(--mono);text-anchor:middle;dominant-baseline:middle}
-.d-line{stroke:var(--border-strong);stroke-width:1.6;fill:none}
-.d-line-a{stroke:var(--accent);stroke-width:2.2;fill:none}
-.d-line-d{stroke:var(--danger);stroke-width:1.8;fill:none;stroke-dasharray:4 3}
-/* ============================= LEARNING OUTCOMES ============================= */
-.lo-strip{border:1px solid var(--accent-border);background:var(--accent-soft);
-  border-radius:var(--radius);padding:.7rem .85rem;margin-bottom:1rem}
-.lo-strip-h{font:700 .66rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
-  color:var(--accent-text);margin-bottom:.5rem}
-.lo-item{display:flex;gap:.5rem;align-items:baseline;font-size:.84rem;
-  line-height:1.5;margin-bottom:.35rem}
-.lo-item .badge{flex:0 0 auto}
-.lo-strip-f{font-size:.76rem;color:var(--muted);margin-top:.5rem;
-  padding-top:.5rem;border-top:1px solid var(--accent-border)}
-.lo-row{padding:.75rem 0;border-bottom:1px solid var(--border)}
+.status button:hover{background:var(--surface-2); color:var(--text)}
+.status button[aria-pressed="true"]{background:var(--accent-soft); color:var(--accent-ui); font-weight:650}
+.status button[aria-pressed="true"][data-s="done"]{background:var(--good-soft); color:var(--good)}
+.prose{font-size:.95rem; line-height:1.68}
+.prose > h4:first-child{margin-top:0}
+.prose em{color:var(--text-2)}
+.fx{font-family:var(--serif); font-size:1.06rem; font-style:italic; text-align:center; white-space:nowrap; overflow-x:auto;
+  background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin:10px 0}
+.fx.left{text-align:left; white-space:normal}
+.ans{border-left:3px solid var(--good); background:var(--good-soft); border-radius:0 8px 8px 0; padding:10px 14px; margin:10px 0; font-weight:600}
+/* diagrams */
+.dia{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin:14px 0; overflow-x:auto}
+.dia svg{display:block; margin:0 auto; max-width:100%; height:auto}
+.dia-cap{font-size:.8rem; color:var(--muted); text-align:center; margin-top:8px; padding-top:8px; border-top:1px solid var(--border)}
+.d-node{fill:var(--surface-2); stroke:var(--border-2); stroke-width:1.5}
+.d-node-a{fill:var(--accent-soft); stroke:var(--accent-line); stroke-width:1.5}
+.d-node-g{fill:var(--good-soft); stroke:var(--good-line); stroke-width:1.5}
+.d-node-w{fill:var(--warn-soft); stroke:var(--warn-line); stroke-width:1.5}
+.d-txt{fill:var(--text); font:600 12px var(--sans); text-anchor:middle; dominant-baseline:middle}
+.d-txt-s{fill:var(--text-2); font:500 10.5px var(--sans); text-anchor:middle; dominant-baseline:middle}
+.d-lbl{fill:var(--muted); font:600 10px var(--mono); text-anchor:middle; dominant-baseline:middle}
+.d-h{fill:var(--accent-ui); font:700 10.5px var(--mono); text-anchor:middle; dominant-baseline:middle}
+.d-line{stroke:var(--border-2); stroke-width:1.6; fill:none}
+.d-line-a{stroke:var(--accent-ui); stroke-width:2.2; fill:none}
+.d-line-d{stroke:var(--bad); stroke-width:1.8; fill:none; stroke-dasharray:4 3}
+/* learning outcomes */
+.lo-item{display:flex; gap:8px; align-items:baseline; font-size:.88rem; line-height:1.5; margin-bottom:5px}
+.lo-item .badge{flex:none}
+.lo-item span{min-width:0}
+.lo-strip-f{font-size:.8rem; color:var(--muted); margin-top:8px; padding-top:8px; border-top:1px solid var(--accent-line)}
+.lo-row{padding:12px 0; border-bottom:1px solid var(--border)}
 .lo-row:last-child{border-bottom:0}
-.lo-row-h{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin-bottom:.4rem}
-.lo-text{font-size:.87rem;margin:0 0 .5rem;color:var(--text);overflow-wrap:anywhere}
-.lo-item span{min-width:0;overflow-wrap:anywhere}
-.chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lo-links{display:flex;flex-wrap:wrap;gap:.35rem}
-.lo-q{border-left:3px solid var(--accent);padding:.45rem 0 .45rem .7rem;margin:.4rem 0;
-  font-size:.85rem;line-height:1.5}
-.lo-q .m{font:600 .7rem var(--mono);color:var(--muted);display:block;margin-top:.2rem}
-.co-card{border-left:4px solid var(--accent)}
-/* ============================= QUIZ ============================= */
-.q{margin-bottom:1rem}
-.q-stem{font-weight:570;margin-bottom:.6rem;font-size:.92rem;line-height:1.55}
-.opt{display:block;width:100%;text-align:left;padding:.55rem .7rem;margin-bottom:.4rem;
-  border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);
-  cursor:pointer;font:inherit;font-size:.87rem;color:var(--text);line-height:1.5}
-.opt:hover:not(:disabled){background:var(--surface-2);border-color:var(--muted)}
-.opt:disabled{cursor:default}
-.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
-.opt.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:600}
-.opt.wrong{border-color:var(--danger);background:var(--danger-soft);color:var(--danger)}
-.opt .mk{font-weight:700;margin-right:.45rem;font-family:var(--mono);font-size:.8rem}
-.qbar{display:flex;align-items:center;gap:.7rem;margin-bottom:1.1rem;font-size:.8rem;color:var(--muted)}
+.lo-row-h{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px}
+.lo-text{font-size:.9rem; margin:0 0 8px}
+.lo-links{display:flex; flex-wrap:wrap; gap:6px}
+.lo-q{border-left:3px solid var(--accent-ui); padding:6px 0 6px 12px; margin:6px 0; font-size:.88rem}
+.lo-q .m{font-size:.78rem; color:var(--muted); display:block; margin-top:2px}
+/* quiz */
+.q{margin-bottom:16px}
+.q-stem{font-weight:600; margin-bottom:10px; font-size:.95rem}
+.qbar{display:flex; align-items:center; gap:12px; margin-bottom:16px; font-size:.82rem; color:var(--muted)}
 .qbar .bar{flex:1}
-.big-score{font:700 2.6rem/1 var(--sans);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-/* ============================= FLASHCARDS ============================= */
-.fc{perspective:1200px;margin:1rem 0}
-.fc-inner{position:relative;width:100%;min-height:240px;transition:transform .5s cubic-bezier(.4,0,.2,1);
-  transform-style:preserve-3d;cursor:pointer}
+/* flashcards */
+.fc{perspective:1200px; margin:16px 0}
+.fc-inner{position:relative; width:100%; min-height:240px; transition:transform .45s; transform-style:preserve-3d; cursor:pointer}
 .fc.flip .fc-inner{transform:rotateY(180deg)}
-.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-lg);
-  padding:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;box-shadow:var(--shadow-lg);overflow-y:auto}
-.fc-back{transform:rotateY(180deg);background:var(--accent-soft);border-color:var(--accent-border)}
-.fc-q{font-size:1.08rem;font-weight:620;line-height:1.5;max-width:44ch}
-.fc-a{font-size:.92rem;line-height:1.65;text-align:left;max-width:52ch;width:100%}
-.fc-a ul{padding-left:1.15em}
-.fc-hint{font-size:.72rem;color:var(--muted);margin-top:1rem;text-transform:uppercase;letter-spacing:.06em}
-@media (prefers-reduced-motion:reduce){
-  .fc-inner{transition:none}
-  .bar>i,.ring .val{transition:none}
-}
-/* ============================= FILTERS ============================= */
-.filters{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1rem;
-  padding:.7rem .85rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
-.filters .fg{display:flex;align-items:center;gap:.35rem}
-.filters select{font-size:.8rem;padding:.28rem .4rem}
-.chip{display:inline-flex;align-items:center;gap:.3rem;padding:.26rem .55rem;border-radius:99px;
-  border:1px solid var(--border-strong);background:var(--surface);font-size:.79rem;font-weight:550;
-  cursor:pointer;color:var(--text-2);font-family:inherit}
-.chip:hover{background:var(--surface-2)}
-.chip[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-text);
-  border-color:var(--accent-border);font-weight:640}
-.count{font-size:.78rem;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
-/* ============================= MISC ============================= */
-.empty{text-align:center;padding:2.2rem 1rem;color:var(--muted);font-size:.88rem;
-  border:1px dashed var(--border-strong);border-radius:var(--radius);background:var(--surface)}
-.empty .big{font-size:1.6rem;display:block;margin-bottom:.5rem;opacity:.55}
-.gap-banner{border:1px solid var(--warn-border);background:var(--warn-soft);color:var(--warn);
-  border-radius:var(--radius);padding:.8rem .95rem;margin-bottom:1.1rem;font-size:.86rem}
-.gap-banner strong{font-weight:700}
-.toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(150%);
-  background:var(--text);color:var(--bg);padding:.6rem 1.1rem;border-radius:99px;font-size:.85rem;
-  font-weight:560;box-shadow:var(--shadow-lg);z-index:300;transition:transform .28s cubic-bezier(.4,0,.2,1);
-  max-width:90vw;text-align:center}
+.fc-face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:var(--surface);
+  border:1px solid var(--border-2); border-radius:var(--radius); padding:24px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; overflow-y:auto}
+.fc-back{transform:rotateY(180deg); background:var(--accent-soft); border-color:var(--accent-line)}
+.fc-q{font-size:1.08rem; font-weight:600; line-height:1.5; max-width:44ch}
+.fc-a{font-size:.94rem; line-height:1.65; text-align:left; max-width:52ch; width:100%}
+.fc-hint{font-size:.8rem; color:var(--muted); margin-top:14px}
+@media (prefers-reduced-motion:reduce){.fc-inner{transition:none}}
+.filters .fg{display:flex; align-items:center; gap:6px}
+/* misc */
+.empty .big{font-size:1.6rem; display:block; margin-bottom:8px; opacity:.55}
+.toast{position:fixed; bottom:18px; left:50%; transform:translateX(-50%) translateY(160%); z-index:300; transition:transform .28s}
 .toast.show{transform:translateX(-50%) translateY(0)}
-.modal{position:fixed;inset:0;background:rgba(10,11,14,.5);z-index:200;display:flex;
-  align-items:center;justify-content:center;padding:1.2rem}
-.modal-box{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-lg);
-  padding:1.3rem;max-width:440px;width:100%;box-shadow:var(--shadow-lg)}
-.modal-box h3{margin-bottom:.55rem}
-.modal-box p{font-size:.88rem;color:var(--text-2)}
-.welcome{background:linear-gradient(180deg,var(--accent-soft),var(--surface));
-  border:1px solid var(--accent-border)}
-.rec{background:var(--surface);border:1px solid var(--accent-border);border-left:4px solid var(--accent);
-  border-radius:var(--radius);padding:.95rem 1.1rem;box-shadow:var(--shadow)}
-.rec .why{font-size:.79rem;color:var(--muted);margin:.3rem 0 .7rem}
-.weak-row{display:flex;align-items:center;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.toast:empty{display:none}
+.modal{position:fixed; inset:0; background:rgba(10,11,14,.5); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px}
+.modal-box{background:var(--surface); border:1px solid var(--border-2); border-radius:var(--radius); padding:20px; max-width:440px; width:100%; box-shadow:var(--shadow-lg)}
+.modal-box p{font-size:.9rem; color:var(--text-2)}
+.rec{background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent-ui); border-radius:var(--radius); padding:14px 16px}
+.rec .why{font-size:.84rem; color:var(--muted); margin:4px 0 10px}
+.weak-row{display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--border)}
 .weak-row:last-child{border-bottom:0}
-.acc{font-family:var(--mono);font-weight:700;font-size:.85rem;flex:0 0 auto;min-width:3.2em;text-align:right}
-.list-plain{list-style:none;padding:0;margin:0}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:.35rem .8rem;font-size:.85rem;margin:.6rem 0}
-.kv dt{font-weight:640;color:var(--text-2);font-family:var(--mono);font-size:.82rem;white-space:nowrap}
+.acc{font-family:var(--mono); font-weight:650; font-size:.85rem; flex:none; min-width:3.2em; text-align:right}
+.list-plain{list-style:none; padding:0; margin:0}
+.kv{display:grid; grid-template-columns:auto 1fr; gap:6px 14px; font-size:.88rem; margin:10px 0}
+.kv dt{font-weight:600; color:var(--text-2); white-space:nowrap}
 .kv dd{margin:0}
-/* ============================= RESPONSIVE ============================= */
-@media (max-width:860px){
-  .shell{display:block}
-  .side{position:fixed;left:0;top:0;height:100dvh;transform:translateX(-100%);
-    transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow-lg);width:270px}
-  body.nav-open .side{transform:none}
-  body.nav-open .scrim{display:block}
-  .mtop{display:flex}
-  .topbar{padding:.55rem .9rem}
-  .wrap{padding:1.1rem .9rem 4rem}
-  .g4,.g3{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
-  .stat .v{font-size:1.3rem}
-  h1{font-size:1.35rem}
-}
 @media (max-width:520px){
-  .filters{flex-direction:column;align-items:stretch}
-  .filters .fg{justify-content:space-between}
-  .count{margin-left:0}
-  .searchbox{max-width:none}
   .trow{flex-wrap:wrap}
   .status{margin-left:auto}
+  .filters{flex-direction:column; align-items:stretch}
+  .filters .fg{justify-content:space-between}
 }
-@media print{
-  .side,.topbar,.mtop,.steps,.status,.btn,.filters{display:none !important}
-  body{background:#fff}
-  .card,.dia,.tw{break-inside:avoid;box-shadow:none}
-}
+@media print{ .status,.btn,.filters,div.steps{display:none!important} }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
 
-<div class="mtop">
-  <button class="btn icon-btn" id="navToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
-  <strong style="font-size:.92rem;letter-spacing:-.02em">AI Study Hub</strong>
-  <span class="badge" id="mPct" style="margin-left:auto">0%</span>
-</div>
-<div class="scrim" id="scrim"></div>
-
-<div class="shell">
-  <aside class="side" id="side">
-    <div class="brand">
-      <div class="brand-code">CEPCC712 · Sem VII</div>
-      <div class="brand-name">Artificial Intelligence</div>
-      <div class="brand-sub">B.Tech Computer Engineering<br>Curriculum N-2024</div>
+<header class="s7-bar">
+  <div class="s7-bar-in">
+    <a class="s7-brand" href="#/">Artificial Intelligence</a>
+    <nav class="s7-tabs" id="nav" aria-label="Main"></nav>
+    <div class="s7-tools">
+      <button class="icon-btn" id="searchBtn" title="Search (press /)" aria-label="Search" aria-expanded="false" aria-controls="searchRow"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="10.4" y1="10.4" x2="14" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <button class="icon-btn" id="themeBtn" aria-label="Switch colour theme" title="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1.6a6.4 6.4 0 1 0 6.4 6.4A5 5 0 0 1 8 1.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+      <a class="icon-btn" id="settingsBtn" href="#/settings" aria-label="Settings and backup" title="Settings and backup"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2.2 2.4"/></svg></a>
     </div>
-    <nav class="nav" id="nav" aria-label="Main"></nav>
-    <div class="side-foot">
-      Progress is saved in <strong>this browser only</strong>.
-      <a href="#/settings" style="display:block;margin-top:.3rem">Settings &amp; backup →</a>
-    </div>
-  </aside>
-
-  <div class="main">
-    <div class="topbar">
-      <div class="searchbox">
-        <span class="mag" aria-hidden="true">⌕</span>
-        <input type="search" id="q" placeholder="Search topics, formulas, questions…"
-               aria-label="Search all study material" autocomplete="off" role="combobox"
-               aria-expanded="false" aria-controls="results">
-        <div class="results" id="results" role="listbox" aria-label="Search results"></div>
-      </div>
-      <button class="btn icon-btn btn-ghost" id="themeBtn" aria-label="Switch colour theme" title="Switch theme">◐</button>
-    </div>
-    <main class="main-content" id="main" tabindex="-1"></main>
   </div>
-</div>
+  <div class="s7-searchrow" id="searchRow" hidden>
+    <div class="searchbox">
+      <input type="search" id="q" placeholder="Search topics, formulas, questions…"
+             aria-label="Search all study material" autocomplete="off" role="combobox"
+             aria-expanded="false" aria-controls="results">
+      <div class="results" id="results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<main class="s7-main" id="main" tabindex="-1"></main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalHost"></div>
@@ -3802,12 +3500,8 @@ function toast(msg){
 const priBadge = p => `<span class="badge b-${p==="high"?"high":p==="medium"?"med":"low"}">${p==="high"?"High":p==="medium"?"Medium":"Low"} priority</span>`;
 const typeBadge = t => t==="numerical" ? `<span class="badge b-num">Numerical</span>` : `<span class="badge b-theory">Theory</span>`;
 const marksBadge = m => m && m.length ? `<span class="badge">${m.join(" / ")} marks</span>` : "";
-function ring(p, size=76){
-  const r=(size-9)/2, c=2*Math.PI*r, off=c*(1-p/100);
-  return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
-    <circle class="trk" cx="${size/2}" cy="${size/2}" r="${r}"/>
-    <circle class="val" cx="${size/2}" cy="${size/2}" r="${r}" stroke-dasharray="${c}" stroke-dashoffset="${off}"/></svg>`;
-}
+/* The dashboard and quiz result print the percentage; the ring was decoration. */
+function ring(){ return ""; }
 function bar(p, cls=""){ return `<div class="bar ${cls}" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p}%"></i></div>`; }
 
 /* -------------------------- STATUS CONTROL --------------------------- */
@@ -3863,7 +3557,7 @@ function viewDashboard(){
 
   /* Study-next recommendation */
   html += `<div class="rec" style="margin-bottom:1.1rem">
-    <div style="font:700 .68rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);margin-bottom:.5rem">Study next</div>`;
+    <div style="font:650 .84rem/1.3 var(--sans);color:var(--accent-text);margin-bottom:.5rem">Study next</div>`;
   if(next.topic){
     html += `<h3 style="margin-bottom:.15rem">Module ${next.topic.moduleNum} → ${esc(next.topic.title)}</h3>
       <div class="why">Reason: ${esc(next.reason)}. ${esc(next.plan)}</div>
@@ -3957,7 +3651,7 @@ function viewDashboard(){
     html += `<div class="card" style="margin-bottom:.6rem">
       <div class="card-h" style="margin-bottom:.5rem">
         <div style="flex:1;min-width:0">
-          <div style="font:700 .68rem/1 var(--mono);letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem">MODULE ${m.num} · ${m.hours} hrs</div>
+          <div style="font:650 .84rem/1.3 var(--sans);color:var(--muted);margin-bottom:.3rem">MODULE ${m.num} · ${m.hours} hrs</div>
           <button class="trow-t" style="font-size:.98rem;font-weight:640" data-act="go" data-h="#/module/${m.id}">${esc(m.title)}</button>
         </div>
         <div style="text-align:right;flex:0 0 auto">
@@ -3977,8 +3671,8 @@ function viewDashboard(){
   html += `<p style="font-size:.78rem;color:var(--muted);margin-top:1.4rem;text-align:center">
     Progress is stored locally in your browser. <a href="#/settings">Export, import or reset it in Settings</a>.</p>`;
 
-  return `<div class="page-h"><div class="eyebrow">Dashboard</div><h1>${COURSE.code} · ${COURSE.title}</h1>
-    <p>Where you are, and what to do next. ${COURSE.credits} credits · ${COURSE.totalHours} hours · CA ${COURSE.scheme.ca} + MSE ${COURSE.scheme.mse} + ESE ${COURSE.scheme.ese} = ${COURSE.scheme.total} marks.</p></div>` + html;
+  return `<div class="page-h"><h1>Dashboard</h1>
+    <p>Where you are, and what to do next. ${COURSE.code}. ${COURSE.credits} credits · ${COURSE.totalHours} hours · CA ${COURSE.scheme.ca} + MSE ${COURSE.scheme.mse} + ESE ${COURSE.scheme.ese} = ${COURSE.scheme.total} marks.</p></div>` + html;
 }
 
 /* ------------------------------ MODULE ------------------------------- */
@@ -3990,28 +3684,19 @@ function viewModule(id){
   const nums   = m.topics.filter(t=>t.type==="numerical");
   const q = quizByModule(m.id);
 
-  let html = `<div class="page-h">
-    <div class="eyebrow">Module ${m.num} · ${m.hours} hours</div>
-    <h1>${esc(m.title)}</h1>
-    <p><strong>Learning objective.</strong> ${esc(m.objective)}</p></div>`;
-
-  html += `<div class="card" style="margin-bottom:1.1rem">
-    <div class="card-h" style="margin-bottom:.5rem">
-      <h3 style="font-size:.9rem">Module progress</h3>
-      <span style="font:700 1.1rem/1 var(--sans);font-variant-numeric:tabular-nums">${p.pct}%</span>
-    </div>${bar(p.pct, p.pct===100?"ok":"")}
-    <div style="font-size:.78rem;color:var(--muted);margin-top:.45rem">${p.done} of ${p.total} study items complete
-      (${m.topics.length} topics${nums.length?` · ${nums.filter(t=>t.practice&&t.practice.length).length} practice sets`:""}${q?" · 1 quiz":""})</div>
-  </div>`;
+  let html = SEM7.ui.head({eyebrow:`Module ${m.num} · ${m.hours} hours`, title:esc(m.title),
+    sub:`<strong>Learning objective.</strong> ${esc(m.objective)}`,
+    progress:{pct:p.pct, done:p.done, total:p.total, unit:"study items complete",
+      note:`${m.topics.length} topics${nums.length?` · ${nums.filter(t=>t.practice&&t.practice.length).length} practice sets`:""}${q?" · 1 quiz":""}`}});
 
   if(m.coverageNote) html += `<div class="gap-banner">${m.coverageNote}</div>`;
   if(m.examNote) html += `<div class="note warn"><span class="note-t">Exam guidance from the uploaded material</span>${m.examNote}</div>`;
 
   html += `<details><summary>Official syllabus contents &amp; learning outcomes</summary><div class="det-body">
-    <h4 style="font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 .35rem">Contents</h4>
+    <h4 style="font-size:.78rem;color:var(--muted);margin:0 0 .35rem">Contents</h4>
     <p style="font-size:.87rem">${esc(m.contents)}</p>
-    ${m.selfLearning?`<h4 style="font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:.9rem 0 .35rem">Self-learning topics</h4><p style="font-size:.87rem">${esc(m.selfLearning)}</p>`:""}
-    <h4 style="font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:.9rem 0 .35rem">Learning outcomes</h4>
+    ${m.selfLearning?`<h4 style="font-size:.78rem;color:var(--muted);margin:.9rem 0 .35rem">Self-learning topics</h4><p style="font-size:.87rem">${esc(m.selfLearning)}</p>`:""}
+    <h4 style="font-size:.78rem;color:var(--muted);margin:.9rem 0 .35rem">Learning outcomes</h4>
     <ul style="font-size:.87rem;margin-bottom:0">${m.los.map(l=>`<li>${esc(l)}</li>`).join("")}</ul>
   </div></details>`;
 
@@ -4071,10 +3756,8 @@ function viewModule(id){
   }
 
   const idx = COURSE.modules.findIndex(x=>x.id===m.id);
-  html += `<div class="btn-row" style="margin-top:1.6rem;justify-content:space-between">
-    ${idx>0?`<button class="btn" data-act="go" data-h="#/module/${COURSE.modules[idx-1].id}">← Module ${COURSE.modules[idx-1].num}</button>`:"<span></span>"}
-    ${idx<COURSE.modules.length-1?`<button class="btn" data-act="go" data-h="#/module/${COURSE.modules[idx+1].id}">Module ${COURSE.modules[idx+1].num} →</button>`:"<span></span>"}
-  </div>`;
+  const modSide = x => x && {title:esc(x.title), note:`Module ${x.num}`, attrs:`data-act="go" data-h="#/module/${x.id}"`};
+  html += SEM7.ui.pager({prev:modSide(COURSE.modules[idx-1]), next:modSide(COURSE.modules[idx+1])});
   return html;
 }
 
@@ -4101,17 +3784,14 @@ function viewTopic(id){
   if(isNum && t.practice && t.practice.length) steps.push({k:"practice", label:"Practice"});
   if(!steps.some(s=>s.k===studyStep)) studyStep = "learn";
 
-  let html = `<div class="study-nav">
-    <div>
-      <div class="crumb">Module ${m.num} → ${esc(m.title)} → ${isNum?"Numericals":"Theory"}</div>
-      <h1 style="margin-top:.3rem">${esc(t.title)}</h1>
-    </div>
-    <button class="btn btn-sm" data-act="go" data-h="#/module/${m.id}">← Module ${m.num}</button>
-  </div>`;
-
-  html += `<div class="badges" style="margin-bottom:.9rem">${typeBadge(t.type)}${priBadge(t.priority)}${marksBadge(t.marks)}
-    ${isWeak(t.id)?`<span class="badge b-high">⚠ Weak topic</span>`:""}
-    ${t.src?`<span class="badge b-src" title="Source in the uploaded material">Source: ${esc(t.src)}</span>`:""}</div>`;
+  const modLink = `data-act="go" data-h="#/module/${m.id}"`, st = statusOf(t.id);
+  let html = SEM7.ui.head({
+    crumb:[{label:`Module ${m.num} · ${esc(m.title)}`, attrs:modLink}, {label:isNum?"Numericals":"Theory"}],
+    title:esc(t.title),
+    meta:priBadge(t.priority)+marksBadge(t.marks)+(isWeak(t.id)?`<span class="badge b-high">Weak topic</span>`:""),
+    sub:t.src?`Source: ${esc(t.src)}`:"",
+    progress:{state:st==="prog"?"progress":st,
+      note:isNum&&t.practice&&t.practice.length ? (P.practice[t.id]?"practice set done":"practice set not done") : "marked by you at the end of the page"}});
 
   /* Which learning outcomes this topic answers */
   const tlos = losForTopic(t.id);
@@ -4156,13 +3836,13 @@ function viewTopic(id){
     </div>`;
   }
 
-  /* Prev / next topic within the whole course */
-  const flat = allTopics();
-  const i = flat.findIndex(x=>x.id===t.id);
-  html += `<div class="btn-row" style="margin-top:1.2rem;justify-content:space-between">
-    ${i>0?`<button class="btn" data-act="go" data-h="#/topic/${flat[i-1].id}">← ${esc(flat[i-1].title.slice(0,32))}${flat[i-1].title.length>32?"…":""}</button>`:"<span></span>"}
-    ${i<flat.length-1?`<button class="btn" data-act="go" data-h="#/topic/${flat[i+1].id}">${esc(flat[i+1].title.slice(0,32))}${flat[i+1].title.length>32?"…":""} →</button>`:"<span></span>"}
-  </div>`;
+  /* previous / next in course order, and back to the module */
+  const order = COURSE.modules.flatMap(x => ["theory","numerical"].flatMap(ty =>
+    x.topics.filter(y => y.type===ty).map(y => ({id:y.id, m:x.id, title:y.title}))));
+  const nb = SEM7.ui.neighbours(order, t.id,
+    mid => `Module ${moduleById(mid).num}`);
+  const side = x => x && {title:esc(x.t.title), note:x.note, attrs:`data-act="go" data-h="#/topic/${x.t.id}"`};
+  html += SEM7.ui.pager({prev:side(nb.prev), next:side(nb.next), up:{label:`Back to Module ${m.num}`, attrs:modLink}});
   return html;
 }
 
@@ -4294,7 +3974,7 @@ function viewNumericals(){
     html += `<div class="card" style="margin-bottom:.6rem">
       <div class="card-h">
         <div style="flex:1;min-width:0">
-          <div style="font:700 .68rem/1 var(--mono);letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem">MODULE ${t.moduleNum}</div>
+          <div style="font:650 .84rem/1.3 var(--sans);color:var(--muted);margin-bottom:.3rem">MODULE ${t.moduleNum}</div>
           <button class="trow-t" style="font-size:.96rem;font-weight:640" data-act="go" data-h="#/topic/${t.id}">${esc(t.title)}</button>
         </div>
         ${statusControl(t.id, t.title)}
@@ -4574,9 +4254,9 @@ function viewFormulas(){
       <div class="tw"><table><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody>
         ${f.vars.map(v=>`<tr><td><code>${v[0]}</code></td><td>${v[1]}</td></tr>`).join("")}
       </tbody></table></div>
-      <h4 style="font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:.9rem 0 .3rem">When to use</h4>
+      <h4 style="font-size:.76rem;color:var(--muted);margin:.9rem 0 .3rem">When to use</h4>
       <p style="font-size:.87rem">${f.use}</p>
-      <h4 style="font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:.9rem 0 .3rem">Mini-example</h4>
+      <h4 style="font-size:.76rem;color:var(--muted);margin:.9rem 0 .3rem">Mini-example</h4>
       <p style="font-size:.87rem;margin-bottom:.7rem">${f.ex}</p>
       ${t?`<button class="btn btn-sm" data-act="go" data-h="#/topic/${t.id}">Full topic →</button>`:""}
     </div>`;
@@ -4706,7 +4386,7 @@ function viewWeak(){
     html += `<div class="card" style="margin-bottom:.7rem">
       <div class="card-h">
         <div style="flex:1;min-width:0">
-          <div style="font:700 .68rem/1 var(--mono);letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem">MODULE ${t.moduleNum}</div>
+          <div style="font:650 .84rem/1.3 var(--sans);color:var(--muted);margin-bottom:.3rem">MODULE ${t.moduleNum}</div>
           <button class="trow-t" style="font-size:.96rem;font-weight:640" data-act="go" data-h="#/topic/${t.id}">${esc(t.title)}</button>
         </div>
         <div style="text-align:right"><div class="acc" style="color:var(--danger);font-size:1.1rem">${w.acc}%</div>
@@ -4745,7 +4425,7 @@ function viewSyllabus(){
     html += `<div class="card" style="margin-bottom:.7rem">
       <div class="card-h" style="margin-bottom:.5rem">
         <div style="flex:1;min-width:0">
-          <div style="font:700 .68rem/1 var(--mono);letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem">MODULE ${m.num} · ${m.hours} hrs</div>
+          <div style="font:650 .84rem/1.3 var(--sans);color:var(--muted);margin-bottom:.3rem">MODULE ${m.num} · ${m.hours} hrs</div>
           <button class="trow-t" style="font-size:.96rem;font-weight:640" data-act="go" data-h="#/module/${m.id}">${esc(m.title)}</button>
         </div>${badge}</div>
       <p style="font-size:.84rem;color:var(--text-2);margin-bottom:.6rem"><strong>Syllabus contents:</strong> ${esc(m.contents)}</p>
@@ -4825,10 +4505,10 @@ function viewOutcomes(){
       <p style="font-size:.92rem;font-weight:520;margin:.5rem 0 .6rem;line-height:1.55">${esc(l.text)}</p>
       ${s.covered?bar(s.pct, s.pct===100?"ok":""):""}
 
-      <h4 style="font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:.9rem 0 .4rem">Topics that answer it</h4>
+      <h4 style="font-size:.72rem;color:var(--muted);margin:.9rem 0 .4rem">Topics that answer it</h4>
       <div class="lo-links">${s.topics.map(t=>`<button class="chip" data-act="go" data-h="#/topic/${t.id}">${statusOf(t.id)==="done"?"✓ ":statusOf(t.id)==="prog"?"◐ ":""}${esc(t.title)}</button>`).join("")}</div>
 
-      ${qs.length?`<h4 style="font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:.9rem 0 .4rem">Questions framed to this outcome</h4>
+      ${qs.length?`<h4 style="font-size:.72rem;color:var(--muted);margin:.9rem 0 .4rem">Questions framed to this outcome</h4>
       ${qs.map(q=>`<div class="lo-q">${esc(q.q)}
         <span class="m">${q.marks} marks · ${q.pri} priority · ${q.type}${q.nomat?" · no material uploaded":""}</span></div>`).join("")}
       <button class="btn btn-sm" style="margin-top:.5rem" data-act="go" data-h="#/important">Open in Important Questions →</button>`:""}
@@ -5085,24 +4765,20 @@ const NAV = [
   {h:"#/syllabus",   label:"Syllabus coverage",   ic:"☰",  group:"Reference"},
   {h:"#/settings",   label:"Settings",            ic:"⚙",  group:"Reference"}
 ];
+const TAB_LABEL = {"#/outcomes":"Outcomes", "#/important":"Important questions", "#/revision":"Revision",
+  "#/formulas":"Formulas", "#/syllabus":"Syllabus", "#/weak":"Weak topics"};
+const TAB_ORDER = ["#/numericals","#/quizzes","#/flashcards","#/formulas","#/revision","#/important","#/outcomes","#/weak","#/syllabus"];
 function renderNav(cur){
-  let html = "", lastGroup = null;
-  html += `<div class="nav-label">Modules</div>`;
-  html += `<a href="#/" ${cur==="#/"?'aria-current="page"':""}><span class="ic">◧</span><span class="lbl">Dashboard</span></a>`;
-  COURSE.modules.forEach(m=>{
-    const p = moduleProgress(m);
-    const on = cur === `#/module/${m.id}`;
-    html += `<a href="#/module/${m.id}" ${on?'aria-current="page"':""} title="${esc(m.title)}">
-      <span class="ic">${m.num}</span><span class="lbl">${esc(m.title)}</span>
-      <span class="pct">${p.pct}%</span></a>`;
-  });
-  NAV.filter(n=>n.h!=="#/").forEach(n=>{
-    if(n.group !== lastGroup){ html += `<div class="nav-label">${n.group}</div>`; lastGroup = n.group; }
-    const on = cur === n.h || (n.h==="#/quizzes" && cur.startsWith("#/quiz/")) ||
-               (n.h==="#/flashcards" && cur.startsWith("#/deck/"));
-    html += `<a href="${n.h}" ${on?'aria-current="page"':""}><span class="ic">${n.ic}</span><span class="lbl">${n.label}</span></a>`;
+  const tab = (h, label, on) => `<a href="${h}"${on?' aria-current="page"':""}>${label}</a>`;
+  let html = tab("#/", "Dashboard", cur==="#/");
+  COURSE.modules.forEach(m=>{ html += tab(`#/module/${m.id}`, `Module ${m.num}`, cur===`#/module/${m.id}`); });
+  TAB_ORDER.forEach(h=>{
+    const n = NAV.find(x=>x.h===h); if(!n) return;
+    const on = cur === h || (h==="#/quizzes" && cur.startsWith("#/quiz/")) || (h==="#/flashcards" && cur.startsWith("#/deck/"));
+    html += tab(h, TAB_LABEL[h] || n.label, on);
   });
   $("#nav").innerHTML = html;
+  $("#settingsBtn").classList.toggle("on", cur==="#/settings");
 }
 
 function render(){
@@ -5127,12 +4803,9 @@ function render(){
     case "settings":    html = viewSettings(); break;
     default:            html = notFound();
   }
-  const wide = ["numericals","important","syllabus","revision","outcomes"].includes(seg);
-  $("#main").innerHTML = `<div class="wrap${wide?" wide":""}">${html}</div>`;
-  renderNav(hash.split("/").slice(0,seg==="module"||seg==="topic"?3:2).join("/") || "#/");
-  $("#mPct").textContent = overallProgress().pct + "%";
-  document.body.classList.remove("nav-open");
-  $("#navToggle").setAttribute("aria-expanded","false");
+  $("#main").innerHTML = html;
+  const tp = seg==="topic" && topicById(arg);
+  renderNav(tp ? `#/module/${tp.moduleId}` : hash.split("/").slice(0,seg==="module"?3:2).join("/") || "#/");
 }
 
 /* ------------------------------- EVENTS ------------------------------ */
@@ -5155,7 +4828,7 @@ document.addEventListener("click", e=>{
       window.scrollTo({top:0, behavior:"instant"}); render(); break;
 
     case "res":
-      e.preventDefault(); closeSearch(); $("#q").value = ""; studyStep = "learn";
+      e.preventDefault(); hideSearch(); $("#q").value = ""; studyStep = "learn";
       location.hash = el.dataset.h; window.scrollTo({top:0, behavior:"instant"}); break;
 
     case "status": setStatus(el.dataset.id, el.dataset.s); break;
@@ -5254,22 +4927,17 @@ document.addEventListener("keydown", e=>{
     if(e.key === "ArrowLeft" && FC.i > 0){ FC.i--; FC.flipped=false; render(); }
     if(e.key === " "){ e.preventDefault(); FC.flipped = !FC.flipped; render(); }
   }
-  if(e.key === "/" ){ e.preventDefault(); $("#q").focus(); }
+  if(e.key === "/" ){ e.preventDefault(); openSearch(); }
   if(e.key === "Escape") closeModal();
 });
 
 $("#q").addEventListener("input", e => runSearch(e.target.value));
 $("#q").addEventListener("focus", e => { if(e.target.value.trim().length>1) runSearch(e.target.value); });
 
-/* Mobile nav */
-$("#navToggle").addEventListener("click", ()=>{
-  const open = document.body.classList.toggle("nav-open");
-  $("#navToggle").setAttribute("aria-expanded", String(open));
-});
-$("#scrim").addEventListener("click", ()=>{
-  document.body.classList.remove("nav-open");
-  $("#navToggle").setAttribute("aria-expanded","false");
-});
+/* Search row under the bar */
+function openSearch(){ $("#searchRow").hidden = false; $("#searchBtn").setAttribute("aria-expanded","true"); $("#searchBtn").classList.add("on"); $("#q").focus(); }
+function hideSearch(){ closeSearch(); $("#searchRow").hidden = true; $("#searchBtn").setAttribute("aria-expanded","false"); $("#searchBtn").classList.remove("on"); }
+$("#searchBtn").addEventListener("click", e=>{ e.stopPropagation(); if($("#searchRow").hidden) openSearch(); else hideSearch(); });
 $("#nav").addEventListener("click", e=>{
   if(e.target.closest("a")){ studyStep = "learn"; window.scrollTo({top:0,behavior:"instant"}); }
 });
@@ -5304,5 +4972,6 @@ touchVisit();
 if(!location.hash) location.hash = "#/";
 render();
 </script>
+<script>window.SEM7 && SEM7.attach("ai");</script>
 </body>
 </html>
