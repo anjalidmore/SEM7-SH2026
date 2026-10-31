@@ -5,6 +5,8 @@ with just enough content to score full marks. Build the system now and add conte
 
 Live site: <https://anjalidmore.github.io/SEM7-SH2026/>
 
+To split the work across chats, give each chat one workstream from [`IMPLEMENTATION.md`](IMPLEMENTATION.md).
+
 ## The exam window
 
 Every paper is 50 marks, 2 hours, 10:30–12:30. Studying starts Mon 16 Nov.
@@ -24,7 +26,7 @@ NLP and OR get about a day and a half each. Their content has to fit that, which
 
 | Subject | In the site now | Still to build | Material in hand |
 |---|---|---|---|
-| AI | Modules 1–6 | ESE paper pattern only | Everything |
+| AI | Modules 1–6 (4–6 ported from the End Sem draft on 31 Oct) | ESE paper pattern only | Everything |
 | NLP | Modules 1–3 | 4 Semantic Analysis & Word Representations · 5 Discourse & Advanced NLP · 6 Applications & Ethics | Textbooks only for 4–6 |
 | ADS | Modules 1–2 | 3 Inferential Statistics · 4 Regression · 5 Anomaly Detection · 6 Time Series Forecasting | **Module 3–6 PDFs are already in `ADS B/`**, so this can start now |
 | OR | Modules 1, 2, 5 (Module 1 theory only) | Module 1 numericals · 3 Simulation · 4 Dynamic Programming · 6 Inventory | Module 1 decks + notes; nothing for 3, 4, 6 |
@@ -65,7 +67,7 @@ Kept small on purpose. Each one removes a decision you would otherwise make whil
 
 | # | Feature | What it does for you |
 |---|---|---|
-| F1 | **Exam-window planner** | Replaces the rolling 7-day plan with the fixed 16–30 Nov window above. Each day shows morning / afternoon / evening blocks, each linked to a concrete list, plus "core work left vs. time left" so you know if you are on track. |
+| F1 | **Exam-window planner** | *Started:* the hub now shows the fixed 16–30 Nov window above. *Next:* Each day shows morning / afternoon / evening blocks, each linked to a concrete list, plus "core work left vs. time left" so you know if you are on track. |
 | F2 | **Core / Extra tiers** | Every question is tagged *Core* (needed for full marks on the paper pattern) or *Extra*. A "Core only" switch on every subject hides the rest. Hub progress counts Core. This is the "just enough" mode. |
 | F3 | **Last-look sheet** | A one- or two-page printable page per subject, for the exam morning: formulas, must-know definitions, common mistakes and the Core question list. Built from data the sites already hold. |
 | F4 | **Shaky list** | One tap marks any item as shaky. The hub gathers shaky items from all subjects into one list for the night before each paper. |

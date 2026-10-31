@@ -148,6 +148,11 @@ h2 .s7-i{color:var(--ink-mute)}
 .chip.paper{background:var(--acc-ui); color:#fff}
 :root[data-theme="dark"] .chip.paper{color:#0f1217}
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .chip.paper{color:#0f1217} }
+.slots{align-items:center}
+.len{font-size:.78rem; color:var(--ink-mute)}
+.list li.now{box-shadow:inset 3px 0 0 var(--ink)}
+h2 .note{margin-left:4px; font-size:.74rem; font-weight:600; color:var(--ink-mute); background:var(--panel-2);
+  border:1px solid var(--border); border-radius:999px; padding:2px 9px}
 .tt .s{flex:1; min-width:0; display:flex; align-items:center; gap:10px; font-size:.9rem; font-weight:600}
 .tt .s a{text-decoration:none; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .tt .s a:hover{text-decoration:underline; text-underline-offset:3px}
@@ -222,7 +227,6 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
 
   var S = window.SEM7, I = S.icon;
   var THEME_KEY = "sem7.theme";
-  var PLAN_DAYS = 7;
 
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function plural(n, w){ return n + " " + w + (n === 1 ? "" : "s"); }
@@ -232,7 +236,6 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
   function accStyle(s){ return ' style="--acc:' + s.accent + '"'; }
 
   document.getElementById("subs-h").innerHTML = I("layers") + "Subjects";
-  document.getElementById("plan-h").innerHTML = I("clock") + "Study sessions";
   document.getElementById("tt-h").innerHTML = I("calendar") + "Timetable";
 
   /* ---------- theme: system -> light -> dark ---------- */
@@ -353,20 +356,32 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
     /* subjects */
     document.getElementById("subs").innerHTML = list.map(function(s){ return cardHTML(s, sums[s.code], now, s === pick); }).join("");
 
-    /* sessions */
-    var days = S.plan(now, sums, PLAN_DAYS);
-    document.getElementById("plan").innerHTML = days.length ? days.map(function(d){
-      var slots = '';
-      if(d.exam){
-        slots += chip(d.exam, sums, "paper", esc(d.exam.short) + ' paper &middot; ' + S.EXAM.start);
-        if(d.main) slots += chip(d.main, sums);
-      } else if(d.full){
-        slots += chip(d.main, sums, "", esc(d.main.short) + ' &middot; full day');
+    /* sessions: the study window as blocks of days with the same paper, and each exam day on its own */
+    var days = S.plan(now), blocks = [];
+    days.forEach(function(d){
+      var last = blocks[blocks.length - 1];
+      if(!d.exam && last && !last.exam && last.main === d.main) last.to = d.date;
+      else blocks.push({ from:d.date, to:d.date, exam:d.exam, main:d.main });
+    });
+    var today = S.dayDiff(S.studyStart(), now) >= 0 ? now : null;
+    function inBlock(b){ return today && S.dayDiff(b.from, today) >= 0 && S.dayDiff(today, b.to) >= 0; }
+    function range(b){
+      var a = S.dateParts(b.from), z = S.dateParts(b.to);
+      return b.from.getTime() === b.to.getTime() ? '<b>' + a.dow + '</b>' + a.day + ' ' + a.mon
+        : '<b>' + a.dow + '&ndash;' + z.dow + '</b>' + a.day + '&ndash;' + z.day + ' ' + z.mon;
+    }
+    var startsIn = S.dayDiff(now, S.studyStart());
+    document.getElementById("plan-h").innerHTML = I("clock") + "Study plan" +
+      (startsIn > 0 ? '<span class="note">starts in ' + plural(startsIn, "day") + '</span>' : '');
+    document.getElementById("plan").innerHTML = blocks.length ? blocks.map(function(b){
+      var n = S.dayDiff(b.from, b.to) + 1, slots = '';
+      if(b.exam){
+        slots += chip(b.exam, sums, "paper", esc(b.exam.short) + ' paper &middot; ' + S.EXAM.start);
+        if(b.main) slots += chip(b.main, sums) + '<span class="len">afternoon</span>';
       } else {
-        slots += chip(d.main, sums);
-        if(d.also) slots += chip(d.also, sums);
+        slots += chip(b.main, sums) + '<span class="len">' + plural(n, "day") + '</span>';
       }
-      return '<li><div class="day">' + dayLabel(d.date, now) + '</div><div class="slots">' + slots + '</div></li>';
+      return '<li' + (inBlock(b) ? ' class="now"' : '') + '><div class="day">' + range(b) + '</div><div class="slots">' + slots + '</div></li>';
     }).join("") : '<li><div class="slots">No papers left to plan for.</div></li>';
 
     /* timetable */

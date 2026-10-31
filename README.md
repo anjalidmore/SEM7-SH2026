@@ -26,6 +26,8 @@ shared/syllabus.js    all six modules per subject; which have material (built) a
 subjects/<code>/      one study site per subject (content + its own progress logic + the few styles
                       only it needs); index.html covers all modules
 scripts/bridge.sh     checks each subject is wired to shared/ and adds the attach line if missing
+docs/PLAN.md          the End Sem plan (user-facing)
+docs/IMPLEMENTATION.md  the build manual and workstreams for Claude sessions working on this repo
 docs/BUILD-PROMPT.md  the master build prompt the ADS, OR and DL sites were built from
 _resources/           lecture decks, notes and textbooks (local only, gitignored, never published)
 .nojekyll             tells GitHub Pages to serve files as they are
@@ -86,12 +88,11 @@ All five sites carry the bridge lines. Progress saved before this (Mid Sem work)
 subject has been opened once in a browser, the hub shows "Progress saved. Open the subject once to
 show it here." No migration is needed, because storage keys and topic ids are unchanged.
 
-### Study sessions
+### Study plan
 
-The hub plans two sessions a day for the next seven days from the timetable and each subject's
-remaining work. The main session goes to the next paper. The second goes to the later paper that is
-furthest behind, rotating between subjects. Both sessions go to a paper in the last two days before it,
-and the afternoon of an exam day goes to the following paper. The plan is recalculated on every visit.
+Studying starts on `STUDY_START` (Mon 16 Nov, in `shared/sem7.js`). From then until the last paper, every
+day goes to the next paper, and the afternoon of an exam day goes to the paper after it. The hub shows this
+as blocks (for example "Mon–Wed 16–18 Nov · AI · 3 days"), drops past days and highlights today's block.
 
 ### Updating a subject
 

@@ -129,40 +129,24 @@
   }
 
   /* ---------- study sessions ----------
-     Two sessions a day from today until the last paper, derived from the
-     timetable and each subject's remaining work:
-       - the main session always goes to the next paper;
-       - in the last two days before a paper, both sessions go to it;
-       - otherwise the second session goes to the later paper furthest behind,
-         rotating so one subject does not take every evening;
-       - on an exam day, the afternoon goes to the following paper.
-     `sums` maps subject code -> summary (or null). */
-  function plan(now, sums, ndays){
+     Studying starts on STUDY_START. From then (or from today, once that has
+     passed) until the last paper, every day goes to the next paper, and the
+     afternoon of an exam day goes to the paper after it. Returns one entry per
+     day: { date, exam (the paper written that day, or null), main (the paper
+     studied for, or null after the last one) }. */
+  var STUDY_START = "2026-11-16";
+  function studyStart(){ return at(STUDY_START, "00:00"); }
+  function plan(now){
     now = now || new Date();
-    sums = sums || {};
-    var today = midnight(now), out = [], given = {};
-    function left(s){ var x = sums[s.code]; return x ? 100 - x.pct : 100; }
-    for(var i = 0; i < ndays; i++){
-      var d = addDays(today, i), exam = null, ahead = [];
+    var d = midnight(now) < studyStart() ? studyStart() : midnight(now), out = [];
+    for(;; d = addDays(d, 1)){
+      var exam = null, ahead = [];
       SUBJECTS.forEach(function(s){
         var gap = dayDiff(d, examStart(s));
         if(gap === 0) exam = s; else if(gap > 0) ahead.push(s);
       });
       if(!exam && !ahead.length) break;
-      var day = { date:d, exam:exam, main:ahead[0] || null, also:null, full:false };
-      if(ahead.length && !exam){
-        if(dayDiff(d, examStart(ahead[0])) <= 2 || ahead.length === 1) day.full = true;
-        else {
-          var best = null, bestScore = -1;
-          ahead.slice(1).forEach(function(s){
-            var score = (left(s) + 1) / (1 + (given[s.code] || 0));
-            if(score > bestScore){ best = s; bestScore = score; }
-          });
-          day.also = best;
-          given[best.code] = (given[best.code] || 0) + 1;
-        }
-      }
-      out.push(day);
+      out.push({ date:d, exam:exam, main:ahead[0] || null });
     }
     return out;
   }
@@ -663,6 +647,6 @@
     EXAM:EXAM, SUBJECTS:SUBJECTS, byCode:byCode,
     countdown:countdown, dateParts:dateParts, examStart:examStart, examEnd:examEnd, dayDiff:dayDiff, addDays:addDays,
     nextSubject:nextSubject, readSummary:readSummary, hasOwnProgress:hasOwnProgress, subjectHref:subjectHref,
-    plan:plan, attach:attach, lsGet:lsGet, lsSet:lsSet
+    plan:plan, studyStart:studyStart, attach:attach, lsGet:lsGet, lsSet:lsSet
   };
 })();
