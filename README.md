@@ -20,7 +20,9 @@ Each End Sem paper is 50 marks in 2 hours. The paper pattern for each subject is
 index.html            the semester hub: overview, continue, subject cards, study sessions, timetable
 shared/sem7.css       the design system every subject site uses (tokens, header, components)
 shared/sem7.js        timetable + subject list (single source), the strip, the progress bridge,
-                      the session planner, and the shared page parts (SEM7.ui) and tab overflow
+                      the session planner, the icon set, the shared page parts (SEM7.ui) and tab overflow
+shared/syllabus.js    all six modules per subject; which have material (built) and, for those that
+                      do not, the syllabus topics and LOs shown on their "Material pending" page
 subjects/<code>/      one study site per subject (content + its own progress logic + the few styles
                       only it needs); index.html covers all modules
 scripts/bridge.sh     checks each subject is wired to shared/ and adds the attach line if missing

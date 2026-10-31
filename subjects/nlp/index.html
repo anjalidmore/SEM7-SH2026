@@ -6,6 +6,7 @@
 <title>Natural Language Processing · Semester 7</title>
 <link rel="stylesheet" href="../../shared/sem7.css">
 <script src="../../shared/sem7.js"></script>
+<script src="../../shared/syllabus.js"></script>
 <script>
 /* NLP had no theme switch; it uses the same three-way one as the other subjects. */
 (function(){ try { var t = localStorage.getItem("nlp_theme_v1"); if(t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch(e){} })();
@@ -106,6 +107,9 @@ table.nb-t th,table.nb-t td{white-space:nowrap}
       <button data-view="m1">Module 1</button>
       <button data-view="m2">Module 2</button>
       <button data-view="m3">Module 3</button>
+      <button data-view="m4" class="s7-tab-pending">Module 4</button>
+      <button data-view="m5" class="s7-tab-pending">Module 5</button>
+      <button data-view="m6" class="s7-tab-pending">Module 6</button>
       <button data-view="mock">Final Mock</button>
       <button data-view="fullmarks">Full-Marks Guide</button>
     </nav>
@@ -4928,6 +4932,7 @@ function render(){
   else if(ROUTE.view==="fullmarks") app.appendChild(renderFullMarks());
   else if(ROUTE.view==="focus") app.appendChild(renderFocus());
   else if(ROUTE.view==="search") app.appendChild(renderSearch());
+  else if(SEM7.isPending("nlp", ROUTE.view)) app.innerHTML = SEM7.ui.pending("nlp", ROUTE.view);
   if(SCROLL_TO_TOP) window.scrollTo(0,0);
   SCROLL_TO_TOP = true;
 }
@@ -5071,115 +5076,39 @@ function nextUp(){
    ============================================ */
 function renderDashboard(){
   const wrap = el("div",{});
-  wrap.appendChild(el("h1",{},["Dashboard"]));
-
-  /* --- hero: overall ring + four numbers --- */
-  const o = overallStats();
-  const hero = el("div",{class:"card dash-hero"});
-  const ring = el("div",{class:"ring"});
-  const ringInner = el("div",{});
-  const rv = el("div",{class:"rv"},[o.pct+"%"]);
-  ringInner.appendChild(rv);
-  ringInner.appendChild(el("div",{class:"rl"},["Complete"]));
-  ring.appendChild(ringInner);
-  hero.appendChild(ring);
-
-  const chips = el("div",{class:"chipstat",style:"flex:1"});
-  const cDone = el("div",{class:"n",style:"color:var(--good)"},[String(o.done)]);
-  const cRev  = el("div",{class:"n",style:"color:var(--warn)"},[String(o.review)]);
-  const cUn   = el("div",{class:"n",style:"color:var(--ink-soft)"},[String(o.unattempted)]);
-  const qp = quizPerformance();
+  const UI = SEM7.ui, o = overallStats(), qp = quizPerformance(), nu = nextUp();
   const qAvg = qp.length ? Math.round(qp.reduce((a,q)=>a+q.pct,0)/qp.length) : null;
-  chips.appendChild(el("div",{},[cDone, el("div",{class:"l"},["Done"])]));
-  chips.appendChild(el("div",{},[cRev,  el("div",{class:"l"},["For review"])]));
-  chips.appendChild(el("div",{},[cUn,   el("div",{class:"l"},["Unattempted"])]));
-  chips.appendChild(el("div",{},[el("div",{class:"n",style:"color:var(--accent)"},[qAvg===null?"—":qAvg+"%"]),
-                                 el("div",{class:"l"},["Quiz avg ("+qp.length+"/9)"])]));
-  hero.appendChild(chips);
-  wrap.appendChild(hero);
-
-  const tickNote = el("div",{class:"small-muted",style:"flex-basis:100%;margin-top:2px"},[""]);
-  hero.appendChild(tickNote);
-  watchProgress(()=>{
-    const t = overallStats();
-    ring.style.setProperty("--p", t.pct);
-    rv.textContent = t.pct+"%";
-    cDone.textContent = String(t.done);
-    cRev.textContent  = String(t.review);
-    cUn.textContent   = String(t.unattempted);
-    const ticks = Object.keys(PROGRESS.ticks||{}).length;
-    tickNote.textContent = ticks
-      ? ticks+" topic"+(ticks===1?"":"s")+" ticked off — "+t.viaTick+" of the "+t.done+" done are covered that way."
-      : "";
+  const label = String(nu.label).slice(0,140) + (String(nu.label).length>140?"…":"");
+  const sub = nu.kind==="quiz" ? "quiz" : (nu.kind==="solved" ? "solved" : "");
+  const built = {};
+  Object.keys(MODULE_TITLES).forEach(m=>{ built[m] = {pct:moduleStats(m).pct}; });
+  /* the shared parts are HTML; their buttons carry data-nv (view) and data-nsub (sub-tab) */
+  const top = el("div",{});
+  top.innerHTML = '<h1>Dashboard</h1>' + UI.stats([
+      {icon:"target", value:o.pct+"%", label:"Overall", count:o.done+" / "+o.total, pct:o.pct},
+      {icon:"flag", value:String(o.review), label:"For review"},
+      {icon:"quiz", value:qAvg===null ? "—" : qAvg+"%", label:"Quiz average", count:qp.length+" / 9 taken"}
+    ]) +
+    UI.next({kicker: nu.m ? "Study next &middot; "+MODULE_TITLES[nu.m].split("—")[0].trim() : "Study next",
+      title: esc(label),
+      go: nu.m ? {label:"Open", attrs:'data-nv="'+nu.m+'" data-nsub="'+sub+'"'} : {label:"Open the mock", attrs:'data-nv="mock"'}}) +
+    UI.modules("nlp", built, id => 'data-nv="'+id+'"');
+  top.addEventListener("click", e=>{
+    const b = e.target.closest("[data-nv]");
+    if(!b) return;
+    ROUTE.view = b.dataset.nv;
+    if(b.dataset.nsub) ROUTE.sub[b.dataset.nv] = b.dataset.nsub;
+    render();
   });
-
-  /* --- module progress --- */
-  const modCard = el("div",{class:"card"});
-  modCard.appendChild(el("h3",{style:"margin-top:0"},["Module progress"]));
-  ["m1","m2","m3"].forEach(m=>{
-    const row = el("div",{class:"modrow"});
-    row.appendChild(el("div",{class:"mname"},[MODULE_TITLES[m]]));
-    const barWrap = el("div",{class:"mbar"});
-    const bar = el("div",{class:"progressbar"});
-    const fill = el("div",{style:"width:0%"});
-    bar.appendChild(fill); barWrap.appendChild(bar);
-    row.appendChild(barWrap);
-    const pctEl = el("div",{class:"mpct"},["0%"]);
-    row.appendChild(pctEl);
-    row.appendChild(el("button",{class:"small",onclick:()=>{ROUTE.view=m; render();}},["Open"]));
-    watchProgress(()=>{
-      const t = moduleStats(m);
-      fill.style.width = t.pct+"%";
-      pctEl.textContent = t.pct+"%";
-      row.title = t.done+" done"+(t.viaTick?" ("+t.viaTick+" via topic ticks)":"")
-        +" · "+t.review+" for review · "+t.unattempted+" unattempted (of "+t.total+")";
-    });
-    modCard.appendChild(row);
-  });
-  wrap.appendChild(modCard);
-
-  /* --- do this next --- */
-  const nu = nextUp();
-  const nextCard = el("div",{class:"card",style:"border-left:4px solid var(--accent)"});
-  nextCard.appendChild(el("h3",{style:"margin-top:0"},["Do this next"]));
-  nextCard.appendChild(el("p",{style:"margin:.2rem 0 .5rem;font-weight:600;font-size:.9rem"},
-    [String(nu.label).slice(0,140) + (String(nu.label).length>140?"…":"")]));
-  nextCard.appendChild(el("div",{class:"small-muted",style:"margin-bottom:9px"},[nu.why]));
-  if(nu.m){
-    const sub = nu.kind==="quiz" ? "quiz" : (nu.kind==="solved" ? "solved" : null);
-    nextCard.appendChild(el("button",{class:"primary",onclick:()=>{
-      ROUTE.view=nu.m; if(sub) ROUTE.sub[nu.m]=sub; render();
-    }},["Open "+MODULE_TITLES[nu.m].split("—")[0].trim()]));
-  } else {
-    nextCard.appendChild(el("button",{class:"primary",onclick:()=>{ROUTE.view="mock"; render();}},["Open the mock paper"]));
-  }
-  wrap.appendChild(nextCard);
-
-  /* --- the exam-critical focus set --- */
-  const fc = el("div",{class:"card",style:"border-left:4px solid #b8860b"});
-  const fh = el("div",{class:"qhead"});
-  fh.appendChild(el("h3",{style:"margin:0"},["MSE Focus"]));
-  const fpct = el("span",{class:"mpct"},["0%"]);
-  fh.appendChild(fpct);
-  fc.appendChild(fh);
-  const fbar = el("div",{class:"progressbar"});
-  const ffill = el("div",{style:"width:0%"}); fbar.appendChild(ffill);
-  fc.appendChild(fbar);
-  const fsub = el("p",{class:"small-muted",style:"margin:8px 0 9px"},[""]);
-  fc.appendChild(fsub);
-  watchProgress(()=>{
-    const st = focusStats();
-    ffill.style.width = st.pct+"%"; fpct.textContent = st.pct+"%";
-    fsub.textContent = FOCUS.length+" highest-probability topics · "+st.done+"/"+st.total+" done · "+st.review+" for review";
-  });
-  fc.appendChild(el("button",{class:"primary",onclick:()=>{ROUTE.view="focus"; render();}},["Open MSE Focus"]));
-  wrap.appendChild(fc);
+  wrap.appendChild(top);
 
   /* --- weak areas (only when there are any) --- */
-  const weak = weakAreas().slice(0,5);
+  /* weak areas: only once something has been attempted, else every outcome reads 0% */
+  const weak = o.done + o.review > 0 || qp.length ? weakAreas().slice(0,5) : [];
   if(weak.length){
+    const wh = el("div",{}); wh.innerHTML = UI.h2("alert","Weak areas");
+    wrap.appendChild(wh.firstChild);
     const wc = el("div",{class:"card"});
-    wc.appendChild(el("h3",{style:"margin-top:0"},["Weak areas"]));
     weak.forEach(w=>{
       const row = el("div",{class:"modrow"});
       row.appendChild(el("div",{class:"mname"},[w.label]));
@@ -5196,8 +5125,9 @@ function renderDashboard(){
   /* --- review queue --- */
   const rq = reviewQueue();
   if(rq.length){
+    const rh = el("div",{}); rh.innerHTML = UI.h2("flag","Marked for review",'<span class="s7-h2-n">'+rq.length+'</span>');
+    wrap.appendChild(rh.firstChild);
     const rc = el("div",{class:"card"});
-    rc.appendChild(el("h3",{style:"margin-top:0"},["Marked for review ("+rq.length+")"]));
     rq.slice(0,6).forEach(i=>{
       const row = el("div",{class:"modrow"});
       row.appendChild(el("div",{class:"mname",style:"font-weight:400"},[String(i.label).slice(0,110)+(String(i.label).length>110?"…":"")]));
@@ -5208,30 +5138,6 @@ function renderDashboard(){
     if(rq.length>6) rc.appendChild(el("p",{class:"small-muted",style:"margin:8px 0 0"},["+ "+(rq.length-6)+" more"]));
     wrap.appendChild(rc);
   }
-
-  /* --- the MSE blueprint the professor dictated in class --- */
-  const bp = el("div",{class:"card"});
-  bp.appendChild(el("h3",{style:"margin-top:0"},["MSE paper — as dictated in class"]));
-  bp.appendChild(el("p",{class:"small-muted",style:"margin:0 0 9px"},[EXAM_BLUEPRINT.marks+" marks · "+EXAM_BLUEPRINT.duration+" · "+EXAM_BLUEPRINT.scope+" · "+EXAM_BLUEPRINT.src]));
-  const tbl = el("table",{class:"cov"});
-  const thead = el("tr",{});
-  ["Q","Marks","Choice","Named topics"].forEach(h=>thead.appendChild(el("th",{},[h])));
-  tbl.appendChild(thead);
-  EXAM_BLUEPRINT.questions.forEach(q=>{
-    const tr = el("tr",{});
-    tr.appendChild(el("td",{},[q.n]));
-    tr.appendChild(el("td",{},[q.marks]));
-    tr.appendChild(el("td",{},[q.choice+" · "+q.each]));
-    tr.appendChild(el("td",{},[q.named.join(" · ")]));
-    tbl.appendChild(tr);
-  });
-  bp.appendChild(tbl);
-  const bl = el("ul",{class:"blueprint",style:"margin:10px 0 0;padding-left:1.2rem"});
-  bl.appendChild(el("li",{},["Lengthy / mandatory: "+EXAM_BLUEPRINT.lengthy.join(" · ")]));
-  bl.appendChild(el("li",{},["Always: "+EXAM_BLUEPRINT.mandatory.join(" · ")]));
-  EXAM_BLUEPRINT.excluded.forEach(x=>bl.appendChild(el("li",{},["Not examined: "+x])));
-  bp.appendChild(bl);
-  wrap.appendChild(bp);
 
   wrap.appendChild(el("p",{class:"small-muted",style:"margin-top:16px"},[
     el("a",{href:"#",onclick:(e)=>{e.preventDefault(); confirmReset();}},["Reset all progress"])
@@ -6291,7 +6197,7 @@ function renderFocus(){
     tr.appendChild(el("td",{},[r.note]));
     t.appendChild(tr);
   });
-  pat.appendChild(t);
+  pat.appendChild(el("div",{class:"tw"},[t]));
   wrap.appendChild(pat);
 
   /* progress across the focus set */

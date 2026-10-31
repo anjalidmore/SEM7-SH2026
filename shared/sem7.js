@@ -179,7 +179,7 @@
     var p = dateParts(s), c = countdown(s);
     var when = c.state === "done" ? "ESE done" :
       'ESE ' + p.dow + ' ' + p.day + ' ' + p.mon + ' &middot; <b>' + esc(c.text) + '</b>';
-    return '<a class="sem7-a sem7-home" href="../../index.html">&larr; Semester 7</a>' +
+    return '<a class="sem7-a sem7-home" href="../../index.html">' + icon("home") + 'Semester 7</a>' +
       '<span class="sem7-subs">' + subs + '</span>' +
       '<span class="sem7-next">' + when + '</span>';
   }
@@ -548,8 +548,118 @@
     fitAll();
   }
 
+  /* ---------- icons ----------
+     One small line-icon set (24px grid, drawn with currentColor) for the hub and
+     every subject. icon(name) returns an inline <svg>; unknown names return "". */
+  var ICON_PATHS = {
+    home:'<path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V13h6v9"/>',
+    calendar:'<rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18"/>',
+    clock:'<circle cx="12" cy="12" r="9.5"/><path d="M12 7v5l3.2 2"/>',
+    target:'<circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6"/>',
+    checks:'<path d="m3 7 2 2 4-4M3 17l2 2 4-4"/><path d="M13 6h8M13 12h8M13 18h8"/>',
+    check:'<circle cx="12" cy="12" r="9.5"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+    layers:'<path d="m12 2.5 9.5 5-9.5 5-9.5-5z"/><path d="m2.5 12 9.5 5 9.5-5"/><path d="m2.5 16.5 9.5 5 9.5-5"/>',
+    book:'<path d="M2.5 4h6a3.5 3.5 0 0 1 3.5 3.5V21a2.6 2.6 0 0 0-2.6-2.6H2.5z"/><path d="M21.5 4h-6A3.5 3.5 0 0 0 12 7.5V21a2.6 2.6 0 0 1 2.6-2.6h6.9z"/>',
+    play:'<path d="M7 4.5v15l12-7.5z"/>',
+    arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+    back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+    paper:'<path d="M14.5 2.5H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h6M8.5 13h7M8.5 17h7M8.5 9h2"/>',
+    hourglass:'<path d="M6 2.5h12M6 21.5h12"/><path d="M7.5 2.5v3.2a4 4 0 0 0 1.6 3.2L12 12l2.9-3.1a4 4 0 0 0 1.6-3.2V2.5M7.5 21.5v-3.2a4 4 0 0 1 1.6-3.2L12 12l2.9 3.1a4 4 0 0 1 1.6 3.2v3.2"/>',
+    flag:'<path d="M4.5 21.5v-18M4.5 4s1.5-1.2 4-1.2 4.5 2 7.5 2 3.5-.8 3.5-.8v10.5s-1 .8-3.5.8-5-2-7.5-2-4 1.2-4 1.2"/>',
+    zap:'<path d="M13 2.5 4 14h7l-1 7.5 9-11.5h-7z"/>',
+    alert:'<path d="M12 3 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.1"/>',
+    quiz:'<circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4"/><path d="M12 17.5v.1"/>',
+    formula:'<path d="M17.5 4.5h-11l6 7.5-6 7.5h11"/>',
+    search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20.5 20.5-5.2-5.2"/>',
+    /* subjects */
+    ai:'<path d="M12 3.5 13.9 9a1.6 1.6 0 0 0 1.1 1.1l5.5 1.9-5.5 1.9a1.6 1.6 0 0 0-1.1 1.1L12 20.5 10.1 15A1.6 1.6 0 0 0 9 13.9L3.5 12 9 10.1A1.6 1.6 0 0 0 10.1 9z"/><path d="M19 2.5v3.5M20.8 4.2h-3.5"/>',
+    nlp:'<path d="M20.5 15a2 2 0 0 1-2 2H8l-4.5 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/>',
+    ads:'<path d="M3 3v18h18"/><path d="M8 16.5v-4M12.5 16.5V7M17 16.5v-7"/>',
+    or:'<circle cx="6" cy="18.5" r="2.5"/><circle cx="18" cy="5.5" r="2.5"/><path d="M8.5 18.5h8a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7h8"/>',
+    dl:'<circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="m6.7 7.1 3.6 3.8M6.7 16.9l3.6-3.8M13.7 10.9l3.6-3.8M13.7 13.1l3.6 3.8"/>'
+  };
+  function icon(name, cls){
+    var p = ICON_PATHS[name];
+    return p ? '<svg class="s7-i' + (cls ? " " + cls : "") + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + p + "</svg>" : "";
+  }
+
+  /* ---------- End Sem syllabus (shared/syllabus.js) ---------- */
+  function syllabus(code){
+    var all = window.SEM7_SYLLABUS;
+    return all && all[code] ? all[code] : null;
+  }
+  function syllabusModule(code, mid){
+    var s = syllabus(code);
+    return s ? find(s.modules, mid) : null;
+  }
+  /* Modules the site has no content for yet: [{id, n, title, topics, los}] */
+  function pendingModules(code){
+    var s = syllabus(code);
+    return s ? s.modules.filter(function(m){ return !m.built; }) : [];
+  }
+  function isPending(code, mid){
+    var m = syllabusModule(code, mid);
+    return !!(m && !m.built);
+  }
+
+  /* ---------- dashboard parts ----------
+     stats: [{icon, value, label, count, pct}]; `count` is a short "3 / 40". */
+  UI.icon = icon;
+  UI.stats = function(items){
+    return '<div class="s7-stats">' + items.map(function(x){
+      var bar = x.pct == null ? "" : '<div class="bar" aria-hidden="true"><i style="width:' + clampPct(x.pct) + '%"></i></div>';
+      return '<div class="s7-stat"><span class="s7-ico">' + icon(x.icon) + '</span><div class="s7-stat-b">' +
+        '<div class="s7-v">' + x.value + '</div><div class="s7-k">' + x.label +
+        (x.count ? ' <span>' + x.count + "</span>" : "") + "</div>" + bar + "</div></div>";
+    }).join("") + "</div>";
+  };
+  /* o: {kicker, title, go:{label, attrs}, alt:{label, attrs}} */
+  UI.next = function(o){
+    return '<div class="s7-nextcard"><span class="s7-ico s7-ico-lg">' + icon("play") + '</span>' +
+      '<div class="s7-nx"><div class="s7-nx-k">' + (o.kicker || "Study next") + '</div><div class="s7-nx-t">' + o.title + "</div></div>" +
+      '<div class="s7-nx-a">' + (o.alt ? '<button type="button" class="btn" ' + o.alt.attrs + ">" + o.alt.label + "</button>" : "") +
+      (o.go ? '<button type="button" class="btn primary" ' + o.go.attrs + ">" + o.go.label + icon("arrow") + "</button>" : "") +
+      "</div></div>";
+  };
+  UI.h2 = function(name, title, extra){
+    return '<h2 class="s7-h2">' + icon(name) + "<span>" + title + "</span>" + (extra || "") + "</h2>";
+  };
+  /* All six modules as one grid. built: {m1:{pct, count}} from the site's own
+     progress; attrs(id) gives the site's own link attributes for a module. */
+  UI.modules = function(code, built, attrs){
+    var s = syllabus(code);
+    if(!s) return "";
+    return UI.h2("layers", "Modules") + '<div class="s7-mods">' + s.modules.map(function(m){
+      var b = built[m.id], pend = !m.built || !b;
+      return '<button type="button" class="s7-mod' + (pend ? " is-pending" : "") + '" ' + attrs(m.id) + ">" +
+        '<span class="s7-mod-n">' + m.n + '</span><span class="s7-mod-b"><span class="s7-mod-t">' + esc(m.title) + "</span>" +
+        (pend ? '<span class="s7-mod-s">' + icon("hourglass") + "Material pending</span>"
+              : '<span class="s7-mod-s"><span class="bar" aria-hidden="true"><i style="width:' + clampPct(b.pct) + '%"></i></span>' +
+                "<b>" + clampPct(b.pct) + "%</b></span>") +
+        "</span></button>";
+    }).join("") + "</div>";
+  };
+  /* The page for a module whose material has not arrived: its syllabus topics
+     as a checklist to come, and the learning outcomes folded away. */
+  UI.pending = function(code, mid){
+    var m = syllabusModule(code, mid);
+    if(!m) return "";
+    var topics = (m.topics || []).map(function(t){
+      return '<li><span class="s7-ring" aria-hidden="true"></span><span>' + esc(t) + "</span></li>";
+    }).join("");
+    var los = m.los && m.los.length ? '<details class="s7-los"><summary>' + icon("flag") + "Learning outcomes <span>" + m.los.length +
+      "</span></summary><ul>" + m.los.map(function(l){ return "<li>" + esc(l) + "</li>"; }).join("") + "</ul></details>" : "";
+    return '<header class="s7-head"><div class="s7-eyebrow">Module ' + m.n + "</div><h1>" + esc(m.title) + "</h1>" +
+      '<div class="s7-meta"><span class="s7-tag is-pending">' + icon("hourglass") + "Material pending</span>" +
+      (m.hours ? '<span class="s7-tag">' + icon("clock") + m.hours + " hrs</span>" : "") + "</div></header>" +
+      UI.h2("checks", "Syllabus topics", '<span class="s7-h2-n">' + (m.topics || []).length + "</span>") +
+      '<ul class="s7-topics">' + topics + "</ul>" + los;
+  };
+
   window.SEM7 = {
-    ui:UI,
+    ui:UI, icon:icon,
+    syllabus:syllabus, syllabusModule:syllabusModule, pendingModules:pendingModules, isPending:isPending,
     EXAM:EXAM, SUBJECTS:SUBJECTS, byCode:byCode,
     countdown:countdown, dateParts:dateParts, examStart:examStart, examEnd:examEnd, dayDiff:dayDiff, addDays:addDays,
     nextSubject:nextSubject, readSummary:readSummary, hasOwnProgress:hasOwnProgress, subjectHref:subjectHref,

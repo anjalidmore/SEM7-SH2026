@@ -6,6 +6,7 @@
 <title>Operations Research · Semester 7</title>
 <link rel="stylesheet" href="../../shared/sem7.css">
 <script src="../../shared/sem7.js"></script>
+<script src="../../shared/syllabus.js"></script>
 <style>
 /* OR only. Everything shared is in ../../shared/sem7.css */
 #searchwrap{display:none; max-width:var(--page); margin:0 auto; padding:0 var(--gutter) 12px}
@@ -4437,33 +4438,23 @@ function viewDash(){
   var o = overallProgress();
   var pn = trackProgress("problem-solving");
   var th = trackProgress("theory");
-  var ex = excludedCount(null);
+  var UI = SEM7.ui;
 
-  var h = '<h1>Dashboard</h1>'+
-    '<p class="lead">Readiness counts only the topics on this paper. Progress comes from questions you mark done, '+
-    'and is stored in this browser alone.</p>'+
-    '<div class="grid3">'+
-      statCard(o.pct, "Overall readiness", o.done+" of "+o.total+" questions", o.pct)+
-      statCard(pn.pct, "Numericals readiness", pn.done+" of "+pn.total+" questions", pn.pct)+
-      statCard(th.pct, "Theory readiness", th.done+" of "+th.total+" questions", th.pct)+
-    '</div>';
+  var h = '<h1>Dashboard</h1>'+UI.stats([
+    {icon:"target", value:o.pct+"%", label:"Overall", count:o.done+" / "+o.total, pct:o.pct},
+    {icon:"formula", value:pn.pct+"%", label:"Numericals", count:pn.done+" / "+pn.total, pct:pn.pct},
+    {icon:"book", value:th.pct+"%", label:"Theory", count:th.done+" / "+th.total, pct:th.pct}
+  ]);
 
-  MODULES.forEach(function(m){
-    var mp = moduleProgress(m.id), tf = topicsFinished(m.id), lo = excludedCount(m.id);
-    var sub = mp.total
-      ? mp.done+" of "+mp.total+" questions &middot; "+tf.done+" of "+tf.total+" topics finished"
-      : "no exam-priority topics";
-    if (lo) sub += ' <span class="muted">&middot; '+lo+' low-priority not counted</span>';
-    h += '<div class="card"><div class="qmeter" style="margin-top:0">'+
-      '<span class="qn" style="flex:1;white-space:normal"><b>'+esc(m.n)+'</b> &middot; '+esc(m.title)+
-      '<br><span class="muted">'+sub+'</span></span>'+
-      '<span class="num" style="font-size:1.05rem;font-weight:800;color:var(--accent)">'+mp.pct+'%</span>'+
-      '<button class="btn" data-go="mod" data-m="'+esc(m.id)+'">Open</button></div>'+
-      bar(mp.pct)+'</div>';
-  });
+  /* study next: the first exam-priority topic already started, else the first not started */
+  var open = examTopics().filter(function(t){ return topicStatus(t.id) !== "done"; });
+  var nx = open.filter(function(t){ return topicStatus(t.id) === "progress"; })[0] || open[0];
+  if (nx) h += UI.next({kicker:"Study next &middot; "+esc(moduleName(nx.m)), title:esc(nx.title),
+    go:{label:"Open", attrs:'data-go="topic" data-id="'+esc(nx.id)+'"'}});
 
-  if (ex) h += '<p class="small muted">'+ex+' low-priority topics are excluded from every figure above. '+
-    'They are still on the module tabs and can still be marked done. See the Plan tab for why.</p>';
+  var built = {};
+  MODULES.forEach(function(m){ built[m.id] = {pct:moduleProgress(m.id).pct}; });
+  h += UI.modules("or", built, function(id){ return 'data-go="mod" data-m="'+id+'"'; });
 
   app.innerHTML = h;
 }
@@ -5091,8 +5082,9 @@ var tabsEl = document.getElementById("tabs");
 var searchWrap = document.getElementById("searchwrap");
 var qEl = document.getElementById("q");
 
+/* All six syllabus modules; the ones without material open the shared "pending" page. */
 var NAV = [{k:"dash", label:"Dashboard"}, {k:"plan", label:"Plan"}]
-  .concat(MODULES.map(function(m){ return {k:"mod", m:m.id, label:m.n}; }))
+  .concat(SEM7.syllabus("or").modules.map(function(m){ return {k:"mod", m:m.id, label:"Module "+m.n, pending:!m.built}; }))
   .concat([{k:"recog", label:"Recognition"}, {k:"quiz", label:"Quiz"},
            {k:"formulae", label:"Formulae"}, {k:"exam", label:"Exam Mode"}]);
 
@@ -5107,7 +5099,7 @@ function renderTabs(){
   tabsEl.innerHTML = NAV.map(function(n){
     var key = n.k === "mod" ? "mod:"+n.m : n.k;
     var attrs = 'data-go="'+n.k+'"'+(n.m ? ' data-m="'+n.m+'"' : '');
-    return '<button class="tab'+(key === ak ? " on" : "")+'" role="tab" aria-selected="'+(key === ak)+'" '+attrs+'>'+
+    return '<button class="tab'+(key === ak ? " on" : "")+(n.pending ? " s7-tab-pending" : "")+'" role="tab" aria-selected="'+(key === ak)+'" '+attrs+'>'+
            esc(n.label)+'</button>';
   }).join('');
 }
@@ -5119,7 +5111,9 @@ function applyTheme(t){
 function render(){
   renderTabs();
   switch (view.name){
-    case "mod":      viewModule(view.m); break;
+    case "mod":      if (SEM7.isPending("or", view.m)) app.innerHTML = SEM7.ui.pending("or", view.m);
+                     else viewModule(view.m);
+                     break;
     case "topic":    viewTopic(view.id); break;
     case "recog":    viewRecog(); break;
     case "quiz":     viewQuiz(); break;

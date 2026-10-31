@@ -7,6 +7,7 @@
 <meta name="description" content="Mid-Semester Exam preparation for CEPEC7041 Applied Data Science. Modules 1–2, 30 marks, 1.5 hours. Built from the official syllabus, both COMP A and COMP B lecture decks, the class notes, the formula sheet and CIA-2. Progress saved locally in your browser.">
 <link rel="stylesheet" href="../../shared/sem7.css">
 <script src="../../shared/sem7.js"></script>
+<script src="../../shared/syllabus.js"></script>
 <style>
 /* ADS only. Everything shared is in ../../shared/sem7.css */
 .reveal-row{display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; align-items:center}
@@ -30,6 +31,10 @@ ul.list,ol.list{margin:.5rem 0; padding-left:1.3rem}
       <button data-go="dashboard" class="active">Dashboard</button>
       <button data-go="m1">Module 1</button>
       <button data-go="m2">Module 2</button>
+      <button data-go="m3" class="s7-tab-pending">Module 3</button>
+      <button data-go="m4" class="s7-tab-pending">Module 4</button>
+      <button data-go="m5" class="s7-tab-pending">Module 5</button>
+      <button data-go="m6" class="s7-tab-pending">Module 6</button>
       <button data-go="recognition">Recognition</button>
       <button data-go="quiz">Quiz</button>
       <button data-go="formula">Formulae</button>
@@ -4728,54 +4733,24 @@ function vDashboard(){
   const ov = overallProgress();
   const th = trackProgress("theory"), nu = trackProgress("numerical");
   const qz = quizOverall(), weak = weakTopics(), next = studyNext();
-  const isNew = ov.done === 0 && qz.n === 0;
 
+  const UI = window.SEM7 && SEM7.ui;
   let h = '<h1>Dashboard</h1>';
-  h += '<p class="lead" style="margin-bottom:1rem">'+
-    (isNew
-      ? 'Progress is measured by the questions you mark as done, and is saved in this browser only.'
-      : 'You are <b>'+ov.pct+'%</b> through the questions'+(P.streak > 1 ? ' &middot; '+P.streak+'-day streak' : '')+'.')+
-    '</p>';
-
-  /* readiness — overall, theory, numericals */
-  h += '<div class="grid stats">'+
-   '<div class="stat"><div class="num">'+ov.pct+'%</div><div class="label">Overall readiness</div>'+
-     '<div class="sub">'+ov.done+' of '+ov.total+' questions</div>'+pbar(ov.pct, barClass(ov.pct))+'</div>'+
-   '<div class="stat"><div class="num">'+nu.pct+'%</div><div class="label">Numericals</div>'+
-     '<div class="sub">'+nu.done+' of '+nu.total+' questions</div>'+pbar(nu.pct, barClass(nu.pct))+'</div>'+
-   '<div class="stat"><div class="num">'+th.pct+'%</div><div class="label">Theory</div>'+
-     '<div class="sub">'+th.done+' of '+th.total+' questions</div>'+pbar(th.pct, barClass(th.pct))+'</div>'+
-   '</div>';
-
-  /* study next — module name + topic name only */
-  h += '<div class="card" style="border-left:4px solid var(--accent);margin-top:12px">'+
-    '<h4 style="margin-top:0">Study next</h4>';
-  if(next.topic){
-    const t = next.topic;
-    h += '<p class="muted" style="margin:0">Module '+t.m.slice(1)+'</p>'+
-      '<p style="margin:.15rem 0 .7rem;font-size:1.05rem;font-weight:700">'+t.title+'</p>'+
-      '<button class="primary" data-topic="'+t.id+'">Open &rarr;</button>';
-  } else {
-    h += '<p style="margin:.15rem 0 .7rem;font-size:1.05rem;font-weight:700">'+
-      (next.view === "quiz" ? "Take the quiz" : "Exam Mode")+'</p>'+
-      '<button class="primary" data-go="'+next.view+'">Open &rarr;</button>';
+  if(UI){
+    h += UI.stats([
+      {icon:"target", value:ov.pct+"%", label:"Overall", count:ov.done+" / "+ov.total, pct:ov.pct},
+      {icon:"formula", value:nu.pct+"%", label:"Numericals", count:nu.done+" / "+nu.total, pct:nu.pct},
+      {icon:"book", value:th.pct+"%", label:"Theory", count:th.done+" / "+th.total, pct:th.pct}
+    ]);
+    h += next.topic
+      ? UI.next({kicker:"Study next &middot; Module "+next.topic.m.slice(1), title:next.topic.title,
+                 go:{label:"Open", attrs:'data-topic="'+next.topic.id+'"'}})
+      : UI.next({title:next.view === "quiz" ? "Take the quiz" : "Exam Mode",
+                 go:{label:"Open", attrs:'data-go="'+next.view+'"'}});
+    const built = {};
+    MODULES.forEach(m => { built[m.id] = {pct:moduleProgress(m.id).pct}; });
+    h += UI.modules("ads", built, id => 'data-go="'+id+'"');
   }
-  h += '</div>';
-
-  /* module-wise readiness */
-  h += '<div class="grid two" style="margin-top:12px">';
-  MODULES.forEach(m => {
-    const mp = moduleProgress(m.id);
-    h += '<div class="card"><div class="badge-row" style="margin-bottom:6px">'+
-      '<b>Module '+m.num+'</b>'+
-      '<span style="margin-left:auto;font-weight:800;color:var(--accent)">'+mp.pct+'%</span></div>'+
-      pbar(mp.pct, barClass(mp.pct))+
-      '<p style="font-weight:640;margin:.5rem 0 .2rem;font-size:.92rem">'+esc(m.title)+'</p>'+
-      '<p class="muted" style="margin:0 0 10px">'+mp.done+' of '+mp.total+' questions &middot; '+
-      mp.topicsDone+' of '+mp.topics+' topics finished</p>'+
-      '<button data-go="'+m.id+'">Open Module '+m.num+' &rarr;</button></div>';
-  });
-  h += '</div>';
 
   /* weak areas — only when the quiz has actually flagged something */
   if(weak.length){
@@ -5434,7 +5409,7 @@ let currentTopic = null;
 let pendingAnchor = null;
 
 const NAV_FOR = {
-  dashboard:"dashboard", m1:"m1", m2:"m2", topic:null,
+  dashboard:"dashboard", m1:"m1", m2:"m2", m3:"m3", m4:"m4", m5:"m5", m6:"m6", topic:null,
   recognition:"recognition", quiz:"quiz", formula:"formula",
   exam:"exam", compare:"compare", search:null, settings:null
 };
@@ -5454,7 +5429,7 @@ function render(){
     case "exam":        h = vExam(); break;
     case "search":      h = vSearch(); break;
     case "settings":    h = vSettings(); break;
-    default:            h = vDashboard();
+    default:            h = window.SEM7 && SEM7.isPending("ads", view) ? SEM7.ui.pending("ads", view) : vDashboard();
   }
   app.innerHTML = h;
   let active = NAV_FOR[view];

@@ -43,7 +43,7 @@ Monorepo, semester hub, progress bridge, one shared design system across all fiv
 - [ ] Delete the five old repos (`AI-SH2026`, `NLP-SH2026`, `ADS-SH2026`, `OR-SH2026`, `HMC-SH2026`).
       Progress is unaffected: it belongs to `anjalidmore.github.io`, not to the repo path.
 
-### Phase 2 — Every subject ESE-shaped, before content (1 – 3 Nov)
+### Phase 2 — Every subject ESE-shaped, before content ✅ done (31 Oct)
 No notes needed. Everything here comes from the syllabus PDFs we already have.
 1. **Modules 1–6 everywhere.** Each subject lists all six modules. A module without material shows its
    syllabus topics and LOs verbatim, marked "Material pending", so the full checklist exists from day one.
@@ -54,6 +54,11 @@ No notes needed. Everything here comes from the syllabus PDFs we already have.
    Percentages are now over Modules 1–6.
 4. **Content readiness on the hub.** Separate from study progress: per subject, which modules are
    built and which still wait for material. This replaces keeping track in your head.
+
+Done: `shared/syllabus.js` holds all 30 modules (topics + LOs for the 13 pending ones, `paper:null`
+per subject). Every subject shows Modules 1–6, pending ones open a shared "Material pending" page.
+All six dashboards (hub + five subjects) were rebuilt on shared parts with icons and no intro text.
+Still open from this phase: the paper pattern itself, which arrives with the patterns.
 
 ### Phase 3 — Study features (3 – 7 Nov)
 Kept small on purpose. Each one removes a decision you would otherwise make while studying.

@@ -7,6 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%238a5a2b'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round'%3E%3Cpath d='M9 8v16'/%3E%3Cpath d='M23 8v16'/%3E%3Cpath d='M9 12h14'/%3E%3Cpath d='M9 20h14'/%3E%3C/g%3E%3Ccircle cx='9' cy='8' r='2.6' fill='%23fff'/%3E%3Ccircle cx='23' cy='24' r='2.6' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="../../shared/sem7.css">
 <script src="../../shared/sem7.js"></script>
+<script src="../../shared/syllabus.js"></script>
 <style>
 /* Deep Learning only. Everything shared is in ../../shared/sem7.css */
 .prose p,.prose li{max-width:78ch}
@@ -3934,7 +3935,7 @@ function band(p){ return p<34 ? "lo" : (p<67 ? "mid" : ""); }
 function bar(p){ return '<div class="bar"><i class="'+band(p)+'" style="width:'+Math.max(0,Math.min(100,p))+'%"></i></div>'; }
 function pill(cls, txt){ return '<span class="pill '+cls+'">'+esc(txt)+'</span>'; }
 function moduleById(m){ for(var i=0;i<MODULES.length;i++) if(MODULES[i].id===m) return MODULES[i]; return null; }
-function moduleName(m){ var x=moduleById(m); return x? ("Module "+x.n+": "+x.title) : m; }
+function moduleName(m){ var x=moduleById(m) || SEM7.syllabusModule("dl", m); return x? ("Module "+x.n+": "+x.title) : m; }
 function moduleShort(m){ var x=moduleById(m); return x? ("Module "+x.n) : m; }
 
 function statCard(n, label, sub, pct){
@@ -4034,24 +4035,20 @@ function moduleLOs(m){
 }
 /* ===================== VIEWS: dashboard, module, topic ===================== */
 function viewDashboard(){
-  var ov = overallProgress(), a = trackProgress(TRACKS.a.k), b = trackProgress(TRACKS.b.k);
-  var h = '<h1>Dashboard</h1>'+
-    '<p class="lead">Progress comes only from questions you mark done, and is stored in this browser alone. '+
-    'These figures cover the exam priority topics; Settings shows the whole syllabus number.</p>'+
-    '<div class="stats">'+
-      statCard(ov.pct+"%","Overall readiness", ov.done+" of "+ov.total+" questions", ov.pct)+
-      statCard(a.pct+"%",TRACKS.a.label, a.done+" of "+a.total+" questions", a.pct)+
-      statCard(b.pct+"%",TRACKS.b.label, b.done+" of "+b.total+" questions", b.pct)+
-    '</div><div class="grid">';
-  MODULES.forEach(function(m){
-    var mp = moduleProgress(m.id), tf = topicsFinished(m.id);
-    h += '<button class="tc" data-go="module" data-id="'+esc(m.id)+'">'+
-      '<span class="top"><span class="ti">'+esc(moduleName(m.id))+'</span></span>'+
-      '<span class="small">'+mp.done+' of '+mp.total+' questions, '+tf.done+' of '+tf.total+' topics finished</span>'+
-      '<span class="qmeter">'+bar(mp.pct)+'<span>'+esc(mp.pct)+'%</span><span>Open</span></span></button>';
-  });
-  h += '</div>';
-  return h;
+  var ov = overallProgress(), a = trackProgress(TRACKS.a.k), b = trackProgress(TRACKS.b.k), UI = SEM7.ui;
+  var h = '<h1>Dashboard</h1>'+UI.stats([
+    {icon:"target", value:ov.pct+"%", label:"Overall", count:ov.done+" / "+ov.total, pct:ov.pct},
+    {icon:"formula", value:a.pct+"%", label:TRACKS.a.label, count:a.done+" / "+a.total, pct:a.pct},
+    {icon:"book", value:b.pct+"%", label:TRACKS.b.label, count:b.done+" / "+b.total, pct:b.pct}
+  ]);
+  /* study next: the first high-priority topic already started, else the first not started */
+  var open = highTopics().filter(function(t){ return topicStatus(t.id) !== "done"; });
+  var nx = open.filter(function(t){ return topicStatus(t.id) === "progress"; })[0] || open[0];
+  if(nx) h += UI.next({kicker:"Study next &middot; Module "+esc(String(moduleById(nx.m).n)), title:esc(nx.title),
+    go:{label:"Open", attrs:'data-go="topic" data-id="'+esc(nx.id)+'"'}});
+  var built = {};
+  MODULES.forEach(function(m){ built[m.id] = {pct:moduleProgress(m.id).pct}; });
+  return h + UI.modules("dl", built, function(id){ return 'data-go="module" data-id="'+id+'"'; });
 }
 
 var subtabState = {};
@@ -4606,7 +4603,8 @@ function themeLabel(){
 
 function navTabs(){
   var tabs = [{v:"dashboard", l:"Dashboard"}];
-  MODULES.forEach(function(m){ tabs.push({v:"module", id:m.id, l:"Module "+m.n}); });
+  /* all six syllabus modules; those without material open the shared "pending" page */
+  SEM7.syllabus("dl").modules.forEach(function(m){ tabs.push({v:"module", id:m.id, l:"Module "+m.n, pending:!m.built}); });
   tabs.push({v:"recognition", l:"Recognition"});
   tabs.push({v:"quiz", l:"Quiz"});
   tabs.push({v:"formulae", l:"Formulae"});
@@ -4623,7 +4621,7 @@ function renderNav(){
   var ak = activeTabKey();
   var tabHtml = navTabs().map(function(t){
     var key = t.v==="module" ? "module|"+t.id : t.v;
-    return '<button class="tab" role="tab" aria-selected="'+(key===ak)+'" data-go="'+t.v+'"'+
+    return '<button class="tab'+(t.pending?" s7-tab-pending":"")+'" role="tab" aria-selected="'+(key===ak)+'" data-go="'+t.v+'"'+
       (t.id? ' data-id="'+esc(t.id)+'"':'')+'>'+esc(t.l)+'</button>';
   }).join("");
   document.getElementById("nav").innerHTML =
@@ -4657,7 +4655,7 @@ function render(keepScroll){
   var body = "";
   switch(VIEW.v){
     case "dashboard": body = viewDashboard(); break;
-    case "module": body = viewModule(VIEW.id); break;
+    case "module": body = SEM7.isPending("dl", VIEW.id) ? SEM7.ui.pending("dl", VIEW.id) : viewModule(VIEW.id); break;
     case "topic": body = viewTopic(VIEW.id); break;
     case "recognition": body = viewRecognition(); break;
     case "quiz": body = viewQuiz(); break;
