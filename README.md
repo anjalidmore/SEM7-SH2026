@@ -182,13 +182,18 @@ progress on `localhost` and on GitHub Pages.
 from `/ADS-SH2026/` to `/SEM7-SH2026/subjects/ads/` keeps its progress. **Moving to a custom domain
 would not.** Export progress from each subject's Settings before ever doing that.
 
-## Deployment (GitHub Pages; not published yet)
+## Deployment (GitHub Pages)
 
-1. Create the GitHub repository `anjalidmore/SEM7-SH2026` and push `main`
-   (`gh repo create anjalidmore/SEM7-SH2026 --public --source . --push`).
-2. Settings → Pages → Deploy from a branch → `main` / root.
-3. Check the hub and all five subjects at `https://anjalidmore.github.io/SEM7-SH2026/`.
-4. Only then, replace each old repository's site with a redirect to its new path.
+Published at <https://anjalidmore.github.io/SEM7-SH2026/> from `main` / root. Every push to `main`
+redeploys. The End Sem plan is in [`docs/PLAN.md`](docs/PLAN.md).
+
+The five old per-subject repositories are being retired. Deleting a repository needs the
+`delete_repo` scope, which the GitHub CLI does not have by default:
+
+```sh
+gh auth refresh -h github.com -s delete_repo
+gh repo delete anjalidmore/AI-SH2026 --yes   # and so on for NLP, ADS, OR, HMC
+```
 
 Any other static host (Netlify, Cloudflare Pages, a plain web server) works the same way: publish the
 repository root, with no build command. Progress moves with the origin, so a new host starts empty.
