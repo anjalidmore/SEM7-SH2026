@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semester 7 · End Sem</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23171a21'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' fill='white' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f5f7f9; --panel:#ffffff; --panel-2:#eef1f5;
+  --ink:#161b24; --ink-soft:#4c5566; --ink-mute:#6f7890;
+  --border:#dce1e9; --border-2:#c3cbd8;
+  --track:#e6eaf0; --focus:#1f5f8b;
+  --good:#16794f;
+  --radius:9px;
+  --shadow:0 1px 2px rgba(15,20,30,.05), 0 1px 3px rgba(15,20,30,.04);
+  --mix:0%;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0f1217; --panel:#171b22; --panel-2:#1e232c;
+  --ink:#e7eaf0; --ink-soft:#b0b8c6; --ink-mute:#8790a1;
+  --border:#2a303b; --border-2:#3a4250;
+  --track:#262c36; --focus:#8fb4ff; --good:#5cc392;
+  --shadow:none; --mix:45%;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1217; --panel:#171b22; --panel-2:#1e232c;
+    --ink:#e7eaf0; --ink-soft:#b0b8c6; --ink-mute:#8790a1;
+    --border:#2a303b; --border-2:#3a4250;
+    --track:#262c36; --focus:#8fb4ff; --good:#5cc392;
+    --shadow:none; --mix:45%;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); line-height:1.55;
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  overflow-x:clip}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+h1,h2,h3{margin:0; font-weight:600; letter-spacing:-.01em}
+.wrap{max-width:1080px; margin:0 auto; padding:0 16px}
+.vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* header */
+.top{border-bottom:1px solid var(--border); background:var(--panel)}
+.top .wrap{display:flex; align-items:center; gap:16px; min-height:64px; padding-top:10px; padding-bottom:10px}
+.eyebrow{font-size:.74rem; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.07em; font-weight:600}
+h1{font-size:1.28rem; margin-top:2px}
+.iconbtn{margin-left:auto; display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  min-width:40px; height:40px; padding:0 12px; border:1px solid var(--border); border-radius:8px;
+  background:var(--panel); color:var(--ink-soft); font:inherit; font-size:.82rem; cursor:pointer}
+.iconbtn:hover{border-color:var(--border-2); color:var(--ink)}
+.iconbtn svg{width:16px; height:16px; flex:none}
+
+main{padding:24px 0 48px}
+
+/* summary figures */
+.figs{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px; margin-bottom:28px}
+.fig{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow)}
+.fig .k{font-size:.78rem; color:var(--ink-mute); font-weight:500}
+.fig .v{font-size:1.5rem; font-weight:650; margin-top:2px; font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.fig .s{font-size:.82rem; color:var(--ink-soft); margin-top:1px}
+
+/* timetable */
+.sechead{display:flex; align-items:baseline; gap:12px; margin-bottom:10px}
+h2{font-size:1rem}
+.sechead .note{font-size:.82rem; color:var(--ink-mute)}
+.tt{list-style:none; margin:0; padding:0; display:grid; gap:10px}
+.row{--acc:#1f5f8b; --acc-ui:color-mix(in srgb, var(--acc), #fff var(--mix));
+  display:grid; grid-template-columns:62px minmax(0,1fr) auto; grid-template-areas:"date main side";
+  gap:4px 18px; align-items:center; background:var(--panel); border:1px solid var(--border);
+  border-left:3px solid var(--acc-ui); border-radius:var(--radius); padding:14px 18px 14px 15px; box-shadow:var(--shadow)}
+.row.next{border-color:var(--border-2); border-left-color:var(--acc-ui); box-shadow:0 0 0 1px var(--border-2), var(--shadow)}
+.row.done{opacity:.66}
+.date{grid-area:date; text-align:center; line-height:1.1}
+.date .dow{font-size:.72rem; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.06em; font-weight:600}
+.date .day{font-size:1.55rem; font-weight:650; color:var(--acc-ui); font-variant-numeric:tabular-nums; margin:1px 0}
+.date .mon{font-size:.78rem; color:var(--ink-soft)}
+.main{grid-area:main; min-width:0}
+.main h3{font-size:1.02rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.main h3 a{text-decoration:none}
+.main h3 a:hover{text-decoration:underline; text-underline-offset:3px}
+.tag{font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em; padding:2px 7px;
+  border-radius:999px; border:1px solid var(--border-2); color:var(--ink-soft)}
+.meta{font-size:.82rem; color:var(--ink-mute); margin-top:2px}
+.prog{display:flex; align-items:center; gap:10px; margin-top:9px; flex-wrap:wrap}
+.bar{flex:1 1 120px; max-width:220px; min-width:90px; height:6px; border-radius:99px; background:var(--track); overflow:hidden}
+.bar i{display:block; height:100%; background:var(--acc-ui); border-radius:99px}
+.prog .pct{font-size:.86rem; font-weight:600; font-variant-numeric:tabular-nums}
+.prog .lbl{font-size:.8rem; color:var(--ink-mute)}
+.prog .empty{font-size:.82rem; color:var(--ink-mute)}
+.mods{display:flex; flex-wrap:wrap; gap:4px 12px; margin-top:6px; font-size:.76rem; color:var(--ink-mute);
+  font-variant-numeric:tabular-nums}
+.mods b{color:var(--ink-soft); font-weight:600}
+.side{grid-area:side; display:flex; flex-direction:column; align-items:flex-end; gap:8px; text-align:right}
+.count{font-size:.86rem; color:var(--ink-soft); white-space:nowrap}
+.count b{font-size:1.3rem; color:var(--ink); font-weight:650; font-variant-numeric:tabular-nums}
+.count.live b, .count.today b{color:var(--acc-ui)}
+.open{display:inline-flex; align-items:center; gap:6px; min-height:36px; padding:0 14px; border-radius:8px;
+  border:1px solid var(--border-2); background:var(--panel); color:var(--ink); text-decoration:none;
+  font-size:.86rem; font-weight:550; white-space:nowrap}
+.open:hover{border-color:var(--acc-ui)}
+.row.next .open{background:var(--acc-ui); border-color:var(--acc-ui); color:#fff}
+:root[data-theme="dark"] .row.next .open{color:#0f1217}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .row.next .open{color:#0f1217} }
+.alt{font-size:.78rem; color:var(--ink-mute)}
+
+footer{margin-top:28px; font-size:.82rem; color:var(--ink-mute); max-width:72ch}
+footer p{margin:.4em 0}
+
+@media (max-width:640px){
+  .row{grid-template-columns:52px minmax(0,1fr); grid-template-areas:"date main" ". side"; padding:12px 14px 12px 12px; gap:10px 14px}
+  .side{flex-direction:row; align-items:center; justify-content:space-between; text-align:left}
+  .iconbtn .tlabel{display:none}
+}
+@media print{ .iconbtn{display:none} .row{break-inside:avoid; box-shadow:none} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">B.Tech Computer Engineering &middot; Semester VII</div>
+      <h1>End Semester Examinations &middot; November 2026</h1>
+    </div>
+    <button class="iconbtn" id="theme" type="button" aria-label="Theme"></button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="figs" id="figs" aria-label="Semester at a glance"></section>
+
+    <section aria-labelledby="tt-h">
+      <div class="sechead"><h2 id="tt-h">Timetable</h2><span class="note" id="tt-note"></span></div>
+      <ol class="tt" id="tt"></ol>
+    </section>
+
+    <footer>
+      <p>Progress is read from this browser only. Each subject keeps its own progress and its own
+         Export / Import in Settings. This page never changes it.</p>
+      <p id="nojs">This page needs <code>shared/sem7.js</code> next to it.</p>
+    </footer>
+  </div>
+</main>
+
+<script src="shared/sem7.js"></script>
+<script>
+(function(){
+  "use strict";
+  if(!window.SEM7) return;
+  document.getElementById("nojs").remove();
+
+  var S = window.SEM7;
+  var THEME_KEY = "sem7.theme";
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function plural(n, w){ return n + " " + w + (n === 1 ? "" : "s"); }
+
+  /* ---------- theme: system -> light -> dark ---------- */
+  var ICONS = {
+    system:'<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/></svg>',
+    light:'<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    dark:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>'
+  };
+  var LABEL = {system:"Match system", light:"Light", dark:"Dark"};
+  function applyTheme(t){
+    if(t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    else { t = "system"; document.documentElement.removeAttribute("data-theme"); }
+    var b = document.getElementById("theme");
+    b.innerHTML = ICONS[t] + '<span class="tlabel">' + LABEL[t] + '</span>';
+    b.setAttribute("aria-label", "Theme: " + LABEL[t]);
+    b.dataset.theme = t;
+  }
+  document.getElementById("theme").addEventListener("click", function(){
+    var order = ["system", "light", "dark"], cur = this.dataset.theme;
+    var t = order[(order.indexOf(cur) + 1) % order.length];
+    S.lsSet(THEME_KEY, t);
+    applyTheme(t);
+  });
+  applyTheme(S.lsGet(THEME_KEY));
+
+  /* ---------- render ---------- */
+  function ago(iso, now){
+    var t = Date.parse(iso);
+    if(!isFinite(t)) return "";
+    var d = S.dayDiff(new Date(t), now);
+    return d <= 0 ? "opened today" : d === 1 ? "opened yesterday" : "opened " + d + " days ago";
+  }
+
+  function progressHTML(s, sum, now){
+    if(sum){
+      var mods = sum.modules.length ? '<div class="mods">' + sum.modules.map(function(m){
+        return '<span>' + esc(m.name) + ' <b>' + m.pct + '%</b></span>';
+      }).join("") + '</div>' : "";
+      return '<div class="prog">' +
+        '<div class="bar" role="progressbar" aria-label="' + esc(s.short + " progress") + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + sum.pct + '"><i style="width:' + sum.pct + '%"></i></div>' +
+        '<span class="pct">' + sum.pct + '%</span>' +
+        '<span class="lbl">' + esc(sum.label) + (sum.updatedAt ? ' &middot; ' + ago(sum.updatedAt, now) : '') + '</span>' +
+        '</div>' + mods;
+    }
+    return '<div class="prog"><span class="empty">' +
+      (S.hasOwnProgress(s) ? "Progress saved. Open the subject once to show it here."
+                           : "Not started in this browser.") + '</span></div>';
+  }
+
+  function countHTML(c){
+    if(c.state === "upcoming" && c.days >= 2) return '<div class="count"><b>' + c.days + '</b> days</div>';
+    var word = c.state === "upcoming" ? "Tomorrow" : c.state === "today" ? "Today" : c.state === "live" ? "Now" : "Done";
+    return '<div class="count ' + c.state + '"><b>' + word + '</b></div>';
+  }
+
+  function render(){
+    var now = new Date(), next = S.nextSubject(now), list = S.SUBJECTS;
+    var sums = list.map(function(s){ return S.readSummary(s.code); });
+
+    /* figures */
+    var synced = sums.filter(Boolean);
+    var avg = Math.round(sums.reduce(function(a, x){ return a + (x ? x.pct : 0); }, 0) / list.length);
+    var figs = '';
+    if(next){
+      var c = S.countdown(next, now), p = S.dateParts(next);
+      figs += '<div class="fig"><div class="k">Next paper</div><div class="v">' + esc(next.short) + ' &middot; ' +
+        esc(c.state === "upcoming" && c.days >= 2 ? plural(c.days, "day") : c.text) + '</div>' +
+        '<div class="s">' + esc(next.name) + ', ' + p.dow + ' ' + p.day + ' ' + p.mon + '</div></div>';
+    } else {
+      figs += '<div class="fig"><div class="k">Next paper</div><div class="v">All done</div><div class="s">Every End Sem paper has been written.</div></div>';
+    }
+    figs += '<div class="fig"><div class="k">Average progress</div><div class="v">' + avg + '%</div>' +
+      '<div class="s">Across all five subjects' + (synced.length < list.length ? ', ' + (list.length - synced.length) + ' not yet shown' : '') + '</div></div>';
+    figs += '<div class="fig"><div class="k">Each paper</div><div class="v">' + S.EXAM.marks + ' marks</div>' +
+      '<div class="s">' + S.EXAM.duration + ', ' + S.EXAM.start + ' to ' + S.EXAM.end + '</div></div>';
+    document.getElementById("figs").innerHTML = figs;
+
+    /* timetable */
+    var first = list[0], last = list[list.length - 1];
+    document.getElementById("tt-note").textContent =
+      "Five papers in " + plural(S.dayDiff(S.examStart(first), S.examStart(last)) + 1, "day");
+
+    document.getElementById("tt").innerHTML = list.map(function(s, i){
+      var c = S.countdown(s, now), p = S.dateParts(s), sum = sums[i];
+      var isNext = next === s;
+      var gap = i === 0 ? "First paper" :
+        plural(S.dayDiff(S.examStart(list[i-1]), S.examStart(s)), "day") + " after " + list[i-1].short;
+      var href = "subjects/" + s.code + "/index.html";
+      return '<li class="row' + (isNext ? ' next' : '') + (c.state === "done" ? ' done' : '') + '" style="--acc:' + s.accent + '">' +
+        '<div class="date" aria-hidden="true"><div class="dow">' + p.dow + '</div><div class="day">' + p.day + '</div><div class="mon">' + p.mon + '</div></div>' +
+        '<div class="main">' +
+          '<h3><a href="' + href + '">' + esc(s.name) + '</a>' + (isNext ? '<span class="tag">Next</span>' : '') + '</h3>' +
+          '<div class="meta"><span class="vh">' + p.dow + ' ' + p.day + ' ' + p.mon + ' &middot; </span>' + esc(s.course) + ' &middot; ' +
+            S.EXAM.start + ' to ' + S.EXAM.end + ' &middot; ' + esc(gap) + '</div>' +
+          progressHTML(s, sum, now) +
+        '</div>' +
+        '<div class="side">' + countHTML(c) +
+          '<a class="open" href="' + href + '">Open ' + esc(s.short) + ' <span aria-hidden="true">&rarr;</span></a>' +
+        '</div>' +
+      '</li>';
+    }).join("");
+  }
+
+  render();
+  /* Stay current: another tab may have published a summary, and countdowns move. */
+  window.addEventListener("storage", function(e){ if(!e.key || e.key.indexOf("sem7.") === 0) render(); });
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") render(); });
+  window.addEventListener("pageshow", render);
+  setInterval(render, 60000);
+})();
+</script>
+</body>
+</html>
