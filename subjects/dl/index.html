@@ -197,14 +197,6 @@ th{background:var(--border-2); font-weight:600}
 .rowlist td{font-size:.8rem}
 .hide{display:none!important}
 
-/* visitor note button */
-.vnote{display:inline-flex; align-items:center; gap:7px; background:none; border:1px solid var(--border);
-       border-radius:999px; color:var(--muted); font:inherit; font-size:.76rem; padding:5px 12px;
-       cursor:pointer; min-height:32px}
-.vnote:hover{border-color:var(--accent); color:var(--accent)}
-.vnote[disabled]{cursor:default; border-color:var(--good); color:var(--good); opacity:1}
-.vnote svg{width:13px; height:13px; flex:none}
-.dashfoot{display:flex; justify-content:flex-end; margin-top:14px}
 
 @media (max-width:600px){
   h2{margin-top:1.4rem}
@@ -4108,8 +4100,6 @@ var ICON={
   gear:'<svg '+SVG+'><circle cx="12" cy="12" r="3.1"/><path d="M19.4 15a1.6 1.6 0 00.32 1.77l.06.06a2 2 0 11-2.83 2.83l-.06-.06A1.6 1.6 0 0015 19.4a1.6 1.6 0 00-1 1.47V21a2 2 0 11-4 0v-.09A1.6 1.6 0 009 19.4a1.6 1.6 0 00-1.77.32l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.6 1.6 0 004.6 15a1.6 1.6 0 00-1.47-1H3a2 2 0 110-4h.09A1.6 1.6 0 004.6 9a1.6 1.6 0 00-.32-1.77l-.06-.06a2 2 0 112.83-2.83l.06.06A1.6 1.6 0 009 4.6a1.6 1.6 0 001-1.47V3a2 2 0 114 0v.09A1.6 1.6 0 0015 4.6a1.6 1.6 0 001.77-.32l.06-.06a2 2 0 112.83 2.83l-.06.06A1.6 1.6 0 0019.4 9v0a1.6 1.6 0 001.47 1H21a2 2 0 110 4h-.09a1.6 1.6 0 00-1.47 1z"/></svg>',
   menu:'<svg '+SVG+'><path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17"/></svg>',
   close:'<svg '+SVG+'><path d="M6 6l12 12M18 6L6 18"/></svg>',
-  send:'<svg '+SVG+'><path d="M21 3L10.5 13.5M21 3l-6.8 18-3.7-7.5L3 10l18-7z"/></svg>',
-  check:'<svg '+SVG+'><path d="M4.5 12.5l5 5 10-11"/></svg>',
   chevron:'<svg '+SVG+'><path d="M9 5l7 7-7 7"/></svg>'
 };
 function band(p){ return p<34 ? "lo" : (p<67 ? "mid" : ""); }
@@ -4149,79 +4139,6 @@ function sortTopics(list){
   });
 }
 function loPills(los){ return (los||[]).map(function(l){ return pill("", "LO "+l); }).join(" "); }
-
-/* ===================== VISITOR NOTE =====================
-   Sends a short "a visitor opened the dashboard" message to the site owner.
-   The destination is supplied at deploy time, never hardcoded here:
-     <meta name="visitor-endpoint" content="https://your-endpoint.example/notify">
-   or  window.VISITOR_ENDPOINT = "https://...";
-   With no endpoint configured the site makes no network request at all: the
-   event is recorded in this browser and the button still confirms.        */
-var VNOTE_KEY = KEY + "_vnote";
-var VNOTE_COOLDOWN_MS = 12*60*60*1000;
-
-function visitorEndpoint(){
-  try {
-    if(window.VISITOR_ENDPOINT) return String(window.VISITOR_ENDPOINT);
-    var m = document.querySelector('meta[name="visitor-endpoint"]');
-    return m && m.content ? m.content : null;
-  } catch(e){ return null; }
-}
-function vnoteState(){
-  try {
-    var raw = lsGet(VNOTE_KEY);
-    if(!raw) return null;
-    var o = JSON.parse(raw);
-    return (o && typeof o.at==="number") ? o : null;
-  } catch(e){ return null; }
-}
-function vnoteRecent(){
-  var s = vnoteState();
-  return !!(s && (Date.now() - s.at) < VNOTE_COOLDOWN_MS);
-}
-function sessionTag(){
-  if(!window._vsession){
-    var r = new Uint8Array(6);
-    try { (window.crypto||{}).getRandomValues && window.crypto.getRandomValues(r); }
-    catch(e){ for(var i=0;i<6;i++) r[i]=Math.floor(Math.random()*256); }
-    window._vsession = Array.prototype.map.call(r,function(b){return ("0"+b.toString(16)).slice(-2);}).join("");
-  }
-  return window._vsession;
-}
-function visitorPayload(){
-  return {
-    event: "dashboard_visitor_note",
-    app: COURSE.code + " " + COURSE.name + " study guide",
-    sentAt: new Date().toISOString(),
-    session: sessionTag(),
-    viewport: (window.innerWidth||0) + "x" + (window.innerHeight||0),
-    utcOffsetMinutes: new Date().getTimezoneOffset()
-  };
-}
-function sendVisitorNote(){
-  var url = visitorEndpoint(), body = JSON.stringify(visitorPayload());
-  var delivered = false;
-  if(url){
-    try {
-      if(navigator.sendBeacon){
-        delivered = navigator.sendBeacon(url, new Blob([body], {type:"application/json"}));
-      }
-      if(!delivered && window.fetch){
-        window.fetch(url, {method:"POST", body:body, keepalive:true, mode:"no-cors",
-          headers:{"Content-Type":"application/json"}})["catch"](function(){});
-        delivered = true;
-      }
-    } catch(e){ delivered = false; }
-  }
-  try { lsSet(VNOTE_KEY, JSON.stringify({at:Date.now(), sent:delivered})); } catch(e){}
-  return {delivered:delivered, configured:!!url};
-}
-function visitorNote(){
-  var done = vnoteRecent();
-  return '<div class="dashfoot"><button class="vnote" data-vnote="1"'+(done?" disabled":"")+'>'+
-    (done ? ICON.check + '<span>Owner notified</span>' : ICON.send + '<span>Notify the site owner you were here</span>')+
-    '</button></div>';
-}
 /* ============ APPLY THE PATCH: paper driven priority, mark sizing, new content ============ */
 (function(){
   var MIN_PER_MARK = COURSE.durationMin / COURSE.marks;   /* 90 / 30 = 3 */
@@ -4305,7 +4222,7 @@ function viewDashboard(){
       '<span class="small">'+mp.done+' of '+mp.total+' questions, '+tf.done+' of '+tf.total+' topics finished</span>'+
       '<span class="qmeter">'+bar(mp.pct)+'<span>'+esc(mp.pct)+'%</span><span>Open</span></span></button>';
   });
-  h += '</div>'+visitorNote();
+  h += '</div>';
   return h;
 }
 
@@ -4942,7 +4859,7 @@ function go(v, id, extra){
 
 /* ---------- delegated events ---------- */
 document.addEventListener("click", function(ev){
-  var el = ev.target.closest ? ev.target.closest("[data-go],[data-sub],[data-rev],[data-hint],[data-mark],[data-quiz],[data-qsubmit],[data-qretake],[data-qreset],[data-theme],[data-cycletheme],[data-export],[data-import],[data-resetall],[data-search],[data-res],[data-menu],[data-jump],[data-vnote]") : null;
+  var el = ev.target.closest ? ev.target.closest("[data-go],[data-sub],[data-rev],[data-hint],[data-mark],[data-quiz],[data-qsubmit],[data-qretake],[data-qreset],[data-theme],[data-cycletheme],[data-export],[data-import],[data-resetall],[data-search],[data-res],[data-menu],[data-jump]") : null;
   if(!el) return;
   var d = el.dataset;
 
@@ -4951,16 +4868,6 @@ document.addEventListener("click", function(ev){
   if(d.jump){
     var target = document.getElementById(d.jump);
     if(target && target.scrollIntoView) target.scrollIntoView();
-    return;
-  }
-  if(d.vnote){
-    if(vnoteRecent()){ toast("Already noted, thank you"); return; }
-    el.setAttribute("disabled","disabled");
-    var r = sendVisitorNote();
-    el.innerHTML = ICON.check + '<span>Owner notified</span>';
-    toast(r.configured
-      ? (r.delivered ? "Message sent to the site owner" : "Could not reach the owner, the note was saved here")
-      : "Noted in this browser. No delivery endpoint is configured yet");
     return;
   }
   if(d.sub){ var parts=d.sub.split("|"); subtabState[parts[0]]=parts[1]; render(true); return; }

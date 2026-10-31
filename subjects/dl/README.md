@@ -298,17 +298,17 @@ example with **α = 0.01**, giving f(−3) = −0.03. Both are standard in the l
 
 ## Testing
 
-Six suites, **453 assertions, all passing**. Five drive the DOM through jsdom by clicking; the sixth drives a
+Six suites, **448 assertions, all passing**. Five drive the DOM through jsdom by clicking; the sixth drives a
 real Chromium through Puppeteer, which is the only way to measure actual layout.
 
 | Suite | Assertions | Covers |
 |---|---|---|
-| `test.js` | 143 | Navigation, topic page structure, progress round trip, quiz, search, import validation, reset, storage failure, duplication, density, coverage |
-| `audit2.js` | 41 | Banned visual elements, colour tokens, table containment, emoji discipline, accessibility |
+| `test.js` | 142 | Navigation, topic page structure, progress round trip, quiz, search, import validation, reset, storage failure, duplication, density, coverage |
+| `audit2.js` | 40 | Banned visual elements, colour tokens, table containment, emoji discipline, accessibility |
 | `final.js` | 45 | Self review: no seeded progress, one pill per card, keyboard reach, traceability, honesty of labelling |
-| `refine.js` | 122 | The interface refinement list: nav, mobile menu, screen use, overflow, icons, emoji, placeholder text, titles, favicon, typography, visitor note |
+| `refine.js` | 120 | The interface refinement list: nav, mobile menu, screen use, overflow, icons, emoji, placeholder text, titles, favicon, typography |
 | `paper.js` | 56 | **The stated paper**: question shapes total 30, every skeleton sized 4 or 5, no 10 or 2 mark content left, outcome weighting, priority follows the lecturer's emphasis, a core example and an application question on all 56 topics, the By outcome tab |
-| `browser.js` | 46 | **Real Chromium**: measured overflow at 12 widths on 12 views, nav on one line, touch targets, zoom, sticky nav, screenshots |
+| `browser.js` | 45 | **Real Chromium**: measured overflow at 12 widths on 12 views, nav on one line, touch targets, zoom, sticky nav, screenshots |
 
 ### What the real browser found that jsdom could not
 
@@ -336,11 +336,44 @@ Two genuine bugs, both fixed:
 
 | Page | Measured | Budget |
 |---|---|---|
-| Dashboard | **611** chars | ~700 |
-| Module tab, above the topic cards | **135** chars | ~2,000 |
-| Exam Mode | **3,412** chars | ~3,500 |
-| Settings | 4,461 chars | reference surface, no cap |
+| Dashboard | **576** chars | ~700 |
+| Module tab, above the topic cards | **149** chars | ~2,000 |
+| Exam Mode | **3,471** chars | ~3,500 |
+| Settings | 7,049 chars | reference surface, no cap |
 
+
+---
+
+## Interface refinement
+
+**Layout.** No centred 880px column. Content is fluid to 2000px with padding that scales
+(`clamp(14px, 3vw, 64px)`), so a 1280px screen is used edge to edge and a 2560px screen still reads well. Card
+collections are CSS grids using `repeat(auto-fill, minmax(min(100%, 330px), 1fr))`, so columns are added as
+width allows and collapse to one on a phone without a media query. Topic pages gain a sticky rail above 1120px
+carrying the question count and a jump list. Prose is capped at 82ch while tables, grids and code blocks use
+the full column.
+
+**Navigation.** The bar spans the whole viewport, sits on one line and never wraps. Below 1039px the tab row is
+replaced by a hamburger menu with 46px rows, `aria-expanded`, `aria-controls`, Escape to close, and automatic
+closing if the window is widened past the breakpoint. The breakpoint is 1039px because the tab row's measured
+intrinsic width is about 970px, so anything lower would have overflowed.
+
+**Icons.** Search, theme and settings use inline SVG, not emoji and not an icon font, so there is still no
+network request. The theme icon reflects the current mode: sun for light, moon for dark, split circle for
+match system.
+
+**Typography.** No em dashes, no en dashes, no curly quotes anywhere. 948 em dashes were rewritten as colons or
+commas depending on whether the clause was a single continuation or a paired parenthetical, and 134 en dashes
+became either the word "to" for ranges or a hyphen in compound names such as McCulloch-Pitts. Bold is light:
+`b` and every heading render at 600 rather than 700, and bold covers 2.5 percent of rendered text across the
+56 topic pages, with a single 700 weight left on the large percentage numeral.
+
+**Titles and favicon.** `document.title` updates on every navigation and is unique per view, for example
+"AlexNet Architecture | Deep Learning MSE Study Guide". The favicon is an inline SVG data URI in the brand
+accent colour, so it costs no request.
+
+**No network traffic.** The site issues zero requests of any kind. This is asserted in Chromium by browsing
+every surface with the request log attached.
 
 ## Publishing to GitHub Pages
 
