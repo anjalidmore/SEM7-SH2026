@@ -1,16 +1,39 @@
-# AI Study Hub — CEPCC712 Artificial Intelligence
+# AI Study Site — CEPCC712 Artificial Intelligence
 
-A self-contained, offline-capable study site for **CEPCC712 Artificial Intelligence**
+Two self-contained, offline-capable study sites for **CEPCC712 Artificial Intelligence**
 (B.Tech Computer Engineering, Curriculum N-2024).
 
-Everything lives in a single `index.html`. No build step, no server, no dependencies.
-Open the file in a browser, or host the folder on GitHub Pages.
+| File | Scope | Use it for |
+|---|---|---|
+| **`mse.html`** | **Modules 1–3 only · 30 marks · 1.5 hrs** | Mid-Semester Exam prep. Built around the learning outcomes and the handwritten class notes. |
+| `index.html` | All six modules | The full course reference, for the ESE and general study. |
+
+Both are single files. No build step, no server, no dependencies.
+Open in a browser, or host the folder on GitHub Pages.
+
+## The MSE site (`mse.html`)
+
+Scope confirmed from the class notes: the MSE covers **Modules 1–3**, and the paper is
+**Q1 → Module 1, Q2 → Module 2, Q3 → Module 3**. The notes open with **"NO DIRECT QUESTIONS"**,
+so the whole site is built around applied, judgement-style questions rather than bookwork.
+
+- **Dashboard** — readiness, the module-by-module MSE brief transcribed verbatim, and one clear next step.
+- **Class Notes** — all 18 notebook pages transcribed, with the page reference kept on each card.
+- **Modules 1–3** — each opens on its **Learning Outcomes**, showing the syllabus's own action verb
+  and the exam form it implies, then Theory Q&A, Numericals and a quiz.
+- **Mock Paper** — a full 30-mark paper in the real structure, with a timer.
+- **Answer Guide** — how to match the verb, size answers to marks, and the five costliest errors.
+- **Coverage** — every outcome, what covers it, and how ready you are.
+
+Instead of a binary "done" checkbox, every item is self-rated **Got it / Shaky / Couldn't**,
+and that drives the readiness score, the weak-spot list and the next-step recommendation.
+Quiz mistakes automatically flag the tested topic as shaky.
 
 ## Using it
 
-- **Local:** double-click `index.html`.
+- **Local:** double-click `mse.html` (or `index.html`).
 - **GitHub Pages:** push this folder, then Settings → Pages → deploy from branch (root).
-  The site is static, so it works as-is.
+  Both sites are static, so they work as-is at `/mse.html` and `/index.html`.
 
 ## Your progress
 
@@ -23,7 +46,7 @@ no backend and no telemetry — nothing you do is sent anywhere or visible to an
   rather than corrupting what you already have.
 - **Settings → Reset my progress** clears only your browser's data, after confirmation.
 
-## What's inside
+## What's inside the full-course site (`index.html`)
 
 | Section | What it does |
 |---|---|
