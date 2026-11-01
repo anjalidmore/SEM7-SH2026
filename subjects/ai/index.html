@@ -37,6 +37,7 @@
 .sec-h{display:flex; align-items:baseline; gap:10px; margin:30px 0 10px; padding-top:16px; border-top:1px solid var(--border); flex-wrap:wrap}
 .sec-h h2{flex:1 1 auto; min-width:0; margin:0; padding:0; border:0}
 .sec-h .hint{font-size:.8rem; color:var(--muted)}
+h2.s7-h2 > .s7-core{margin-left:auto}
 .badges{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
 .stat .v small{font-size:.85rem; font-weight:500; color:var(--muted)}
 .ring-wrap{display:flex; align-items:center; gap:16px}
@@ -514,7 +515,7 @@ examNote:"Class notes for the MSE state: <strong>Module 1 questions are based on
 topics:[
 
 {id:"m1t1", title:"What is Intelligence? What is Artificial Intelligence?", type:"theory",
- priority:"high", marks:[2,5], src:"Chpt 1 slides 22–31; class notes 14/7",
+ priority:"high", core:true, marks:[2,5], src:"Chpt 1 slides 22–31; class notes 14/7",
  tags:["definition","mccarthy","intelligence","cognitive"],
  learn:`<p>There is <strong>no single agreed definition of AI</strong>. The term was coined by <strong>John McCarthy in 1956</strong> (Dartmouth workshop).</p>
 <h4>Intelligence</h4>
@@ -535,7 +536,7 @@ topics:[
  "Confusing automation with AI. A washing machine follows a fixed program; it does not perceive and decide."]},
 
 {id:"m1t2", title:"History of AI and the AI Winters", type:"theory",
- priority:"medium", marks:[5], src:"Chpt 1 slides 25–40; class notes",
+ priority:"medium", core:false, marks:[5], src:"Chpt 1 slides 25–40; class notes",
  tags:["history","ai winter","turing","timeline","expert system"],
  learn:`<h4>Key milestones</h4>
 <ul>
@@ -566,7 +567,7 @@ topics:[
  "Listing milestones with no cause. The examiner wants the reason funding collapsed, not just dates."]},
 
 {id:"m1t3", title:"Foundations and Components of an AI Program", type:"theory",
- priority:"medium", marks:[5], src:"Chpt 1 slides 53–56",
+ priority:"medium", core:false, marks:[5], src:"Chpt 1 slides 53–56",
  tags:["knowledge base","inferencing","navigational capability","components"],
  learn:`<p>The syllabus lists <strong>Foundations of AI</strong> (the disciplines AI draws on — philosophy, mathematics, economics, neuroscience, psychology, computer engineering, control theory, linguistics) and <strong>Components of AI</strong>.</p>
 <h4>The three components of an AI program</h4>
@@ -587,7 +588,7 @@ topics:[
  "Forgetting the three characteristics of knowledge; they are usually worth a mark each."]},
 
 {id:"m1t4", title:"Categorization of Intelligent Systems — the four approaches", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 1 slides 46–52; class notes 14/7",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 1 slides 46–52; class notes 14/7",
  tags:["turing test","cognitive modelling","laws of thought","rational agent","categorization"],
  diagram:"peas",
  learn:`<p>Intelligent systems are categorised along two axes — <em>thinking vs acting</em> and <em>humanly vs rationally</em> — giving four approaches:</p>
@@ -612,7 +613,7 @@ topics:[
  "Confusing 'thinking rationally' (logic) with 'acting rationally' (agent that maximises performance)."]},
 
 {id:"m1t5", title:"Intelligent Agent, Agent Terminology and Structure", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 1 slides 64–66, 71, 75–76; class notes 17/7",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 1 slides 64–66, 71, 75–76; class notes 17/7",
  tags:["agent","percept","agent function","architecture","sensors","actuators"],
  diagram:"simpleReflex",
  learn:`<div class="note"><span class="note-t">Definition — learn verbatim</span>An <strong>agent</strong> is anything that can be viewed as <em>perceiving its environment through sensors</em> and <em>acting upon that environment through actuators</em>.</div>
@@ -646,7 +647,7 @@ topics:[
  "Forgetting the star: F : P* → A, not F : P → A, when memory is involved."]},
 
 {id:"m1t6", title:"PEAS Descriptors", type:"theory",
- priority:"high", marks:[5], src:"Chpt 1 slides 72–74; CIA-01 Section D",
+ priority:"high", core:true, marks:[5], src:"Chpt 1 slides 72–74; CIA-01 Section D",
  tags:["peas","performance","environment","actuators","sensors","taxi","vacuum"],
  diagram:"peas",
  learn:`<p><strong>PEAS</strong> is the standard way to specify a task environment before designing an agent.</p>
@@ -671,7 +672,7 @@ topics:[
  "Listing the environment as just 'road'. Include the other agents and objects in it."]},
 
 {id:"m1t7", title:"Rationality and the Rational Agent", type:"theory",
- priority:"high", marks:[2,5], src:"Chpt 1 slide 77; class notes",
+ priority:"high", core:true, marks:[2,5], src:"Chpt 1 slide 77; class notes",
  tags:["rationality","rational agent","performance measure","definition"],
  learn:`<div class="note"><span class="note-t">Definition — learn verbatim</span><strong>For each possible percept sequence, a rational agent should select an action that is expected to maximise its performance measure, given the evidence provided by the percept sequence and whatever built-in knowledge the agent has.</strong></div>
 <h4>What is rational at any given time depends on four things</h4>
@@ -690,7 +691,7 @@ topics:[
  "Omitting 'expected' from the definition — it is the word carrying the mark."]},
 
 {id:"m1t8", title:"Agent Environments and their Properties", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 1 slides 78–83; CIA-01 Section E",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 1 slides 78–83; CIA-01 Section E",
  tags:["environment","observable","deterministic","episodic","static","discrete","multiagent"],
  learn:`<p>Six properties, always as opposing pairs:</p>
 <h4>1. Fully observable vs Partially observable</h4>
@@ -730,7 +731,7 @@ topics:[
  "Classifying medical diagnosis as multi-agent — the slide table lists it as single agent."]},
 
 {id:"m1t9", title:"Types of Agents (the five agent architectures)", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 1 slides 84–95; CIA-01 Section C",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 1 slides 84–95; CIA-01 Section C",
  tags:["simple reflex","model based","goal based","utility based","learning agent","agent types"],
  diagram:"learningAgent",
  learn:`<h4>1. Simple reflex agent</h4>
@@ -771,7 +772,7 @@ topics:[
  "Claiming a simple reflex agent works in a partially observable environment. It explicitly does not."]},
 
 {id:"m1t10", title:"The Vacuum-Cleaner World", type:"theory",
- priority:"high", marks:[5], src:"Chpt 1 slides 67–70",
+ priority:"high", core:true, marks:[5], src:"Chpt 1 slides 67–70",
  tags:["vacuum","percept sequence","agent function","example"],
  learn:`<p>A two-location world, squares <strong>A</strong> and <strong>B</strong>. The vacuum agent perceives which square it is in and whether there is dirt there. It can move left, move right, suck up dirt, or do nothing.</p>
 <ul><li><strong>Percepts:</strong> location and status, e.g. <code>[A, Dirty]</code></li>
@@ -795,7 +796,7 @@ topics:[
  "Producing a table indexed by single percepts when the question asks for percept <em>sequences</em>."]},
 
 {id:"m1t11", title:"Agentic AI vs Traditional AI", type:"theory",
- priority:"high", marks:[5], src:"Chpt 1 slides 96–102; CIA-01 Section F",
+ priority:"high", core:true, marks:[5], src:"Chpt 1 slides 96–102; CIA-01 Section F",
  tags:["agentic ai","traditional ai","autonomy","comparison","tools","memory"],
  learn:`<p><strong>Agentic AI</strong> understands goals, plans tasks, uses tools, remembers context and takes actions autonomously. In the lecture's phrase: <em>"Agentic AI doesn't just answer — it acts."</em></p>
 <div class="tw"><table><thead><tr><th>Traditional AI</th><th>Agentic AI</th></tr></thead><tbody>
@@ -830,7 +831,7 @@ topics:[
  "Only listing differences in prose. The table earns the marks faster."]},
 
 {id:"m1t12", title:"Agentic AI — Components and Architectures", type:"theory",
- priority:"medium", marks:[5], src:"Chpt 1 slides 100, 104, 106",
+ priority:"medium", core:false, marks:[5], src:"Chpt 1 slides 100, 104, 106",
  tags:["agentic","architecture","single agent","multi agent","vertical","horizontal","hybrid"],
  learn:`<h4>Types of agentic architectures</h4>
 <ol>
@@ -859,7 +860,7 @@ topics:[
  "Listing only goal and action. Memory, tool usage and reflection are what make the system agentic."]},
 
 {id:"m1t13", title:"Applications, Risks and Challenges of AI in Modern Society", type:"theory",
- priority:"medium", marks:[5,10], src:"Chpt 1 slides 11–21, 41–45, 60; CIA-01 Section G",
+ priority:"medium", core:true, marks:[5,10], src:"Chpt 1 slides 11–21, 41–45, 60; CIA-01 Section G",
  tags:["applications","risks","ethics","bias","society","industry"],
  learn:`<h4>Why study AI — application domains</h4>
 <p>Healthcare · Finance · Education · Agriculture · Cybersecurity · Autonomous vehicles · Smart manufacturing · Space exploration.</p>
@@ -907,7 +908,7 @@ examNote:"This is <strong>the numerical module</strong>. Class notes list for th
 topics:[
 
 {id:"m2t1", title:"Problem Solving Agent and Problem Formulation", type:"theory",
- priority:"high", marks:[5], src:"Chpt 2 slides; class notes 27/7",
+ priority:"high", core:true, marks:[5], src:"Chpt 2 slides; class notes 27/7",
  tags:["problem formulation","goal formulation","state space","problem solving agent"],
  learn:`<p>A <strong>problem-solving agent</strong> decides what to do by finding a <em>sequence of actions</em> that leads to a desirable state, used when no single action will do.</p>
 <div class="note"><span class="note-t">Definition</span><strong>Problem solving</strong> is the way in which an agent finds a sequence of actions that achieves its goals, when no single action will do.</div>
@@ -939,7 +940,7 @@ topics:[
  "Confusing goal formulation (choosing the goal) with problem formulation (choosing states and actions)."]},
 
 {id:"m2t2", title:"State-Space Representation — Water Jug and Missionaries–Cannibals", type:"numerical",
- priority:"high", marks:[5,10], src:"class notes 27/7",
+ priority:"high", core:true, marks:[5,10], src:"class notes 27/7",
  tags:["water jug","missionaries","cannibals","state space","numerical","formulation"],
  concept:"Represent a puzzle as a state vector, define legal operators on it, then list a sequence of states from the initial state to a goal state.",
  formula:"State = (x, y)  where x, y are the current contents of each jug",
@@ -983,7 +984,7 @@ topics:[
    s:"<p><strong>State:</strong> a 3×3 arrangement — the location of each of the eight tiles and the blank.</p><p><strong>Initial state:</strong> any given configuration.</p><p><strong>Actions:</strong> movements of the <em>blank</em> — Left, Right, Up, Down (fewer than 4 at the edges and corners).</p><p><strong>Transition model:</strong> returns the state with the blank swapped with the adjacent tile in the chosen direction.</p><p><strong>Goal test:</strong> does the state match the goal configuration?</p><p><strong>Path cost:</strong> 1 per move, so path cost = number of moves.</p><p><em>Modelling the actions as moves of the blank rather than of the tiles is the standard simplification — mention it.</em></p>"}]},
 
 {id:"m2t3", title:"Uninformed Search — BFS, DFS, DLS and IDS", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 2 uninformed slides 20, 52–54; class notes",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 2 uninformed slides 20, 52–54; class notes",
  tags:["bfs","dfs","ids","iterative deepening","complexity","comparison","uninformed"],
  learn:`<div class="note"><span class="note-t">Definition</span><strong>Uninformed (blind) search</strong> has no information except the problem definition itself. <strong>Informed (heuristic) search</strong> "knows where to look" for the solution.</div>
 <h4>The four criteria for evaluating any strategy</h4>
@@ -1020,7 +1021,7 @@ topics:[
  "Confusing m (maximum depth of the space) with d (depth of the shallowest goal)."]},
 
 {id:"m2t4", title:"Heuristic Functions and Admissibility", type:"theory",
- priority:"high", marks:[5], src:"Chpt 2 informed slides 2, 12–15; class notes",
+ priority:"high", core:true, marks:[5], src:"Chpt 2 informed slides 2, 12–15; class notes",
  tags:["heuristic","admissible","h(n)","8 puzzle","manhattan","relaxed problem"],
  learn:`<div class="note"><span class="note-t">Definition</span>A <strong>heuristic</strong> is a rule of thumb or intelligent estimate that guides the search towards the goal quickly. A <strong>heuristic function h(n)</strong> estimates the remaining cost from the current node n to the goal.</div>
 <ul><li>Smaller h(n) → the node appears <strong>closer</strong> to the goal.</li>
@@ -1049,7 +1050,7 @@ topics:[
  "Computing Manhattan distance diagonally. It is |Δrow| + |Δcolumn|, no diagonal moves."]},
 
 {id:"m2t5", title:"Best-First Search and Greedy Best-First Search", type:"theory",
- priority:"high", marks:[5], src:"Chpt 2 informed slides 3–11; class notes",
+ priority:"high", core:true, marks:[5], src:"Chpt 2 informed slides 3–11; class notes",
  tags:["greedy","best first","evaluation function","romania","dead end"],
  learn:`<h4>Best-first search</h4>
 <p><strong>Idea:</strong> use an evaluation function <strong>f(n)</strong> to select the node for expansion — an estimate of "desirability". Expand the most desirable unexpanded node. <strong>Implementation:</strong> order the nodes in the fringe in decreasing order of desirability. A key component is the heuristic function h(n), the estimated cost of the cheapest path from n to a goal node.</p>
@@ -1074,7 +1075,7 @@ topics:[
  "Confusing greedy best-first with uniform-cost search (which orders by g(n) only)."]},
 
 {id:"m2t6", title:"A* Search Algorithm", type:"numerical",
- priority:"high", marks:[5,10], src:"Chpt 2 informed slides 16–26; CIA-02 Q1; class notes 3/8, 6/8",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 2 informed slides 16–26; CIA-02 Q1; class notes 3/8, 6/8",
  tags:["a star","astar","f=g+h","open list","closed list","numerical","optimal","cia"],
  diagram:"astarGraph",
  concept:"A* combines the cost already paid with the estimated cost remaining, so it avoids expanding paths that are already expensive while still guaranteeing the optimal solution when h is admissible. It is the single most likely numerical in this paper.",
@@ -1139,7 +1140,7 @@ topics:[
 <p><strong>The two errors to avoid:</strong> (1) terminating when the goal is first <em>generated</em> rather than when it is <em>selected for expansion</em>; (2) reporting the CLOSED list (S, C, A, E, F, G) as if it were the path — the path must be recovered backwards through parent pointers.</p>`}]},
 
 {id:"m2t7", title:"Optimality of A* — the proof", type:"theory",
- priority:"high", marks:[5], src:"Chpt 2 informed slide 30; class notes",
+ priority:"high", core:true, marks:[5], src:"Chpt 2 informed slide 30; class notes",
  tags:["a star","optimality","proof","admissible","theorem"],
  learn:`<div class="note"><span class="note-t">Theorem</span>If the heuristic h(n) is <strong>admissible</strong> (never overestimates the remaining cost), then A* always finds the <strong>optimal</strong> path.</div>
 <h4>Proof</h4>
@@ -1161,7 +1162,7 @@ topics:[
  "Proving it for consistency instead of admissibility — the syllabus asks for the admissible version."]},
 
 {id:"m2t8", title:"Local Search and Hill Climbing", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 2 informed slides 31–40; class notes 10/8",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 2 informed slides 31–40; class notes 10/8",
  tags:["hill climbing","local search","local maxima","plateau","ridge","n-queens","optimization"],
  diagram:"hillClimb",
  learn:`<h4>Local search algorithms</h4>
@@ -1193,7 +1194,7 @@ topics:[
  "Drawing the landscape without labels. The labels are the marks."]},
 
 {id:"m2t9", title:"Simulated Annealing", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 2 informed slides 41–49; class notes 10/8",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 2 informed slides 41–49; class notes 10/8",
  tags:["simulated annealing","annealing","temperature","stopping criteria","optimization","global"],
  learn:`<h4>The physical analogy</h4>
 <p>Simulated annealing is named after <strong>physical annealing in solids</strong>. A crystalline solid is heated and then allowed to cool <em>very slowly</em> until it reaches its most regular crystal lattice configuration — its minimum lattice energy state — free of crystal defects. If the cooling schedule is slow enough, the final configuration has superior structural integrity. Fast cooling induces a fragile structure.</p>
@@ -1233,7 +1234,7 @@ topics:[
  "Forgetting that T must decrease <em>slowly</em> — that condition is what gives the probability-1 guarantee."]},
 
 {id:"m2t10", title:"Genetic Algorithms", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 2 informed slides 50–57; class notes 13/8",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 2 informed slides 50–57; class notes 13/8",
  tags:["genetic algorithm","crossover","mutation","fitness","selection","roulette","population"],
  learn:`<p>Developed by <strong>John Holland</strong>, University of Michigan, in the 1970s. The idea comes from <strong>genetics and natural selection</strong> — <em>"select the best, leave the rest"</em>, <em>"survival of the fittest"</em>. Used to generate high-quality solutions for optimization problems, and <strong>better for large state spaces</strong>.</p>
 <h4>Terminology</h4>
@@ -1276,7 +1277,7 @@ while (Termination Criteria Not Satisfied) {
  "Forgetting the convergence criteria."]},
 
 {id:"m2t11", title:"Adversarial Search and the Minimax Algorithm", type:"numerical",
- priority:"high", marks:[10], src:"Chpt 2 informed slides 58–64; class notes 13/8 (marked 10 marks)",
+ priority:"high", core:true, marks:[10], src:"Chpt 2 informed slides 58–64; class notes 13/8 (marked 10 marks)",
  tags:["minimax","adversarial","game playing","zero sum","utility","tic tac toe","numerical"],
  concept:"In a competitive multi-agent environment there is an opponent who always plays optimally. Minimax computes, for every node, the value that results if both players play their best — MAX maximising the utility and MIN minimising it.",
  formula:"MINIMAX(s) = UTILITY(s) if TERMINAL(s);  max over actions if PLAYER(s) = MAX;  min over actions if PLAYER(s) = MIN",
@@ -1335,7 +1336,7 @@ while (Termination Criteria Not Satisfied) {
    s:"<p><strong>The problem.</strong> Minimax must examine the whole game tree. Chess has an average branching factor b ≈ 35, and games often run to 50 moves per player, so the tree has about 35<sup>100</sup> ≈ 10<sup>154</sup> nodes. Time complexity O(b<sup>m</sup>) makes exhaustive search impossible.</p><p><strong>Technique 1 — pruning.</strong> Alpha–beta pruning lets us ignore portions of the search tree that make no difference to the final choice. It returns the <em>same</em> move as minimax while examining far fewer nodes.</p><p><strong>Technique 2 — heuristic evaluation functions.</strong> These approximate the true utility of a state without doing a complete search, letting us cut the tree off at a fixed depth and evaluate non-terminal positions.</p>"}]},
 
 {id:"m2t12", title:"Alpha–Beta Pruning", type:"numerical",
- priority:"high", marks:[5,10], src:"Chpt 2 informed slides 65–68; CIA-02 Q2; class notes 17/8",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 2 informed slides 65–68; CIA-02 Q2; class notes 17/8",
  tags:["alpha beta","pruning","minimax","numerical","cia","alpha","beta"],
  diagram:"abTree",
  concept:"Alpha–beta pruning improves minimax by eliminating branches that cannot affect the final decision. It produces the same optimal move as minimax but searches fewer nodes.",
@@ -1402,7 +1403,7 @@ examNote:"Class notes list for the MSE: <strong>Wumpus World example · first-or
 topics:[
 
 {id:"m3t1", title:"Knowledge-Based Agent", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slides 2–3; class notes 24/8",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slides 2–3; class notes 24/8",
  tags:["knowledge based agent","tell","ask","inference","sentence","knowledge base"],
  diagram:"kbAgent",
  learn:`<p>A knowledge-based agent includes a <strong>knowledge base</strong> and an <strong>inference system</strong>.</p>
@@ -1433,7 +1434,7 @@ topics:[
  "Omitting the inference engine — a knowledge base alone is just a database."]},
 
 {id:"m3t2", title:"The Wumpus World", type:"theory",
- priority:"high", marks:[5,10], src:"Chpt 3 Knowledge slides 4–13; class notes 24/8",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 3 Knowledge slides 4–13; class notes 24/8",
  tags:["wumpus","peas","breeze","stench","glitter","environment","propositional"],
  diagram:"wumpus",
  learn:`<p>The agent explores a cave of rooms connected by passageways. Somewhere lurks the <strong>Wumpus</strong>, a beast that eats any agent entering its room. Some rooms contain <strong>bottomless pits</strong>. Occasionally there is a heap of <strong>gold</strong>. The goal is to collect the gold and exit without being eaten. The agent always starts at <strong>[1,1]</strong> and must return there and climb out.</p>
@@ -1481,7 +1482,7 @@ topics:[
  "Forgetting the −10 penalty for the arrow or the −1 per action in the performance measure."]},
 
 {id:"m3t3", title:"Propositional Logic", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slides 20–21, 23",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slides 20–21, 23",
  tags:["propositional","boolean","connectives","tautology","contradiction","implication"],
  learn:`<p>Propositional logic is also called <strong>Boolean logic</strong> as it works on 0 and 1. Symbolic variables represent propositions — A, B, C, P, Q, R, etc.</p>
 <ul>
@@ -1518,7 +1519,7 @@ topics:[
  "Mixing up tautology (always true) and contradiction (always false)."]},
 
 {id:"m3t4", title:"First-Order Predicate Logic — sentence conversion", type:"numerical",
- priority:"high", marks:[5,10], src:"Chpt 3 Knowledge slides 22, 24–28; extra problems.docx; class notes 31/8",
+ priority:"high", core:true, marks:[5,10], src:"Chpt 3 Knowledge slides 22, 24–28; extra problems.docx; class notes 31/8",
  tags:["fol","predicate logic","quantifier","universal","existential","conversion","numerical"],
  concept:"Translate English sentences into first-order predicate logic. This is the highest-frequency numerical in Module 3 — the class notes list 'convert sentence' as an MSE item, and the extra-problems handout is almost entirely conversion practice.",
  formula:"∀x  P(x) → Q(x)     (for 'all')          ∃x  P(x) ∧ Q(x)     (for 'some')",
@@ -1587,7 +1588,7 @@ topics:[
    s:"<p>(a) <code>∀x ∀y ( ( Robot(x) ∧ HasKey(x) ∧ Activated(x) ∧ Unlocked(y) ) → Enter(x, y) )</code> — 'any unlocked room' inside a conditional becomes a universal over y.</p><p>(b) <code>∀x ( Cheats(x, Exam) → ¬HonestStudent(x) )</code></p><p>(c) <code>∀x ( Guilty(x) → ∃y Evidence(y, x) )</code> — 'at least one' is an existential <em>nested inside</em> the universal.</p><p>(d) <code>∀x ( Doctor(x) → ( HasDegree(x) ∧ Helps(x, Patients) ) )</code></p><p><em>Pattern check: whenever the English says 'at least one' or 'some' <strong>after</strong> an 'if', you need ∃ nested inside ∀.</em></p>"}]},
 
 {id:"m3t5", title:"Propositional Logic vs First-Order Predicate Logic", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slide 29",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slide 29",
  tags:["comparison","pl vs fol","expressiveness","difference"],
  learn:`<div class="tw"><table><thead><tr><th>Propositional Logic</th><th>First-Order Predicate Logic</th></tr></thead><tbody>
 <tr><td>Can represent small worlds</td><td>Very well represents complex worlds</td></tr>
@@ -1607,7 +1608,7 @@ topics:[
  "Missing the last row: PL's world contains facts; FOL's world contains objects, relations and functions."]},
 
 {id:"m3t6", title:"Inference Rules", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slide 31; class notes 31/8",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slide 31; class notes 31/8",
  tags:["modus ponens","and elimination","biconditional","inference rules","equivalence"],
  learn:`<h4>1. Modus Ponens</h4>
 <p>If <strong>P → Q</strong> and <strong>P</strong> is true, then <strong>Q</strong> must be true.</p>
@@ -1631,7 +1632,7 @@ topics:[
  "Forgetting that biconditional elimination gives <em>two</em> implications, not one."]},
 
 {id:"m3t7", title:"Conversion to CNF (Conjunctive Normal Form)", type:"numerical",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slides 34, 40, 43–45; class notes 31/8",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slides 34, 40, 43–45; class notes 31/8",
  tags:["cnf","clausal form","de morgan","skolemization","distributivity","numerical"],
  concept:"Resolution only works on clauses — disjunctions of literals. CNF conversion is the mechanical preprocessing step that turns any sentence into that form, and it is examined both on its own and as step 2 of every resolution proof.",
  formula:"CNF = a conjunction of disjunctions of literals,  e.g. (A ∨ ¬B) ∧ (B ∨ ¬C ∨ ¬D)",
@@ -1683,7 +1684,7 @@ topics:[
    s:"<p><strong>What it is.</strong> Skolemization is the process of removing existential quantifiers, named after the logician Skolem. A constant that replaces an existentially quantified variable is a <strong>Skolem constant</strong>; a function used in replacing a variable is a <strong>Skolem function</strong>.</p><p><strong>Which to use.</strong> If the ∃ is not inside any ∀, replace the variable with a fresh <em>constant</em>: ∃x P(x) becomes P(C). If the ∃ falls inside one or more ∀, the witness may depend on those universally quantified variables, so replace it with a <em>function</em> of them: ∀x ∃y Loves(x,y) becomes ∀x Loves(x, f(x)).</p><p><strong>Why it is valid.</strong> A skolemized sentence is <strong>satisfiable exactly when the original sentence is satisfiable</strong>. Resolution is a refutation procedure — it only ever asks whether a set of clauses is unsatisfiable — so preserving satisfiability is all that is required. (Note it does not preserve logical <em>equivalence</em>, only satisfiability, which is why it is legitimate here but not in general rewriting.)</p>"}]},
 
 {id:"m3t8", title:"Resolution", type:"numerical",
- priority:"high", marks:[10], src:"Chpt 3 Knowledge slides 35–37, 41–46; extra problems.docx; class notes 31/8",
+ priority:"high", core:true, marks:[10], src:"Chpt 3 Knowledge slides 35–37, 41–46; extra problems.docx; class notes 31/8",
  tags:["resolution","refutation","empty clause","contradiction","proof","numerical","cnf"],
  diagram:"resTree",
  concept:"Resolution is a proof by contradiction. To prove that KB ⊨ α, you assume ¬α, add it to the knowledge base, and derive the empty clause. Reaching the empty clause means the assumption was impossible, so α must be true.",
@@ -1779,7 +1780,7 @@ topics:[
 <p><em>Note: clauses 2, 3 and 7 are never used. That is expected and costs no marks.</em></p>`}]},
 
 {id:"m3t9", title:"Unification", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 Forward_Backward_Chaining slide 12; class notes",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Forward_Backward_Chaining slide 12; class notes",
  tags:["unification","substitution","mgu","variables","matching"],
  learn:`<div class="note"><span class="note-t">Definition</span><strong>Unification enables the appropriate rule to be applied.</strong> Rules usually contain variables; unification finds the substitutions that make a rule match a fact or a goal.</div>
 <h4>Worked illustration</h4>
@@ -1799,7 +1800,7 @@ topics:[
  "Unifying two different constants. Constants only unify with themselves or with a variable."]},
 
 {id:"m3t10", title:"Horn Clauses", type:"theory",
- priority:"medium", marks:[5], src:"Chpt 3 Knowledge slide 38; class notes 31/8",
+ priority:"medium", core:false, marks:[5], src:"Chpt 3 Knowledge slide 38; class notes 31/8",
  tags:["horn clause","if then","rule","efficient inference","chaining"],
  learn:`<p>General resolution can be <strong>computationally expensive</strong> as the number of clauses increases. Horn clauses restrict the form to make inference efficient.</p>
 <div class="note"><span class="note-t">Definition</span>A <strong>Horn clause</strong> is a clause containing <strong>at most one positive literal</strong>.</div>
@@ -1825,7 +1826,7 @@ which is exactly &nbsp;<strong><code>A ∧ B → C</code></strong></div>
  "Failing to show the rewrite to IF–THEN form, which is the point of the question."]},
 
 {id:"m3t11", title:"Forward and Backward Chaining", type:"numerical",
- priority:"high", marks:[10], src:"Chpt 3 Forward_Backward_Chaining (full deck); Knowledge slides 55–64",
+ priority:"high", core:true, marks:[10], src:"Chpt 3 Forward_Backward_Chaining (full deck); Knowledge slides 55–64",
  tags:["forward chaining","backward chaining","data driven","goal driven","inference","comparison","numerical"],
  diagram:"chaining",
  concept:"Two directions of rule-based reasoning over the same knowledge base. Forward chaining starts from known facts and derives everything that follows; backward chaining starts from a goal and works back to the facts.",
@@ -1924,7 +1925,7 @@ which is exactly &nbsp;<strong><code>A ∧ B → C</code></strong></div>
 <p><em>Same knowledge base, opposite reasoning direction — state that line in your conclusion.</em></p>`}]},
 
 {id:"m3t12", title:"Semantic Networks", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 semantic network deck slides 4–6; class notes",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 semantic network deck slides 4–6; class notes",
  tags:["semantic network","is-a","inheritance","graph","nodes","links","construct"],
  diagram:"semanticNet",
  learn:`<div class="note"><span class="note-t">Definition</span>A <strong>semantic network</strong> is a graph in which <strong>nodes represent concepts, objects or classes</strong> and <strong>labelled links represent their semantic relationships</strong>.</div>
@@ -1944,7 +1945,7 @@ which is exactly &nbsp;<strong><code>A ∧ B → C</code></strong></div>
  "Confusing IS-A (class to superclass) with INSTANCE-OF (individual to class)."]},
 
 {id:"m3t13", title:"Ontologies", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 semantic network deck slides 7–9",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 semantic network deck slides 7–9",
  tags:["ontology","classes","properties","constraints","taxonomy","owl","schema"],
  learn:`<div class="note"><span class="note-t">Definition</span>An <strong>ontology</strong> is a <strong>formal, shared specification of concepts and relationships in a domain</strong> — it defines the vocabulary, meaning, relationships and constraints of that domain. Think of it as <em>the schema of meaning</em>.</div>
 <ul>
@@ -1976,7 +1977,7 @@ which is exactly &nbsp;<strong><code>A ∧ B → C</code></strong></div>
  "Saying an ontology stores facts about individuals. It defines what is <em>valid</em>; the knowledge graph stores the facts."]},
 
 {id:"m3t14", title:"Knowledge Graphs", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 semantic network deck slides 10–13",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 semantic network deck slides 10–13",
  tags:["knowledge graph","triple","rdf","entities","retrieval","subject predicate object"],
  diagram:"kgTriple",
  learn:`<div class="note"><span class="note-t">Definition</span>A <strong>knowledge graph</strong> represents facts as <strong>entities connected by typed relationships</strong>. RDF-based knowledge graphs express statements as <strong>Subject — Predicate → Object</strong>.</div>
@@ -2011,7 +2012,7 @@ which is exactly &nbsp;<strong><code>A ∧ B → C</code></strong></div>
  "Drawing a triple with the predicate as a node. The predicate is the <em>labelled edge</em>; subject and object are the nodes."]},
 
 {id:"m3t15", title:"Semantic Web", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 semantic network deck slides 14–19",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 semantic network deck slides 14–19",
  tags:["semantic web","rdf","rdfs","owl","sparql","uri","linked data","stack"],
  learn:`<div class="note"><span class="note-t">Definition</span>The <strong>Semantic Web</strong> aims to make Web data <strong>machine-readable and linkable using explicit meaning</strong>, not just hyperlinks between pages.</div>
 <ul>
@@ -2061,7 +2062,7 @@ WHERE {
  "Presenting the four concepts as a strict historical pipeline — the slides explicitly warn that they overlap."]},
 
 {id:"m3t16", title:"The Knowledge Engineering Process", type:"theory",
- priority:"medium", marks:[5], src:"Chpt 3 Knowledge slides 65–66",
+ priority:"medium", core:false, marks:[5], src:"Chpt 3 Knowledge slides 65–66",
  tags:["knowledge engineering","ontology","debug","axioms","process","vocabulary"],
  learn:`<p>The seven steps of building a knowledge base:</p>
 <ol class="wsteps">
@@ -2096,7 +2097,7 @@ examNote:"Performance Indicator <strong>1.1.2</strong> — 'apply the concepts o
 topics:[
 
 {id:"m4t1", title:"Uncertainty and Why We Need Probability", type:"theory",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slides 67–69",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slides 67–69",
  tags:["uncertainty","laziness","ignorance","decision theory","utility","probability"],
  learn:`<p>Uncertainty arises due to <strong>partial observability, nondeterminism, or a combination of the two</strong>. An agent may not know where it will end up after a sequence of actions.</p>
 <h4>Why logic fails for medical diagnosis — the three reasons</h4>
@@ -2122,7 +2123,7 @@ topics:[
  "Omitting the decision-theory equation, which is usually the final mark."]},
 
 {id:"m4t2", title:"Prior and Posterior Probability, Bayes' Rule", type:"numerical",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slides 70–72",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slides 70–72",
  tags:["bayes","prior","posterior","conditional","product rule","diagnostic","numerical"],
  concept:"Bayes' rule inverts a conditional probability. It lets us compute the diagnostic direction P(cause | effect), which is what we actually want, from the causal direction P(effect | cause), which is what is actually measurable.",
  formula:"P(A | B) = P(B | A) · P(A) / P(B)",
@@ -2167,7 +2168,7 @@ topics:[
    s:"<p>The product rule can be written two ways, because conjunction is symmetric:</p><p><code>P(A ∧ B) = P(A | B) · P(B)</code> &nbsp;and&nbsp; <code>P(A ∧ B) = P(B | A) · P(A)</code></p><p>Since both equal P(A ∧ B), set them equal:</p><p><code>P(A | B) · P(B) = P(B | A) · P(A)</code></p><p>Divide both sides by P(B), assuming P(B) ≠ 0:</p><div class='ans'>P(A | B) = P(B | A) · P(A) / P(B)</div>"}]},
 
 {id:"m4t3", title:"Joint Probability Distribution and Independence", type:"numerical",
- priority:"high", marks:[5], src:"Chpt 3 Knowledge slides 73–76",
+ priority:"high", core:true, marks:[5], src:"Chpt 3 Knowledge slides 73–76",
  tags:["joint distribution","full joint","independence","inference","marginalisation","numerical"],
  concept:"The full joint probability distribution assigns a probability to every possible world. It can answer any question about the domain — you just add up the cells that match — but it grows exponentially, which is what motivates Bayesian networks.",
  formula:"P(query) = Σ (all matching cells of the full joint distribution)",
@@ -2233,7 +2234,7 @@ P(cavity ∨ toothache) = 0.108 + 0.012 + 0.072 + 0.008 + 0.016 + 0.064 = <stron
    It <b>raises</b> the belief from 0.6 (toothache alone) to 0.871. The dentist's probe catching is extra evidence pointing to a cavity — exactly the incremental reasoning that conditional probability is for.`}]},
 
 {id:"m4t4", title:"Bayesian Networks (Belief Networks)", type:"numerical",
- priority:"high", marks:[10], src:"Chpt 3 Knowledge slides 77–83 (the CPT question is marked [10])",
+ priority:"high", core:true, marks:[10], src:"Chpt 3 Knowledge slides 77–83 (the CPT question is marked [10])",
  tags:["bayesian network","belief network","dag","cpt","alarm","inference","chain rule","numerical"],
  diagram:"bayesNet",
  concept:"A Bayesian network is a compact graphical representation of a full joint distribution. The graph structure encodes which variables directly influence which, and each node carries only the probabilities conditioned on its own parents.",
@@ -2304,7 +2305,7 @@ P(cavity ∨ toothache) = 0.108 + 0.012 + 0.072 + 0.008 + 0.016 + 0.064 = <stron
    <i>This extends the deck's Boolean-only formula to a multi-valued variable — the deck itself only counts Boolean networks.</i>`}]},
 
 {id:"m4t6", title:"Constructing a Bayesian Network and Counting CPT Values", type:"theory",
- priority:"high", marks:[5], src:"Chpt 4 Uncertainty slides 18–23 (three exam-style questions)",
+ priority:"high", core:true, marks:[5], src:"Chpt 4 Uncertainty slides 18–23 (three exam-style questions)",
  tags:["constructing","bayesian","network","counting","cpt","values"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Describe a procedure for constructing a Bayesian network from a verbal description, and state how to count the independent values needed for all CPTs.</div>
 <p>All three exam-style questions in the deck (smoking/cancer, machine monitoring, smart-home security) follow the same pattern, worth 5 + 5 marks: <b>(i) draw the network, (ii) count the independent CPT values</b>.</p>
@@ -2330,7 +2331,7 @@ Total = Σ over nodes of 2^(number of parents)</div>
  mistakes:[`Counting 2^(k+1) — i.e. counting both P(true) and P(false). Only one is independent per row. Also: forgetting to count a root node at all; it still needs 1 value.`]},
 
 {id:"m4t15", title:"Inference in the Burglary–Alarm Network", type:"numerical",
- priority:"high", marks:[10], src:"Chpt 4 Uncertainty slides 16–17; R&N §14.2, §14.4.1 for the diagnostic query",
+ priority:"high", core:true, marks:[10], src:"Chpt 4 Uncertainty slides 16–17; R&N §14.2, §14.4.1 for the diagnostic query",
  tags:["inference","burglary","alarm","network"],
  concept:`Any full-joint entry is a product of one CPT row per node. A marginal (like P(Alarm)) sums those products over the variables you were not told. A diagnostic query (P(Burglary | calls)) sums over the hidden variables for each value of the query, then normalises.`,
  formula:`<div class="fx-pre">Joint entry:    P(x₁,…,xₙ) = Π P(xᵢ | parents(Xᵢ))
@@ -2392,7 +2393,7 @@ Diagnostic:     P(B | j, m) = α Σ_e Σ_a P(B) P(e) P(a | B, e) P(j | a) P(m | 
    This matches Russell &amp; Norvig §14.4.1 (⟨0.284, 0.716⟩). The deck stops at the marginal P(A); this query is the textbook's next step and a natural 10-mark extension.`}]},
 
 {id:"m4t5", title:"What is Planning? Inputs, Outputs and Classical Assumptions", type:"theory",
- priority:"high", marks:[5], src:"Chpt 4 Planning slides 2–11",
+ priority:"high", core:true, marks:[5], src:"Chpt 4 Planning slides 2–11",
  tags:["planning","inputs","outputs","classical","assumptions"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is planning? State what is given to a planner, what it must output, and the typical assumptions of classical planning. Give real-world applications.</div>
 <p><b>Planning</b> is a search problem that requires finding an efficient sequence of actions that transforms a system from a given starting state to the goal state. It is an activity where an agent has to come up with a sequence of actions to accomplish a target.</p>
@@ -2417,7 +2418,7 @@ Diagnostic:     P(B | j, m) = α Σ_e Σ_a P(B) P(e) P(a | B, e) P(j | a) P(m | 
  mistakes:[`Saying classical planning allows uncertain action outcomes. It does not — that is what conditional planning (later in this module) adds.`]},
 
 {id:"m4t7", title:"Representing Planning Problems: STRIPS States, Goals and Actions", type:"theory",
- priority:"high", marks:[10], src:"Chpt 4 Planning slides 12–24; R&N §10.1 and its bibliographic notes",
+ priority:"high", core:true, marks:[10], src:"Chpt 4 Planning slides 12–24; R&N §10.1 and its bibliographic notes",
  tags:["representing","planning","problems","strips","states","goals"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain how states, goals and actions are represented in a planning language such as STRIPS. Show how an action is applied, with the Fly example, and compare STRIPS with ADL.</div>
 <p>A planning language must represent <b>states, goals and actions</b>, and it must be <b>expressive</b> (easy to represent problems) yet <b>flexible</b> (easy for algorithms to manipulate).</p>
@@ -2460,7 +2461,7 @@ Diagnostic:     P(B | j, m) = α Σ_e Σ_a P(B) P(e) P(a | B, e) P(j | a) P(m | 
  mistakes:[`Changing a literal the action never mentions (the slide-19 trap). And putting a function or an unbound variable into a state.`]},
 
 {id:"m4t8", title:"State-Space Planning: Forward (Progression) and Backward (Regression) Search", type:"theory",
- priority:"medium", marks:[5], src:"R&N §10.2.1–10.2.2 (Fig 10.5) — the Planning deck names state-space planning but has no slides on forward/backward search",
+ priority:"medium", core:false, marks:[5], src:"R&N §10.2.1–10.2.2 (Fig 10.5) — the Planning deck names state-space planning but has no slides on forward/backward search",
  tags:["state-space","planning","forward","progression","backward","regression"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain state-space planning: forward (progression) and backward (regression) search. How is a goal regressed through an action?</div>
 <div class="note warn"><b>Limited source material.</b> "State Space Planning" is a named syllabus topic. The Planning deck represents problems as states and actions (slides 14–24) and contrasts state-space search with POP (slide 28), but it has no slide on the two search directions. This answer is taken from Russell &amp; Norvig §10.2, the syllabus's first textbook.</div>
@@ -2488,7 +2489,7 @@ g′ = ( g − ADD(a) ) ∪ PRECOND(a)</div>
  mistakes:[`Including DEL(a) in the regression formula. Only ADD(a) is removed and PRECOND(a) added.`]},
 
 {id:"m4t9", title:"Partial-Order Planning (POP)", type:"theory",
- priority:"high", marks:[10], src:"Chpt 4 Planning slides 25–35; R&N Figs 11.6, 11.8–11.10 (reproduced on the slides)",
+ priority:"high", core:true, marks:[10], src:"Chpt 4 Planning slides 25–35; R&N Figs 11.6, 11.8–11.10 (reproduced on the slides)",
  tags:["partial-order","planning","pop"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain partial-order planning (POP). Compare partial-order and total-order plans, list the components of a plan, and illustrate with the shoes-and-socks example.</div>
 <h4>Total vs partial order</h4>
@@ -2522,13 +2523,13 @@ Action(LeftSock,                        EFFECT: LeftSockOn)</div>
  mistakes:[`Drawing an arrow between the left and right chains — that imposes an order the problem does not need. And calling a causal link an ordering constraint: every causal link implies an ordering, but not the other way round.`]},
 
 {id:"m4t10", title:"Hierarchical Planning", type:"theory",
- priority:"high", marks:[10], src:"Chpt 4 Planning slides 36–49",
+ priority:"high", core:true, marks:[10], src:"Chpt 4 Planning slides 36–49",
  tags:["hierarchical","planning"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is hierarchical planning? Explain its motivation, its general property and the planner's steps, with the 'Travelling to Goa' and 'Build House' examples.</div>
 <h4>Why one level is not enough</h4>
 <p>A one-level planner for "Going to Goa this Christmas" would plan at the keystroke level: switch on computer, start web browser, open the railways website, select date, select class, select train… Practical problems are too complex to be solved at one level.</p>
-<p><b>How complex?</b> A cricket captain plans the order of 5 bowlers over 2 days of a Test match (180 overs). If any bowler can bowl any over, there are <b>5<sup>180</sup> ≈ 1.5 × 10<sup>125</sup></b> possibilities — far more than the ~10<sup>87</sup> particles in the universe.</p>
-<div class="note warn"><b>Slide error (Planning slide 38).</b> The slide gives 5<sup>180</sup> = 2<sup>590</sup>. In fact 5<sup>180</sup> = 2<sup>180·log₂5</sup> ≈ <b>2<sup>418</sup></b> ≈ 1.5 × 10<sup>125</sup>. The conclusion (vastly more than 10<sup>87</sup>) still holds.</div>
+<p><b>How complex?</b> A cricket captain plans the order of 5 bowlers over 2 days of a Test match (180 overs). If any bowler can bowl any over, there are <b>5<sup>180</sup> ≈ 6.5 × 10<sup>125</sup></b> possibilities — far more than the ~10<sup>87</sup> particles in the universe.</p>
+<div class="note warn"><b>Slide error (Planning slide 38).</b> The slide gives 5<sup>180</sup> = 2<sup>590</sup>. In fact 5<sup>180</sup> = 2<sup>180·log₂5</sup> ≈ <b>2<sup>418</sup></b> ≈ 6.5 × 10<sup>125</sup>. The conclusion (vastly more than 10<sup>87</sup>) still holds.</div>
 <h4>Hierarchy of actions</h4>
 <p>Actions are organised into <b>major</b> and <b>minor</b> actions. Lower-level activities detail more precise steps for accomplishing the higher-level tasks.</p>
 <ul class="list"><li><b>Major steps for Goa:</b> hotel booking, ticket booking, reaching Goa, staying and enjoying there, coming back.</li>
@@ -2557,7 +2558,7 @@ Action(LeftSock,                        EFFECT: LeftSockOn)</div>
  mistakes:[`Quoting the slide's 2^590. Use 5^180 ≈ 10^125. And treating hierarchical planning as just a shorter plan — it is the same detailed plan reached by refining an abstract one.`]},
 
 {id:"m4t11", title:"Task Networks: Truth and Temporal Ordering Constraints", type:"theory",
- priority:"high", marks:[5], src:"Chpt 4 Planning slides 50–51",
+ priority:"high", core:true, marks:[5], src:"Chpt 4 Planning slides 50–51",
  tags:["task","networks","truth","temporal","ordering","constraints"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Define a task network. Explain truth constraints and temporal ordering constraints with the 'making a cup of tea' example.</div>
 <p>A <b>task network</b> is a collection of tasks and constraints on those tasks:</p>
@@ -2585,7 +2586,7 @@ nᵢ  — the name of task i
  mistakes:[`Ordering n₁ before n₂ when nothing requires it — that throws away the parallelism the network is meant to show.`]},
 
 {id:"m4t12", title:"Conditional Planning", type:"theory",
- priority:"medium", marks:[5], src:"Chpt 4 Planning slides 52–54, 74 (part C), 80",
+ priority:"medium", core:true, marks:[5], src:"Chpt 4 Planning slides 52–54, 74 (part C), 80",
  tags:["conditional","planning"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is conditional planning? How are action failures and conditional effects modelled? Give an example of a branching plan.</div>
 <p>Classical planning assumes a known initial state and deterministic actions. Under <b>uncertainty</b>:</p>
@@ -2607,7 +2608,7 @@ nᵢ  — the name of task i
  mistakes:[`Writing a straight-line plan with a note 'if it fails, retry'. The question wants an explicit branch with a test on each fork.`]},
 
 {id:"m4t13", title:"Multi-Agent Systems and Multi-Agent Planning", type:"theory",
- priority:"high", marks:[10], src:"Chpt 4 Planning slides 55–73",
+ priority:"high", core:true, marks:[10], src:"Chpt 4 Planning slides 55–73",
  tags:["multi-agent","systems","planning"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain multi-agent systems and multi-agent planning: characteristics, components, architecture, types of planning (centralised, decentralised, distributed), advantages, applications and challenges.</div>
 <p>A <b>Multi-Agent System (MAS)</b> consists of multiple autonomous agents that interact within a shared environment to achieve individual or common goals.</p>
@@ -2645,7 +2646,7 @@ nᵢ  — the name of task i
  mistakes:[`Using 'decentralised' and 'distributed' as synonyms. Decentralised agents plan alone; distributed agents plan alone but coordinate their plans by communicating.`]},
 
 {id:"m4t14", title:"Prolog and Rule-Based Expert Systems", type:"theory",
- priority:"medium", marks:[5], src:"Chpt 4 Uncertainty slides 24–30",
+ priority:"medium", core:false, marks:[5], src:"Chpt 4 Uncertainty slides 24–30",
  tags:["prolog","rule-based","expert","systems"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is Prolog? Explain facts, rules and queries, and show how Prolog can implement a rule-based expert system.</div>
 <p><b>Prolog</b> (Programming in Logic) is a logic programming language used for AI, expert systems and natural language processing. Unlike Python, which is <b>imperative</b>, Prolog is <b>declarative</b>: we define facts and rules and let the system infer answers.</p>
@@ -2677,7 +2678,7 @@ identify_animal :- write('Sorry, I could not identify the animal.'), nl.</div>
  mistakes:[`Writing rules with the condition first, as in Python. In Prolog the conclusion (head) comes first: head :- body. Also note a quirk of the sample program: it re-asks a trait it was already told about (e.g. carnivore) when a later rule needs it — a real expert system would remember answers.`]},
 
 {id:"m4t16", title:"Applying STRIPS Actions and Validating a Plan", type:"numerical",
- priority:"high", marks:[5], src:"Chpt 4 Planning slides 16–24 (Fly, move operator, spare tire, blocks world); R&N Fig 10.3, §10.2.2",
+ priority:"high", core:true, marks:[5], src:"Chpt 4 Planning slides 16–24 (Fly, move operator, spare tire, blocks world); R&N Fig 10.3, §10.2.2",
  tags:["applying","strips","actions","validating","plan"],
  concept:`To execute a plan on paper, keep a running state. For each action: check every precondition is in the state, delete the negative effects, add the positive ones, and copy everything else unchanged. The plan is valid if the final state contains every goal literal.`,
  formula:`<div class="fx-pre">Applicable(a, s)  ⟺  PRECOND(a) ⊆ s
@@ -2734,7 +2735,7 @@ Plan: [MoveToTable(C,A), Move(B,Table,C), Move(A,Table,B)]</div>`,
    The initial state of the Fly example satisfies g′, so backward search has found a one-step plan.`}]},
 
 {id:"m4t17", title:"Building a Partial-Order Plan", type:"numerical",
- priority:"high", marks:[10], src:"Chpt 4 Planning slides 25–35 (shoes and socks; spare tire POP, R&N Figs 11.6, 11.8–11.10)",
+ priority:"high", core:true, marks:[10], src:"Chpt 4 Planning slides 25–35 (shoes and socks; spare tire POP, R&N Figs 11.6, 11.8–11.10)",
  tags:["building","partial-order","plan"],
  concept:`Start with a plan containing only Start and Finish. Repeatedly pick an open precondition, choose an action that achieves it (an existing step or a new one), add a causal link and an ordering, then check every causal link for threats. Stop when no open preconditions remain.`,
  formula:`<div class="fx-pre">Plan = ⟨ Actions, Orderings (A ≺ B), Causal links (A —p→ B), Open preconditions ⟩
@@ -2789,7 +2790,7 @@ LeftShoe:  PRE LeftSockOn  → LeftShoeOn        LeftSock:  → LeftSockOn</div>
    Equivalently, the set of <b>open preconditions</b> is empty and no causal link is threatened.`}]},
 
 {id:"m4t18", title:"HTN, Task Network and Multi-Agent Plan Design", type:"numerical",
- priority:"high", marks:[10], src:"Chpt 4 Planning slides 74–86 (placement drive A–D; food-delivery robot)",
+ priority:"high", core:true, marks:[10], src:"Chpt 4 Planning slides 74–86 (placement drive A–D; food-delivery robot)",
  tags:["htn","task","network","multi-agent","plan","design"],
  concept:`The deck's two scenario questions both ask you to design a plan, not run an algorithm: decompose the top task into subtasks down to primitives, write the task network with ≺ and one truth constraint, add a branch for a failure, and split the work among agents. Draw everything.`,
  formula:`<div class="fx-pre">HTN:            high-level task → subtasks → … → primitive tasks
@@ -2858,7 +2859,7 @@ examNote:"Modules 5 and 6 together form Course Outcome 5, and this module carrie
 topics:[
 
 {id:"m5t1", title:"What is Generative AI?", type:"theory",
- priority:"high", marks:[5], src:"Chapter5 slides 1–8; part 2 slides 3–9, 11–13",
+ priority:"high", core:true, marks:[5], src:"Chapter5 slides 1–8; part 2 slides 3–9, 11–13",
  tags:["generative"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is Generative AI? Place it in the progression from AI to ML, deep learning and Transformers, and list what it can generate.</div>
 <div class="dia"><svg viewBox="0 0 800 90" role="img" aria-label="From AI to Generative AI"><defs><marker id="arw_ai_ladder" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="da"/></marker></defs><path d="M133 45 L172 45" class="de " marker-end="url(#arw_ai_ladder)"/><path d="M298 45 L337 45" class="de " marker-end="url(#arw_ai_ladder)"/><path d="M463 45 L502 45" class="de " marker-end="url(#arw_ai_ladder)"/><path d="M628 45 L667 45" class="de " marker-end="url(#arw_ai_ladder)"/><rect x="7" y="27" width="126" height="36" rx="7" class="dn "/><text x="70" y="45" class="dnt">AI</text><rect x="172" y="24" width="126" height="42" rx="7" class="dn "/><text x="235" y="37.5" class="dnt">Machine</text><text x="235" y="52.5" class="dnt sub">Learning</text><rect x="337" y="24" width="126" height="42" rx="7" class="dn "/><text x="400" y="37.5" class="dnt">Deep</text><text x="400" y="52.5" class="dnt sub">Learning</text><rect x="502" y="27" width="126" height="36" rx="7" class="dn "/><text x="565" y="45" class="dnt">Transformers</text><rect x="667" y="27" width="126" height="36" rx="7" class="dn acc"/><text x="730" y="45" class="dnt">Generative AI</text></svg><div class="dia-cap">A learning progression, not a strict Venn diagram — GANs, VAEs and diffusion models are generative too · Chapter5 slide 2</div></div>
@@ -2889,7 +2890,7 @@ topics:[
  mistakes:[`Treating AI, ML, generative AI and LLM as synonyms — the deck's speaker notes single this out. An LLM is one kind of generative model; generative AI is one use of deep learning.`]},
 
 {id:"m5t4", title:"Discriminative vs Generative Models", type:"theory",
- priority:"high", marks:[5], src:"Chapter5 slides 4–6; part 2 slides 8–9, 11",
+ priority:"high", core:true, marks:[5], src:"Chapter5 slides 4–6; part 2 slides 8–9, 11",
  tags:["discriminative","generative","models"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Compare discriminative (predictive) and generative models. Classify the following as generative or not: spam classifier, ChatGPT writing a story, AI summarising an article, fraud detector, synthetic patient records, Google Maps suggesting a new route.</div>
 <div class="scroll"><table class="t"><thead><tr><th></th><th>Discriminative / predictive</th><th>Generative</th></tr></thead><tbody>
@@ -2914,7 +2915,7 @@ topics:[
  mistakes:[`Marking summarisation as not generative because 'it only uses the article'. It still writes new text conditioned on an input — that is exactly the generative definition.`]},
 
 {id:"m5t5", title:"Families of Generative Models", type:"theory",
- priority:"medium", marks:[5], src:"Chapter5 slides 9–12; part 2 slides 14–16",
+ priority:"medium", core:false, marks:[5], src:"Chapter5 slides 9–12; part 2 slides 14–16",
  tags:["families","generative","models"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Describe the major families of generative models and explain, at a high level, how generative language models and generative image models produce content.</div>
 <div class="scroll"><table class="t"><thead><tr><th>Model family</th><th>How it works</th><th>Applications</th></tr></thead><tbody>
@@ -2937,7 +2938,7 @@ topics:[
  mistakes:[`Describing a GAN as one network. Name both networks and their roles: Generator creates, Discriminator evaluates.`]},
 
 {id:"m5t6", title:"Attention and the Transformer", type:"theory",
- priority:"high", marks:[10], src:"Chapter5 slides 13–22; part 2 slides 18, 20–22, 26",
+ priority:"high", core:true, marks:[10], src:"Chapter5 slides 13–22; part 2 slides 18, 20–22, 26",
  tags:["attention","transformer"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain the attention mechanism and the Transformer. Why was sequence modelling difficult before Transformers, and how does a Transformer generate the next token?</div>
 <h4>The language problem</h4>
@@ -2967,7 +2968,7 @@ topics:[
  mistakes:[`Saying Transformers 'read word by word like an RNN'. All positions are processed in parallel; only generation is one token at a time.`]},
 
 {id:"m5t7", title:"Large Language Models: BERT, GPT and ChatGPT", type:"theory",
- priority:"high", marks:[10], src:"part 2 slides 18–26 (with speaker notes)",
+ priority:"high", core:true, marks:[10], src:"part 2 slides 18–26 (with speaker notes)",
  tags:["large","language","models","bert","gpt","chatgpt"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is a Large Language Model? Trace the evolution to ChatGPT, and compare BERT, GPT and ChatGPT. Which would you use to classify the sentiment of 1,000 workshop feedback comments, and which to summarise them?</div>
 <h4>What an LLM is</h4>
@@ -2997,7 +2998,7 @@ topics:[
  mistakes:[`Calling ChatGPT an architecture, or calling BERT generative. BERT is typically used for understanding tasks; for this course, focus on its encoder use.`]},
 
 {id:"m5t8", title:"AI Hallucinations and Retrieval-Augmented Generation", type:"theory",
- priority:"high", marks:[5], src:"part 2 slides 27–28 (speaker notes cite NIST)",
+ priority:"high", core:true, marks:[5], src:"part 2 slides 27–28 (speaker notes cite NIST)",
  tags:["hallucinations","retrieval-augmented","generation"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What are AI hallucinations? Why do they happen, and how can they be reduced? Explain RAG.</div>
 <p><b>Hallucinations</b> (also called <b>confabulations</b>) are words or phrases generated by the model that are nonsensical, unsupported or factually wrong — often with great confidence. <i>A fluent answer can still be false.</i></p>
@@ -3019,7 +3020,7 @@ topics:[
  mistakes:[`Writing 'RAG eliminates hallucination'. The slide says it improves grounding but does not make the system automatically correct.`]},
 
 {id:"m5t9", title:"Prompt Engineering", type:"theory",
- priority:"high", marks:[10], src:"part 2 slides 29–37 (incl. the four prompt-engineering infographics)",
+ priority:"high", core:true, marks:[10], src:"part 2 slides 29–37 (incl. the four prompt-engineering infographics)",
  tags:["prompt","engineering"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is prompt engineering? Explain the five elements of a strong prompt with an example, and describe zero-shot, one-shot, few-shot, structured and refine prompting.</div>
 <p>A <b>prompt</b> is the input we give a large language model. <b>Prompt design</b> is crafting that input so the output is useful — the quality of the input determines the quality of the output. Prompting serves tasks such as summarising, writing and keyword extraction.</p>
@@ -3053,7 +3054,7 @@ topics:[
  mistakes:[`Listing only role/task/format. Context and constraints are the two that most change the answer — and they are the two students forget.`]},
 
 {id:"m5t10", title:"Explainable AI: Interpretability vs Explainability", type:"theory",
- priority:"high", marks:[5], src:"part 2 slides 40–41",
+ priority:"high", core:true, marks:[5], src:"part 2 slides 40–41",
  tags:["explainable","interpretability","explainability"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is Explainable AI (XAI)? Distinguish interpretability from explainability and explain why XAI is needed.</div>
 <p><b>Prediction alone is often not enough: why did the model decide this?</b></p>
@@ -3074,7 +3075,7 @@ Act:        verify, challenge, improve or communicate the decision</div>
  mistakes:[`Treating 'explainable' as 'accurate'. An explanation can be clear and the model still wrong or biased.`]},
 
 {id:"m5t2", title:"SHAP and LIME", type:"theory",
- priority:"high", marks:[10], src:"part 2 slides 42–43, 57 (activity); ClarifAI slides 2, 6",
+ priority:"high", core:true, marks:[10], src:"part 2 slides 42–43, 57 (activity); ClarifAI slides 2, 6",
  tags:["shap","lime"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain SHAP and LIME. How does each produce an explanation, how do they differ, and what are their limitations? Illustrate with a loan or scholarship decision.</div>
 <h4>SHAP — what pushed the prediction?</h4>
@@ -3107,7 +3108,7 @@ Act:        verify, challenge, improve or communicate the decision</div>
  mistakes:[`Saying SHAP or LIME prove that a feature causes the outcome. They attribute a model's output; they say nothing about real-world causation.`]},
 
 {id:"m5t3", title:"Responsible AI: Five Principles Across the Lifecycle", type:"theory",
- priority:"high", marks:[5], src:"part 2 slides 44–45",
+ priority:"high", core:true, marks:[5], src:"part 2 slides 44–45",
  tags:["responsible","five","principles","across","lifecycle"],
  learn:`<div class="note"><span class="note-t">Exam question</span>What is Responsible AI? State its five principles and explain why it must be considered across the whole AI lifecycle.</div>
 <p><b>Responsible AI</b> means building AI that people can use safely and fairly.</p>
@@ -3126,7 +3127,7 @@ Act:        verify, challenge, improve or communicate the decision</div>
  mistakes:[`Listing 'accuracy' as a Responsible AI principle. Accuracy is a performance measure; the principles are about trust.`]},
 
 {id:"m5t11", title:"Bias and Fairness", type:"theory",
- priority:"high", marks:[5], src:"part 2 slides 46, 48; ClarifAI slide 7",
+ priority:"high", core:true, marks:[5], src:"part 2 slides 46, 48; ClarifAI slide 7",
  tags:["bias","fairness"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Where can bias enter an AI system? Explain the common types of bias with examples, and how fairness can be monitored.</div>
 <p><b>Bias is not only an algorithm problem.</b> It can enter at every stage:</p>
@@ -3148,7 +3149,7 @@ Act:        verify, challenge, improve or communicate the decision</div>
  mistakes:[`Thinking bias is fixed by deleting the sensitive attribute (gender, caste). Other features can act as proxies, so the bias survives.`]},
 
 {id:"m5t12", title:"Privacy Risks of Generative AI", type:"theory",
- priority:"medium", marks:[5], src:"part 2 slide 47",
+ priority:"medium", core:true, marks:[5], src:"part 2 slide 47",
  tags:["privacy","risks","generative"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Discuss privacy risks of generative AI. What questions should be asked before pasting data into an AI tool, and what is safer practice?</div>
 <p><b>"Can I paste this into an AI tool?"</b></p>
@@ -3164,7 +3165,7 @@ Act:        verify, challenge, improve or communicate the decision</div>
  mistakes:[`Answering only 'use strong passwords'. The question is about data you give to the model, not account security.`]},
 
 {id:"m5t13", title:"Case Study: Automated Internship Shortlisting", type:"theory",
- priority:"high", marks:[10], src:"part 2 slides 48, 52, 55 (case study, activities, golden rule)",
+ priority:"high", core:true, marks:[10], src:"part 2 slides 48, 52, 55 (case study, activities, golden rule)",
  tags:["case","study","automated","internship","shortlisting"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Case study: a college wants to automate internship shortlisting — read resumes, score candidates, rank applicants and recommend an interview list. Identify the risks, propose safeguards and justify whether to deploy it.</div>
 <h4>The system</h4><p>Reads resumes → scores candidates → ranks applicants → recommends an interview list.</p>
@@ -3186,7 +3187,7 @@ Act:        verify, challenge, improve or communicate the decision</div>
  mistakes:[`Answering 'do not deploy because AI is biased'. The question wants a justified decision, and a conditional yes with safeguards is usually the stronger answer.`]},
 
 {id:"m5t14", title:"AI Regulation: EU AI Act, India and NIST AI RMF", type:"theory",
- priority:"high", marks:[10], src:"part 2 slides 49–51, 56",
+ priority:"high", core:true, marks:[10], src:"part 2 slides 49–51, 56",
  tags:["regulation","act","india","nist","rmf"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Why does AI need regulation? Explain the risk-based approach of the EU AI Act, the Indian context, and the NIST AI Risk Management Framework.</div>
 <h4>Why regulate?</h4>
@@ -3216,7 +3217,7 @@ Act:        verify, challenge, improve or communicate the decision</div>
  mistakes:[`Writing specific dates or penalty figures from memory. The deck deliberately avoids them because they change — cite the framework, not a date.`]},
 
 {id:"m5t15", title:"Prompt Makeover Drill", type:"numerical",
- priority:"high", marks:[5], src:"part 2 slides 31–37 (prompt recipe, infographics, classroom activity)",
+ priority:"high", core:true, marks:[5], src:"part 2 slides 31–37 (prompt recipe, infographics, classroom activity)",
  tags:["prompt","makeover","drill"],
  concept:`Take a vague prompt and rebuild it element by element. Name each element in the margin as you add it — the labels are what show the examiner you are applying the framework rather than just writing a longer prompt.`,
  formula:`<div class="fx-pre">Strong prompt = ROLE + TASK + CONTEXT + CONSTRAINTS + OUTPUT FORMAT
@@ -3263,7 +3264,7 @@ Classroom version (6 parts): Role · Audience · Task · Context · Constraints 
    Prompting improves framing; only grounding and verification make the list trustworthy.`}]},
 
 {id:"m5t16", title:"Reading SHAP Explanations and Consensus Scores", type:"numerical",
- priority:"high", marks:[5], src:"part 2 slides 42–43; ClarifAI slides 5–7",
+ priority:"high", core:true, marks:[5], src:"part 2 slides 42–43; ClarifAI slides 5–7",
  tags:["reading","shap","explanations","consensus","scores"],
  concept:`SHAP is additive: start at the baseline, add each feature's signed contribution, and you land on this case's prediction. Reading an explanation means doing that sum and naming which features pushed which way. ClarifAI adds a second calculation: average a rule score and a model probability, then apply decision thresholds.`,
  formula:`<div class="fx-pre">SHAP:        prediction = baseline + Σ (feature contributions)
@@ -3308,7 +3309,7 @@ Contributions for one applicant:
    <b>What to do:</b> treat both as evidence, not proof (explanations are approximations); check agreement on the top drivers (ClarifAI reports 96.4% agreement among SHAP, LIME and the rule engine); and send disagreements to human review. Explainability does not guarantee accuracy or fairness — the closing question of the SHAP/LIME activity.`}]},
 
 {id:"m5t17", title:"Responsible-AI Case Analysis Drill", type:"numerical",
- priority:"high", marks:[10], src:"part 2 slides 45–51 (principles, bias, privacy, case study, regulation, NIST)",
+ priority:"high", core:true, marks:[10], src:"part 2 slides 45–51 (principles, bias, privacy, case study, regulation, NIST)",
  tags:["responsible-ai","case","analysis","drill"],
  concept:`Every responsible-AI scenario can be answered with the same five-step template. Working through the steps in order guarantees you cover risks, controls, regulation and a decision, rather than writing a general essay on ethics.`,
  formula:`<div class="fx-pre">1. SYSTEM      what it does, what data, who is affected
@@ -3365,7 +3366,7 @@ examNote:"Modules 5 and 6 together form Course Outcome 5; this is the shortest m
 topics:[
 
 {id:"m6t1", title:"Why Language Models Need Tools", type:"theory",
- priority:"high", marks:[5], src:"BE1 slides 3–5, 8; Tool Calling p.2",
+ priority:"high", core:true, marks:[5], src:"BE1 slides 3–5, 8; Tool Calling p.2",
  tags:["language","models","need","tools"],
  learn:`<div class="note"><span class="note-t">Exam question</span>An LLM 'can talk, but it can't check, compute or look things up'. Explain the built-in limitations of a language model on its own, and how tools address each one.</div>
 <p><b>LLMs are autocomplete at scale.</b> The model reads everything so far, scores every possible next word-piece (token), appends the most suitable one and predicts again. <i>It continues text. It doesn't look anything up, and it doesn't run anything.</i></p>
@@ -3383,7 +3384,7 @@ topics:[
  mistakes:[`Saying the model 'executes' the tool. It never runs anything — your code does (see the next question).`]},
 
 {id:"m6t2", title:"Tool Calling: The Four-Step Loop, Schema and Middleware", type:"theory",
- priority:"high", marks:[10], src:"BE1 slides 6–7; Tool Calling pp.3–4, 7",
+ priority:"high", core:true, marks:[10], src:"BE1 slides 6–7; Tool Calling pp.3–4, 7",
  tags:["tool","calling","four-step","loop","schema","middleware"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain how tool calling (function calling / API calling) works. Describe the four-step loop, the role of the tool schema and middleware, and trace a weather query end to end.</div>
 <h4>The model never runs anything</h4>
@@ -3420,7 +3421,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Drawing the model calling the weather API directly. The arrow to the API always comes from your code.`]},
 
 {id:"m6t3", title:"Retrieval as a Tool", type:"theory",
- priority:"high", marks:[5], src:"Tool Calling p.5; part 2 slide 28",
+ priority:"high", core:true, marks:[5], src:"Tool Calling p.5; part 2 slide 28",
  tags:["retrieval","tool"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Explain retrieval as a tool. Describe the indexing and answering pipelines, and what the system should do when nothing relevant is found.</div>
 <p><b>Search your own documents first, then let the model answer only from what came back.</b></p>
@@ -3438,7 +3439,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Putting retrieval after the model. Retrieval happens first; the model only sees the retrieved chunks.`]},
 
 {id:"m6t4", title:"Tool Calling Across APIs and Frameworks (OpenAI, Anthropic, LangChain, MCP)", type:"theory",
- priority:"medium", marks:[5], src:"Tool Calling pp.8–9",
+ priority:"medium", core:false, marks:[5], src:"Tool Calling pp.8–9",
  tags:["tool","calling","across","apis","frameworks","openai"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Compare how OpenAI and Anthropic APIs express tool calling, and explain how LangChain, LangGraph and MCP standardise tool use.</div>
 <div class="scroll"><table class="t"><thead><tr><th>Step</th><th>OpenAI</th><th>Anthropic</th></tr></thead><tbody>
@@ -3458,7 +3459,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Calling MCP a framework like LangChain. It is a protocol — it defines how a client and a tool server talk.`]},
 
 {id:"m6t5", title:"Single Agent vs Multi-Agent Design", type:"theory",
- priority:"high", marks:[10], src:"BE1 slides 9–10, 20 (speaker notes)",
+ priority:"high", core:true, marks:[10], src:"BE1 slides 9–10, 20 (speaker notes)",
  tags:["single","agent","multi-agent","design"],
  learn:`<div class="note"><span class="note-t">Exam question</span>When should a single agent be split into multiple agents? Explain where one agent breaks, and the gains and costs of a multi-agent design.</div>
 <h4>Where one agent breaks</h4>
@@ -3479,7 +3480,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Arguing only for multi-agent. The question expects both sides — the deck's speaker notes say 'present both sides honestly'.`]},
 
 {id:"m6t6", title:"Wiring Agents and Workflow Orchestration", type:"theory",
- priority:"high", marks:[10], src:"BE1 slides 11–16; Tool Calling p.6",
+ priority:"high", core:true, marks:[10], src:"BE1 slides 11–16; Tool Calling p.6",
  tags:["wiring","agents","workflow","orchestration"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Describe the three ways to wire agents (sequential, network, supervisor). Explain workflow orchestration using the BE1 financial-assistant case: its agents, its hybrid pattern and the verifier loop.</div>
 <div class="scroll"><table class="t"><thead><tr><th>Pattern</th><th>Picture</th><th>+</th><th>−</th></tr></thead><tbody>
@@ -3509,7 +3510,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Saying 'the verifier is another LLM so it can also hallucinate' and stopping there. State what makes it reliable: it compares against the logged tool outputs.`]},
 
 {id:"m6t7", title:"Shared State, Guardrails and Checkpoints", type:"theory",
- priority:"medium", marks:[5], src:"BE1 slides 15, 17–18, 21",
+ priority:"medium", core:false, marks:[5], src:"BE1 slides 15, 17–18, 21",
  tags:["shared","state","guardrails","checkpoints"],
  learn:`<div class="note"><span class="note-t">Exam question</span>How do agentic workflows stay safe and recoverable? Explain shared state, the four guardrail layers, and checkpoints with an audit trail.</div>
 <h4>Shared state — the clipboard</h4>
@@ -3530,7 +3531,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Listing 'prompt instructions' as the guardrail. A rule in a prompt can be ignored; these layers are enforced by code.`]},
 
 {id:"m6t8", title:"Human-in-the-Loop, Human-on-the-Loop and Fully Autonomous", type:"theory",
- priority:"high", marks:[10], src:"Human-in-the-Loop deck pp.2–8, 12–13",
+ priority:"high", core:true, marks:[10], src:"Human-in-the-Loop deck pp.2–8, 12–13",
  tags:["human-in-the-loop","human-on-the-loop","fully","autonomous"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Compare human-in-the-loop, human-on-the-loop and fully autonomous decision-making. Which suits a suspicious device on the college network, and why?</div>
 <p><b>Would you let an AI do this alone?</b> Drive you home at night · assess your medical scan · sort your spam folder · reject your job application. Your answers differ, and that difference is the topic.</p>
@@ -3561,7 +3562,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Treating 'fully autonomous' as 'unconstrained'. The deck stresses it still operates within designed scope, permissions and safety limits.`]},
 
 {id:"m6t9", title:"Autonomous Decision-Making Systems", type:"theory",
- priority:"high", marks:[5], src:"HITL deck pp.9, 11",
+ priority:"high", core:true, marks:[5], src:"HITL deck pp.9, 11",
  tags:["autonomous","decision-making","systems"],
  learn:`<div class="note"><span class="note-t">Exam question</span>How does an autonomous decision-making system decide? Explain the five-step cycle and apply it to an autonomous vehicle such as Tesla FSD.</div>
 <div class="dia"><svg viewBox="0 0 700 200" role="img" aria-label="How an autonomous system decides"><defs><marker id="arw_auto_loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="da"/></marker></defs><path d="M140 50 L195 50" class="de " marker-end="url(#arw_auto_loop)"/><path d="M315 50 L370 50" class="de " marker-end="url(#arw_auto_loop)"/><path d="M490 50 L550 50" class="de " marker-end="url(#arw_auto_loop)"/><path d="M559.4090909090909 71 L395.5909090909091 139" class="de " marker-end="url(#arw_auto_loop)"/><path d="M294.4090909090909 139 L130.5909090909091 71" class="de " marker-end="url(#arw_auto_loop)"/><rect x="20" y="29" width="120" height="42" rx="7" class="dn "/><text x="80" y="42.5" class="dnt">1 Perceive</text><text x="80" y="57.5" class="dnt sub">sensors, logs</text><rect x="195" y="29" width="120" height="42" rx="7" class="dn "/><text x="255" y="42.5" class="dnt">2 Analyse</text><text x="255" y="57.5" class="dnt sub">estimate outcomes</text><rect x="370" y="29" width="120" height="42" rx="7" class="dn acc"/><text x="430" y="42.5" class="dnt">3 Select</text><text x="430" y="57.5" class="dnt sub">rules/policy/plan</text><rect x="550" y="29" width="120" height="42" rx="7" class="dn "/><text x="610" y="42.5" class="dnt">4 Execute</text><text x="610" y="57.5" class="dnt sub">brake, isolate</text><rect x="285" y="139" width="120" height="42" rx="7" class="dn good"/><text x="345" y="152.5" class="dnt">5 Observe</text><text x="345" y="167.5" class="dnt sub">feedback</text><rect x="188.9" y="96" width="47.2" height="18" rx="4" class="delb"/><text x="212.5" y="105" class="del">repeat</text></svg><div class="dia-cap">A prediction model stops at step 2; a decision-making system links its assessment to an action · HITL deck p.9</div></div>
@@ -3585,7 +3586,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Calling Tesla FSD 'fully autonomous'. The deck states FSD (Supervised) is Level 2 — the driver is responsible.`]},
 
 {id:"m6t10", title:"AI in Smart Manufacturing: Industry 4.0 and 5.0", type:"theory",
- priority:"medium", marks:[5], src:"HITL deck pp.10, 13",
+ priority:"medium", core:true, marks:[5], src:"HITL deck pp.10, 13",
  tags:["smart","manufacturing","industry"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Assess the role of AI in smart manufacturing. How should autonomy be matched to risk on a factory floor, and how does Industry 5.0 differ from Industry 4.0?</div>
 <h4>Smart manufacturing — autonomy in steps</h4>
@@ -3604,7 +3605,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Describing Industry 5.0 as 'more automation than 4.0'. It is the opposite emphasis: bringing the human back to the centre.`]},
 
 {id:"m6t11", title:"ClarifAI: An End-to-End Responsible AI System", type:"theory",
- priority:"high", marks:[10], src:"ClarifAI slides 1–8",
+ priority:"high", core:true, marks:[10], src:"ClarifAI slides 1–8",
  tags:["clarifai","end-to-end","responsible","system"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Describe ClarifAI as an end-to-end responsible AI system for student loan and scholarship decisions: its pipeline, consensus scoring, explanations, recourse, fairness monitoring and human oversight.</div>
 <p><b>Problem.</b> Black-box AI shows "Rejected" without a clear reason; applicants cannot see which factors mattered or what they could improve. ClarifAI combines rules, learned probability, SHAP, LIME, CARE and human review into one traceable decision.</p>
@@ -3632,7 +3633,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Quoting the metrics as proof the system is fair or ready. The deck explicitly labels them reported project figures, not proof of production readiness.`]},
 
 {id:"m6t12", title:"Multi-Agent Systems as an Emerging Paradigm", type:"theory",
- priority:"medium", marks:[5], src:"Planning slides 55–71; BE1 slides 9–14; Module 1 m1t8",
+ priority:"medium", core:false, marks:[5], src:"Planning slides 55–71; BE1 slides 9–14; Module 1 m1t8",
  tags:["multi-agent","systems","emerging","paradigm"],
  learn:`<div class="note"><span class="note-t">Exam question</span>Identify multi-agent systems as an emerging AI paradigm. How do multi-agent systems appear in smart ecosystems, and how does agentic AI extend the agent concept from Module 1?</div>
 <p><b>From Module 1:</b> Agentic AI differs from traditional AI on four axes — <b>autonomy</b>, <b>memory</b>, <b>tool usage</b> and <b>goal orientation</b>. Module 6 shows those four axes in deployed systems:</p>
@@ -3650,7 +3651,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  mistakes:[`Equating 'agentic' with 'multi-agent'. A single agent can be agentic (autonomous, with memory and tools); multi-agent is about several of them working together.`]},
 
 {id:"m6t13", title:"Edge AI, Quantum AI, AI for the SDGs and Cobots", type:"theory",
- priority:"medium", marks:[5], src:"Official syllabus Module 06 (LO 6.2, LO 6.3, self-learning)",
+ priority:"medium", core:false, marks:[5], src:"Official syllabus Module 06 (LO 6.2, LO 6.3, self-learning)",
  tags:["edge ai","quantum ai","sdg","cobots","industry 4.0","iot"], notCovered:true,
  learn:`<div class="gap-banner"><strong>No lecture material uploaded for this topic.</strong> None of the four Chapter 6 presentations covers it. The syllabus scope is reproduced below; notes have not been invented.</div>
 <ul><li><strong>LO 6.2</strong> — IoT integration for Industry 4.0 and human–AI collaboration (the rest of LO 6.2 is covered in <em>AI in Smart Manufacturing</em>).</li>
@@ -3659,7 +3660,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
  understand:"", examples:[], examAnswer:"", mistakes:[]},
 
 {id:"m6t14", title:"Tool Schema and Tool-Call Trace", type:"numerical",
- priority:"high", marks:[5], src:"Tool Calling pp.3–4, 7–8; BE1 slides 6–7, 17",
+ priority:"high", core:true, marks:[5], src:"Tool Calling pp.3–4, 7–8; BE1 slides 6–7, 17",
  tags:["tool","schema","tool-call","trace"],
  concept:`Two skills: write the JSON schema the model is shown (name, description, typed parameters, required list), and trace the message sequence for a question. Validation happens in your code, between the model's request and the real call.`,
  formula:`<div class="fx-pre">Tool definition:  { "name", "description", "parameters": { "type": "object",
@@ -3700,7 +3701,7 @@ Loop:  question + tools → model → tool-call request → validate → run cod
    <b>Answer:</b> the model writes the reply from the two tool results. If retrieval finds nothing relevant, it says so instead of guessing.`}]},
 
 {id:"m6t15", title:"Choosing the Level of Autonomy", type:"numerical",
- priority:"high", marks:[5], src:"HITL deck pp.2–13",
+ priority:"high", core:true, marks:[5], src:"HITL deck pp.2–13",
  tags:["choosing","level","autonomy"],
  concept:`For each decision, ask how bad a wrong answer is, whether it can be undone, how well-defined and validated the task is, and how fast it must happen. Those four answers place it at human-in-the-loop, human-on-the-loop or fully autonomous — or a hybrid.`,
  formula:`<div class="fx-pre">High impact  OR  irreversible  OR  needs expert judgement       →  Human-in-the-loop
@@ -3741,7 +3742,7 @@ Mixed confidence                                                  →  Hybrid: a
    Fix: ClarifAI's design — explanations (SHAP/LIME), recourse suggestions (CARE), fairness monitoring and human review of adverse and borderline cases.`}]},
 
 {id:"m6t16", title:"Multi-Agent Workflow Design Drill", type:"numerical",
- priority:"high", marks:[10], src:"BE1 slides 9–18; Tool Calling p.6",
+ priority:"high", core:true, marks:[10], src:"BE1 slides 9–18; Tool Calling p.6",
  tags:["multi-agent","workflow","design","drill"],
  concept:`Design questions follow a fixed path: decide whether to split at all, name the agents and give each one job and a small tool allow-list, choose the wiring pattern, define shared state, and add the verification step and guardrails. Then draw it.`,
  formula:`<div class="fx-pre">1. Split?      only if tools, context or responsibilities conflict
@@ -4476,204 +4477,204 @@ const FORMULAS = [
 const IMPQ = [
 
 /* ---------------------------- MODULE 1 ----------------------------- */
-{id:"iq1", m:"m1", t:"m1t4", lo:"LO 1.1", marks:5, pri:"high", type:"theory",
+{id:"iq1", m:"m1", t:"m1t4", lo:"LO 1.1", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply the categorization of intelligent systems to explain the four approaches to AI, and distinguish which approach modern AI-based solutions follow.",
  why:"LO 1.1 is dedicated to categorization and its verb is <em>Apply … to distinguish</em>. The class notes record all four approaches under the heading 'Categorization of AI systems', with the Turing Test, cognitive thinking and laws of thought written out separately."},
-{id:"iq2", m:"m1", t:"m1t1", lo:"LO 1.1", marks:5, pri:"medium", type:"theory",
+{id:"iq2", m:"m1", t:"m1t1", lo:"LO 1.1", marks:5, pri:"medium", core:true, type:"theory",
  q:"Classify each of the following as AI or NOT AI and justify your answer: calculator, ChatGPT, Google Maps, washing machine, Tesla, Alexa, chess engine, Spotify.",
  why:"This is slide 8 of the Chapter 1 deck run as a class vote, and CIA-01 Section A asks exactly this for the student's assigned system with a written justification. It tests LO 1.1's 'distinguish different types of AI-based solutions'."},
-{id:"iq3", m:"m1", t:"m1t5", lo:"LO 1.2", marks:5, pri:"high", type:"theory",
+{id:"iq3", m:"m1", t:"m1t5", lo:"LO 1.2", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply the foundational concepts of intelligent systems to define an intelligent agent, its terminology and its structure.",
  why:"LO 1.2 names 'agent behavior' as a foundational concept. Slides 64–66 and 71–76 cover agent terminology, F : P* → A, and Agent = Architecture + Agent Program; the class notes reproduce the definition verbatim."},
-{id:"iq4", m:"m1", t:"m1t7", lo:"LO 1.2", marks:2, pri:"high", type:"theory",
+{id:"iq4", m:"m1", t:"m1t7", lo:"LO 1.2", marks:2, pri:"high", core:true, type:"theory",
  q:"Define a rational agent and state the four things on which rationality depends.",
  why:"'Rationality' is a named syllabus item and LO 1.2 lists it first among the foundational concepts. A standard opening 2-mark definition."},
-{id:"iq5", m:"m1", t:"m1t6", lo:"LO 1.2", marks:5, pri:"high", type:"theory",
+{id:"iq5", m:"m1", t:"m1t6", lo:"LO 1.2", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply the PEAS framework to specify the task environment for an automated taxi driver, a vacuum cleaner, or a given AI system.",
  why:"CIA-01 Section D is a blank PEAS table to be filled for the student's assigned system. The class notes say Module 1 MSE questions are 'based on the LOs — identify and suggest', and PEAS is the most likely form of that."},
-{id:"iq6", m:"m1", t:"m1t10", lo:"LO 1.2", marks:5, pri:"medium", type:"theory",
+{id:"iq6", m:"m1", t:"m1t10", lo:"LO 1.2", marks:5, pri:"medium", core:false, type:"theory",
  q:"Apply the agent-function concept to the vacuum-cleaner world: give its percepts, actions and performance measure, and tabulate the agent function.",
  why:"A full worked example across slides 67–70 with a ten-row percept-sequence table. It is the standard vehicle for testing 'agent behaviour' in LO 1.2."},
-{id:"iq7", m:"m1", t:"m1t9", lo:"LO 1.3", marks:10, pri:"high", type:"theory",
+{id:"iq7", m:"m1", t:"m1t9", lo:"LO 1.3", marks:10, pri:"high", core:true, type:"theory",
  q:"Classify agents as simple reflex, model-based, goal-based, utility-based and learning agents. Explain each with a neat diagram and a real-world example.",
  why:"LO 1.3's verb is <em>Classify</em> and it names all five types explicitly. Slides 84–95 devote a full sequence to them, and CIA-01 Section C asks the student to tick the agent type for their assigned system and give two reasons."},
-{id:"iq8", m:"m1", t:"m1t9", lo:"LO 1.3", marks:5, pri:"high", type:"theory",
+{id:"iq8", m:"m1", t:"m1t9", lo:"LO 1.3", marks:5, pri:"high", core:true, type:"theory",
  q:"Identify the agent type for each of the following and justify your classification: Google Maps, Uber, ChatGPT, Tesla FSD, a chess AI, a robot vacuum.",
  why:"This is the 'Identify the Agent Type' class activity (slide 113) with the teacher's own six examples — the applied form of LO 1.3."},
-{id:"iq9", m:"m1", t:"m1t8", lo:"LO 1.6", marks:10, pri:"high", type:"theory",
+{id:"iq9", m:"m1", t:"m1t8", lo:"LO 1.6", marks:10, pri:"high", core:true, type:"theory",
  q:"Identify the types of agent environments and explain each with a suitable example. Classify the given task environments on all six properties.",
  why:"LO 1.6 is dedicated to this and its verb is <em>Identify</em>. CIA-01 Section E is a six-row environment table with two properties to be justified, and the slides carry a ready-made classification table for eight task environments."},
-{id:"iq10", m:"m1", t:"m1t8", lo:"LO 1.6", marks:5, pri:"high", type:"theory",
+{id:"iq10", m:"m1", t:"m1t8", lo:"LO 1.6", marks:5, pri:"high", core:true, type:"theory",
  q:"Identify the environment type for chess, Google Maps, a self-driving car, a robot vacuum and a smart traffic system across all six properties.",
  why:"This is the 'Environment Detective' class activity (slide 115) with the teacher's own five systems."},
-{id:"iq11", m:"m1", t:"m1t11", lo:"LO 1.5", marks:5, pri:"high", type:"theory",
+{id:"iq11", m:"m1", t:"m1t11", lo:"LO 1.5", marks:5, pri:"high", core:true, type:"theory",
  q:"Compare Traditional AI and Agentic AI on autonomy, memory, tool usage and goal orientation.",
  why:"LO 1.5 names these four axes verbatim and its verb is <em>Compare</em>. CIA-01 Section F asks the student to classify their system as Traditional or Agentic with justification."},
-{id:"iq12", m:"m1", t:"m1t11", lo:"LO 1.5", marks:5, pri:"medium", type:"theory",
+{id:"iq12", m:"m1", t:"m1t11", lo:"LO 1.5", marks:5, pri:"medium", core:true, type:"theory",
  q:"Identify whether each task requires Traditional AI or Agentic AI, and justify: book a flight, generate a report, research a topic, plan a vacation, monitor stock prices.",
  why:"The 'Traditional AI vs Agentic AI' class activity (slide 114) gives exactly these five tasks with a justification column."},
-{id:"iq13", m:"m1", t:"m1t12", lo:"LO 1.5", marks:5, pri:"medium", type:"theory",
+{id:"iq13", m:"m1", t:"m1t12", lo:"LO 1.5", marks:5, pri:"medium", core:false, type:"theory",
  q:"Explain the components of an agentic AI system and compare single-agent with multi-agent agentic architectures.",
  why:"Slides 100 and 104 give the architecture types and the eight-component table. Supports LO 1.5's tool-usage and memory axes."},
-{id:"iq14", m:"m1", t:"m1t13", lo:"LO 1.4", marks:10, pri:"medium", type:"theory",
+{id:"iq14", m:"m1", t:"m1t13", lo:"LO 1.4", marks:10, pri:"medium", core:true, type:"theory",
  q:"Apply an AI application framework to identify and analyze AI use-cases in healthcare, education, governance, finance and agriculture, giving a benefit, a limitation and an ethical concern for each.",
  why:"LO 1.4 names these five domains verbatim, and its verb pair is <em>identify and analyze</em>. CIA-01 Section G asks for precisely benefit / limitation / ethical concern."},
-{id:"iq15", m:"m1", t:"m1t2", lo:"—", marks:5, pri:"medium", type:"theory",
+{id:"iq15", m:"m1", t:"m1t2", lo:"—", marks:5, pri:"medium", core:false, type:"theory",
  q:"What is an AI Winter? Discuss the causes and impact of both AI Winters.",
  why:"'History of AI' is a named syllabus content item. Slides 25–27 and 37 cover it with a five-cause table, though no LO targets it directly — which is why it is medium rather than high."},
-{id:"iq16", m:"m1", t:"m1t3", lo:"—", marks:5, pri:"medium", type:"theory",
+{id:"iq16", m:"m1", t:"m1t3", lo:"—", marks:5, pri:"medium", core:false, type:"theory",
  q:"Explain the components of an AI program and the characteristics of knowledge.",
  why:"'Components of AI' is a named syllabus content item covered on slide 53, but no Module 1 LO targets it directly."},
 
 /* ---------------------------- MODULE 2 ----------------------------- */
-{id:"iq20", m:"m2", t:"m2t1", lo:"LO 2.1", marks:5, pri:"high", type:"theory",
+{id:"iq20", m:"m2", t:"m2t1", lo:"LO 2.1", marks:5, pri:"high", core:true, type:"theory",
  q:"Evaluate the given problem statement and formulate it as a search problem, stating the initial state, actions, transition model, goal test and path cost.",
  why:"LO 2.1's verb pair is <em>Evaluate &amp; Formulate</em>, and its PI 2.1.1 reads 'Evaluate problem statements and identifies objectives'. The MSE list in the class notes opens Module 2 with 'problem formulation'."},
-{id:"iq21", m:"m2", t:"m2t2", lo:"LO 2.1", marks:5, pri:"high", type:"numerical",
+{id:"iq21", m:"m2", t:"m2t2", lo:"LO 2.1", marks:5, pri:"high", core:true, type:"numerical",
  q:"Formulate the water jug problem (or missionaries and cannibals) as a state-space search: give the state representation, initial state, goal test, operators and one solution path.",
  why:"Both are worked in the class notes under 'Example Problems', a named syllabus item. This is the applied half of LO 2.1."},
-{id:"iq22", m:"m2", t:"m2t3", lo:"LO 2.2", marks:10, pri:"high", type:"theory",
+{id:"iq22", m:"m2", t:"m2t3", lo:"LO 2.2", marks:10, pri:"high", core:true, type:"theory",
  q:"Compare the uninformed search strategies BFS, DFS and IDS on completeness, optimality, time complexity and space complexity, and state when each should be used.",
  why:"LO 2.2's verb is <em>Compare</em> and it names exactly these three strategies. The MSE list records 'diff search algos (diff b/w)' as an examinable item."},
-{id:"iq23", m:"m2", t:"m2t6", lo:"LO 2.3", marks:10, pri:"high", type:"numerical",
+{id:"iq23", m:"m2", t:"m2t6", lo:"LO 2.3", marks:10, pri:"high", core:true, type:"numerical",
  q:"Apply A* search to the given graph to optimize the solution path. Show the OPEN and CLOSED lists at each step, state which node is expanded, and give the final path and its cost.",
  why:"LO 2.3 names A* explicitly and its verb phrase is <em>Apply … to optimize solution paths</em>. CIA-02 Q1 was exactly this for 5 marks; the class notes work three separate A* graphs; the MSE list names A* as a numerical."},
-{id:"iq24", m:"m2", t:"m2t5", lo:"LO 2.3", marks:5, pri:"high", type:"theory",
+{id:"iq24", m:"m2", t:"m2t5", lo:"LO 2.3", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply greedy best-first search to a given problem and explain, with reference to the Romania example, why it is neither complete nor optimal.",
  why:"LO 2.3 names Greedy alongside A*. Slides 5–11 work the Romania example and list the Iasi–Neamt loop and the sub-optimal Fagaras path as its two failures."},
-{id:"iq25", m:"m2", t:"m2t4", lo:"LO 2.3", marks:5, pri:"medium", type:"theory",
+{id:"iq25", m:"m2", t:"m2t4", lo:"LO 2.3", marks:5, pri:"medium", core:false, type:"theory",
  q:"What is an admissible heuristic? Illustrate with the 8-puzzle heuristics h₁ and h₂, and explain how a relaxed problem yields an admissible heuristic.",
  why:"Admissibility is what makes 'optimize solution paths' in LO 2.3 meaningful. Slides 12–15 give h₁(S) = 8, h₂(S) = 18 and the relaxed-problem argument."},
-{id:"iq26", m:"m2", t:"m2t7", lo:"LO 2.3", marks:5, pri:"high", type:"theory",
+{id:"iq26", m:"m2", t:"m2t7", lo:"LO 2.3", marks:5, pri:"high", core:true, type:"theory",
  q:"Prove that A* returns the optimal solution when the heuristic is admissible.",
  why:"A full proof appears on slide 30 and is reproduced in the class notes with the complete inequality chain f(n) ≤ C* &lt; f(G₂)."},
-{id:"iq27", m:"m2", t:"m2t8", lo:"LO 2.4", marks:10, pri:"high", type:"theory",
+{id:"iq27", m:"m2", t:"m2t8", lo:"LO 2.4", marks:10, pri:"high", core:true, type:"theory",
  q:"Apply analytical reasoning to hill climbing: draw and label the state-space landscape, name the problems it faces, and explain its four variants.",
  why:"LO 2.4 names Hill Climbing explicitly. The class notes annotate this topic with 'diagram + naming the problems to overcome + the variants', and the MSE list includes hill climbing."},
-{id:"iq28", m:"m2", t:"m2t9", lo:"LO 2.4", marks:10, pri:"high", type:"theory",
+{id:"iq28", m:"m2", t:"m2t9", lo:"LO 2.4", marks:10, pri:"high", core:true, type:"theory",
  q:"Explain simulated annealing with its analogy to physical annealing, its acceptance rule, and its stopping criteria.",
  why:"LO 2.4 names Simulated Annealing explicitly, and the MSE list is unusually specific — 'simulated annealing (theory — stopping criteria)' — so the stopping criteria are all but certain to be asked."},
-{id:"iq29", m:"m2", t:"m2t10", lo:"LO 2.4", marks:10, pri:"high", type:"theory",
+{id:"iq29", m:"m2", t:"m2t10", lo:"LO 2.4", marks:10, pri:"high", core:true, type:"theory",
  q:"Explain the genetic algorithm with its terminology, its three operators, roulette-wheel selection and its convergence criteria.",
  why:"LO 2.4 names Genetic Algorithms explicitly, and the MSE list pairs 'hill climbing + genetic algo' together."},
-{id:"iq30", m:"m2", t:"m2t11", lo:"LO 2.5", marks:10, pri:"high", type:"numerical",
+{id:"iq30", m:"m2", t:"m2t11", lo:"LO 2.5", marks:10, pri:"high", core:true, type:"numerical",
  q:"Apply the minimax algorithm to the given game tree for strategic decision-making. State the value at each node, the root value and MAX's best move.",
  why:"LO 2.5 names Minimax explicitly. The class notes write '★ 10 marks' directly beside adversarial search, and the MSE list includes min-max."},
-{id:"iq31", m:"m2", t:"m2t12", lo:"LO 2.5", marks:10, pri:"high", type:"numerical",
+{id:"iq31", m:"m2", t:"m2t12", lo:"LO 2.5", marks:10, pri:"high", core:true, type:"numerical",
  q:"Apply alpha–beta pruning to the given game tree. Annotate each node with α and β, state which branches are pruned and why, and give the root value.",
  why:"LO 2.5 names Alpha-Beta Pruning explicitly. CIA-02 Q2 was exactly this for 5 marks, and the MSE list names α–β pruning as a numerical."},
 
 /* ---------------------------- MODULE 3 ----------------------------- */
-{id:"iq40", m:"m3", t:"m3t4", lo:"LO 3.1", marks:5, pri:"high", type:"numerical",
+{id:"iq40", m:"m3", t:"m3t4", lo:"LO 3.1", marks:5, pri:"high", core:true, type:"numerical",
  q:"Apply predicate logic to represent the given English sentences in first-order predicate logic.",
  why:"LO 3.1's verb phrase is <em>Apply propositional and predicate logic to represent knowledge</em>. The MSE list names 'convert sentence'; the extra-problems handout is almost entirely conversion practice; slides 24–28 give three full slides of worked conversions."},
-{id:"iq41", m:"m3", t:"m3t3", lo:"LO 3.1", marks:5, pri:"high", type:"theory",
+{id:"iq41", m:"m3", t:"m3t3", lo:"LO 3.1", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply propositional logic to represent knowledge: explain its logical connectives and convert the given English statements into propositional logic.",
  why:"LO 3.1 covers propositional logic alongside predicate logic. Slides 20–23 give the connectives and six worked English-to-PL conversions."},
-{id:"iq42", m:"m3", t:"m3t5", lo:"LO 3.1", marks:5, pri:"high", type:"theory",
+{id:"iq42", m:"m3", t:"m3t5", lo:"LO 3.1", marks:5, pri:"high", core:true, type:"theory",
  q:"Differentiate propositional logic from first-order predicate logic as knowledge representation languages.",
  why:"A ready-made seven-row comparison table on slide 29. LO 3.1 covers both logics, so the contrast between them is the natural comparison question."},
-{id:"iq43", m:"m3", t:"m3t2", lo:"LO 3.1", marks:10, pri:"high", type:"theory",
+{id:"iq43", m:"m3", t:"m3t2", lo:"LO 3.1", marks:10, pri:"high", core:true, type:"theory",
  q:"Describe the Wumpus World with its PEAS specification and environment properties, and show how propositional logic represents its knowledge.",
  why:"The MSE list opens Module 3 with 'Wumpus World Ex.'. Slides 4–13 cover it in full, including the atomic propositions Pᵢ,ⱼ, Bᵢ,ⱼ, Wᵢ,ⱼ, Sᵢ,ⱼ and OKᵢ,ⱼ — which is exactly LO 3.1's 'represent knowledge'."},
-{id:"iq44", m:"m3", t:"m3t8", lo:"LO 3.2", marks:10, pri:"high", type:"numerical",
+{id:"iq44", m:"m3", t:"m3t8", lo:"LO 3.2", marks:10, pri:"high", core:true, type:"numerical",
  q:"Apply resolution for automated reasoning: convert the given facts to CNF, negate the goal, and prove it by drawing the resolution graph.",
  why:"LO 3.2's verb phrase is <em>Apply unification and resolution for automated reasoning</em>. The MSE list names 'Resolution graph'; the John-likes-peanuts proof spans five slides and four pages of class notes; the extra-problems handout adds three more."},
-{id:"iq45", m:"m3", t:"m3t9", lo:"LO 3.2", marks:5, pri:"high", type:"theory",
+{id:"iq45", m:"m3", t:"m3t9", lo:"LO 3.2", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply unification: explain it with an example and state the role it plays within resolution.",
  why:"LO 3.2 names unification first, before resolution. The MSE list names 'unification' as an item, and the chaining deck devotes slide 12 to where it fits."},
-{id:"iq46", m:"m3", t:"m3t7", lo:"LO 3.2", marks:5, pri:"medium", type:"numerical",
+{id:"iq46", m:"m3", t:"m3t7", lo:"LO 3.2", marks:5, pri:"medium", core:false, type:"numerical",
  q:"Convert the given sentence into CNF, showing the working for each rule applied.",
  why:"CNF is step 2 of every resolution proof, so it supports LO 3.2. Worked in the slides on the Wumpus breeze rule and again in the class notes with four numbered short rules."},
-{id:"iq47", m:"m3", t:"m3t6", lo:"LO 3.2", marks:5, pri:"medium", type:"theory",
+{id:"iq47", m:"m3", t:"m3t6", lo:"LO 3.2", marks:5, pri:"medium", core:false, type:"theory",
  q:"State the inference rules used for automated reasoning, with an example of each.",
  why:"Slide 31 lists modus ponens, and-elimination, biconditional elimination and resolution with worked examples; the extra-problems handout uses modus ponens as an explicit proof method alongside resolution."},
-{id:"iq48", m:"m3", t:"m3t11", lo:"LO 3.3", marks:10, pri:"high", type:"numerical",
+{id:"iq48", m:"m3", t:"m3t11", lo:"LO 3.3", marks:10, pri:"high", core:true, type:"numerical",
  q:"Use forward and backward chaining to derive the goal from the given knowledge base, showing the substitution and the new fact or subgoal at every step.",
  why:"LO 3.3's verb phrase is <em>Use forward and backward chaining for knowledge inference</em>. The MSE list names it, and an entire 17-slide deck covers this one topic with two fully worked examples."},
-{id:"iq49", m:"m3", t:"m3t11", lo:"LO 3.6", marks:5, pri:"high", type:"theory",
+{id:"iq49", m:"m3", t:"m3t11", lo:"LO 3.6", marks:5, pri:"high", core:true, type:"theory",
  q:"Compare forward and backward reasoning on starting point, direction, type, the question each answers, and when each should be used.",
  why:"LO 3.6 exists solely to <em>Compare Forward and Backward reasoning</em>, and the deck supplies a seven-row comparison table plus a 'when should we use which' slide."},
-{id:"iq50", m:"m3", t:"m3t10", lo:"LO 3.3", marks:5, pri:"medium", type:"theory",
+{id:"iq50", m:"m3", t:"m3t10", lo:"LO 3.3", marks:5, pri:"medium", core:false, type:"theory",
  q:"What is a Horn clause? Show how it rewrites as an IF–THEN rule and explain why it is the basis of forward and backward chaining.",
  why:"A dedicated slide with the De Morgan rewrite and the explicit chain 'Horn Clauses → Forward Chaining → Backward Chaining', which is what makes LO 3.3 tractable."},
-{id:"iq51", m:"m3", t:"m3t12", lo:"LO 3.4", marks:10, pri:"high", type:"theory",
+{id:"iq51", m:"m3", t:"m3t12", lo:"LO 3.4", marks:10, pri:"high", core:true, type:"theory",
  q:"Construct a knowledge model for the given domain using a semantic network, and explain inheritance and how exceptions must be handled.",
  why:"LO 3.4's verb is <em>Construct</em>. The MSE list names 'knowledge representation techniques — construct', and the class activity gives the exact rubric: at least 6 nodes, 5 labelled relationships, one IS-A link and one inherited property."},
-{id:"iq52", m:"m3", t:"m3t14", lo:"LO 3.4", marks:5, pri:"high", type:"theory",
+{id:"iq52", m:"m3", t:"m3t14", lo:"LO 3.4", marks:5, pri:"high", core:true, type:"theory",
  q:"Construct a knowledge graph for the given domain and differentiate it from an ontology.",
  why:"LO 3.4 names ontologies and knowledge graphs together. The deck carries a dedicated comparison slide with its own 'Exam point' callout."},
-{id:"iq53", m:"m3", t:"m3t13", lo:"LO 3.4", marks:5, pri:"high", type:"theory",
+{id:"iq53", m:"m3", t:"m3t13", lo:"LO 3.4", marks:5, pri:"high", core:true, type:"theory",
  q:"What is an ontology? Give its building blocks and distinguish it from a taxonomy.",
  why:"LO 3.4 names ontologies explicitly. Slides 7–9 give the five building blocks and the taxonomy contrast with an 'Exam point' callout."},
-{id:"iq54", m:"m3", t:"m3t15", lo:"LO 3.5", marks:5, pri:"high", type:"theory",
+{id:"iq54", m:"m3", t:"m3t15", lo:"LO 3.5", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply Semantic Web concepts to explain how intelligent information retrieval is enhanced beyond keyword search.",
  why:"LO 3.5's verb phrase is <em>Apply Semantic Web concepts to enhance intelligent information retrieval</em> — the question mirrors it word for word. The deck ends with an explicit 'Exam tip' on structuring the answer."},
-{id:"iq55", m:"m3", t:"m3t16", lo:"LO 3.4", marks:5, pri:"low", type:"theory",
+{id:"iq55", m:"m3", t:"m3t16", lo:"LO 3.4", marks:5, pri:"low", core:false, type:"theory",
  q:"Explain the knowledge engineering process for building a knowledge base.",
  why:"A seven-step slide that underpins LO 3.4's 'construct knowledge models', but it is not named in the MSE list."},
-{id:"iq56", m:"m3", t:"m3t1", lo:"LO 3.1", marks:5, pri:"medium", type:"theory",
+{id:"iq56", m:"m3", t:"m3t1", lo:"LO 3.1", marks:5, pri:"medium", core:false, type:"theory",
  q:"Explain a knowledge-based agent with a neat diagram, and describe how TELL and ASK operate.",
  why:"'Introduction to Knowledge based agent' is a named syllabus content item and the opening topic of both the Module 3 deck and the class notes."},
 
 /* ---------------------------- MODULE 4 ----------------------------- */
-{id:"iq60", m:"m4", t:"m4t4", lo:"LO 4.1", marks:10, pri:"high", type:"numerical",
+{id:"iq60", m:"m4", t:"m4t4", lo:"LO 4.1", marks:10, pri:"high", core:true, type:"numerical",
  q:"Apply uncertain knowledge representation using belief networks: draw the Bayesian network for the given scenario and determine how many independent values are required to specify all its CPTs.",
  why:"LO 4.1's verb phrase is <em>Apply uncertain knowledge representation using belief networks</em>. The lecture poses this exact question on slide 83 and marks it <strong>[10]</strong>."},
-{id:"iq61", m:"m4", t:"m4t4", lo:"LO 4.1", marks:5, pri:"high", type:"theory",
+{id:"iq61", m:"m4", t:"m4t4", lo:"LO 4.1", marks:5, pri:"high", core:true, type:"theory",
  q:"Define a Bayesian network and state the three parts of its full specification.",
  why:"The definition is given on slide 77 as a numbered three-part specification — node, directed links forming a DAG, and P(Xᵢ | Parents(Xᵢ)) — which is the definitional half of LO 4.1."},
-{id:"iq62", m:"m4", t:"m4t4", lo:"LO 4.2", marks:5, pri:"high", type:"numerical",
+{id:"iq62", m:"m4", t:"m4t4", lo:"LO 4.2", marks:5, pri:"high", core:true, type:"numerical",
  q:"Perform inference in the given belief network: calculate P(Alarm = True) with no information about burglary or earthquake.",
  why:"LO 4.2's verb is <em>Perform simple inference in Bayesian belief networks</em>, and its PI 1.1.2 is the probability-and-statistics indicator — a strong signal for a numerical. Worked in full on slide 82, giving 0.0025164."},
-{id:"iq63", m:"m4", t:"m4t2", lo:"LO 4.2", marks:5, pri:"high", type:"numerical",
+{id:"iq63", m:"m4", t:"m4t2", lo:"LO 4.2", marks:5, pri:"high", core:true, type:"numerical",
  q:"State Bayes' rule, derive it from the product rule, and apply it to compute a posterior probability for the given diagnostic problem.",
  why:"LO 4.2 is about performing inference under uncertainty, and PI 1.1.2 maps probability to this module. Slides 71–72 cover the product rule, Bayes' rule and the diagnostic direction."},
-{id:"iq64", m:"m4", t:"m4t3", lo:"LO 4.2", marks:5, pri:"medium", type:"numerical",
+{id:"iq64", m:"m4", t:"m4t3", lo:"LO 4.2", marks:5, pri:"medium", core:false, type:"numerical",
  q:"Perform inference using the given full joint probability distribution, and explain why the full joint distribution is replaced by a Bayesian network.",
  why:"Slides 73–76 work the dental example and then motivate Bayesian networks directly from its intractability — the bridge between LO 4.2 and LO 4.1."},
-{id:"iq65", m:"m4", t:"m4t1", lo:"LO 4.1", marks:5, pri:"high", type:"theory",
+{id:"iq65", m:"m4", t:"m4t1", lo:"LO 4.1", marks:5, pri:"high", core:true, type:"theory",
  q:"Why is probability needed in AI? Explain the three reasons logic fails in a domain such as medical diagnosis.",
  why:"Slides 67–69 give the three named reasons — laziness, theoretical ignorance, practical ignorance — plus Decision Theory = Probability Theory + Utility Theory. It is the motivating question for the whole of LO 4.1."},
-{id:"iq66", m:"m4", t:"m4t10", lo:"LO 4.3", marks:10, pri:"high", type:"theory",
+{id:"iq66", m:"m4", t:"m4t10", lo:"LO 4.3", marks:10, pri:"high", core:true, type:"theory",
  q:"<strong>FCRIT placement drive</strong> (600 students: eligibility checks, aptitude test, technical and HR interviews, room allocation, communication). (A) Identify the major tasks and decompose ‘Schedule Interview’. (B) Draw its task network with ordering and truth constraints. (C) The allocated room becomes unavailable: give an IF–THEN–ELSE plan. (D) Design a multi-agent system of at least four agents and say whether it is centralised, decentralised or distributed.",
  why:"Set as an exam-style question on Chpt 4 Planning slide 74. It touches every LO 4.3 strategy in one scenario: hierarchical decomposition, task network and partial order, conditional planning and multi-agent planning. Worked in full under <em>HTN, Task Network and Multi-Agent Plan Design</em>."},
-{id:"iq67", m:"m4", t:"m4t18", lo:"LO 4.3", marks:10, pri:"high", type:"numerical",
+{id:"iq67", m:"m4", t:"m4t18", lo:"LO 4.3", marks:10, pri:"high", core:true, type:"numerical",
  q:"An autonomous food-delivery robot must collect an order from a restaurant and deliver it to a customer. Construct a hierarchical task network, showing task decomposition, primitive tasks, temporal constraints and one truth constraint.",
  why:"The second planning exam question in the deck (Chpt 4 Planning slides 84–86), worked there step by step."},
-{id:"iq68", m:"m4", t:"m4t9", lo:"LO 4.3", marks:10, pri:"high", type:"theory",
+{id:"iq68", m:"m4", t:"m4t9", lo:"LO 4.3", marks:10, pri:"high", core:true, type:"theory",
  q:"Explain partial-order planning. Compare partial-order and total-order plans, list the components of a plan, and illustrate with the shoes-and-socks problem.",
  why:"Planning slides 25–35 build POP around the shoes-and-socks example (R&amp;N Fig 11.6). The diagram of the partial-order plan carries marks."},
-{id:"iq69", m:"m4", t:"m4t7", lo:"LO 4.3", marks:5, pri:"high", type:"theory",
+{id:"iq69", m:"m4", t:"m4t7", lo:"LO 4.3", marks:5, pri:"high", core:true, type:"theory",
  q:"Explain how states, goals and actions are represented in STRIPS. Show how an action is applied, with the Fly example.",
  why:"Planning slides 12–24. The representation question underneath every other planning answer."},
 
 /* ------------------------- MODULES 5 & 6 --------------------------- */
-{id:"iq70", m:"m5", t:"m5t7", lo:"LO 5.1", marks:10, pri:"high", type:"theory",
+{id:"iq70", m:"m5", t:"m5t7", lo:"LO 5.1", marks:10, pri:"high", core:true, type:"theory",
  q:"Apply Generative AI concepts to analyze applications and large language models such as ChatGPT and BERT.",
  why:"Worded directly from LO 5.1. The part 2 deck traces the evolution to ChatGPT and compares BERT, GPT and ChatGPT (slides 18–26); ‘BERT vs GPT’ is on its closing mini-quiz."},
-{id:"iq71", m:"m5", t:"m5t9", lo:"LO 5.2", marks:5, pri:"high", type:"theory",
+{id:"iq71", m:"m5", t:"m5t9", lo:"LO 5.2", marks:5, pri:"high", core:true, type:"theory",
  q:"Use prompt engineering strategies to improve interaction with an LLM-based AI system.",
  why:"Worded directly from LO 5.2. The deck gives five elements of a strong prompt and five prompting styles (slides 29–37); ‘what prompt engineering improves’ is on the mini-quiz. Practise with the <em>Prompt Makeover Drill</em>."},
-{id:"iq72", m:"m5", t:"m5t2", lo:"LO 5.3", marks:5, pri:"high", type:"theory",
+{id:"iq72", m:"m5", t:"m5t2", lo:"LO 5.3", marks:5, pri:"high", core:true, type:"theory",
  q:"Apply Explainable AI techniques such as SHAP and LIME to interpret model decisions, and compare their strengths and limitations.",
  why:"Worded from LO 5.3; its PI 5.2.1 is about the <em>strengths and limitations of tools</em>, so expect a comparison. Part 2 slides 42–43 and 57 cover both. The deck skips the Shapley formula, so a numerical Shapley question is unlikely."},
-{id:"iq73", m:"m5", t:"m5t3", lo:"LO 5.4", marks:10, pri:"high", type:"theory",
+{id:"iq73", m:"m5", t:"m5t3", lo:"LO 5.4", marks:10, pri:"high", core:true, type:"theory",
  q:"Identify the Responsible AI principles — fairness, bias, privacy and AI hallucinations — and relate each to a concrete risk of AI deployment.",
  why:"Worded from LO 5.4. Part 2 slides 44–48 give the five principles, the types of bias and the privacy questions; hallucinations are on slides 27–28."},
-{id:"iq74", m:"m5", t:"m5t14", lo:"LO 5.5", marks:5, pri:"high", type:"theory",
+{id:"iq74", m:"m5", t:"m5t14", lo:"LO 5.5", marks:5, pri:"high", core:true, type:"theory",
  q:"Identify ethical AI practices and international AI regulatory frameworks.",
  why:"Worded from LO 5.5. Part 2 slides 49–51 and 56 cover the EU AI Act's risk tiers, the Indian context and the NIST AI RMF. The OpenAI guidelines and the UNESCO Recommendation (self-learning) are not in the decks."},
-{id:"iq75", m:"m6", t:"m6t8", lo:"LO 6.1", marks:5, pri:"high", type:"theory",
+{id:"iq75", m:"m6", t:"m6t8", lo:"LO 6.1", marks:5, pri:"high", core:true, type:"theory",
  q:"Compare human-in-the-loop, human-on-the-loop and fully autonomous decision-making, and choose one for a suspicious device on the college network.",
  why:"The Human-in-the-Loop presentation (pp.2–8) sets up exactly this comparison and scenario. Choosing and justifying an autonomy level is the likeliest Module 6 task."},
-{id:"iq76", m:"m6", t:"m6t10", lo:"LO 6.2", marks:10, pri:"medium", type:"theory",
+{id:"iq76", m:"m6", t:"m6t10", lo:"LO 6.2", marks:10, pri:"medium", core:true, type:"theory",
  q:"Assess the role of AI in Industry 4.0 and smart manufacturing ecosystems, including automation, IoT integration and human–AI collaboration.",
  why:"Worded from LO 6.2, whose verb is <em>Assess</em>. The HITL presentation covers matching autonomy to risk on a factory floor and Industry 4.0 vs 5.0; <strong>IoT integration and human–AI collaboration are not in the uploaded material.</strong>"},
-{id:"iq77", m:"m6", t:"m6t12", lo:"LO 6.3", marks:5, pri:"medium", type:"theory", nomat:true,
+{id:"iq77", m:"m6", t:"m6t12", lo:"LO 6.3", marks:5, pri:"medium", core:false, type:"theory", nomat:true,
  q:"Identify emerging AI paradigms — multi-agent systems, Edge AI, quantum AI and AI for the SDGs — and assess their future impact.",
  why:"Worded from LO 6.3. Multi-agent systems are covered (BE1 presentation and Chpt 4 Planning); <strong>Edge AI, quantum AI and AI for the SDGs are not in any uploaded material.</strong>"},
-{id:"iq78", m:"m6", t:"m6t2", lo:"LO 6.1", marks:10, pri:"high", type:"theory",
+{id:"iq78", m:"m6", t:"m6t2", lo:"LO 6.1", marks:10, pri:"high", core:true, type:"theory",
  q:"Explain how tool calling works: the four-step loop, the tool schema and middleware. Trace one tool call end to end.",
  why:"The core of the Tool Calling presentation and BE1 slides 6–7. Tracing a call is the natural applied question for this module."}
 ];
@@ -4929,34 +4930,40 @@ function loStatus(lo){
 const moduleById = id => COURSE.modules.find(m => m.id === id);
 const quizByModule = mid => QUIZZES.find(q => q.module === mid);
 
+/* Core only (SEM7.coreOnly): Extra topics leave the module lists, the dashboard
+   and the scoped counts. Quizzes count as Extra, as in the hub's Core figure.
+   The hub reads the unscoped counts, so its figures don't move with the switch. */
+const inScope = t => !SEM7.coreOnly() || (SEM7.isCore(t) && !t.notCovered);
+
 /* Countable study items. A topic counts ONLY when explicitly marked done. */
-function moduleItems(m){
+function moduleItems(m, scoped){
   const items = [];
   m.topics.forEach(t => {
+    if(scoped && !inScope(t)) return;
     items.push({kind:"topic", id:t.id, type:t.type, done: P.topics[t.id] === "done"});
     if(t.type === "numerical" && t.practice && t.practice.length)
       items.push({kind:"practice", id:t.id, type:"practice", done: P.practice[t.id] === true});
   });
   const q = quizByModule(m.id);
-  if(q) items.push({kind:"quiz", id:q.id, type:"quiz", done: !!P.quizzes[q.id]});
+  if(q && !(scoped && SEM7.coreOnly())) items.push({kind:"quiz", id:q.id, type:"quiz", done: !!P.quizzes[q.id]});
   return items;
 }
 function pct(done,total){ return total ? Math.round(done/total*100) : 0; }
 
-function moduleProgress(m){
-  const items = moduleItems(m);
+function moduleProgress(m, scoped){
+  const items = moduleItems(m, scoped);
   const done = items.filter(i=>i.done).length;
   return {done, total:items.length, pct:pct(done,items.length)};
 }
 /* Overall progress = completed study items / total study items × 100 */
-function overallProgress(){
+function overallProgress(scoped){
   let done=0, total=0;
-  COURSE.modules.forEach(m=>{ const p=moduleProgress(m); done+=p.done; total+=p.total; });
+  COURSE.modules.forEach(m=>{ const p=moduleProgress(m, scoped); done+=p.done; total+=p.total; });
   return {done, total, pct:pct(done,total)};
 }
-function breakdown(){
+function breakdown(scoped){
   const b = {theory:{d:0,t:0}, numerical:{d:0,t:0}, practice:{d:0,t:0}, quiz:{d:0,t:0}};
-  COURSE.modules.forEach(m => moduleItems(m).forEach(i=>{
+  COURSE.modules.forEach(m => moduleItems(m, scoped).forEach(i=>{
     const k = i.kind==="topic" ? i.type : i.kind;
     if(!b[k]) return;
     b[k].t++; if(i.done) b[k].d++;
@@ -4996,10 +5003,10 @@ function statusOf(id){ return P.topics[id] || "none"; }
 /* ------------------- "WHAT SHOULD I STUDY NEXT?" --------------------- */
 /* Simple, transparent rule ladder — evaluated strictly in order.        */
 function studyNext(){
-  const ts = allTopics().filter(t => !t.notCovered);
+  const ts = allTopics().filter(t => !t.notCovered && inScope(t));
 
   // 1. A weak topic from quiz results that has not been re-marked complete
-  const weak = weakTopics();
+  const weak = weakTopics().filter(w => inScope(w.topic));
   for(const w of weak){
     if(statusOf(w.topic.id) !== "done" || true){
       return {topic:w.topic, reason:`Weak topic — quiz accuracy ${w.acc}%`,
@@ -5070,12 +5077,13 @@ function setStatus(id, s){
 
 /* ------------------------------ DASHBOARD ---------------------------- */
 function viewDashboard(){
-  const ov = overallProgress(), b = breakdown(), qp = quizPerformance(), weak = weakTopics();
+  const ov = overallProgress(true), b = breakdown(true), qp = quizPerformance();
+  const weak = weakTopics().filter(w => inScope(w.topic));
   const next = studyNext(), UI = SEM7.ui;
   const tp = pct(b.theory.d,b.theory.t), np = pct(b.numerical.d,b.numerical.t);
 
   let html = UI.stats([
-    {icon:"target", value:ov.pct+"%", label:"Overall", count:`${ov.done} / ${ov.total}`, pct:ov.pct},
+    {icon:"target", value:ov.pct+"%", label:SEM7.coreOnly() ? "Core" : "Overall", count:`${ov.done} / ${ov.total}`, pct:ov.pct},
     {icon:"book", value:tp+"%", label:"Theory", count:`${b.theory.d} / ${b.theory.t}`, pct:tp},
     {icon:"formula", value:np+"%", label:"Numericals", count:`${b.numerical.d} / ${b.numerical.t}`, pct:np},
     {icon:"quiz", value:qp ? qp.pct+"%" : "—", label:"Quiz average", count:qp ? `${qp.taken} / ${qp.of} taken` : ""}
@@ -5087,8 +5095,10 @@ function viewDashboard(){
   else html += UI.next({title:"Quick revision", go:{label:"Open", attrs:`data-act="go" data-h="#/revision"`}});
 
   const built = {};
-  COURSE.modules.forEach(m=>{ built[m.id] = {pct:moduleProgress(m).pct}; });
-  html += UI.modules("ai", built, id=>`data-act="go" data-h="#/module/${id}"`);
+  COURSE.modules.forEach(m=>{ built[m.id] = {pct:moduleProgress(m, true).pct}; });
+  /* The Core only switch sits in the Modules heading */
+  html += UI.modules("ai", built, id=>`data-act="go" data-h="#/module/${id}"`)
+    .replace(UI.h2("layers", "Modules"), UI.h2("layers", "Modules", UI.coreToggle()));
 
   /* Weak topics, only once the quizzes have flagged some */
   if(weak.length){
@@ -5118,15 +5128,16 @@ function viewDashboard(){
 function viewModule(id){
   const m = moduleById(id);
   if(!m) return notFound();
-  const p = moduleProgress(m);
-  const theory = m.topics.filter(t=>t.type==="theory");
-  const nums   = m.topics.filter(t=>t.type==="numerical");
+  const p = moduleProgress(m, true);
+  const shown  = m.topics.filter(inScope);
+  const theory = shown.filter(t=>t.type==="theory");
+  const nums   = shown.filter(t=>t.type==="numerical");
   const q = quizByModule(m.id);
 
   let html = SEM7.ui.head({eyebrow:`Module ${m.num} · ${m.hours} hours`, title:esc(m.title),
     sub:`<strong>Learning objective.</strong> ${esc(m.objective)}`,
     progress:{pct:p.pct, done:p.done, total:p.total, unit:"study items complete",
-      note:`${m.topics.length} topics${nums.length?` · ${nums.filter(t=>t.practice&&t.practice.length).length} practice sets`:""}${q?" · 1 quiz":""}`}});
+      note:`${shown.length} topics${nums.length?` · ${nums.filter(t=>t.practice&&t.practice.length).length} practice sets`:""}${q?" · 1 quiz":""}`}});
 
   if(m.coverageNote) html += `<div class="gap-banner">${m.coverageNote}</div>`;
   if(m.examNote) html += `<div class="note warn"><span class="note-t">Exam guidance from the uploaded material</span>${m.examNote}</div>`;
