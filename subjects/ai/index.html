@@ -5178,7 +5178,7 @@ function viewTopic(id){
       title:esc(t.title), meta:priBadge(t.priority)+marksBadge(t.marks),
       progress:{state:st==="prog"?"progress":st, note:t.src?`Source: ${esc(t.src)}`:""}},
     key:!isNum && t.understand ? {t:"In simpler words", b:t.understand} : (isNum && t.concept ? {t:"The idea", b:t.concept} : null),
-    diagram:t.diagram ? diaBlock(t.diagram) : "",
+    diagram:t.diagram || TOPIC_DIA[t.id] ? diaBlock(t.diagram || TOPIC_DIA[t.id]) : "",
     concept, extra,
     answer:t.examAnswer ? [{label:marks ? marks.join(" / ")+" marks" : "Model answer", marks:marks ? Math.max.apply(null, marks) : null, body:t.examAnswer}] : [],
     mistakes:t.mistakes,
@@ -5189,6 +5189,194 @@ function viewTopic(id){
     pager:{prev:side(nb.prev), next:side(nb.next), up:{label:`Back to Module ${m.num}`, attrs:modLink}}
   });
 }
+
+/* More diagrams, one per Core topic that had none. Each draws the lecture's own
+   example; topics pick theirs up through TOPIC_DIA. */
+const mk = id => `<defs><marker id="${id}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" style="fill:var(--muted)"/></marker></defs>`;
+Object.assign(DIA, {
+envProps:{cap:"The six properties are always opposing pairs. The left column is simpler for the agent; the real world sits on the right.",svg:`
+<svg viewBox="0 0 470 288" role="img" aria-label="Six environment properties as opposing pairs: fully vs partially observable, deterministic vs stochastic, episodic vs sequential, static vs dynamic, discrete vs continuous, single vs multi-agent.">
+${mk("arE")}
+<text x="105" y="16" class="d-txt-s">simpler for the agent</text><text x="365" y="16" class="d-txt-s">harder · the real world</text>
+${[["Fully observable","Partially observable"],["Deterministic","Stochastic"],["Episodic","Sequential"],["Static","Dynamic"],["Discrete","Continuous"],["Single agent","Multi-agent"]].map((r,i)=>{const y=30+i*43;return `
+<rect x="20" y="${y}" width="170" height="30" rx="15" class="d-node-a"/><text x="105" y="${y+15}" class="d-txt">${r[0]}</text>
+<path d="M196 ${y+15} H274" class="d-line" marker-end="url(#arE)"/><path d="M274 ${y+15} H196" class="d-line" marker-end="url(#arE)"/>
+<rect x="280" y="${y}" width="170" height="30" rx="15" class="d-node-w"/><text x="365" y="${y+15}" class="d-txt">${r[1]}</text>`;}).join("")}
+</svg>`},
+
+problemForm:{cap:"A search algorithm cannot run until the problem is reduced to these five components. Formulate first, then search.",svg:`
+<svg viewBox="0 0 470 232" role="img" aria-label="Formulate, search, execute; a well-defined problem has an initial state, actions, a transition model, a goal test and a path cost.">
+${mk("arP")}
+<rect x="20" y="14" width="120" height="34" rx="7" class="d-node-a"/><text x="80" y="31" class="d-txt">1 · Formulate</text>
+<rect x="175" y="14" width="120" height="34" rx="7" class="d-node"/><text x="235" y="31" class="d-txt">2 · Search</text>
+<rect x="330" y="14" width="120" height="34" rx="7" class="d-node"/><text x="390" y="31" class="d-txt">3 · Execute</text>
+<path d="M140 31 H170" class="d-line" marker-end="url(#arP)"/><path d="M295 31 H325" class="d-line" marker-end="url(#arP)"/>
+<path d="M80 48 V72" class="d-line-a"/>
+<rect x="10" y="72" width="450" height="150" rx="10" class="d-node"/>
+<text x="235" y="90" class="d-txt">A well-defined problem</text>
+<rect x="24" y="104" width="134" height="46" rx="7" class="d-node-a"/><text x="91" y="120" class="d-txt">Initial state</text><text x="91" y="137" class="d-txt-s">where the agent starts</text>
+<rect x="168" y="104" width="134" height="46" rx="7" class="d-node-a"/><text x="235" y="120" class="d-txt">Actions</text><text x="235" y="137" class="d-txt-s">what can be done</text>
+<rect x="312" y="104" width="134" height="46" rx="7" class="d-node-a"/><text x="379" y="120" class="d-txt">Transition model</text><text x="379" y="137" class="d-txt-s">result of an action</text>
+<rect x="96" y="162" width="134" height="46" rx="7" class="d-node-g"/><text x="163" y="178" class="d-txt">Goal test</text><text x="163" y="195" class="d-txt-s">may be several goals</text>
+<rect x="240" y="162" width="134" height="46" rx="7" class="d-node-w"/><text x="307" y="178" class="d-txt">Path cost</text><text x="307" y="195" class="d-txt-s">a number per path</text>
+</svg>`},
+
+bfsDfs:{cap:"The same tree, two visiting orders. BFS (FIFO queue) finishes each level first; DFS (LIFO stack) goes deepest first.",svg:`
+<svg viewBox="0 0 470 222" role="img" aria-label="BFS visits A B C D E F G level by level; DFS visits A B D E C F G deepest first.">
+${[[0,"BFS · FIFO queue",{A:1,B:2,C:3,D:4,E:5,F:6,G:7}],[240,"DFS · LIFO stack",{A:1,B:2,D:3,E:4,C:5,F:6,G:7}]].map(([ox,lab,ord])=>{
+ const P={A:[115,44],B:[60,104],C:[170,104],D:[30,164],E:[90,164],F:[140,164],G:[200,164]};
+ const E=[["A","B"],["A","C"],["B","D"],["B","E"],["C","F"],["C","G"]];
+ return `<text x="${ox+115}" y="14" class="d-txt">${lab}</text>`+
+ E.map(([a,b])=>`<path d="M${ox+P[a][0]} ${P[a][1]} L${ox+P[b][0]} ${P[b][1]}" class="d-line"/>`).join("")+
+ Object.keys(P).map(k=>`<circle cx="${ox+P[k][0]}" cy="${P[k][1]}" r="14" class="d-node"/><text x="${ox+P[k][0]}" y="${P[k][1]}" class="d-txt">${k}</text>
+ <circle cx="${ox+P[k][0]+14}" cy="${P[k][1]-13}" r="8" class="d-node-a"/><text x="${ox+P[k][0]+14}" y="${P[k][1]-13}" class="d-txt-s">${ord[k]}</text>`).join("")+
+ `<text x="${ox+115}" y="204" class="d-txt-s">order: ${Object.keys(ord).sort((a,b)=>ord[a]-ord[b]).join(" → ")}</text>`;}).join("")}
+</svg>`},
+
+annealing:{cap:"A bad move (ΔE < 0) is accepted with probability e^(ΔE/T), which is how SA climbs off a local maximum. As T falls it behaves like hill climbing.",svg:`
+<svg viewBox="0 0 470 262" role="img" aria-label="Objective landscape with a local and a global maximum. A downhill move is accepted with probability e to the delta E over T, then uphill moves reach the global maximum.">
+${mk("arS")}
+<path d="M14 196 C 70 196, 95 92, 140 92 C 182 92, 192 172, 232 172 C 282 172, 300 42, 342 42 C 384 42, 420 164, 456 182" class="d-line" style="stroke-width:2.4"/>
+<text x="140" y="78" class="d-txt-s">local maximum</text><text x="342" y="28" class="d-txt-s">global maximum</text>
+<circle cx="140" cy="92" r="7" class="d-node-w"/>
+<path d="M150 98 Q 200 120 222 160" class="d-line-d" marker-end="url(#arS)"/>
+<text x="166" y="54" class="d-txt-s" style="text-anchor:start">ΔE &lt; 0: accept with</text><text x="166" y="68" class="d-txt-s" style="text-anchor:start">P = e^(ΔE / T)</text>
+<path d="M246 166 Q 300 120 334 56" class="d-line-a" marker-end="url(#arS)"/>
+<text x="300" y="150" class="d-txt-s" style="text-anchor:start">ΔE &gt; 0: always accept</text>
+<rect x="14" y="220" width="442" height="28" rx="6" class="d-node"/>
+<rect x="14" y="220" width="150" height="28" rx="6" class="d-node-w"/>
+<text x="89" y="234" class="d-txt-s">T high: bad moves often</text><text x="380" y="234" class="d-txt-s">T low: almost never</text>
+<path d="M175 234 H300" class="d-line" marker-end="url(#arS)"/><text x="238" y="212" class="d-txt-s">cool slowly</text>
+</svg>`},
+
+gaCycle:{cap:"Holland's loop: evaluate, select, cross over, mutate, repeat until the stopping criteria are met. Crossover and mutation bring diversity.",svg:`
+<svg viewBox="0 0 470 252" role="img" aria-label="Genetic algorithm cycle: initialize population, evaluate fitness, select parents by roulette wheel, crossover, mutation, back to evaluate; stop when converged.">
+${mk("arG")}
+<rect x="8" y="20" width="118" height="36" rx="7" class="d-node"/><text x="67" y="38" class="d-txt">Initialize population</text>
+<rect x="172" y="20" width="126" height="36" rx="7" class="d-node-a"/><text x="235" y="38" class="d-txt">Evaluate fitness</text>
+<rect x="344" y="20" width="118" height="36" rx="7" class="d-node-g"/><text x="403" y="32" class="d-txt">Stop</text><text x="403" y="46" class="d-txt-s">return the fittest</text>
+<path d="M126 38 H168" class="d-line" marker-end="url(#arG)"/>
+<path d="M298 38 H340" class="d-line" marker-end="url(#arG)"/><text x="320" y="14" class="d-txt-s">criteria met</text>
+<rect x="322" y="112" width="140" height="40" rx="7" class="d-node-a"/><text x="392" y="125" class="d-txt">Select parents</text><text x="392" y="141" class="d-txt-s">roulette wheel</text>
+<rect x="172" y="200" width="126" height="36" rx="7" class="d-node-a"/><text x="235" y="218" class="d-txt">Crossover</text>
+<rect x="10" y="112" width="130" height="40" rx="7" class="d-node-a"/><text x="75" y="125" class="d-txt">Mutation</text><text x="75" y="141" class="d-txt-s">flip a gene</text>
+<path d="M268 56 Q 392 62 392 106" class="d-line-a" marker-end="url(#arG)"/><text x="350" y="76" class="d-txt-s">not yet</text>
+<path d="M392 152 Q 392 218 304 218" class="d-line-a" marker-end="url(#arG)"/>
+<path d="M172 218 Q 75 218 75 158" class="d-line-a" marker-end="url(#arG)"/>
+<path d="M75 112 Q 75 62 166 50" class="d-line-a" marker-end="url(#arG)"/>
+<text x="235" y="132" class="d-txt">next generation</text>
+</svg>`},
+
+minimaxTree:{cap:"The worked example: MAX takes the larger of each pair, MIN the smaller, bottom-up. Both root branches give −4, so MAX can guarantee −4.",svg:`
+<svg viewBox="0 0 470 240" role="img" aria-label="Minimax tree: leaves -4 -9 9 6 -17 -4 -11 7; level-3 MAX values -4 9 -4 7; MIN values -4 -4; root -4.">
+${(()=>{const L=[-4,-9,9,6,-17,-4,-11,7], lx=i=>34+i*52, C=[-4,9,-4,7], cx=i=>(lx(2*i)+lx(2*i+1))/2, B=[-4,-4], bx=i=>(cx(2*i)+cx(2*i+1))/2, rx=(bx(0)+bx(1))/2;
+ const hot=new Set(["r-b0","r-b1","b0-c0","b1-c2","c0-l0","c2-l5"]);
+ const ln=(k,x1,y1,x2,y2)=>`<path d="M${x1} ${y1} L${x2} ${y2}" class="${hot.has(k)?"d-line-a":"d-line"}"/>`;
+ const up=(x,y,v)=>`<path d="M${x} ${y-16} L${x+20} ${y+12} L${x-20} ${y+12} z" class="d-node-a"/><text x="${x}" y="${y+3}" class="d-txt">${v}</text>`;
+ const dn=(x,y,v)=>`<path d="M${x-20} ${y-12} L${x+20} ${y-12} L${x} ${y+16} z" class="d-node-w"/><text x="${x}" y="${y-3}" class="d-txt">${v}</text>`;
+ let s="";
+ B.forEach((_,i)=>{s+=ln("r-b"+i,rx,40,bx(i),88);});
+ C.forEach((_,i)=>{s+=ln("b"+(i>>1)+"-c"+i,bx(i>>1),100,cx(i),150);});
+ L.forEach((_,i)=>{s+=ln("c"+(i>>1)+"-l"+i,cx(i>>1),162,lx(i),198);});
+ s+=up(rx,30,"−4")+B.map((v,i)=>dn(bx(i),98,"−4")).join("")+C.map((v,i)=>up(cx(i),152,String(v).replace("-","−"))).join("");
+ s+=L.map((v,i)=>`<rect x="${lx(i)-18}" y="198" width="36" height="24" rx="5" class="${i===0||i===5?"d-node-a":"d-node"}"/><text x="${lx(i)}" y="210" class="d-txt">${String(v).replace("-","−")}</text>`).join("");
+ return s+`<text x="12" y="30" class="d-txt-s" style="text-anchor:start">MAX</text><text x="12" y="92" class="d-txt-s" style="text-anchor:start">MIN</text><text x="12" y="152" class="d-txt-s" style="text-anchor:start">MAX</text>`;})()}
+</svg>`},
+
+stripsFly:{cap:"Applying Fly(P1, MUM, DEL): match the preconditions with θ, delete the negated effect, add the positive one. Everything else carries over.",svg:`
+<svg viewBox="0 0 470 236" role="img" aria-label="STRIPS: the state before, the Fly action schema with preconditions and effects, and the state after with At(P1,MUM) deleted and At(P1,DEL) added.">
+${mk("arF")}
+<rect x="6" y="10" width="136" height="216" rx="8" class="d-node"/><text x="74" y="26" class="d-txt">State before</text>
+${["At(P1,MUM)","At(P2,SFO)","Plane(P1)","Plane(P2)","Airport(MUM)","Airport(DEL)"].map((l,i)=>`<text x="74" y="${52+i*26}" class="d-txt-s" ${i===0?'style="fill:var(--bad);text-decoration:line-through"':""}>${l}</text>`).join("")}
+<rect x="164" y="10" width="142" height="216" rx="8" class="d-node-a"/><text x="235" y="26" class="d-txt">Fly(p, from, to)</text>
+<text x="235" y="50" class="d-txt-s" style="font-weight:700">PRECOND</text>
+<text x="235" y="66" class="d-txt-s">At(p,from) ∧ Plane(p)</text><text x="235" y="80" class="d-txt-s">∧ Airport(from) ∧ Airport(to)</text>
+<text x="235" y="104" class="d-txt-s" style="font-weight:700">θ</text><text x="235" y="118" class="d-txt-s">p/P1, from/MUM, to/DEL</text>
+<text x="235" y="144" class="d-txt-s" style="font-weight:700">EFFECT</text>
+<text x="235" y="162" class="d-txt-s" style="fill:var(--bad)">delete list: At(P1,MUM)</text>
+<text x="235" y="180" class="d-txt-s" style="fill:var(--good)">add list: At(P1,DEL)</text>
+<path d="M142 118 H160" class="d-line" marker-end="url(#arF)"/><path d="M306 118 H324" class="d-line" marker-end="url(#arF)"/>
+<rect x="328" y="10" width="136" height="216" rx="8" class="d-node-g"/><text x="396" y="26" class="d-txt">State after</text>
+${["At(P1,DEL)","At(P2,SFO)","Plane(P1)","Plane(P2)","Airport(MUM)","Airport(DEL)"].map((l,i)=>`<text x="396" y="${52+i*26}" class="d-txt-s" ${i===0?'style="fill:var(--good);font-weight:700"':""}>${l}</text>`).join("")}
+</svg>`},
+
+htnGoa:{cap:"Plan the major actions first, then refine only the ones that need detail. The hierarchy is what keeps the search space small.",svg:`
+<svg viewBox="0 0 470 250" role="img" aria-label="Hierarchical plan: Going to Goa decomposes into hotel booking, ticket booking, reaching Goa, staying and enjoying, coming back; reaching Goa refines to taking a taxi, staying refines to dinner on the beach and taking photos.">
+<rect x="140" y="10" width="190" height="34" rx="7" class="d-node-a"/><text x="235" y="27" class="d-txt">Going to Goa this Christmas</text>
+${["Hotel booking","Ticket booking","Reach Goa","Stay &amp; enjoy","Come back"].map((t,i)=>{const x=6+i*92;return `<path d="M235 44 L${x+42} 96" class="d-line"/><rect x="${x}" y="96" width="84" height="34" rx="7" class="d-node"/><text x="${x+42}" y="113" class="d-txt-s" style="font-weight:600">${t}</text>`;}).join("")}
+<path d="M232 130 V176" class="d-line"/><rect x="176" y="176" width="112" height="30" rx="15" class="d-node-g"/><text x="232" y="191" class="d-txt-s">Taxi to station/airport</text>
+<path d="M310 130 V229 M310 191 H322 M310 229 H322" class="d-line"/>
+<rect x="322" y="176" width="116" height="30" rx="15" class="d-node-g"/><text x="380" y="191" class="d-txt-s">Dinner on the beach</text>
+<rect x="322" y="214" width="116" height="30" rx="15" class="d-node-g"/><text x="380" y="229" class="d-txt-s">Take photos</text>
+<text x="8" y="80" class="d-txt-s" style="text-anchor:start">major actions</text><text x="8" y="192" class="d-txt-s" style="text-anchor:start">minor actions</text>
+</svg>`},
+
+popShoes:{cap:"The complete partial-order plan: each sock precedes its own shoe, and nothing orders left against right, so there are 4!/(2!·2!) = 6 total orders.",svg:`
+<svg viewBox="0 0 470 196" role="img" aria-label="Partial-order plan: Start, RightSock then RightShoe, LeftSock then LeftShoe, Finish, with causal links labelled by the literal they supply.">
+${mk("arO")}
+<rect x="6" y="80" width="58" height="34" rx="17" class="d-node"/><text x="35" y="97" class="d-txt">Start</text>
+<rect x="404" y="80" width="60" height="34" rx="17" class="d-node"/><text x="434" y="97" class="d-txt">Finish</text>
+<rect x="104" y="22" width="88" height="34" rx="7" class="d-node-a"/><text x="148" y="39" class="d-txt">RightSock</text>
+<rect x="272" y="22" width="88" height="34" rx="7" class="d-node-a"/><text x="316" y="39" class="d-txt">RightShoe</text>
+<rect x="104" y="138" width="88" height="34" rx="7" class="d-node-a"/><text x="148" y="155" class="d-txt">LeftSock</text>
+<rect x="272" y="138" width="88" height="34" rx="7" class="d-node-a"/><text x="316" y="155" class="d-txt">LeftShoe</text>
+<path d="M64 90 L100 46" class="d-line" marker-end="url(#arO)"/><path d="M64 104 L100 148" class="d-line" marker-end="url(#arO)"/>
+<path d="M192 39 H268" class="d-line-a" marker-end="url(#arO)"/><text x="230" y="28" class="d-txt-s">RightSockOn</text>
+<path d="M192 155 H268" class="d-line-a" marker-end="url(#arO)"/><text x="230" y="144" class="d-txt-s">LeftSockOn</text>
+<path d="M360 46 L400 88" class="d-line-a" marker-end="url(#arO)"/><text x="392" y="48" class="d-txt-s" style="text-anchor:start">RightShoeOn</text>
+<path d="M360 148 L400 108" class="d-line-a" marker-end="url(#arO)"/><text x="392" y="150" class="d-txt-s" style="text-anchor:start">LeftShoeOn</text>
+<text x="232" y="97" class="d-txt-s">no ordering between the two chains</text>
+</svg>`},
+
+shapLime:{cap:"Illustrative loan case. SHAP: baseline plus each feature's push gives this applicant's prediction. LIME: perturb around one case and fit a simple model there.",svg:`
+<svg viewBox="0 0 470 236" role="img" aria-label="Left, a SHAP waterfall from the baseline through income, credit history, existing debt and late payments to the prediction. Right, LIME perturbs points around one case and fits a straight local boundary.">
+<text x="112" y="14" class="d-txt">SHAP · what pushed it?</text>
+${[["Baseline (average)",110,170,"d-node"],["Income",145,170,"d-node-g"],["Credit history",125,145,"d-node-g"],["Existing debt",125,160,"d-node-w"],["Late payments",160,190,"d-node-w"],["This applicant",110,190,"d-node-a"]].map(([l,x1,x2,c],i)=>{const y=30+i*31;return `<text x="8" y="${y+10}" class="d-txt-s" style="text-anchor:start">${l}</text><rect x="${x1}" y="${y}" width="${x2-x1}" height="20" rx="4" class="${c}"/>`;}).join("")}
+<text x="150" y="222" class="d-txt-s">← lower risk · higher risk →</text>
+<path d="M240 20 V226" class="d-line"/>
+<text x="355" y="14" class="d-txt">LIME · explain one case</text>
+<path d="M258 196 C 300 60, 360 220, 456 50" class="d-line" style="stroke-dasharray:3 3"/>
+<text x="462" y="40" class="d-txt-s" style="text-anchor:end">complex model (dashed)</text>
+${[[330,110],[350,140],[305,150],[365,112],[318,125],[342,96],[300,118],[372,135]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4" class="d-node"/>`).join("")}
+<circle cx="336" cy="124" r="7" class="d-node-a"/><text x="360" y="214" class="d-txt-s">the case + perturbations</text>
+<path d="M282 168 L398 74" class="d-line-a"/><text x="462" y="196" class="d-txt-s" style="text-anchor:end">simple local fit (solid)</text>
+</svg>`},
+
+singleMulti:{cap:"Split an agent only when its tools, context or responsibilities conflict. More agents means more calls and handoffs to trace.",svg:`
+<svg viewBox="0 0 470 236" role="img" aria-label="Left: one agent playing planner, analyst and fact-checker with about 25 tools and a polluted context. Right: an orchestrator routing to a planner, an analyst and a verifier, each with its own tools and clean context.">
+${mk("arM")}
+<text x="110" y="14" class="d-txt">One agent</text>
+<rect x="10" y="26" width="200" height="200" rx="10" class="d-node-w"/>
+<text x="110" y="48" class="d-txt-s" style="font-weight:600">planner + analyst + fact-checker</text>
+<text x="110" y="64" class="d-txt-s">in one prompt</text>
+${Array.from({length:25},(_,i)=>`<rect x="${24+(i%7)*25}" y="${82+Math.floor(i/7)*22}" width="18" height="14" rx="3" class="d-node"/>`).join("")}
+<text x="110" y="182" class="d-txt-s">~25 look-alike tools</text>
+<text x="110" y="204" class="d-txt-s" style="fill:var(--bad)">context pollution · tool confusion</text>
+<text x="350" y="14" class="d-txt">Multi-agent</text>
+<rect x="290" y="28" width="120" height="34" rx="7" class="d-node-a"/><text x="350" y="45" class="d-txt">Orchestrator</text>
+${["Planner","Analyst","Verifier"].map((t,i)=>{const x=236+i*78;return `<path d="M350 62 L${x+35} 110" class="d-line" marker-end="url(#arM)"/><rect x="${x}" y="112" width="70" height="34" rx="7" class="d-node-g"/><text x="${x+35}" y="129" class="d-txt-s" style="font-weight:600">${t}</text><rect x="${x+12}" y="156" width="14" height="12" rx="2" class="d-node"/><rect x="${x+30}" y="156" width="14" height="12" rx="2" class="d-node"/>`;}).join("")}
+<text x="350" y="190" class="d-txt-s">own tools · clean context</text>
+<text x="350" y="208" class="d-txt-s">independent verification built in</text>
+</svg>`},
+
+agenticLoop:{cap:"\"Agentic AI doesn't just answer, it acts.\" The lecture's Goa trip: one response versus a multi-step workflow with tools and approval.",svg:`
+<svg viewBox="0 0 470 222" role="img" aria-label="Traditional AI turns 'Plan my Goa trip' into an itinerary. Agentic AI finds flights, compares hotels, checks weather, books the hotel with approval, adds the itinerary to the calendar and sends a confirmation email.">
+${mk("arA")}
+<text x="8" y="16" class="d-txt-s" style="text-anchor:start;font-weight:700">Traditional AI · reactive, one response</text>
+<rect x="8" y="26" width="130" height="32" rx="7" class="d-node"/><text x="73" y="42" class="d-txt-s">"Plan my Goa trip"</text>
+<rect x="170" y="26" width="90" height="32" rx="7" class="d-node"/><text x="215" y="42" class="d-txt-s">LLM</text>
+<rect x="292" y="26" width="120" height="32" rx="7" class="d-node"/><text x="352" y="42" class="d-txt-s">an itinerary (text)</text>
+<path d="M138 42 H166" class="d-line" marker-end="url(#arA)"/><path d="M260 42 H288" class="d-line" marker-end="url(#arA)"/>
+<text x="8" y="90" class="d-txt-s" style="text-anchor:start;font-weight:700">Agentic AI · proactive, plans, uses tools, acts</text>
+${[["Find","flights"],["Compare","hotels"],["Check","weather"],["Book hotel","(approval)"],["Add to","calendar"],["Send","email"]].map(([a,b],i)=>{const x=8+i*77;return `<rect x="${x}" y="100" width="68" height="42" rx="7" class="${i===3?"d-node-w":"d-node-a"}"/><text x="${x+34}" y="114" class="d-txt-s">${a}</text><text x="${x+34}" y="129" class="d-txt-s">${b}</text>`+(i<5?`<path d="M${x+68} 121 H${x+75}" class="d-line" marker-end="url(#arA)"/>`:"");}).join("")}
+<path d="M430 142 Q 430 182 235 182 Q 42 182 42 146" class="d-line-a" marker-end="url(#arA)"/>
+<text x="235" y="206" class="d-txt-s">plans tasks · uses tools · remembers context · acts within permissions</text>
+</svg>`}
+});
+/* topic id → diagram key, for Core topics whose data names no diagram */
+const TOPIC_DIA = {m1t8:"envProps", m1t11:"agenticLoop", m2t1:"problemForm", m2t3:"bfsDfs", m2t9:"annealing",
+  m2t10:"gaCycle", m2t11:"minimaxTree", m4t6:"bayesNet", m4t7:"stripsFly", m4t10:"htnGoa", m4t15:"bayesNet",
+  m4t17:"popShoes", m5t2:"shapLime", m6t5:"singleMulti"};
 
 function diaBlock(key){
   const d = DIA[key]; if(!d) return "";
