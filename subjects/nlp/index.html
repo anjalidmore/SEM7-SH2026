@@ -128,7 +128,6 @@ table.nb-t th,table.nb-t td{white-space:nowrap}
 
 <main id="app" class="s7-main"></main>
 
-<footer>Built from the class notes (NLP Notes.pdf), the syllabus learning outcomes, the module PPTs and previous papers · Progress is saved in this browser only</footer>
 
 <script>
 /* =========================================================
@@ -4859,7 +4858,7 @@ function watchProgress(fn){ PROGRESS_WATCHERS.push(fn); fn(); }
 function refreshProgressIndicators(){ PROGRESS_WATCHERS.forEach(fn=>{ try{ fn(); }catch(e){} }); }
 
 /* ================= ROUTER STATE ================= */
-let ROUTE = { view:"dashboard", sub:{m1:"outcomes",m2:"outcomes",m3:"outcomes"}, notesSub:"exam" };
+let ROUTE = { view:"dashboard", sub:{m1:"numerical",m2:"numerical",m3:"numerical"}, notesSub:"exam", topic:null };
 let NOTE_SEARCH = "";
 let FLASH_IDX = { m1:0, m2:0, m3:0 };
 let NUM_FILTER = { m1:"all", m2:"all", m3:"all" };
@@ -4913,7 +4912,8 @@ document.getElementById("mainNav").addEventListener("click", e=>{
 
 function setActiveNav(){
   document.querySelectorAll("#mainNav button").forEach(b=>{
-    b.classList.toggle("active", b.getAttribute("data-view")===ROUTE.view);
+    const v = ROUTE.view==="topic" ? (groupByKey(ROUTE.topic)||{}).m : ROUTE.view;
+    b.classList.toggle("active", b.getAttribute("data-view")===v);
   });
   const box = document.getElementById("globalSearch");
   if(box && ROUTE.view!=="search" && box.value && !box.matches(":focus")) box.value = "";
@@ -4927,11 +4927,16 @@ function render(){
   PROGRESS_WATCHERS = [];   /* the old view is gone; drop its watchers */
   if(ROUTE.view==="dashboard") app.appendChild(renderDashboard());
   else if(ROUTE.view==="m1"||ROUTE.view==="m2"||ROUTE.view==="m3") app.appendChild(renderModule(ROUTE.view));
-  else if(ROUTE.view==="notes") app.appendChild(renderNotes());
+  else if(ROUTE.view==="notes"){
+    app.appendChild(renderNotes());
+    app.appendChild(el("p",{class:"small-muted",style:"margin-top:24px"},[
+      el("a",{href:"#",onclick:(e)=>{e.preventDefault(); confirmReset();}},["Reset all progress"])]));
+  }
   else if(ROUTE.view==="mock") app.appendChild(renderMock());
   else if(ROUTE.view==="fullmarks") app.appendChild(renderFullMarks());
   else if(ROUTE.view==="focus") app.appendChild(renderFocus());
   else if(ROUTE.view==="search") app.appendChild(renderSearch());
+  else if(ROUTE.view==="topic") app.innerHTML = renderTopicPage(ROUTE.topic);
   else if(SEM7.isPending("nlp", ROUTE.view)) app.innerHTML = SEM7.ui.pending("nlp", ROUTE.view);
   if(SCROLL_TO_TOP) window.scrollTo(0,0);
   SCROLL_TO_TOP = true;
@@ -5075,73 +5080,17 @@ function nextUp(){
    weak areas. No explanatory paragraphs.
    ============================================ */
 function renderDashboard(){
-  const wrap = el("div",{});
-  const UI = SEM7.ui, o = overallStats(), qp = quizPerformance(), nu = nextUp();
-  const qAvg = qp.length ? Math.round(qp.reduce((a,q)=>a+q.pct,0)/qp.length) : null;
-  const label = String(nu.label).slice(0,140) + (String(nu.label).length>140?"…":"");
-  const sub = nu.kind==="quiz" ? "quiz" : (nu.kind==="solved" ? "solved" : "");
-  const built = {};
-  Object.keys(MODULE_TITLES).forEach(m=>{ built[m] = {pct:moduleStats(m).pct}; });
-  /* the shared parts are HTML; their buttons carry data-nv (view) and data-nsub (sub-tab) */
-  const top = el("div",{});
-  top.innerHTML = '<h1>Dashboard</h1>' + UI.stats([
-      {icon:"target", value:o.pct+"%", label:"Overall", count:o.done+" / "+o.total, pct:o.pct},
-      {icon:"flag", value:String(o.review), label:"For review"},
-      {icon:"quiz", value:qAvg===null ? "—" : qAvg+"%", label:"Quiz average", count:qp.length+" / 9 taken"}
-    ]) +
-    UI.next({kicker: nu.m ? "Study next &middot; "+MODULE_TITLES[nu.m].split("—")[0].trim() : "Study next",
-      title: esc(label),
-      go: nu.m ? {label:"Open", attrs:'data-nv="'+nu.m+'" data-nsub="'+sub+'"'} : {label:"Open the mock", attrs:'data-nv="mock"'}}) +
-    UI.modules("nlp", built, id => 'data-nv="'+id+'"');
-  top.addEventListener("click", e=>{
-    const b = e.target.closest("[data-nv]");
-    if(!b) return;
-    ROUTE.view = b.dataset.nv;
-    if(b.dataset.nsub) ROUTE.sub[b.dataset.nv] = b.dataset.nsub;
-    render();
-  });
-  wrap.appendChild(top);
-
-  /* --- weak areas (only when there are any) --- */
-  /* weak areas: only once something has been attempted, else every outcome reads 0% */
-  const weak = o.done + o.review > 0 || qp.length ? weakAreas().slice(0,5) : [];
-  if(weak.length){
-    const wh = el("div",{}); wh.innerHTML = UI.h2("alert","Weak areas");
-    wrap.appendChild(wh.firstChild);
-    const wc = el("div",{class:"card"});
-    weak.forEach(w=>{
-      const row = el("div",{class:"modrow"});
-      row.appendChild(el("div",{class:"mname"},[w.label]));
-      row.appendChild(el("div",{class:"small-muted",style:"min-width:80px"},[w.detail]));
-      row.appendChild(el("div",{class:"mpct",style:"color:"+(w.pct<30?"var(--bad)":"var(--warn)")},[w.pct+"%"]));
-      if(w.m) row.appendChild(el("button",{class:"small",onclick:()=>{
-        ROUTE.view=w.m; ROUTE.sub[w.m] = (w.type==="quiz"?"quiz":"outcomes"); render();
-      }},[w.type==="quiz"?"Retake":"Outcomes"]));
-      wc.appendChild(row);
-    });
-    wrap.appendChild(wc);
-  }
-
-  /* --- review queue --- */
-  const rq = reviewQueue();
-  if(rq.length){
-    const rh = el("div",{}); rh.innerHTML = UI.h2("flag","Marked for review",'<span class="s7-h2-n">'+rq.length+'</span>');
-    wrap.appendChild(rh.firstChild);
-    const rc = el("div",{class:"card"});
-    rq.slice(0,6).forEach(i=>{
-      const row = el("div",{class:"modrow"});
-      row.appendChild(el("div",{class:"mname",style:"font-weight:400"},[String(i.label).slice(0,110)+(String(i.label).length>110?"…":"")]));
-      row.appendChild(el("span",{class:"pill medium"},[MODULE_TITLES[i.m].split("—")[0].trim()]));
-      row.appendChild(el("button",{class:"small",onclick:()=>{ROUTE.view=i.m; ROUTE.sub[i.m]=i.sub; render();}},["Go"]));
-      rc.appendChild(row);
-    });
-    if(rq.length>6) rc.appendChild(el("p",{class:"small-muted",style:"margin:8px 0 0"},["+ "+(rq.length-6)+" more"]));
-    wrap.appendChild(rc);
-  }
-
-  wrap.appendChild(el("p",{class:"small-muted",style:"margin-top:16px"},[
-    el("a",{href:"#",onclick:(e)=>{e.preventDefault(); confirmReset();}},["Reset all progress"])
-  ]));
+  const wrap = el("div",{}), built = {};
+  const all = allItems().filter(inCore), done = l => l.filter(i=>effectiveStatus(i)==="done").length;
+  const nums = all.filter(i=>studyKindOf(i)==="numerical"), th = all.filter(i=>studyKindOf(i)==="theory");
+  Object.keys(MODULE_TITLES).forEach(m=>{ const l = moduleItems(m).filter(inCore); built[m] = {pct:pct(done(l), l.length)}; });
+  /* study next: the first Core topic page with work left, started ones first */
+  const open = allTopicGroups().filter(g=>coreGroup(g) && g.done < g.total);
+  const nx = open.find(g=>g.done > 0) || open[0];
+  wrap.innerHTML = SEM7.ui.dashboard({code:"nlp", overall:{done:done(all), total:all.length},
+    numericals:{done:done(nums), total:nums.length}, theory:{done:done(th), total:th.length},
+    next:nx && {kicker:"Study next &middot; "+esc(MODULE_TITLES[nx.m].split("—")[0].trim()), title:esc(groupTitle(nx)), attrs:'data-ntopic="'+esc(nx.key)+'"'},
+    built, attrs:id=>'data-nv="'+id+'"'});
   return wrap;
 }
 function makeStat(num,label){
@@ -5157,41 +5106,182 @@ function confirmReset(){
 }
 
 /* ================= MODULE VIEW ================= */
-const SUBTABS = [["outcomes","Learning Outcomes"],["theory","Theory"],["solved","Class Solved"],
-                 ["numericals","Numericals"],["flashcards","Flashcards"],["quiz","Quizzes"],["revision","Quick Revision"]];
+const SUBTABS = [["numerical","Numericals"],["theory","Theory"],["revision","Quick Review"],["flashcards","Flashcards"],["quiz","Quiz"]];
 function renderModule(m){
   const wrap = el("div",{});
-
-  /* shared module header, repainted live as items are marked */
   const [num, title] = MODULE_TITLES[m].split(/\s+—\s+/);
+  const groups = topicGroups(m).filter(coreGroup);
+  let sub = ROUTE.sub[m];
+  if(!SUBTABS.some(([k])=>k===sub || (k==="quiz" && String(sub).indexOf("quiz")===0))) sub = ROUTE.sub[m] = "numerical";
+  const isOn = k => k==="quiz" ? String(sub).indexOf("quiz")===0 : sub===k;
+
   const head = el("div",{});
   watchProgress(()=>{
-    const t = moduleStats(m);
+    const l = moduleItems(m).filter(inCore), d = l.filter(i=>effectiveStatus(i)==="done").length;
     head.innerHTML = SEM7.ui.head({eyebrow:esc(num), title:esc(title),
-      progress:{pct:t.pct, done:t.done, total:t.total, unit:"items done",
-        note:(t.viaTick ? t.viaTick+" by topic tick · " : "")+t.review+" for review"}});
+      progress:{pct:pct(d, l.length), done:d, total:l.length, unit:"items done"}});
   });
   wrap.appendChild(head);
+  const tabs = el("div",{});
+  tabs.innerHTML = SEM7.ui.subtabs(SUBTABS.map(([k,lab])=>({label:lab, on:isOn(k), attrs:'data-nsub="'+k+'" data-nv="'+m+'"',
+    n:k==="numerical"||k==="theory" ? groups.filter(g=>g.track===k).length : null})));
+  wrap.appendChild(tabs.firstChild);
 
-  const subtabs = el("div",{class:"subtabs"});
-  SUBTABS.forEach(([key,lab])=>{
-    if(key==="solved" && !(DATA.solved && DATA.solved[m] && DATA.solved[m].length)) return;
-    if(key==="numericals" && !(DATA.numericals[m]||[]).length) return;
-    const isActive = key==="quiz" ? (ROUTE.sub[m]&&String(ROUTE.sub[m]).indexOf("quiz")===0) : ROUTE.sub[m]===key;
-    subtabs.appendChild(el("button",{class:isActive?"active":"",onclick:()=>{ROUTE.sub[m]=key; render();}},[lab]));
-  });
-  wrap.appendChild(subtabs);
-
-  const sub = ROUTE.sub[m];
-  if(sub==="theory") wrap.appendChild(renderTheory(m));
-  else if(sub==="solved") wrap.appendChild(renderSolved(m));
+  if(sub==="revision") wrap.appendChild(renderRevision(m));
   else if(sub==="flashcards") wrap.appendChild(renderFlashcards(m));
-  else if(sub==="numericals") wrap.appendChild(renderNumericals(m));
-  else if(sub && String(sub).indexOf("quiz")===0) wrap.appendChild(renderQuizPicker(m));
-  else if(sub==="revision") wrap.appendChild(renderRevision(m));
-  else wrap.appendChild(renderOutcomes(m));
+  else if(String(sub).indexOf("quiz")===0) wrap.appendChild(renderQuizPicker(m));
+  else {
+    const list = el("div",{}), shown = groups.filter(g=>g.track===sub);
+    list.innerHTML = shown.length ? shown.map(topicCard).join("")
+      : '<div class="empty">'+(SEM7.coreOnly() ? "No Core topics in this track." : "No topics in this track.")+'</div>';
+    wrap.appendChild(list);
+  }
   return wrap;
 }
+
+/* ================= TOPIC PAGES =================
+   One page per syllabus topic (1.1, 2.7 ...), laid out with the shared
+   six-section study method. Every question keeps its own id, so progress
+   saved against it before is unchanged. */
+const TOPIC_TITLES = {
+  "1.1":"NLP, the pipeline and the levels of analysis", "1.2":"Ambiguity and the challenges of NLP",
+  "1.3":"Applications of NLP", "1.4":"Tools: NLTK, spaCy and HuggingFace",
+  "m1-ms":"Math seeds: probability, bag of words, evaluation", "m1-sl":"Self-learning: Indian languages, Unicode and tokenizers",
+  "2.1":"Lexical analysis", "2.2":"Empirical laws: TTR, Zipf and Heaps", "2.3":"Preprocessing: segmentation, tokenization, normalization",
+  "2.4":"Morphological analysis", "2.5":"Regular relations and finite-state morphology", "2.6":"Stemming and lemmatization",
+  "2.7":"N-grams, smoothing and perplexity", "2.8":"Bag of words and TF-IDF", "m2-sl":"Self-learning: edit distance and the noisy channel",
+  "3.1":"POS tagging, HMM and Viterbi", "3.2":"MEMM, CRF and BiLSTM-CRF", "3.3":"CFG and PCFG",
+  "3.4":"Parsing: top-down, bottom-up, dependency", "3.5":"Neural sequence models", "m3-sl":"Self-learning: BERT and GPT for labelling and parsing"
+};
+function topicKeyOf(m, topic){
+  const t = String(topic == null ? "" : topic).trim(), c = t.match(/^(\d+\.\d+)/);
+  if(c) return c[1];
+  return m + (/^Math Seeds/i.test(t) ? "-ms" : "-sl");
+}
+function groupTitle(g){ return (/^\d/.test(g.key) ? g.key+" · " : "") + (TOPIC_TITLES[g.key] || g.key); }
+/* Core: Focus questions plus Core-tagged or high-priority ones; practice inherits its parent's tag */
+function inCore(i){
+  if(!SEM7.coreOnly()) return true;
+  if(i.sub === "focus") return true;
+  const own = SRC_BY_ID()[i.id], par = i.parent && SRC_BY_ID()[i.parent];
+  return own && typeof own.core === "boolean" ? own.core : par && typeof par.core === "boolean" ? par.core : SEM7.isCore(own) || SEM7.isCore(par);
+}
+let SRC_CACHE = null;
+function SRC_BY_ID(){
+  if(SRC_CACHE) return SRC_CACHE;
+  SRC_CACHE = {};
+  Object.keys(MODULE_TITLES).forEach(m=>["theory","numericals","solved"].forEach(k=>((DATA[k]||{})[m]||[]).forEach(q=>{
+    SRC_CACHE[q.id] = q; (q.practice||[]).forEach(x=>{ SRC_CACHE[x.id] = x; });
+  })));
+  FOCUS.forEach(t=>{ SRC_CACHE[t.id] = t; (t.questions||[]).forEach(x=>{ SRC_CACHE[x.id] = x; }); });
+  return SRC_CACHE;
+}
+function coreGroup(g){ return !SEM7.coreOnly() || g.items.some(inCore); }
+function topicGroups(m){
+  const g = {}, add = key => g[key] || (g[key] = {key, m, theory:[], nums:[], solved:[], focus:[]});
+  (DATA.theory[m]||[]).forEach(q=>add(topicKeyOf(m,q.topic)).theory.push(q));
+  (DATA.numericals[m]||[]).forEach(t=>add(topicKeyOf(m,t.topic)).nums.push(t));
+  ((DATA.solved||{})[m]||[]).forEach(t=>add(topicKeyOf(m,t.topic)).solved.push(t));
+  FOCUS.filter(f=>f.m===m).forEach(f=>add(topicKeyOf(m,f.topic)).focus.push(f));
+  const items = moduleItems(m);
+  const rank = k => /^\d/.test(k) ? k.split(".").map(Number).reduce((a,b)=>a*100+b,0) : (k.endsWith("-ms") ? 1e6 : 2e6);
+  return Object.values(g).sort((a,b)=>rank(a.key)-rank(b.key)).map(x=>{
+    x.items = items.filter(i=>topicKeyOf(m,i.topic)===x.key);
+    x.track = x.items.some(i=>studyKindOf(i)==="numerical") ? "numerical" : "theory";
+    x.total = x.items.length; x.done = x.items.filter(i=>effectiveStatus(i)==="done").length;
+    x.high = x.theory.some(q=>q.priority==="high") || x.focus.length > 0;
+    return x;
+  });
+}
+function allTopicGroups(){ return Object.keys(MODULE_TITLES).reduce((a,m)=>a.concat(topicGroups(m)),[]); }
+function groupByKey(key){ return allTopicGroups().find(g=>g.key===key) || null; }
+function topicCard(g){
+  const n = (k, w) => k ? k+" "+w+(k===1?"":"s") : "";
+  const sum = [n(g.theory.length,"theory question"), n(g.nums.length+g.solved.length,"worked set"), n(g.focus.length,"exam pattern")].filter(Boolean).join(" · ");
+  return SEM7.ui.topicCard({title:esc(groupTitle(g)), summary:sum, high:g.high, pill:g.high ? '<span class="pill high">High priority</span>' : "",
+    done:g.done, total:g.total, unit:"items", attrs:'data-ntopic="'+esc(g.key)+'"'});
+}
+function nlpMark(id){ return {done:statusOf(id)==="done", attrs:'data-nlpmark="'+esc(id)+'"'}; }
+function renderTopicPage(key){
+  const g = groupByKey(key);
+  if(!g) return '<div class="empty">Topic not found.</div>';
+  const m = g.m, [num, mtitle] = MODULE_TITLES[m].split(/\s+—\s+/);
+  const theory = g.theory.filter(q=>inCore({id:q.id, sub:"theory"}));
+
+  /* 1 · Concept: each question's idea in plain words, the formulas, the class method */
+  let concept = "";
+  const plain = theory.filter(q=>q.understand);
+  if(plain.length) concept += '<div class="s7-terms">'+plain.map(q=>'<div class="s7-term"><b>'+esc(q.q)+'</b><span>'+esc(q.understand)+'</span></div>').join("")+'</div>';
+  g.nums.forEach(t=>{
+    concept += '<h4>'+esc(t.title)+'</h4>'+SEM7.ui.rich(t.concept)+(t.formula ? '<div class="formula">'+esc(t.formula)+'</div>' : "");
+  });
+  g.solved.forEach(t=>{ if(t.idea) concept += '<h4>'+esc(t.title)+'</h4>'+SEM7.ui.rich(t.idea); });
+
+  /* 4 · Practice: worked and class-solved examples, exam patterns, then practice questions */
+  const examples = [], practice = [];
+  g.nums.forEach(t=>{
+    if(t.workedExample) examples.push({id:t.id+"-we", anchor:"item_"+t.id, kind:"Worked example", q:esc(t.workedExample.title), steps:t.workedExample.steps.map(esc)});
+    (t.practice||[]).filter(p=>inCore({id:p.id, sub:"numericals", parent:t.id})).forEach(p=>practice.push({id:p.id, anchor:"item_"+p.id, d:p.difficulty, q:esc(p.q), a:p.answer}));
+  });
+  g.solved.forEach(t=>{
+    (t.classQs||[]).forEach((c,i)=>examples.push({id:t.id+"-c"+i, anchor:i ? null : "item_"+t.id, kind:"Class solved", marks:i ? null : t.marks,
+      q:esc(c.q), steps:(c.steps||[]).map(esc), answer:esc(c.answer), trap:c.watch && esc(c.watch), mark:i ? null : t.id}));
+    (t.practice||[]).forEach(p=>practice.push({id:p.id, anchor:"item_"+p.id, d:p.difficulty, q:esc(p.q), a:p.answer}));
+  });
+  g.focus.forEach(f=>{
+    const pt = f.pattern || {};
+    examples.push({id:f.id+"-p", anchor:"item_"+f.id, kind:"Exam pattern &middot; "+esc(f.q), marks:f.marks, title:esc(f.title),
+      q:SEM7.ui.rich(pt.q), steps:(pt.steps||[]).map(x=>esc(x).replace(/\n/g,"<br>")), answer:SEM7.ui.rich(pt.answer), why:f.why && esc(f.why), mark:f.id});
+    (f.questions||[]).forEach(p=>practice.push({id:p.id, anchor:"item_"+p.id, d:p.d, q:esc(p.q), a:p.a}));
+  });
+
+  const method = g.solved.filter(t=>t.method).map(t=>SEM7.ui.rich(t.method)).join("");
+  const nb = SEM7.ui.neighbours(allTopicGroups().map(x=>({id:x.key, m:x.m, title:groupTitle(x)})), g.key, x=>MODULE_TITLES[x].split("—")[0].trim());
+  const side = x => x && {title:esc(x.t.title), note:x.note, attrs:'data-ntopic="'+esc(x.t.id)+'"'};
+  const modLink = 'data-nv="'+m+'"';
+  return SEM7.ui.topic({
+    head:{crumb:[{label:esc(num)+" &middot; "+esc(mtitle), attrs:modLink},
+                 {label:g.track==="numerical" ? "Numericals" : "Theory", attrs:modLink+' data-nsub="'+g.track+'"'}],
+      title:esc(groupTitle(g)), meta:g.high ? '<span class="pill high">High priority</span>' : "",
+      progress:{done:g.done, total:g.total, unit:"items done"}},
+    concept,
+    answer:theory.map(q=>({id:"item_"+q.id, label:q.marks+" marks", marks:q.marks, q:esc(q.q),
+      body:esc(q.examAnswer||""), more:{key:"ans-"+q.id, html:SEM7.ui.rich(q.a)}, mark:nlpMark(q.id)})),
+    mistakes:theory.filter(q=>q.mistakes).map(q=>esc(q.mistakes)),
+    examples:examples.map(e=>Object.assign(e, {})),
+    practice,
+    recog:method ? {method} : null,
+    questions:theory.map(q=>({q:esc(q.q), marks:q.marks, source:"source"}))
+      .concat(g.focus.map(f=>({q:esc(f.title)+" ("+esc(f.q)+")", marks:f.marks, source:"source"}))),
+    mark:(kind, id)=>{
+      const e = examples.find(x=>x.id===id);
+      if(kind==="ex") return e && e.mark ? nlpMark(e.mark) : null;
+      return nlpMark(id);
+    },
+    pager:{prev:side(nb.prev), next:side(nb.next), up:{label:"Back to "+esc(num), attrs:modLink}}
+  });
+}
+/* find the topic page holding an item (a question, a practice question, a set) */
+function groupOfItem(id){
+  return allTopicGroups().find(g=>g.items.some(i=>i.id===id || i.parent===id) ||
+    g.nums.some(t=>t.id===id) || g.solved.some(t=>t.id===id) || g.focus.some(t=>t.id===id)) || null;
+}
+function openTopic(key, itemId){
+  ROUTE.view = "topic"; ROUTE.topic = key; render();
+  if(itemId) setTimeout(()=>flashTo(itemId), 60);
+}
+document.addEventListener("click", e=>{
+  const t = e.target.closest("[data-ntopic]");
+  if(t){ openTopic(t.dataset.ntopic); return; }
+  const mk = e.target.closest("[data-nlpmark]");
+  if(mk){ setStatus(mk.dataset.nlpmark, "done"); renderKeepScroll(); return; }
+  const nv = e.target.closest("#app [data-nv]");
+  if(nv){
+    ROUTE.view = nv.dataset.nv;
+    if(nv.dataset.nsub) ROUTE.sub[nv.dataset.nv] = nv.dataset.nsub;
+    if(nv.closest(".subtabs")) renderKeepScroll(); else render();
+  }
+});
 
 /* ---- shared bits ---- */
 function scopePill(id){
@@ -5215,17 +5305,21 @@ function loPills(loList){
   return frag;
 }
 function flashTo(id){
-  const node = document.getElementById("item_"+id);
+  const node = document.getElementById("item_"+id) || document.getElementById(id);
   if(!node) return;
   try{ if(node.scrollIntoView) node.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){}
   node.style.outline = "2px solid var(--accent)";
   setTimeout(()=>{ node.style.outline = ""; }, 1800);
 }
 function jumpTo(m, sub, id){
+  const g = groupOfItem(id);
+  if(g){ openTopic(g.key, id); return; }
   ROUTE.view = m; ROUTE.sub[m] = sub; JUMP_TARGET = id; render();
   setTimeout(()=>flashTo(id), 60);
 }
 function jumpToFocus(id){
+  const g = groupOfItem(id);
+  if(g){ openTopic(g.key, id); return; }
   ROUTE.view = "focus"; render();
   setTimeout(()=>flashTo(id), 80);
 }

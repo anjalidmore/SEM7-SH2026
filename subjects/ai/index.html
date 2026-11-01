@@ -5077,223 +5077,117 @@ function setStatus(id, s){
 
 /* ------------------------------ DASHBOARD ---------------------------- */
 function viewDashboard(){
-  const ov = overallProgress(true), b = breakdown(true), qp = quizPerformance();
-  const weak = weakTopics().filter(w => inScope(w.topic));
-  const next = studyNext(), UI = SEM7.ui;
-  const tp = pct(b.theory.d,b.theory.t), np = pct(b.numerical.d,b.numerical.t);
-
-  let html = UI.stats([
-    {icon:"target", value:ov.pct+"%", label:SEM7.coreOnly() ? "Core" : "Overall", count:`${ov.done} / ${ov.total}`, pct:ov.pct},
-    {icon:"book", value:tp+"%", label:"Theory", count:`${b.theory.d} / ${b.theory.t}`, pct:tp},
-    {icon:"formula", value:np+"%", label:"Numericals", count:`${b.numerical.d} / ${b.numerical.t}`, pct:np},
-    {icon:"quiz", value:qp ? qp.pct+"%" : "—", label:"Quiz average", count:qp ? `${qp.taken} / ${qp.of} taken` : ""}
-  ]);
-
-  if(next.topic) html += UI.next({kicker:`Study next &middot; Module ${next.topic.moduleNum}`, title:esc(next.topic.title),
-    go:{label:"Start", attrs:`data-act="go" data-h="#/topic/${next.topic.id}"`}});
-  else if(next.quiz) html += UI.next({title:esc(next.quiz.title), go:{label:"Take the quiz", attrs:`data-act="go" data-h="#/quiz/${next.quiz.id}"`}});
-  else html += UI.next({title:"Quick revision", go:{label:"Open", attrs:`data-act="go" data-h="#/revision"`}});
-
+  const ov = overallProgress(true), b = breakdown(true), next = studyNext();
   const built = {};
   COURSE.modules.forEach(m=>{ built[m.id] = {pct:moduleProgress(m, true).pct}; });
-  /* The Core only switch sits in the Modules heading */
-  html += UI.modules("ai", built, id=>`data-act="go" data-h="#/module/${id}"`)
-    .replace(UI.h2("layers", "Modules"), UI.h2("layers", "Modules", UI.coreToggle()));
-
-  /* Weak topics, only once the quizzes have flagged some */
-  if(weak.length){
-    html += UI.h2("alert", "Weak topics", `<span class="s7-h2-n">${weak.length}</span>`) + `<div class="card">`;
-    weak.slice(0,6).forEach(w=>{
-      html += `<div class="weak-row"><div style="flex:1;min-width:0">
-          <button class="trow-t" data-act="go" data-h="#/topic/${w.topic.id}">${esc(w.topic.title)}</button>
-          <div style="font-size:.76rem;color:var(--muted)">Module ${w.topic.moduleNum} · ${w.correct}/${w.total} correct</div>
-        </div><span class="acc" style="color:var(--danger)">${w.acc}%</span></div>`;
-    });
-    html += `</div>`;
-  }
-
-  /* Shortcuts */
-  html += UI.h2("zap", "Shortcuts") + `<div class="btn-row">
-    <button class="btn" data-act="go" data-h="#/important">${UI.icon("flag")}Important questions</button>
-    <button class="btn" data-act="go" data-h="#/numericals">${UI.icon("formula")}Numericals</button>
-    <button class="btn" data-act="go" data-h="#/quizzes">${UI.icon("quiz")}Quizzes</button>
-    <button class="btn" data-act="go" data-h="#/revision">${UI.icon("clock")}Quick revision</button>
-    <button class="btn" data-act="go" data-h="#/formulas">${UI.icon("paper")}Formula sheet</button>
-  </div>`;
-
-  return `<div class="page-h"><h1>Dashboard</h1></div>` + html;
+  const nx = next.topic ? {kicker:`Study next &middot; Module ${next.topic.moduleNum}`, title:esc(next.topic.title), attrs:`data-act="go" data-h="#/topic/${next.topic.id}"`}
+    : next.quiz ? {kicker:"Study next", title:esc(next.quiz.title), attrs:`data-act="go" data-h="#/quiz/${next.quiz.id}"`}
+    : {kicker:"Study next", title:"Quick revision", attrs:`data-act="go" data-h="#/revision"`};
+  return SEM7.ui.dashboard({code:"ai", overall:ov,
+    numericals:{done:b.numerical.d, total:b.numerical.t}, theory:{done:b.theory.d, total:b.theory.t},
+    next:nx, built, attrs:id=>`data-act="go" data-h="#/module/${id}"`});
 }
 
 /* ------------------------------ MODULE ------------------------------- */
+const modSub = {};   /* session-only: the open sub-tab per module */
+function topicCard(t){
+  const st = statusOf(t.id), state = st==="prog" ? "progress" : st;
+  return SEM7.ui.topicCard({title:esc(t.title), high:t.priority==="high", pill:priBadge(t.priority)+marksBadge(t.marks),
+    state, attrs:`data-act="go" data-h="#/topic/${t.id}"`});
+}
 function viewModule(id){
   const m = moduleById(id);
   if(!m) return notFound();
   const p = moduleProgress(m, true);
-  const shown  = m.topics.filter(inScope);
-  const theory = shown.filter(t=>t.type==="theory");
-  const nums   = shown.filter(t=>t.type==="numerical");
+  const shown = m.topics.filter(inScope);
+  const nums = shown.filter(t=>t.type==="numerical"), theory = shown.filter(t=>t.type==="theory");
   const q = quizByModule(m.id);
+  let cur = modSub[m.id] || (nums.length ? "numerical" : "theory");
+  let html = SEM7.ui.head({eyebrow:`Module ${m.num}`, title:esc(m.title),
+    progress:{pct:p.pct, done:p.done, total:p.total, unit:"study items complete"}});
+  const tab = (k, label, n) => ({label, n, on:cur===k, attrs:`data-act="sub" data-m="${m.id}" data-s="${k}"`});
+  html += SEM7.ui.subtabs([tab("numerical","Numericals",nums.length), tab("theory","Theory",theory.length), tab("review","Quick Review")]
+    .concat(q ? [tab("quiz","Quiz")] : []));
 
-  let html = SEM7.ui.head({eyebrow:`Module ${m.num} · ${m.hours} hours`, title:esc(m.title),
-    sub:`<strong>Learning objective.</strong> ${esc(m.objective)}`,
-    progress:{pct:p.pct, done:p.done, total:p.total, unit:"study items complete",
-      note:`${shown.length} topics${nums.length?` · ${nums.filter(t=>t.practice&&t.practice.length).length} practice sets`:""}${q?" · 1 quiz":""}`}});
-
-  if(m.coverageNote) html += `<div class="gap-banner">${m.coverageNote}</div>`;
-  if(m.examNote) html += `<div class="note warn"><span class="note-t">Exam guidance from the uploaded material</span>${m.examNote}</div>`;
-
-  html += `<details><summary>Official syllabus contents &amp; learning outcomes</summary><div class="det-body">
-    <h4 style="font-size:.78rem;color:var(--muted);margin:0 0 .35rem">Contents</h4>
-    <p style="font-size:.87rem">${esc(m.contents)}</p>
-    ${m.selfLearning?`<h4 style="font-size:.78rem;color:var(--muted);margin:.9rem 0 .35rem">Self-learning topics</h4><p style="font-size:.87rem">${esc(m.selfLearning)}</p>`:""}
-    <h4 style="font-size:.78rem;color:var(--muted);margin:.9rem 0 .35rem">Learning outcomes</h4>
-    <ul style="font-size:.87rem;margin-bottom:0">${m.los.map(l=>`<li>${esc(l)}</li>`).join("")}</ul>
-  </div></details>`;
-
-  /* Learning-outcome coverage for this module */
-  const mlos = losForModule(m.id);
-  if(mlos.length){
-    html += `<div class="sec-h"><h2>Learning outcomes</h2><span class="hint">What the examiner is required to test. Each links to the topics that answer it.</span></div><div class="card">`;
-    mlos.forEach(l=>{
-      const s = loStatus(l);
-      html += `<div class="lo-row">
-        <div class="lo-row-h">
-          <span class="badge b-theory">${l.id}</span>
-          <span class="badge">${esc(l.verb)}</span>
-          ${s.covered?`<span class="badge ${s.pct===100?"b-ok":""}">${s.done}/${s.real} topics done</span>`
-                     :`<span class="badge b-warn">No material uploaded</span>`}
-        </div>
-        <p class="lo-text">${esc(l.text)}</p>
-        <div class="lo-links">
-          ${s.topics.map(t=>`<button class="chip" data-act="go" data-h="#/topic/${t.id}">${statusOf(t.id)==="done"?"✓ ":""}${esc(t.title.length>34?t.title.slice(0,34)+"…":t.title)}</button>`).join("")}
-        </div></div>`;
+  if(cur === "review"){
+    REVISION.filter(r=>r.m===m.id).forEach(r=>{
+      html += `<div class="card"><h3 style="margin-top:0">${esc(r.title)}</h3>${SEM7.ui.visualize(`<ul>${r.items.map(x=>`<li>${x}</li>`).join("")}</ul>`)}</div>`;
     });
-    html += `</div>`;
-  }
-
-  const rowsFor = list => list.map(t=>{
-    const st = statusOf(t.id);
-    return `<div class="trow${st==="done"?" done":""}">
-      <div class="trow-main">
-        <button class="trow-t" data-act="go" data-h="#/topic/${t.id}">${esc(t.title)}</button>
-        <div class="badges">${typeBadge(t.type)}${priBadge(t.priority)}${marksBadge(t.marks)}
-          ${t.notCovered?`<span class="badge b-warn">No material uploaded</span>`:""}
-          ${isWeak(t.id)?`<span class="badge b-high">⚠ Weak</span>`:""}
-          ${t.type==="numerical"&&t.practice&&t.practice.length?`<span class="badge ${P.practice[t.id]?"b-ok":""}">${P.practice[t.id]?"✓ ":""}${t.practice.length} practice</span>`:""}
-        </div>
-      </div>
-      ${statusControl(t.id, t.title)}
-    </div>`;
-  }).join("");
-
-  if(theory.length){
-    html += `<div class="sec-h"><h2>A. Theory</h2><span class="hint">${theory.filter(t=>statusOf(t.id)==="done").length} of ${theory.length} complete</span></div>
-      <div class="card">${rowsFor(theory)}</div>`;
-  }
-  if(nums.length){
-    html += `<div class="sec-h"><h2>B. Numericals &amp; Problem Solving</h2><span class="hint">Formula → worked example → practice, kept separate from theory.</span></div>
-      <div class="card">${rowsFor(nums)}</div>`;
-  }
-  if(q){
+    if(!REVISION.some(r=>r.m===m.id)) html += `<div class="empty">No revision sheet for this module yet.</div>`;
+  } else if(cur === "quiz" && q){
     const res = P.quizzes[q.id];
-    html += `<div class="sec-h"><h2>C. Test yourself</h2></div>
-      <div class="card"><div class="card-h" style="margin-bottom:.5rem">
-        <div><h3 style="font-size:.92rem">${esc(q.title)}</h3>
-        <div style="font-size:.78rem;color:var(--muted);margin-top:.2rem">${q.questions.length} questions · MCQ, true/false, multi-select and numerical</div></div>
-        ${res?`<span class="badge ${res.pct>=60?"b-ok":"b-high"}">Last score ${res.pct}%</span>`:""}
-      </div>
-      <button class="btn btn-primary" data-act="go" data-h="#/quiz/${q.id}">${res?"Retake quiz":"Start quiz"} →</button></div>`;
+    html += `<div class="card"><h3 style="margin-top:0">${esc(q.title)}</h3>
+      <p class="small muted">${q.questions.length} questions${res?` &middot; last score ${res.pct}%`:""}</p>
+      <button class="btn btn-primary" data-act="go" data-h="#/quiz/${q.id}">${res?"Retake quiz":"Start quiz"}</button></div>`;
+  } else {
+    const list = cur === "numerical" ? nums : theory;
+    if(!list.length) html += `<div class="empty">${SEM7.coreOnly() ? "No Core topics in this track." : "No topics in this track."}</div>`;
+    list.forEach(t=>{ html += topicCard(t); });
   }
-
-  const idx = COURSE.modules.findIndex(x=>x.id===m.id);
-  const modSide = x => x && {title:esc(x.title), note:`Module ${x.num}`, attrs:`data-act="go" data-h="#/module/${x.id}"`};
-  html += SEM7.ui.pager({prev:modSide(COURSE.modules[idx-1]), next:modSide(COURSE.modules[idx+1])});
   return html;
 }
 
 /* --------------------------- STUDY MODE ------------------------------ */
+/* the shared six-section study method (SEM7.ui.topic) */
 let studyStep = "learn";
 function viewTopic(id){
   const t = topicById(id);
   if(!t) return notFound();
-  const m = moduleById(t.moduleId);
-  const isNum = t.type === "numerical";
+  const m = moduleById(t.moduleId), isNum = t.type === "numerical", st = statusOf(t.id);
+  const modLink = `data-act="go" data-h="#/module/${m.id}"`;
 
-  /* Build the step list dynamically from what this topic actually has */
-  const steps = [];
-  steps.push({k:"learn", label:"Learn"});
-  if(t.understand) steps.push({k:"understand", label:"Understand"});
-  if(isNum){
-    if(t.formula) steps.push({k:"formula", label:"Formula"});
-    if(t.worked) steps.push({k:"example", label:"Worked example"});
-  } else if(t.examples && t.examples.length){
-    steps.push({k:"example", label:"Examples"});
+  /* 1 · Concept: the lecture explanation, the formula and its symbols */
+  let concept = t.learn || "";
+  if(t.algorithm) concept += `<h4>Algorithm</h4>${t.algorithm}`;
+  if(t.props) concept += `<h4>Properties</h4><p>${t.props}</p>`;
+  if(t.limitations && t.limitations.length) concept += `<h4>Limitations</h4><ul>${t.limitations.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+  if(isNum && t.formula){
+    concept += `<h4>Formula</h4><div class="fx">${t.formula}</div>` + (t.formulaNote ? `<p class="small muted">${t.formulaNote}</p>` : "");
+    if(t.variables && t.variables.length) concept += `<div class="tw"><table><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody>` +
+      t.variables.map(v=>`<tr><td><code>${v.v}</code></td><td>${v.m}</td></tr>`).join("") + `</tbody></table></div>`;
   }
-  if(t.examAnswer) steps.push({k:"exam", label:"Exam answer"});
-  if(t.mistakes && t.mistakes.length) steps.push({k:"mistakes", label:"Common mistakes"});
-  if(isNum && t.practice && t.practice.length) steps.push({k:"practice", label:"Practice"});
-  if(!steps.some(s=>s.k===studyStep)) studyStep = "learn";
-
-  const modLink = `data-act="go" data-h="#/module/${m.id}"`, st = statusOf(t.id);
-  let html = SEM7.ui.head({
-    crumb:[{label:`Module ${m.num} · ${esc(m.title)}`, attrs:modLink}, {label:isNum?"Numericals":"Theory"}],
-    title:esc(t.title),
-    meta:priBadge(t.priority)+marksBadge(t.marks)+(isWeak(t.id)?`<span class="badge b-high">Weak topic</span>`:""),
-    sub:t.src?`Source: ${esc(t.src)}`:"",
-    progress:{state:st==="prog"?"progress":st,
-      note:isNum&&t.practice&&t.practice.length ? (P.practice[t.id]?"practice set done":"practice set not done") : "marked by you at the end of the page"}});
-
-  /* Which learning outcomes this topic answers */
+  let extra = "";
+  if(isNum && t.understand) extra += `<div class="box neutral"><h5>In simpler words</h5>${t.understand}</div>`;
+  if(!isNum && t.examples && t.examples.length){
+    extra += `<h4 class="s7-sub-h">${SEM7.icon("book")}Examples from the teacher's material</h4>` +
+      t.examples.map(e=>`<div class="card"><h4 style="margin-top:0">${esc(e.t)}</h4>${SEM7.ui.visualize(e.b)}</div>`).join("");
+  }
   const tlos = losForTopic(t.id);
-  if(tlos.length){
-    html += `<div class="lo-strip">
-      <div class="lo-strip-h">Answers ${tlos.length===1?"this learning outcome":"these learning outcomes"}</div>
-      ${tlos.map(l=>`<div class="lo-item">
-        <span class="badge b-theory">${l.id}</span>
-        <span><strong>${esc(l.verb)}</strong> — ${esc(l.text)}</span>
-      </div>`).join("")}
-      <div class="lo-strip-f">Exam questions are framed to match these verbs.
-        <button class="trow-t" style="display:inline;font-size:inherit;font-weight:600" data-act="go" data-h="#/outcomes">See all outcomes →</button></div>
-    </div>`;
-  } else if(!t.notCovered){
-    html += `<div class="note warn"><span class="note-t">No learning outcome targets this topic</span>
-      This is a <strong>syllabus content item</strong> — it is listed under the module's Contents, but none of the module's
-      learning outcomes name it. Cover it, but weight it below the topics that answer an outcome directly.
-      <button class="trow-t" style="display:inline;font-size:inherit;font-weight:600" data-act="go" data-h="#/outcomes">See the outcomes →</button></div>`;
-  }
+  if(tlos.length) extra += `<div class="lo-strip"><div class="lo-strip-h">Answers ${tlos.length===1?"this learning outcome":"these learning outcomes"}</div>
+      ${tlos.map(l=>`<div class="lo-item"><span class="badge b-theory">${l.id}</span><span><strong>${esc(l.verb)}</strong> — ${esc(l.text)}</span></div>`).join("")}</div>`;
 
-  /* Step tabs */
-  html += `<div class="steps" role="tablist" aria-label="Study steps">`;
-  steps.forEach(s=>{
-    html += `<button role="tab" aria-selected="${studyStep===s.k}" data-act="step" data-s="${s.k}">${s.label}</button>`;
-  });
-  html += `</div><div class="prose" id="stepBody">${renderStep(t, studyStep)}</div>`;
+  const marks = t.marks && t.marks.length ? t.marks : null;
+  const worked = isNum && t.worked ? [{id:t.id+"w", title:"Worked example", q:t.worked.problem,
+    body:t.diagram2 ? diaBlock(t.diagram2) : "", steps:t.worked.steps, answer:t.worked.answer, why:t.worked.check}] : [];
+  const iq = IMPQ.filter(q=>q.t===t.id);
 
-  /* Footer: mark complete + navigation */
-  html += `<hr>
-  <div class="card" style="display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;justify-content:space-between">
-    <div><h3 style="font-size:.9rem;margin-bottom:.2rem">Mark this topic</h3>
-      <div style="font-size:.78rem;color:var(--muted)">Progress only counts topics you explicitly mark complete.</div></div>
-    ${statusControl(t.id, t.title)}
-  </div>`;
-
-  if(isNum && t.practice && t.practice.length){
-    html += `<div class="card" style="display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;justify-content:space-between">
-      <div><h3 style="font-size:.9rem;margin-bottom:.2rem">Practice set</h3>
-        <div style="font-size:.78rem;color:var(--muted)">${t.practice.length} problems, easy → exam level. Tracked separately from theory.</div></div>
-      <button class="btn ${P.practice[t.id]?"":"btn-primary"}" data-act="practice" data-id="${t.id}">
-        ${P.practice[t.id]?"✓ Practice completed — undo":"Mark practice complete"}</button>
-    </div>`;
-  }
-
-  /* previous / next in course order, and back to the module */
-  const order = COURSE.modules.flatMap(x => ["theory","numerical"].flatMap(ty =>
+  const order = COURSE.modules.flatMap(x => ["numerical","theory"].flatMap(ty =>
     x.topics.filter(y => y.type===ty).map(y => ({id:y.id, m:x.id, title:y.title}))));
-  const nb = SEM7.ui.neighbours(order, t.id,
-    mid => `Module ${moduleById(mid).num}`);
+  const nb = SEM7.ui.neighbours(order, t.id, mid => `Module ${moduleById(mid).num}`);
   const side = x => x && {title:esc(x.t.title), note:x.note, attrs:`data-act="go" data-h="#/topic/${x.t.id}"`};
-  html += SEM7.ui.pager({prev:side(nb.prev), next:side(nb.next), up:{label:`Back to Module ${m.num}`, attrs:modLink}});
-  return html;
+
+  let foot = `<div class="card s7-markcard"><div><h3 style="font-size:.95rem;margin:0 0 .2rem">Mark this topic</h3>
+      <div class="small muted">Progress counts topics you mark complete.</div></div>${statusControl(t.id, t.title)}</div>`;
+  if(isNum && t.practice && t.practice.length) foot += `<div class="card s7-markcard"><div><h3 style="font-size:.95rem;margin:0 0 .2rem">Practice set</h3>
+      <div class="small muted">${t.practice.length} problems, tracked separately.</div></div>
+      <button class="btn ${P.practice[t.id]?"on":"btn-primary"}" data-act="practice" data-id="${t.id}">${P.practice[t.id]?"✓ Practice done":"Mark practice done"}</button></div>`;
+
+  return SEM7.ui.topic({
+    head:{crumb:[{label:`Module ${m.num} · ${esc(m.title)}`, attrs:modLink},
+                 {label:isNum?"Numericals":"Theory", attrs:`data-act="sub" data-m="${m.id}" data-s="${t.type}" data-go-mod="1"`}],
+      title:esc(t.title), meta:priBadge(t.priority)+marksBadge(t.marks),
+      progress:{state:st==="prog"?"progress":st, note:t.src?`Source: ${esc(t.src)}`:""}},
+    key:!isNum && t.understand ? {t:"In simpler words", b:t.understand} : (isNum && t.concept ? {t:"The idea", b:t.concept} : null),
+    diagram:t.diagram ? diaBlock(t.diagram) : "",
+    concept, extra,
+    answer:t.examAnswer ? [{label:marks ? marks.join(" / ")+" marks" : "Model answer", marks:marks ? Math.max.apply(null, marks) : null, body:t.examAnswer}] : [],
+    mistakes:t.mistakes,
+    examples:worked,
+    practice:(t.practice||[]).map((p,i)=>({id:t.id+"p"+i, d:p.d, q:p.q, a:p.s})),
+    questions:iq.map(q=>({q:q.q, marks:q.marks})),
+    foot,
+    pager:{prev:side(nb.prev), next:side(nb.next), up:{label:`Back to Module ${m.num}`, attrs:modLink}}
+  });
 }
 
 function diaBlock(key){
@@ -6284,6 +6178,12 @@ document.addEventListener("click", e=>{
       location.hash = el.dataset.h; window.scrollTo({top:0, behavior:"instant"}); break;
 
     case "status": setStatus(el.dataset.id, el.dataset.s); break;
+
+    case "sub":
+      modSub[el.dataset.m] = el.dataset.s;
+      if(el.dataset.goMod){ location.hash = `#/module/${el.dataset.m}`; window.scrollTo({top:0, behavior:"instant"}); }
+      else render();
+      break;
 
     case "step":
       studyStep = el.dataset.s;

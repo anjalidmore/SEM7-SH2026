@@ -52,11 +52,6 @@ h2.s7-h2 .s7-core{margin-left:auto}
 
 <main id="app" class="s7-main"></main>
 
-<footer>
-  Built from the official CEPEC7041 syllabus, the COMP&nbsp;A and COMP&nbsp;B lecture decks, the handwritten class notes, the teacher's formula sheet and CIA&#8209;2.<br>
-  <strong>Your progress is stored locally in this browser only</strong> &mdash; no account, no server, nothing sent anywhere.
-  <a href="#" data-go="settings">Settings &amp; progress</a>
-</footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -6447,206 +6442,81 @@ let revealed = {};   /* session-only: which answers are showing */
 
 /* ---------------------------- DASHBOARD ----------------------------- */
 function vDashboard(){
-  const scope = shown(TOPICS), ov = progressOf(scope);
-  const th = progressOf(scope.filter(t => trackOf(t) === "theory"));
-  const nu = progressOf(scope.filter(t => trackOf(t) === "numerical"));
-  const qz = quizOverall(), weak = weakTopics().filter(w => scope.includes(w.topic)), next = studyNext(coreOn());
-
-  const UI = window.SEM7 && SEM7.ui;
-  let h = '<h1>Dashboard</h1>';
-  if(UI){
-    h += UI.stats([
-      {icon:"target", value:ov.pct+"%", label:"Overall", count:ov.done+" / "+ov.total, pct:ov.pct},
-      {icon:"formula", value:nu.pct+"%", label:"Numericals", count:nu.done+" / "+nu.total, pct:nu.pct},
-      {icon:"book", value:th.pct+"%", label:"Theory", count:th.done+" / "+th.total, pct:th.pct}
-    ]);
-    h += next.topic
-      ? UI.next({kicker:"Study next &middot; Module "+next.topic.m.slice(1), title:next.topic.title,
-                 go:{label:"Open", attrs:'data-topic="'+next.topic.id+'"'}})
-      : UI.next({title:next.view === "quiz" ? "Take the quiz" : "Exam Mode",
-                 go:{label:"Open", attrs:'data-go="'+next.view+'"'}});
-    const built = {};
-    MODULES.forEach(m => { built[m.id] = {pct:progressOf(shown(topicsOf(m.id))).pct}; });
-    /* the Core only switch sits in the Modules heading */
-    h += UI.modules("ads", built, id => 'data-go="'+id+'"').replace("</h2>", UI.coreToggle()+"</h2>");
-  }
-
-  /* weak areas — only when the quiz has actually flagged something */
-  if(weak.length){
-    h += '<h2>Weak areas</h2>';
-    weak.slice(0,5).forEach(w => {
-      h += '<div class="card tight"><div class="badge-row">'+pill("high",w.pct+"% in quiz")+
-        '<span style="flex:1;font-weight:640;font-size:.92rem">'+w.topic.title+'</span>'+
-        '<button class="small" data-topic="'+w.topic.id+'">Review</button></div></div>';
-    });
-  }
-  return h;
+  const scope = shown(TOPICS), next = studyNext(coreOn()), built = {};
+  MODULES.forEach(m => { built[m.id] = {pct:progressOf(shown(topicsOf(m.id))).pct}; });
+  return SEM7.ui.dashboard({code:"ads", overall:progressOf(scope),
+    numericals:progressOf(scope.filter(t => trackOf(t) === "numerical")),
+    theory:progressOf(scope.filter(t => trackOf(t) === "theory")),
+    next:next.topic ? {kicker:"Study next &middot; Module "+next.topic.m.slice(1), title:next.topic.title, attrs:'data-topic="'+next.topic.id+'"'}
+                    : {kicker:"Study next", title:next.view === "quiz" ? "Take the quiz" : "Exam Mode", attrs:'data-go="'+next.view+'"'},
+    built, attrs:id => 'data-go="'+id+'"'});
 }
 
 /* --------------------------- MODULE VIEW ---------------------------- */
-let subTab = {m1:"theory", m2:"theory", m3:"theory", m4:"theory", m5:"theory", m6:"theory"};
+let subTab = {m1:"numerical", m2:"numerical", m3:"numerical", m4:"numerical", m5:"numerical", m6:"numerical"};
 
 function topicCard(t){
   const tp = topicProgress(t);
-  const cls = topicStatus(t.id) === "done" ? "is-done" : "p-"+t.priority;
-  return '<div class="topic '+cls+'">'+
-    '<div class="th"><div class="tt">'+statusDot(t.id)+' '+t.title+'</div>'+
-    '<div class="badge-row">'+prioPill(t.priority)+'</div></div>'+
-    '<p class="tsum">'+esc(t.summary)+'</p>'+
-    '<div class="qmeter">'+pbar(tp.pct, barClass(tp.pct))+
-      '<span class="qn">'+tp.done+' / '+tp.total+' questions</span>'+
-      '<button class="small" data-topic="'+t.id+'">Open</button></div>'+
-    '</div>';
+  return SEM7.ui.topicCard({title:t.title, summary:esc(t.summary), high:t.priority === "high", pill:prioPill(t.priority),
+    state:topicStatus(t.id), done:tp.done, total:tp.total, attrs:'data-topic="'+t.id+'"'});
 }
 
 function vModule(mid){
   const m = moduleOf(mid);
   const mp = progressOf(shown(topicsOf(mid)));
-  const tab = subTab[mid] || "theory";
-  const nTh = shown(topicsInTrack(mid,"theory")).length, nNu = shown(topicsInTrack(mid,"numerical")).length;
-
+  const tab = subTab[mid] || "numerical";
   let h = SEM7.ui.head({eyebrow:'Module '+m.num, title:esc(m.title),
     progress:{pct:mp.pct, done:mp.done, total:mp.total, unit:"questions done"}});
-
-  h += '<div class="subtabs" role="tablist">'+
-    '<button role="tab" aria-selected="'+(tab==="theory")+'" class="'+(tab==="theory"?"active":"")+'" data-sub="theory" data-mid="'+mid+'">Theory ('+nTh+')</button>'+
-    '<button role="tab" aria-selected="'+(tab==="numerical")+'" class="'+(tab==="numerical"?"active":"")+'" data-sub="numerical" data-mid="'+mid+'">Numericals ('+nNu+')</button>'+
-    '<button role="tab" aria-selected="'+(tab==="review")+'" class="'+(tab==="review"?"active":"")+'" data-sub="review" data-mid="'+mid+'">Quick Review</button>'+
-    '</div>';
+  h += SEM7.ui.subtabs([
+    {label:"Numericals", n:shown(topicsInTrack(mid,"numerical")).length, on:tab === "numerical", attrs:'data-sub="numerical" data-mid="'+mid+'"'},
+    {label:"Theory", n:shown(topicsInTrack(mid,"theory")).length, on:tab === "theory", attrs:'data-sub="theory" data-mid="'+mid+'"'},
+    {label:"Quick Review", on:tab === "review", attrs:'data-sub="review" data-mid="'+mid+'"'}]);
 
   if(tab === "review"){
     reviewOf(mid).forEach(r => {
-      h += '<div class="card"><h3 style="margin-top:0">'+esc(r.h)+'</h3>'+r.b+'</div>';
+      h += '<div class="card"><h3 style="margin-top:0">'+esc(r.h)+'</h3>'+SEM7.ui.visualize(r.b)+'</div>';
     });
     return h;
   }
-
   const list = shown(sortedTrack(mid, tab));
   if(!list.length) return h + '<div class="empty">'+(coreOn() ? 'No Core topics in this track.' : 'No topics in this track.')+'</div>';
-  const tp = progressOf(list);
-  h += '<p class="lead" style="margin-top:-.4rem">'+
-    (tab === "numerical"
-      ? 'Topics where you compute something and show working. '+tp.done+' of '+tp.total+' questions done.'
-      : 'Topics answered in words, tables and diagrams. '+tp.done+' of '+tp.total+' questions done.')+'</p>';
   list.forEach(t => { h += topicCard(t); });
   return h;
 }
 
 /* ---------------------------- TOPIC DETAIL -------------------------- */
+/* the shared six-section study method (SEM7.ui.topic) */
 function vTopic(id){
   const t = TOPIC_BY_ID[id];
   if(!t) return '<div class="empty">Topic not found.</div>';
-  const m = moduleOf(t.m);
-  const tp = topicProgress(t);
-
-  const tr = trackOf(t);
-  let h = SEM7.ui.head({
-    crumb:[{label:'Module '+m.num+' &middot; '+esc(m.title), attrs:'data-go="'+t.m+'"'},
-           {label:TRACK_LABEL[tr], attrs:'data-sub="'+tr+'" data-mid="'+t.m+'"'}],
-    title:t.title, meta:prioPill(t.priority)+t.los.map(loPill).join(""),
-    sub:'This topic counts as complete once every question below is marked. Nothing is marked automatically.',
-    progress:{done:tp.done, total:tp.total, unit:"questions worked"}});
-
-  /* 1 · CONCEPT */
-  h += '<h2>1 &middot; Concept</h2>'+t.whatIs+t.concept;
-  h += '<div class="box neutral"><h5>What you need to be able to do</h5><ul style="margin:0">'+
-    t.needToKnow.map(x => '<li>'+x+'</li>').join("")+'</ul></div>';
-
-  /* 2 · HOW TO WRITE IT */
-  h += '<h2>2 &middot; How to write the answer</h2>'+
-   '<div class="card"><h4>Short answer (2–3 marks)</h4><p style="margin-top:0">'+t.examAnswer.short+'</p>'+
-   '<h4>Medium answer (5 marks)</h4><p>'+t.examAnswer.medium+'</p>'+
-   '<h4>Long answer (10 marks)</h4><p style="margin-bottom:0">'+t.examAnswer.long+'</p></div>';
-
-  /* 3 · COMMON MISTAKES */
-  h += '<h2>3 &middot; Common mistakes</h2>'+
-   '<div class="box mistake"><h5>Avoid these</h5><ul style="margin:0">'+
-    t.mistakes.map(x => '<li>'+x+'</li>').join("")+'</ul></div>';
-
-  /* 4 · PRACTICE — solved examples first (solutions hidden), then practice questions */
-  h += '<h2>4 &middot; Practice</h2>'+
-    '<p class="lead" style="margin-top:-.4rem">Every solution here is hidden until you ask for it, so you can work these as practice. '+
-    'Mark each one when you have attempted it — that is what drives your progress.</p>';
-  if(t.examples && t.examples.length){
-    h += '<h3>Worked examples ('+t.examples.length+')</h3>';
-    t.examples.forEach(e => { h += exampleCard(e); });
-  }
-  if(t.practice && t.practice.length){
-    h += '<h3>Practice questions ('+t.practice.length+')</h3>';
-    t.practice.forEach(p => { h += practiceCard(p); });
-  }
-
-  /* 5 · QUESTION RECOGNITION */
-  h += '<h2>5 &middot; Question recognition</h2>'+
-   '<div class="box recog"><h5>Clues that this is the topic</h5><ul style="margin:0">'+
-     t.recognition.clues.map(c => '<li>'+c+'</li>').join("")+'</ul></div>'+
-   '<div class="box neutral"><h5>Typical wording</h5><ul style="margin:0">'+
-     t.recognition.wording.map(w => '<li><i>&ldquo;'+esc(w)+'&rdquo;</i></li>').join("")+'</ul></div>'+
-   '<div class="box tip"><h5>First thing to identify</h5><p style="margin:0">'+t.recognition.firstStep+'</p></div>'+
-   '<div class="box exam"><h5>Method</h5><p style="margin:0">'+t.recognition.method+'</p></div>'+
-   '<div class="box mistake"><h5>The trap</h5><p style="margin:0">'+t.recognition.trap+'</p></div>';
-
-  /* likely questions on this topic */
-  if(t.questions && t.questions.length){
-    h += '<h2>6 &middot; Likely exam questions</h2><div class="card">';
-    t.questions.forEach((q,i) => {
-      h += '<div style="padding:7px 0'+(i?';border-top:1px solid var(--border)':'')+'">'+
-        '<div style="font-size:.9rem;font-weight:600">'+esc(q.q)+'</div>'+
-        '<div class="badge-row" style="margin-top:5px">'+pill("marks",q.marks+" marks")+diffPill(q.d)+srcPill(q.source)+'</div></div>';
-    });
-    h += '</div>';
-  }
-
-  /* previous / next in course order, and back to the module */
+  const m = moduleOf(t.m), tp = topicProgress(t), tr = trackOf(t), rc = t.recognition || {}, ea = t.examAnswer || {};
   const nb = SEM7.ui.neighbours(topicSequence(), t.id, x => 'Module '+moduleOf(x).num);
   const side = x => x && {title:x.t.title, note:x.note, attrs:'data-topic="'+x.t.id+'"'};
-  h += SEM7.ui.pager({prev:side(nb.prev), next:side(nb.next), up:{label:'Back to Module '+m.num, attrs:'data-go="'+t.m+'"'}});
-  return h;
+  return SEM7.ui.topic({
+    head:{
+      crumb:[{label:'Module '+m.num+' &middot; '+esc(m.title), attrs:'data-go="'+t.m+'"'},
+             {label:TRACK_LABEL[tr], attrs:'data-sub="'+tr+'" data-mid="'+t.m+'"'}],
+      title:t.title, meta:prioPill(t.priority)+t.los.map(loPill).join(""),
+      progress:{done:tp.done, total:tp.total, unit:"questions worked"}},
+    concept:t.whatIs+t.concept, can:t.needToKnow,
+    answer:[{label:"Short &middot; 2&ndash;3 marks", marks:3, body:ea.short},
+            {label:"Medium &middot; 5 marks", marks:5, body:ea.medium},
+            {label:"Long &middot; 10 marks", marks:10, body:ea.long}],
+    mistakes:t.mistakes,
+    examples:(t.examples || []).map(e => ({id:e.id, anchor:"ex_"+e.id, title:esc(e.title), q:e.q,
+      tags:e.category ? '<span class="pill">'+esc(e.category)+'</span>' : "",
+      boxes:[e.recog && {h:"How to recognise it", b:e.recog}, e.need && {h:"Concept required", b:e.need}].filter(Boolean),
+      steps:e.steps, answer:e.answer, why:e.why, trap:e.trap})),
+    practice:(t.practice || []).map(p => ({id:p.id, anchor:"pr_"+p.id, q:p.q, d:p.d, marks:p.marks, hint:p.hint && esc(p.hint), a:p.a})),
+    recog:{clues:rc.clues, wording:(rc.wording || []).map(esc), first:rc.firstStep, method:rc.method, trap:rc.trap},
+    questions:(t.questions || []).map(q => ({q:esc(q.q), marks:q.marks, source:q.source})),
+    mark:(kind, id) => kind === "ex"
+      ? {done:!!P.examples[id], attrs:'data-exdone="'+id+'"'}
+      : {done:!!P.practice[id], attrs:'data-prdone="'+id+'"'},
+    pager:{prev:side(nb.prev), next:side(nb.next), up:{label:'Back to Module '+m.num, attrs:'data-go="'+t.m+'"'}}
+  });
 }
 
-/* reusable cards ----------------------------------------------------- */
-function exampleCard(e){
-  const done = !!P.examples[e.id];
-  const open = !!revealed["ex_"+e.id];
-  let h = '<div class="card" id="ex_'+e.id+'">'+
-    '<div class="badge-row" style="margin-bottom:6px">'+pill("num","Worked example")+
-    '<span class="pill marks">'+esc(e.category)+'</span>'+(done?pill("done","Done"):"")+'</div>'+
-    '<h4 style="margin-top:0">'+esc(e.title)+'</h4>'+
-    '<div style="font-size:.92rem;font-weight:600">'+e.q+'</div>'+
-    '<div class="reveal-row">'+
-      '<button class="small primary" data-reveal="ex_'+e.id+'">'+(open?"Hide solution":"Show solution")+'</button>'+
-      '<button class="small '+(done?"sel-good":"")+'" data-exdone="'+e.id+'">'+(done?"✓ Done":"Mark done")+'</button>'+
-    '</div>'+
-    '<div class="hidden-body'+(open?" show":"")+'">'+
-      '<div class="box recog"><h5>How to recognise this category</h5><p style="margin:0">'+e.recog+'</p></div>'+
-      '<div class="box neutral"><h5>Concept required</h5><p style="margin:0">'+e.need+'</p></div>'+
-      '<h4>Step-by-step</h4><ol class="steps">'+e.steps.map(s => '<li>'+s+'</li>').join("")+'</ol>'+
-      '<h4>Final answer</h4>'+e.answer+
-      '<div class="box tip"><h5>Why this method works</h5><p style="margin:0">'+e.why+'</p></div>'+
-      '<div class="box mistake"><h5>Common mistake</h5><p style="margin:0">'+e.trap+'</p></div>'+
-    '</div></div>';
-  return h;
-}
-function practiceCard(p){
-  const done = !!P.practice[p.id];
-  const openSol = !!revealed["pr_"+p.id];
-  const openHint = !!revealed["hint_"+p.id];
-  let h = '<div class="card" id="pr_'+p.id+'">'+
-    '<div class="badge-row" style="margin-bottom:6px">'+diffPill(p.d)+pill("marks",p.marks+" marks")+
-    (done?pill("done","Done"):"")+'</div>'+
-    '<div style="font-size:.92rem;font-weight:600">'+p.q+'</div>'+
-    '<div class="reveal-row">'+
-      '<button class="small primary" data-reveal="pr_'+p.id+'">'+(openSol?"Hide solution":"Show solution")+'</button>'+
-      (p.hint ? '<button class="small" data-reveal="hint_'+p.id+'">'+(openHint?"Hide hint":"Hint")+'</button>' : "")+
-      '<button class="small '+(done?"sel-good":"")+'" data-prdone="'+p.id+'">'+(done?"✓ Done":"Mark done")+'</button>'+
-    '</div>';
-  if(p.hint){
-    h += '<div class="hidden-body'+(openHint?" show":"")+'" style="border-top:none;padding-top:8px;margin-top:2px">'+
-      '<p class="muted" style="margin:0"><b>Hint:</b> '+esc(p.hint)+'</p></div>';
-  }
-  h += '<div class="hidden-body'+(openSol?" show":"")+'">'+p.a+'</div>';
-  return h + '</div>';
-}
 /* ------------------------ QUESTION RECOGNITION ---------------------- */
 function vRecognition(){
   let h = '<h1>Question Recognition</h1><p class="lead">Not <i>how do I solve it</i> but <b>how do I know what kind of question this is</b>. '+
@@ -7199,7 +7069,8 @@ function goto(v, opts){
 function openTopic(id, anchor){
   const t = TOPIC_BY_ID[id];
   if(!t) return;
-  if(anchor) revealed[anchor] = true;
+  if(anchor && /^(ex|pr)_/.test(anchor)) SEM7.ui.reveal(anchor.slice(0,2), anchor.slice(3));
+  else if(anchor) revealed[anchor] = true;
   goto("topic", {topic:id, anchor:anchor});
 }
 /* re-render without losing the reader's place */

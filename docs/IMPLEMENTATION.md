@@ -63,6 +63,13 @@ docs/PLAN.md          user-facing plan · docs/IMPLEMENTATION.md this file · do
 `ui.pending(code, mid)`, `ui.h2(icon, title, extra)`, `ui.head/crumb/progress/pager/neighbours`;
 `syllabus(code)`, `syllabusModule(code, mid)`, `pendingModules(code)`, `isPending(code, mid)`;
 `plan(now)` → `[{date, exam, main}]` from `STUDY_START` (16 Nov); `readSummary(code)`; `attach(code)`.
+One layout (README "One study method everywhere"): `ui.dashboard({code, overall, numericals, theory, next:{kicker,title,attrs}, built, attrs})`,
+`ui.subtabs([{label,n,on,attrs}])`, `ui.topicCard({title,summary,high,pill,state,done,total,unit,attrs})`,
+`ui.topic({head, key:{t,b}, diagram, concept, can, extra, answer:[{label,marks,body,q?,more?,mark?}], mistakes,
+examples:[{id,anchor,kind,title,q,boxes,steps,answer,why,trap}], practice:[{id,anchor,q,d,marks,hint,a,app}],
+recog:{clues,wording,first,method,trap}, questions:[{q,marks,source}], mark(kind,id)→{done,attrs}, foot, pager})`,
+`ui.reveal(kind,id)` (open a solution before render, for search deep links), `ui.visualize(html)`, `ui.rich(text)`,
+`minutes(marks)`. **New topics need no new view code**: add data in the site's existing shape and it renders.
 Core/Extra: `isCore(item)` (`item.core` if boolean, else `priority==="high"`), `coreOnly()`, `setCoreOnly(on)`,
 `coreProvisional(code)` (true while `paper:null`), `ui.coreToggle(on?)`. The summary carries
 `core:{done,total,pct,next:[{title,target}]}` (next three Core items, started first).
@@ -201,3 +208,4 @@ Add one line when you finish something: date, workstream, what changed, commit.
 - 1 Nov · P3 (ADS) · 24 topics tagged `core` from priority (21 Core, 3 Extra; provisional); Core only switch in the dashboard Modules heading; dashboard, module tiles, module lists and Study next follow it · *(this commit)*
 - 1 Nov · P3 (AI) + C-AI re-test · 92 topics tagged `core` (80 Core, 12 Extra) and 64 IMPQ (52/12), provisional; Core only switch in the dashboard Modules heading; dashboard stats, tiles, module lists and Study next follow it (hub figures unscoped; Core % matches). M4–6 re-tested: all 51 topics, 220 steps, quizzes and cross-refs pass; fixed 5¹⁸⁰ ≈ 6.5 × 10¹²⁵ (was 1.5, copied from `ese.html`); gaps: no flashcards for M5–6, no revision blocks for M5–6 or M4 planning · *(this commit)*
 - 1 Nov · C-ADS · Modules 3–6 built from the COMP B decks, class notes, LOF handout and textbook Ch. 12–13: 19 topics (worked numericals first), 22 quiz items, 5 formula groups, Quick Review cards, a "Which Module 3 test?" tree; source slips flagged on the topic pages; A vs B scoped to Modules 1–2; SMOTE (5.6) has no source yet · *(this commit)*
+- 1 Nov · Uniform study method · every subject on the OR layout: one dashboard (3 stats, Open, Core only switch on all five), module pages with Numericals · Theory · Quick Review, and `SEM7.ui.topic` six-section pages with visuals (answer ladder, trap cards, step timelines, recognition flow, marks bars, auto flow diagrams and term cards). NLP gained topic pages; AI moved off step tabs; ADS/NLP footers and AI shortcuts/weak list, NLP review/quiz stats and DL's By outcome tab removed. 255 topic pages checked at 320/390/768 px, no overflow or errors · *(uncommitted)*

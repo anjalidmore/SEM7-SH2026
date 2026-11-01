@@ -90,7 +90,7 @@ var LO_META={
  "3.3":{exp:5,   of:10, note:"A 5 mark question for certain, and CNN architecture was named important.", flag:"certain"},
  "3.4":{exp:1,   of:10, note:"Counts as CNN architecture, which was named important."}
 };
-var TRACKS={a:{k:"problem-solving",label:"Problem solving"}, b:{k:"theory",label:"Theory"}};
+var TRACKS={a:{k:"problem-solving",label:"Numericals"}, b:{k:"theory",label:"Theory"}};
 
 var LOS={
  "1.1":{m:"m1",t:"Apply linear-algebraic and discrete-mathematical techniques to model and interpret the mathematical representation of biological neurons and the McCulloch-Pitts neuron.",pi:"1.1.1"},
@@ -3943,13 +3943,9 @@ function statCard(n, label, sub, pct){
     '<div class="s">'+esc(sub)+'</div>'+bar(pct)+'</div>';
 }
 function topicCard(t){
-  var pr = topicProgress(t), st = topicStatus(t.id);
-  return '<button class="tc'+(t.priority==="high"?" hi":"")+'" data-go="topic" data-id="'+esc(t.id)+'">'+
-    '<span class="top"><span class="dot '+st+'" aria-hidden="true"></span>'+
-    '<span class="ti">'+esc(t.title)+'</span>'+pill(t.priority, t.priority+" priority")+'</span>'+
-    '<span class="small">'+esc(t.summary)+'</span>'+
-    '<span class="qmeter">'+bar(pr.pct)+'<span>'+pr.done+' / '+pr.total+' questions</span><span>Open</span></span>'+
-    '</button>';
+  var pr = topicProgress(t);
+  return SEM7.ui.topicCard({title:esc(t.title), summary:esc(t.summary), high:t.priority==="high", pill:pill(t.priority, t.priority+" priority"),
+    state:topicStatus(t.id), done:pr.done, total:pr.total, attrs:'data-go="topic" data-id="'+esc(t.id)+'"'});
 }
 function toast(msg){
   var old = document.getElementById("toast"); if(old) old.remove();
@@ -4035,67 +4031,38 @@ function moduleLOs(m){
 }
 /* ===================== VIEWS: dashboard, module, topic ===================== */
 function viewDashboard(){
-  var ov = overallProgress(), a = trackProgress(TRACKS.a.k), b = trackProgress(TRACKS.b.k), UI = SEM7.ui;
-  var h = '<h1>Dashboard</h1>'+UI.stats([
-    {icon:"target", value:ov.pct+"%", label:"Overall", count:ov.done+" / "+ov.total, pct:ov.pct},
-    {icon:"formula", value:a.pct+"%", label:TRACKS.a.label, count:a.done+" / "+a.total, pct:a.pct},
-    {icon:"book", value:b.pct+"%", label:TRACKS.b.label, count:b.done+" / "+b.total, pct:b.pct}
-  ]);
   /* study next: the first high-priority topic already started, else the first not started */
   var open = highTopics().filter(function(t){ return topicStatus(t.id) !== "done"; });
   var nx = open.filter(function(t){ return topicStatus(t.id) === "progress"; })[0] || open[0];
-  if(nx) h += UI.next({kicker:"Study next &middot; Module "+esc(String(moduleById(nx.m).n)), title:esc(nx.title),
-    go:{label:"Open", attrs:'data-go="topic" data-id="'+esc(nx.id)+'"'}});
   var built = {};
   MODULES.forEach(function(m){ built[m.id] = {pct:moduleProgress(m.id).pct}; });
-  return h + UI.modules("dl", built, function(id){ return 'data-go="module" data-id="'+id+'"'; });
+  return SEM7.ui.dashboard({code:"dl", overall:overallProgress(), numericals:trackProgress(TRACKS.a.k), theory:trackProgress(TRACKS.b.k),
+    next:nx && {kicker:"Study next &middot; Module "+esc(String(moduleById(nx.m).n)), title:esc(nx.title), attrs:'data-go="topic" data-id="'+esc(nx.id)+'"'},
+    built:built, attrs:function(id){ return 'data-go="module" data-id="'+id+'"'; }});
 }
 
 var subtabState = {};
+function shownTopics(id, k){
+  return sortTopics(moduleTopics(id).filter(function(t){ return t.type===k && (!SEM7.coreOnly() || SEM7.isCore(t)); }));
+}
 function viewModule(id){
   var m = moduleById(id); if(!m) return '<h1>Not found</h1>';
   var mp = moduleProgress(id, {all:true});
   var cur = subtabState[id] || TRACKS.a.k;
-  var listA = sortTopics(moduleTopics(id).filter(function(t){return t.type===TRACKS.a.k;}));
-  var listB = sortTopics(moduleTopics(id).filter(function(t){return t.type===TRACKS.b.k;}));
+  if(cur !== TRACKS.a.k && cur !== TRACKS.b.k && cur !== "quick") cur = TRACKS.a.k;
   var h = SEM7.ui.head({eyebrow:esc(moduleShort(id)), title:esc(m.title),
       progress:{pct:mp.pct, done:mp.done, total:mp.total, unit:"questions marked"}})+
-    '<div class="subtabs" role="tablist">'+
-      '<button class="tab" role="tab" aria-selected="'+(cur===TRACKS.a.k)+'" data-sub="'+esc(id)+'|'+TRACKS.a.k+'">'+TRACKS.a.label+' ('+listA.length+')</button>'+
-      '<button class="tab" role="tab" aria-selected="'+(cur===TRACKS.b.k)+'" data-sub="'+esc(id)+'|'+TRACKS.b.k+'">'+TRACKS.b.label+' ('+listB.length+')</button>'+
-      '<button class="tab" role="tab" aria-selected="'+(cur==="lo")+'" data-sub="'+esc(id)+'|lo">By outcome ('+moduleLOs(id).length+')</button>'+
-      '<button class="tab" role="tab" aria-selected="'+(cur==="quick")+'" data-sub="'+esc(id)+'|quick">Quick review ('+(QUICK[id]||[]).length+')</button>'+
-    '</div>';
-  if(cur==="lo"){
-    h += '<p class="small">Every question on this paper is written against an outcome. '+
-      esc(moduleName(id))+' is worth '+m.marks+' marks, asked as '+esc(m.fmt)+
-      (m.choice?', and you answer only two of the three':'')+'.</p>';
-    moduleLOs(id).forEach(function(l){
-      var ts = sortTopics(LO_TOPICS[l]||[]);
-      var pr = loProgress(l);
-      h += '<div class="card'+(loFlag(l)?" hi":"")+'">'+
-        '<div class="top" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
-          '<span style="font-weight:600">LO '+esc(l)+'</span>'+
-          pill(loFlag(l)==="certain"?"high":(loFlag(l)==="important"?"high":"medium"), loLabel(l))+
-          '<span class="small" style="margin-left:auto">'+pr.done+' / '+pr.total+' questions</span>'+
-        '</div>'+
-        '<p class="small">'+esc(LOS[l].t)+'</p>'+
-        (LO_META[l].note? '<p class="small"><b>'+esc(LO_META[l].note)+'</b></p>':'')+
-        bar(pr.pct)+
-        '<div class="btnrow">'+ts.map(function(t){
-          return '<button class="btn'+(t.priority==="high"?" pri":"")+'" data-go="topic" data-id="'+esc(t.id)+'">'+esc(t.title)+'</button>';
-        }).join("")+'</div></div>';
-    });
-  } else if(cur==="quick"){
-    h += '<p class="small">Condensed cards for the night before.</p><div class="grid wide">';
+    SEM7.ui.subtabs([TRACKS.a, TRACKS.b].map(function(tr){
+      return {label:tr.label, n:shownTopics(id, tr.k).length, on:cur===tr.k, attrs:'data-sub="'+esc(id)+'|'+tr.k+'"'};
+    }).concat([{label:"Quick Review", on:cur==="quick", attrs:'data-sub="'+esc(id)+'|quick"'}]));
+  if(cur==="quick"){
     (QUICK[id]||[]).forEach(function(c){
-      h += '<div class="card"><h3 style="margin-top:0">'+esc(c.t)+'</h3><div class="small">'+c.b+'</div></div>';
+      h += '<div class="card"><h3 style="margin-top:0">'+esc(c.t)+'</h3>'+SEM7.ui.visualize('<div class="small">'+c.b+'</div>')+'</div>';
     });
-    h += '</div>';
   } else {
-    var list = cur===TRACKS.a.k ? listA : listB;
-    if(!list.length) h += '<p class="small">No topics in this track for this module.</p>';
-    else { h += '<div class="grid tlist">'; list.forEach(function(t){ h += topicCard(t); }); h += '</div>'; }
+    var list = shownTopics(id, cur);
+    if(!list.length) h += '<div class="empty">'+(SEM7.coreOnly() ? "No Core topics in this track." : "No topics in this track.")+'</div>';
+    list.forEach(function(t){ h += topicCard(t); });
   }
   return h;
 }
@@ -4107,107 +4074,31 @@ function topicSequence(){
   }); });
   return out;
 }
-var SECTIONS=[["s1","1. Concept"],["s2","2. How to write the answer"],["s3","3. Common mistakes"],
-              ["s4","4. Practice"],["sapp","Application question"],["s5","5. Question recognition"],
-              ["s6","6. Likely exam questions"]];
-
+/* the shared six-section study method (SEM7.ui.topic) */
 function viewTopic(id){
   var t = topicById(id); if(!t) return '<h1>Not found</h1>';
-  var pr = topicProgress(t), trk = t.type===TRACKS.a.k ? TRACKS.a : TRACKS.b;
+  var pr = topicProgress(t), trk = t.type===TRACKS.a.k ? TRACKS.a : TRACKS.b, rc = t.recognition || {};
   var modLink = 'data-go="module" data-id="'+esc(t.m)+'"';
-  var h = SEM7.ui.head({
+  var nb = SEM7.ui.neighbours(topicSequence(), t.id, moduleShort);
+  function side(x){ return x && {title:esc(x.t.title), note:x.note, attrs:'data-go="topic" data-id="'+esc(x.t.id)+'"'}; }
+  return SEM7.ui.topic({
+    head:{
       crumb:[{label:esc(moduleName(t.m)), attrs:modLink},
              {label:esc(trk.label), attrs:modLink+' data-gosub="'+esc(trk.k)+'"'}],
       title:esc(t.title), meta:pill(t.priority, t.priority+" priority")+loPills(t.los),
-      sub:t.los.map(function(l){ return 'LO '+l+', '+loLabel(l)+'.'; }).join(' ')+
-        ' Answers on this paper are '+moduleById(t.m).ans+' marks.',
-      progress:{done:pr.done, total:pr.total, unit:"questions worked"}})+
-    '<div class="topicwrap"><div class="prose">';
-
-  h += '<h2 id="s1">1. Concept</h2>';
-  if(t.core) h += '<div class="card hi"><h4 style="margin-top:0">'+esc(t.core.t)+'</h4>'+t.core.b+'</div>';
-  h += t.whatIs+t.concept;
-  if(t.needToKnow && t.needToKnow.length){
-    h += '<div class="box"><h5>What you must be able to do</h5><ul>'+
-      t.needToKnow.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></div>';
-  }
-  h += '<h2 id="s2">2. How to write the answer</h2>';
-  (t.examAnswer||[]).forEach(function(a){
-    h += '<div class="card"><h4 style="margin-top:0">At '+esc(a.marks)+' marks</h4>'+a.body+'</div>';
+      progress:{done:pr.done, total:pr.total, unit:"questions worked"}},
+    key:t.core && {t:esc(t.core.t), b:t.core.b},
+    concept:t.whatIs+t.concept, can:t.needToKnow,
+    answer:(t.examAnswer||[]).map(function(a){ return {label:esc(a.marks)+" marks", marks:a.marks, body:a.body}; }),
+    mistakes:t.mistakes,
+    examples:(t.examples||[]).map(function(e){ return {id:e.id, title:esc(e.title), q:e.q, steps:e.steps, answer:e.answer, trap:e.trap}; }),
+    practice:(t.practice||[]).map(function(p){ return {id:p.id, q:p.q, d:p.app ? null : p.d, app:p.app, hint:p.hint && esc(p.hint), a:p.a}; }),
+    recog:{clues:rc.clues, wording:(rc.wording||[]).map(esc), first:rc.firstMove, trap:rc.trap},
+    questions:(t.questions||[]).map(function(q){ return {q:esc(q.q), marks:q.marks, source:q.source}; }),
+    mark:function(kind, qid){ var k = kind==="ex" ? "ex" : "pr"; return {done:isMarked(k, qid), attrs:'data-mark="'+k+'|'+esc(qid)+'"'}; },
+    foot:t.src ? '<p class="small muted" style="margin-top:24px">Source: '+esc(t.src)+'</p>' : "",
+    pager:{prev:side(nb.prev), next:side(nb.next), up:{label:'Back to '+esc(moduleShort(t.m)), attrs:modLink}}
   });
-  h += '<h2 id="s3">3. Common mistakes</h2><div class="box mistake"><h5>Traps that cost marks</h5><ul>'+
-    (t.mistakes||[]).map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></div>';
-
-  h += '<h2 id="s4">4. Practice</h2>';
-  if(t.examples && t.examples.length){
-    h += '<h3>Worked examples</h3><p class="small">Solutions are hidden. Try each before revealing.</p>';
-    t.examples.forEach(function(e){
-      var mk = isMarked("ex", e.id);
-      h += '<div class="card" id="'+esc(e.id)+'"><h4 style="margin-top:0">'+esc(e.title)+'</h4>'+
-        '<p>'+e.q+'</p><div class="btnrow">'+
-          '<button class="btn" data-rev="'+esc(e.id)+'">Show solution</button>'+
-          '<button class="btn'+(mk?" pri":"")+'" data-mark="ex|'+esc(e.id)+'" aria-pressed="'+mk+'">'+(mk?"Marked done":"Mark done")+'</button>'+
-        '</div><div class="rev hide" id="rev_'+esc(e.id)+'"><ol>'+
-          (e.steps||[]).map(function(s){return '<li>'+s+'</li>';}).join("")+
-        '</ol><p>Answer: '+e.answer+'</p>'+
-        (e.trap? '<div class="box warning"><h5>Watch out</h5><p>'+e.trap+'</p></div>':'')+
-        '</div></div>';
-    });
-  }
-  var plain = (t.practice||[]).filter(function(p){ return !p.app; });
-  var apps  = (t.practice||[]).filter(function(p){ return p.app; });
-  if(plain.length){
-    h += '<h3>Practice questions</h3>';
-    plain.forEach(function(p){
-      var mk = isMarked("pr", p.id);
-      h += '<div class="card" id="'+esc(p.id)+'"><div class="hdrmeta">'+pill("", p.d)+'</div>'+
-        '<p>'+p.q+'</p><div class="btnrow">'+
-          '<button class="btn" data-rev="'+esc(p.id)+'">Show solution</button>'+
-          '<button class="btn" data-hint="'+esc(p.id)+'">Hint</button>'+
-          '<button class="btn'+(mk?" pri":"")+'" data-mark="pr|'+esc(p.id)+'" aria-pressed="'+mk+'">'+(mk?"Marked done":"Mark done")+'</button>'+
-        '</div>'+
-        '<div class="rev hide" id="hint_'+esc(p.id)+'">Hint. '+esc(p.hint)+'</div>'+
-        '<div class="rev hide" id="rev_'+esc(p.id)+'">'+p.a+'</div></div>';
-    });
-  }
-  if(apps.length){
-    h += '<h3 id="sapp">Application question</h3>';
-    apps.forEach(function(p){
-      var mk = isMarked("pr", p.id);
-      h += '<div class="card hi" id="'+esc(p.id)+'"><div class="hdrmeta">'+pill("high","application")+'</div>'+
-        '<p>'+p.q+'</p><div class="btnrow">'+
-          '<button class="btn" data-rev="'+esc(p.id)+'">Show solution</button>'+
-          '<button class="btn" data-hint="'+esc(p.id)+'">Hint</button>'+
-          '<button class="btn'+(mk?" pri":"")+'" data-mark="pr|'+esc(p.id)+'" aria-pressed="'+mk+'">'+(mk?"Marked done":"Mark done")+'</button>'+
-        '</div>'+
-        '<div class="rev hide" id="hint_'+esc(p.id)+'">Hint. '+esc(p.hint)+'</div>'+
-        '<div class="rev hide" id="rev_'+esc(p.id)+'">'+p.a+'</div></div>';
-    });
-  }
-
-  h += '<h2 id="s5">5. Question recognition</h2>'+
-    '<div class="card"><h4 style="margin-top:0">Clues in the question</h4><ul>'+
-      (t.recognition.clues||[]).map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul>'+
-      '<h4>How it tends to be worded</h4><ul>'+
-      (t.recognition.wording||[]).map(function(x){return '<li><i>'+esc(x)+'</i></li>';}).join("")+'</ul>'+
-      '<div class="box tip"><h5>First move</h5><p>'+t.recognition.firstMove+'</p></div>'+
-      '<div class="box warning"><h5>The trap</h5><p>'+t.recognition.trap+'</p></div></div>';
-
-  h += '<h2 id="s6">6. Likely exam questions</h2><div class="scroll"><table><tr><th>Question</th><th>Marks</th><th>Source</th></tr>'+
-    (t.questions||[]).map(function(q){
-      var lbl = q.source==="source" ? "From source material" : "Likely exam pattern";
-      var cls = q.source==="source" ? "srcpill" : "srcpill pred";
-      return '<tr><td>'+esc(q.q)+'</td><td>'+esc(q.marks)+'</td><td><span class="'+cls+'">'+lbl+'</span></td></tr>';
-    }).join("")+'</table></div>'+
-    '<p class="small">Source of this topic: '+esc(t.src)+'</p>';
-  var nb = SEM7.ui.neighbours(topicSequence(), t.id, moduleShort);
-  function side(x){ return x && {title:esc(x.t.title), note:x.note, attrs:'data-go="topic" data-id="'+esc(x.t.id)+'"'}; }
-  h += SEM7.ui.pager({prev:side(nb.prev), next:side(nb.next), up:{label:'Back to '+esc(moduleShort(t.m)), attrs:modLink}});
-
-  h += '</div><aside class="rail"><h5>On this page</h5><nav>'+
-    SECTIONS.map(function(s){ return '<button data-jump="'+s[0]+'">'+esc(s[1])+'</button>'; }).join("")+
-    '</nav></aside></div>';
-  return h;
 }
 /* ===================== VIEWS: recognition, quiz, formulae, exam ===================== */
 function viewRecognition(){

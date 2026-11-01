@@ -732,6 +732,351 @@
       '><span class="s7-core-k" aria-hidden="true"></span>Core only</button>';
   };
 
+  /* ---------- one dashboard, one module page ----------
+     Every subject's dashboard is exactly this: three stats, Study next, the six
+     modules with the Core only switch. o: {code, overall, numericals, theory
+     ({done, total}), next ({kicker, title, attrs} or null), built ({m1:{pct}}),
+     attrs(id) for a module tile}. */
+  function stat(icon, label, p){
+    var pct = p.total ? Math.round(p.done / p.total * 100) : 0;
+    return { icon:icon, value:pct + "%", label:label, count:p.done + " / " + p.total, pct:pct };
+  }
+  UI.dashboard = function(o){
+    return "<h1>Dashboard</h1>" +
+      UI.stats([stat("target", coreOnly() ? "Core" : "Overall", o.overall),
+                stat("formula", "Numericals", o.numericals), stat("book", "Theory", o.theory)]) +
+      (o.next ? UI.next({ kicker:o.next.kicker, title:o.next.title, go:{ label:"Open", attrs:o.next.attrs } }) : "") +
+      UI.modules(o.code, o.built, o.attrs).replace("</span></h2>", "</span>" + UI.coreToggle() + "</h2>");
+  };
+  /* Sub-tabs under a module header. items: [{label, n, attrs, on}] */
+  UI.subtabs = function(items){
+    return '<div class="subtabs" role="tablist">' + items.map(function(x){
+      return '<button type="button" class="tab' + (x.on ? " active" : "") + '" role="tab" aria-selected="' + !!x.on + '" ' + x.attrs + ">" +
+        x.label + (x.n != null ? " (" + x.n + ")" : "") + "</button>";
+    }).join("") + "</div>";
+  };
+  /* A topic in a module list. o: {title, summary, high, state, done, total, unit, attrs, pill} */
+  UI.topicCard = function(o){
+    var pct = o.total ? Math.round(o.done / o.total * 100) : (o.state === "done" ? 100 : 0);
+    var st = o.state || stateOf(o.done || 0, o.total || 0);
+    return '<div class="s7-tcard' + (st === "done" ? " is-done" : (o.high ? " is-high" : "")) + '">' +
+      '<div class="s7-tcard-h"><span class="s7-dot' + (st === "none" ? "" : " is-" + st) + '" role="img" aria-label="' + STATUS_LABEL[st] + '"></span>' +
+      "<h3>" + o.title + "</h3>" + (o.pill || "") + "</div>" +
+      (o.summary ? "<p>" + o.summary + "</p>" : "") +
+      '<div class="s7-tcard-f"><span class="bar" aria-hidden="true"><i style="width:' + pct + '%"' + (pct >= 100 ? ' class="s7-full"' : "") + "></i></span>" +
+      '<span class="s7-count">' + (o.total ? o.done + " / " + o.total + " " + (o.unit || "questions") : STATUS_LABEL[st]) + "</span>" +
+      '<button type="button" class="btn" ' + o.attrs + ">Open</button></div></div>";
+  };
+
+  /* ---------- topic page: the six-section study method ----------
+     Concept → How to write the answer → Common mistakes → Practice → Question
+     recognition → Likely exam questions, drawn as pictures where the data allows:
+     a "can do" checklist, an answer ladder by marks, trap cards, step timelines,
+     a recognition flow and marks bars. Long text is reshaped by visualize(). */
+  var MIN_PER_MARK = 120 / 50;
+  function marksOf(m){ var n = parseFloat(String(m == null ? "" : m).replace(/[^\d.].*$/, "")); return isFinite(n) ? n : null; }
+  function minutes(m){ var n = marksOf(m); return n == null ? "" : "&asymp; " + Math.max(1, Math.round(n * MIN_PER_MARK)) + " min"; }
+
+  var INLINE = /^(?:B|STRONG|I|EM|CODE|SPAN|A|SUB|SUP|BR|SMALL|MARK|U|KBD|VAR|#text)$/;
+  var ARROW = /\s*(?:\u2192|\u27f6|&rarr;|-&gt;|-->)\s*/;
+  function plainLen(s){ return s.replace(/<[^>]+>/g, "").replace(/&[#a-z0-9]+;/gi, "x").trim().length; }
+  function balanced(s){
+    var open = (s.match(/<(?:b|strong|i|em|code|span|a|sub|sup|small|u)\b/gi) || []).length;
+    return open === (s.match(/<\/(?:b|strong|i|em|code|span|a|sub|sup|small|u)>/gi) || []).length;
+  }
+  /* "lead: A → B → C. tail" → {lead, steps, tail}, or null when it is not a chain */
+  function chain(html){
+    var parts = html.split(ARROW);
+    if(parts.length < 3) return null;
+    var lead = "", tail = "", first = parts[0], last = parts[parts.length - 1];
+    if(plainLen(first) > 70){
+      var cut = Math.max(first.lastIndexOf(": "), first.lastIndexOf(" \u2014 "), first.lastIndexOf(" &mdash; "));
+      if(cut < 0) return null;
+      var sep = first.slice(cut).match(/^(: | \u2014 | &mdash; )/)[0];
+      lead = first.slice(0, cut + sep.length).trim(); first = first.slice(cut + sep.length);
+    }
+    var dot = last.search(/[.;]\s+[A-Z<(]/);
+    if(plainLen(last) > 70 && dot > 0){ tail = last.slice(dot + 1).trim(); last = last.slice(0, dot); }
+    parts[0] = first; parts[parts.length - 1] = last.replace(/[.;]\s*$/, "");
+    for(var i = 0; i < parts.length; i++){
+      if(!parts[i].trim() || !balanced(parts[i]) || plainLen(parts[i]) > 150) return null;
+    }
+    if(!balanced(lead) || !balanced(tail)) return null;
+    /* grammar rules (NP → DT NN), counts and equations (P(a|b) = 2/3), word maps (cars → car;)
+       are derivations, not a sequence of steps */
+    var commas = 0;
+    for(var k = 0; k < parts.length; k++){
+      var tx = parts[k].replace(/<[^>]+>/g, "").replace(/&[#a-z0-9]+;/gi, " ").trim();
+      var pairs = [["(", ")"], ["{", "}"], ["\u27e8", "\u27e9"]];
+      for(var q = 0; q < pairs.length; q++) if(tx.split(pairs[q][0]).length !== tx.split(pairs[q][1]).length) return null;
+      if(k > 0 && k < parts.length - 1 && /[.?!]\s+[A-Z]/.test(tx)) return null;
+      /* logic predicates, graph triples and "a → b, c → d" lists are relations, not steps */
+      if(/\b\w+\([^)]*\)/.test(tx) || / \u00b7 |\u2014[A-Za-z-]+$/.test(tx)) return null;
+      if(k > 0 && k < parts.length - 1 && /,\s/.test(tx)) commas++;
+      if(/[=|\[\]$;]|\d\s*[\/\u00d7*+]\s*\d|\(m\s*[>=]/.test(tx) || /^[A-Z]{1,4}(\s+[A-Z]{1,4})*$/.test(tx) || !/[a-z]{3}/.test(tx)) return null;
+    }
+    if(commas >= 2) return null;
+    /* "pour 4 → 3", "(0,0) → (4,0)": a mapping between values, not a sequence of steps */
+    for(var j = 1; j < parts.length; j++){
+      var l = parts[j - 1].replace(/<[^>]+>/g, "").trim(), r = parts[j].replace(/<[^>]+>/g, "").trim();
+      if(/[\d)\]]$/.test(l) && /^[\d(\[-]/.test(r)) return null;
+      if(/(^|\s)[A-Z]$/.test(l) || (/['\u2019"]$/.test(l) && /^['\u2018"]/.test(r))) return null;
+    }
+    return { lead:lead, steps:parts, tail:tail };
+  }
+  function flowHTML(c){
+    return (c.lead ? '<p class="s7-flow-lead">' + c.lead + "</p>" : "") +
+      '<ol class="s7-flow">' + c.steps.map(function(s){ return "<li>" + s.trim() + "</li>"; }).join("") + "</ol>" +
+      (c.tail ? "<p>" + c.tail + "</p>" : "");
+  }
+  function inlineOnly(el){
+    for(var n = el.firstChild; n; n = n.nextSibling) if(!INLINE.test(n.nodeName)) return false;
+    return true;
+  }
+  /* Reshapes existing HTML into pictures, without changing a word:
+       a paragraph or list item that is an arrow chain (A → B → C) becomes a flow;
+       a list whose items all open with a bold term becomes a grid of term cards. */
+  function visualize(html){
+    if(!html || typeof document === "undefined") return html || "";
+    var box = document.createElement("div");
+    box.innerHTML = html;
+    if(inlineOnly(box)){
+      var c0 = chain(box.innerHTML);
+      return c0 ? flowHTML(c0) : html;
+    }
+    Array.prototype.forEach.call(box.querySelectorAll("p, li"), function(el){
+      if(el.closest(".s7-flow, table, pre, svg, .dia, .s7-keep") || !inlineOnly(el)) return;
+      var c = chain(el.innerHTML);
+      if(!c) return;
+      if(el.tagName === "P"){
+        var w = document.createElement("div");
+        w.className = "s7-flowwrap";
+        w.innerHTML = flowHTML(c);
+        el.parentNode.replaceChild(w, el);
+      } else el.innerHTML = flowHTML(c);
+    });
+    Array.prototype.forEach.call(box.querySelectorAll("ul"), function(ul){
+      if(ul.closest("table, .s7-keep")) return;
+      var items = Array.prototype.filter.call(ul.children, function(x){ return x.tagName === "LI"; });
+      if(items.length < 3 || items.length !== ul.children.length) return;
+      var cards = [];
+      var ok = items.every(function(li){
+        var f = li.firstChild;
+        while(f && f.nodeType === 3 && !f.nodeValue.trim()) f = f.nextSibling;
+        if(!f || !/^(B|STRONG)$/.test(f.nodeName) || li.querySelector("ul, ol, table, div") || plainLen(li.innerHTML) > 300) return false;
+        var term = f.innerHTML.replace(/[\s:\u2014\u2013-]+$/, "");
+        var rest = li.innerHTML.slice(li.innerHTML.indexOf(f.outerHTML) + f.outerHTML.length)
+          .replace(/^\s*(?:[:\u2014\u2013,.-]|&mdash;|&ndash;)?\s*/, "");
+        cards.push('<div class="s7-term"><b>' + term + "</b>" + (rest ? "<span>" + rest + "</span>" : "") + "</div>");
+        return plainLen(term) <= 60;
+      });
+      if(!ok) return;
+      var g = document.createElement("div");
+      g.className = "s7-terms";
+      g.innerHTML = cards.join("");
+      ul.parentNode.replaceChild(g, ul);
+    });
+    /* a bare table scrolls on its own instead of widening the page */
+    Array.prototype.forEach.call(box.querySelectorAll("table"), function(t){
+      if(t.parentNode.closest && t.parentNode.closest(".tw, .scroll, .nb-scroll")) return;
+      var w = document.createElement("div");
+      w.className = "tw";
+      t.parentNode.insertBefore(w, t);
+      w.appendChild(t);
+    });
+    return box.innerHTML;
+  }
+  /* Plain text with line breaks (numbered lines, "- " bullets) → HTML */
+  function rich(text){
+    if(text == null) return "";
+    var s = String(text);
+    if(/<\/?(p|ul|ol|li|table|div|b|strong|br|h4)\b/i.test(s)) return s;
+    var out = [], list = null;
+    s.split(/\n+/).forEach(function(line){
+      var t = line.trim(), m;
+      if(!t) return;
+      if((m = t.match(/^(\d+)[.)]\s+(.*)$/))){ if(list !== "ol"){ close(); out.push("<ol>"); list = "ol"; } out.push("<li>" + bold(esc(m[2])) + "</li>"); }
+      else if((m = t.match(/^[-\u2022*]\s+(.*)$/))){ if(list !== "ul"){ close(); out.push("<ul>"); list = "ul"; } out.push("<li>" + bold(esc(m[1])) + "</li>"); }
+      else { close(); out.push("<p>" + bold(esc(t)) + "</p>"); }
+    });
+    close();
+    return out.join("");
+    function close(){ if(list){ out.push("</" + list + ">"); list = null; } }
+    /* "Term — text" or "Term: text" at the start of a line reads as a bold term */
+    function bold(x){ return x.replace(/^([^:\u2014.]{2,48}?)(\s+\u2014\s+|:\s+)/, "<b>$1</b>$2"); }
+  }
+
+  /* Reveal panels (solutions, hints) stay open across a site's re-render. */
+  var OPEN = {};
+  function pid(id){ return String(id).replace(/[^\w-]/g, "_"); }
+  function toggleBtn(key, label, on){
+    var open = isOpen(key);
+    return '<button type="button" class="btn' + (on ? " primary" : "") + '" data-s7-toggle="' + pid(key) + '" aria-expanded="' + open + '"' +
+      ' data-l="' + label + '">' + (open ? "Hide " + label.toLowerCase() : label) + "</button>";
+  }
+  function panel(key, html, cls){
+    return '<div class="s7-panel' + (cls ? " " + cls : "") + '" id="s7p-' + pid(key) + '"' + (isOpen(key) ? "" : " hidden") + ">" + html + "</div>";
+  }
+  function markBtn(m){
+    if(!m) return "";
+    return '<button type="button" class="btn' + (m.done ? " on" : "") + '" aria-pressed="' + !!m.done + '" ' + m.attrs + ">" +
+      (m.done ? icon("check") + "Done" : "Mark done") + "</button>";
+  }
+  document.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest("[data-s7-toggle]");
+    if(b){
+      var key = b.getAttribute("data-s7-toggle"), p = document.getElementById("s7p-" + key);
+      if(!p) return;
+      var open = p.hasAttribute("hidden");
+      if(open) p.removeAttribute("hidden"); else p.setAttribute("hidden", "");
+      OPEN[key] = open;
+      b.setAttribute("aria-expanded", open);
+      b.textContent = open ? "Hide " + b.getAttribute("data-l").toLowerCase() : b.getAttribute("data-l");
+      return;
+    }
+    var j = e.target.closest && e.target.closest("[data-s7-jump]");
+    if(j){
+      var t = document.getElementById(j.getAttribute("data-s7-jump"));
+      if(t) t.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+  });
+  /* OPEN is keyed by the sanitised id; keep the lookups in render consistent */
+  function isOpen(key){ return !!OPEN[pid(key)]; }
+
+  function exampleCard(e, mark){
+    var k = "ex-" + e.id, pre = (e.boxes || []).map(function(x){
+      return '<div class="s7-mini"><h5>' + x.h + "</h5><div>" + x.b + "</div></div>";
+    }).join("");
+    var steps = (e.steps || []).length
+      ? '<ol class="s7-steps">' + e.steps.map(function(s){ return "<li>" + s + "</li>"; }).join("") + "</ol>" : "";
+    return '<article class="card s7-ex" id="' + esc(e.anchor || e.id) + '">' +
+      '<div class="s7-ex-tags"><span class="pill">' + (e.kind || "Worked example") + "</span>" + (e.tags || "") +
+      (e.marks ? '<span class="pill">' + esc(e.marks) + " marks</span>" : "") + "</div>" +
+      (e.title ? "<h4>" + e.title + "</h4>" : "") + '<div class="s7-q">' + e.q + "</div>" +
+      '<div class="btnrow">' + toggleBtn(k, "Show solution", true) + markBtn(mark) + "</div>" +
+      panel(k, (pre ? '<div class="s7-minis">' + pre + "</div>" : "") +
+        (e.body || "") + steps +
+        (e.answer ? '<div class="box tip"><h5>Answer</h5>' + (/^\s*</.test(e.answer) ? e.answer : "<p>" + e.answer + "</p>") + "</div>" : "") +
+        (e.why ? '<div class="box neutral"><h5>Why it works</h5><p>' + e.why + "</p></div>" : "") +
+        (e.trap ? '<div class="box mistake"><h5>Watch out</h5><p>' + e.trap + "</p></div>" : "")) +
+      "</article>";
+  }
+  function practiceCard(p, mark){
+    var k = "pr-" + p.id, kh = "hint-" + p.id;
+    return '<article class="card s7-pr' + (p.app ? " hi" : "") + '" id="' + esc(p.anchor || p.id) + '">' +
+      '<div class="s7-ex-tags">' + (p.app ? '<span class="pill high">Application</span>' : "") +
+      (p.d ? '<span class="pill ' + esc(String(p.d).toLowerCase()) + '">' + esc(p.d) + "</span>" : "") +
+      (p.marks ? '<span class="pill">' + esc(p.marks) + " marks</span><span class=\"s7-min\">" + minutes(p.marks) + "</span>" : "") + "</div>" +
+      '<div class="s7-q">' + p.q + "</div>" +
+      '<div class="btnrow">' + toggleBtn(k, "Show solution", true) + (p.hint ? toggleBtn(kh, "Hint") : "") + markBtn(mark) + "</div>" +
+      (p.hint ? panel(kh, '<p class="s7-hint">' + icon("zap") + "<span>" + p.hint + "</span></p>") : "") +
+      panel(k, /^\s*</.test(p.a || "") ? p.a : rich(p.a)) + "</article>";
+  }
+
+  /* o: {head (for UI.head), key:{t, b}, concept, can:[...], extra, answer:[{label, marks, body}],
+         mistakes:[...], examples:[...], practice:[...], recog:{clues, wording, first, method, trap},
+         questions:[{q, marks, source, d}], mark(kind, id) → {done, attrs}, foot, pager} */
+  UI.topic = function(o){
+    var secs = [], h = "";
+    function sec(id, title, body, n){
+      if(!body) return;
+      secs.push({ id:id, title:title, n:n });
+      h += '<section class="s7-sec" id="s7s-' + id + '"><h2 class="s7-sec-h"><span class="s7-sec-n">' + secs.length + "</span>" + title +
+        (n ? '<span class="s7-h2-n">' + n + "</span>" : "") + "</h2>" + body + "</section>";
+    }
+    var mark = o.mark || function(){ return null; };
+
+    /* 1 · Concept */
+    var c = "";
+    if(o.key) c += '<div class="s7-key">' + icon("zap") + "<div>" + (o.key.t ? "<h4>" + o.key.t + "</h4>" : "") + visualize(o.key.b) + "</div></div>";
+    if(o.diagram) c += o.diagram;
+    if(o.concept) c += '<div class="s7-prose">' + visualize(o.concept) + "</div>";
+    if(o.can && o.can.length){
+      c += '<h4 class="s7-sub-h">' + icon("checks") + "What you must be able to do</h4>" +
+        '<ol class="s7-cando">' + o.can.map(function(x){ return "<li>" + x + "</li>"; }).join("") + "</ol>";
+    }
+    if(o.extra) c += o.extra;
+    sec("concept", "Concept", c);
+
+    /* 2 · How to write the answer: a ladder by marks */
+    var a = (o.answer || []).filter(function(x){ return x && x.body; });
+    if(a.length){
+      var top = Math.max.apply(null, a.map(function(x){ return marksOf(x.marks) || 0; }).concat([1]));
+      sec("answer", "How to write the answer", '<div class="s7-ladder">' + a.map(function(x){
+        var n = marksOf(x.marks);
+        /* a rung can also carry its question, a hidden model answer and a mark button */
+        return '<div class="s7-rung"' + (x.id ? ' id="' + esc(x.id) + '"' : "") + '><div class="s7-rung-h"><b>' + x.label + "</b>" +
+          (n != null ? '<span class="s7-min">' + minutes(n) + "</span>" : "") + "</div>" +
+          (n != null ? '<span class="s7-rung-bar" aria-hidden="true"><i style="width:' + Math.round(n / top * 100) + '%"></i></span>' : "") +
+          (x.q ? '<div class="s7-q">' + x.q + "</div>" : "") +
+          '<div class="s7-rung-b">' + visualize(x.body) + "</div>" +
+          (x.more || x.mark ? '<div class="btnrow">' + (x.more ? toggleBtn(x.more.key, "Model answer") : "") + markBtn(x.mark) + "</div>" +
+            (x.more ? panel(x.more.key, visualize(x.more.html)) : "") : "") + "</div>";
+      }).join("") + "</div>");
+    }
+
+    /* 3 · Common mistakes: one card per trap */
+    if(o.mistakes && o.mistakes.length){
+      sec("mistakes", "Common mistakes", '<div class="s7-traps">' + o.mistakes.map(function(m){
+        return '<div class="s7-trap"><span class="s7-x" aria-hidden="true">&times;</span><div>' + m + "</div></div>";
+      }).join("") + "</div>", o.mistakes.length);
+    }
+
+    /* 4 · Practice: solutions hidden until asked for */
+    var ex = o.examples || [], pr = o.practice || [];
+    if(ex.length || pr.length){
+      var pb = "";
+      /* a long list shows its first few and folds the rest away */
+      var fold = function(list, n, key, card){
+        var head = list.slice(0, n).map(card).join(""), rest = list.slice(n);
+        return head + (rest.length ? toggleBtn(key, "Show " + rest.length + " more") + panel(key, rest.map(card).join(""), "s7-more-list") : "");
+      };
+      var hd = o.head && o.head.title ? String(o.head.title).length : 0;
+      if(ex.length) pb += '<h3 class="s7-sub-h">Worked examples <span class="s7-h2-n">' + ex.length + "</span></h3>" +
+        fold(ex, 4, "more-ex-" + hd + ex[0].id, function(e){ return exampleCard(e, mark("ex", e.id)); });
+      if(pr.length) pb += '<h3 class="s7-sub-h">Practice questions <span class="s7-h2-n">' + pr.length + "</span></h3>" +
+        fold(pr, 5, "more-pr-" + hd + pr[0].id, function(p){ return practiceCard(p, mark("pr", p.id)); });
+      sec("practice", "Practice", pb, ex.length + pr.length);
+    }
+
+    /* 5 · Question recognition: clues → first move → trap */
+    var r = o.recog;
+    if(r && ((r.clues && r.clues.length) || r.first || r.trap)){
+      var rb = '<div class="s7-recog">' +
+        (r.clues && r.clues.length ? '<div class="s7-rc is-clue"><h5>' + icon("search") + "Spot it</h5><ul>" +
+          r.clues.map(function(x){ return "<li>" + x + "</li>"; }).join("") + "</ul></div>" : "") +
+        (r.first || r.method ? '<div class="s7-rc is-move"><h5>' + icon("play") + "First move</h5>" +
+          (r.first ? "<p>" + r.first + "</p>" : "") + (r.method ? '<div class="s7-rc-m"><b>Method</b>' + visualize("<p>" + r.method + "</p>") + "</div>" : "") + "</div>" : "") +
+        (r.trap ? '<div class="s7-rc is-trap"><h5>' + icon("alert") + "The trap</h5><p>" + r.trap + "</p></div>" : "") + "</div>";
+      if(r.wording && r.wording.length) rb += '<div class="s7-quotes"><span class="s7-quotes-k">How the paper words it</span>' +
+        r.wording.map(function(w){ return "<q>" + w + "</q>"; }).join("") + "</div>";
+      sec("recog", "Question recognition", rb);
+    }
+
+    /* 6 · Likely exam questions, with their weight and time */
+    var qs = o.questions || [];
+    if(qs.length){
+      var qtop = Math.max.apply(null, qs.map(function(q){ return marksOf(q.marks) || 0; }).concat([5]));
+      sec("questions", "Likely exam questions", '<div class="s7-qs">' + qs.map(function(q){
+        var n = marksOf(q.marks);
+        return '<div class="s7-qrow"><div class="s7-qt">' + q.q + "</div>" +
+          '<div class="s7-qm">' + (n != null ? '<span class="s7-qbar" aria-hidden="true"><i style="width:' + Math.round(n / qtop * 100) + '%"></i></span>' +
+            "<b>" + esc(q.marks) + " marks</b><span>" + minutes(n) + "</span>" : "") +
+          (q.source ? '<span class="pill' + (q.source === "source" ? "" : " s7-pred") + '">' +
+            (q.source === "source" ? "From source" : "Likely pattern") + "</span>" : "") + "</div></div>";
+      }).join("") + "</div>", qs.length);
+    }
+
+    var nav = secs.length > 1 ? '<nav class="s7-secnav" aria-label="On this page">' + secs.map(function(s, i){
+      return '<button type="button" data-s7-jump="s7s-' + s.id + '"><span>' + (i + 1) + "</span>" + s.title + "</button>";
+    }).join("") + "</nav>" : "";
+    return '<div class="s7-topic">' + UI.head(o.head) + nav + h + (o.foot || "") + (o.pager ? UI.pager(o.pager) : "") + "</div>";
+  };
+  /* Opens a solution before rendering: kind "ex" or "pr", the item's id */
+  UI.reveal = function(kind, id){ OPEN[pid(kind + "-" + id)] = true; };
+  UI.visualize = visualize;
+  UI.rich = rich;
+
   window.SEM7 = {
     ui:UI, icon:icon,
     isCore:isCore, coreOnly:coreOnly, setCoreOnly:setCoreOnly, coreProvisional:coreProvisional,
@@ -739,6 +1084,6 @@
     EXAM:EXAM, SUBJECTS:SUBJECTS, byCode:byCode,
     countdown:countdown, dateParts:dateParts, examStart:examStart, examEnd:examEnd, dayDiff:dayDiff, addDays:addDays,
     nextSubject:nextSubject, readSummary:readSummary, hasOwnProgress:hasOwnProgress, subjectHref:subjectHref,
-    plan:plan, studyStart:studyStart, attach:attach, lsGet:lsGet, lsSet:lsSet
+    plan:plan, studyStart:studyStart, attach:attach, lsGet:lsGet, lsSet:lsSet, minutes:minutes
   };
 })();

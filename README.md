@@ -148,14 +148,32 @@ quiz options, search results, toast. The sites' existing class names map onto th
 markup did not have to be rewritten.
 
 **Shared page parts** (`SEM7.ui` in `sem7.js`): `head` (breadcrumb, eyebrow, title, pills, progress),
-`crumb`, `progress`, `status`, `pager` and `neighbours`. Each site calls them from its own view functions
-with its own data-attributes for links, so its own router does the navigating.
+`crumb`, `progress`, `status`, `pager` and `neighbours`; `dashboard`, `subtabs` and `topicCard` for the
+dashboard and module pages; and `topic`, the study page every subject uses. Each site calls them from its own
+view functions with its own data-attributes for links, so its own router does the navigating.
 
-**What stays per subject.** NLP keeps its per-module question bank (outcomes, theory, class-solved,
-numericals, flashcards, quizzes), with no topic pages. AI keeps its Learn / Understand / Example step
-tabs, inline SVG diagrams, three-state topic marking and flashcards. DL keeps its "On this page" rail.
-ADS, OR and DL keep the six-section topic page they were built with. All dashboards open with a
-"Dashboard" heading and keep their own content.
+**One study method everywhere (the OR method).** Every subject has the same three screens:
+- **Dashboard:** three stats (Overall, Numericals, Theory), Study next with **Open**, the six modules with the
+  Core only switch. Nothing else.
+- **Module page:** the header, then sub-tabs **Numericals · Theory · Quick Review** (AI and NLP add their
+  module Quiz, NLP its Flashcards), then one topic card per topic with **Open**.
+- **Topic page** (`SEM7.ui.topic`): a section bar, then **1 Concept · 2 How to write the answer · 3 Common
+  mistakes · 4 Practice · 5 Question recognition · 6 Likely exam questions**. A section with no data is left out.
+  It is drawn as pictures where the data allows: a "can do" checklist grid, an answer ladder by marks with the
+  time each answer is worth (2.4 min/mark), trap cards, numbered step timelines, a recognition flow
+  (spot it → first move → trap), and marks bars on the exam questions. Solutions and hints stay hidden until
+  asked for, and long practice lists show the first few with "Show N more". `SEM7.ui.visualize` also reshapes
+  existing text without changing a word: an arrow chain (A → B → C) becomes a flow diagram, a list whose items
+  open with a bold term becomes term cards, and a bare table scrolls on its own. Derivations, grammar rules,
+  equations and value mappings are left as text.
+
+**What stays per subject.** Each site keeps its own data and progress model. AI marks whole topics (three
+states) and tracks practice per topic; its Learn/Understand/Example content, inline SVG diagrams and important
+questions now feed the six sections (AI has no recognition data, so its pages have five). NLP's question bank is
+grouped into one topic page per syllabus topic (1.1, 2.7 …, plus Math seeds and Self-learning); theory questions
+sit on the answer ladder with their model answer and Mark done, and numericals, class-solved sets and MSE Focus
+patterns are its Practice. Every question keeps its id, so saved progress is unchanged. DL's "On this page" rail
+became the shared section bar.
 
 **Changes beyond styling.** AI's sidebar became the shared top bar. DL's hamburger menu was replaced by
 the More menu. NLP gained a theme switch (key `nlp_theme_v1`) and a search button. The search field opens

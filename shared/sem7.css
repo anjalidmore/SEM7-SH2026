@@ -505,6 +505,159 @@ details.s7-los{margin-top:14px}
 details.s7-los > summary .s7-i{width:16px; height:16px; color:var(--accent-ui)}
 details.s7-los > summary span{color:var(--muted); font-weight:500}
 details.s7-los ul{margin:0; padding:12px 16px 12px 34px; font-size:.86rem; color:var(--text-2)}
+h2.s7-h2 > .s7-core{margin-left:auto}
+
+/* Module list: one topic card (SEM7.ui.topicCard) */
+.s7-tcard{display:flex; flex-direction:column; gap:6px; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:13px 16px; margin:0 0 10px}
+.s7-tcard.is-high{border-left:3px solid var(--accent-ui)}
+.s7-tcard.is-done{border-left:3px solid var(--good)}
+.s7-tcard-h{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+.s7-tcard-h h3{flex:1 1 200px; margin:0; font-size:.98rem; font-weight:650; line-height:1.35}
+.s7-tcard > p{margin:0; font-size:.86rem; color:var(--text-2)}
+.s7-tcard-f{display:flex; align-items:center; gap:10px; margin-top:4px}
+.s7-tcard-f .bar{flex:1 1 auto; height:5px}
+.s7-tcard-f .s7-count{font-size:.8rem; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
+.s7-tcard-f .btn{min-height:30px; padding:0 14px; flex:none}
+
+/* ---------- 6b · topic page: the six-section study method (SEM7.ui.topic) ---------- */
+.s7-topic{--line:var(--border)}
+.s7-secnav{display:flex; gap:6px; flex-wrap:wrap; margin:4px 0 8px}
+.s7-secnav button{display:inline-flex; align-items:center; gap:7px; min-height:32px; padding:0 12px 0 5px;
+  border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text-2);
+  font:550 .8rem/1 var(--sans); cursor:pointer}
+.s7-secnav button:hover{border-color:var(--accent-line); color:var(--accent-ui); background:var(--surface)}
+.s7-secnav button span{display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+  border-radius:50%; background:var(--accent-soft); color:var(--accent-ui); font:700 .72rem/1 var(--sans)}
+.s7-sec{scroll-margin-top:72px; margin:30px 0 0}
+.s7-main h2.s7-sec-h,h2.s7-sec-h{display:flex; align-items:center; gap:10px; margin:0 0 14px; padding:0 0 10px;
+  border:0; border-bottom:1px solid var(--border); font-size:1.12rem}
+.s7-sec-n{display:inline-flex; align-items:center; justify-content:center; flex:none; width:28px; height:28px;
+  border-radius:8px; background:var(--accent-ui); color:var(--on-accent); font:700 .85rem/1 var(--sans)}
+.s7-sub-h{display:flex; align-items:center; gap:8px; font-size:.95rem; margin:20px 0 10px}
+.s7-sub-h > .s7-i{color:var(--accent-ui)}
+
+/* key idea */
+.s7-key{display:flex; gap:12px; align-items:flex-start; background:var(--accent-soft); border:1px solid var(--accent-line);
+  border-radius:var(--radius); padding:13px 16px; margin:0 0 14px}
+.s7-key > .s7-i{color:var(--accent-ui); margin-top:3px}
+.s7-key h4{margin:0 0 4px; font-size:.95rem}
+.s7-key > div > :last-child{margin-bottom:0}
+
+/* numbered lists in prose read as a timeline */
+.s7-prose ol:not(.s7-flow),.s7-rung-b ol:not(.s7-flow),.s7-panel ol:not(.s7-flow):not(.s7-steps){
+  counter-reset:t; list-style:none; padding:0; margin:10px 0}
+:is(.s7-prose,.s7-rung-b,.s7-panel) ol:not(.s7-flow):not(.s7-steps) > li{counter-increment:t; position:relative;
+  padding:3px 0 10px 36px; margin:0}
+:is(.s7-prose,.s7-rung-b,.s7-panel) ol:not(.s7-flow):not(.s7-steps) > li::before{content:counter(t); position:absolute;
+  left:0; top:2px; width:24px; height:24px; border-radius:50%; background:var(--accent-soft); color:var(--accent-ui);
+  border:1px solid var(--accent-line); font:700 .72rem/22px var(--sans); text-align:center}
+:is(.s7-prose,.s7-rung-b,.s7-panel) ol:not(.s7-flow):not(.s7-steps) > li:not(:last-child)::after{content:""; position:absolute;
+  left:12px; top:28px; bottom:0; width:1px; background:var(--accent-line)}
+
+/* arrow chains → flow (visualize) */
+.s7-flowwrap{margin:12px 0}
+.s7-flow-lead{margin:0 0 8px; font-size:.9rem; color:var(--text-2)}
+ol.s7-flow{display:flex; flex-wrap:wrap; align-items:stretch; gap:8px 0; list-style:none; padding:0; margin:8px 0; counter-reset:f}
+ol.s7-flow > li{counter-increment:f; position:relative; display:flex; align-items:center; gap:7px; margin:0 26px 0 0;
+  padding:7px 11px; max-width:100%; background:var(--surface); border:1px solid var(--accent-line); border-radius:8px;
+  font-size:.85rem; line-height:1.4}
+ol.s7-flow > li::before{content:counter(f); flex:none; display:inline-flex; align-items:center; justify-content:center;
+  width:19px; height:19px; border-radius:50%; background:var(--accent-ui); color:var(--on-accent); font:700 .68rem/1 var(--sans)}
+ol.s7-flow > li:not(:last-child)::after{content:"\2192"; position:absolute; right:-20px; top:50%; transform:translateY(-50%);
+  color:var(--accent-ui); font-weight:700}
+li > ol.s7-flow{margin:6px 0 2px}
+
+/* bold-term lists → term cards (visualize) */
+.s7-terms{display:grid; gap:8px; grid-template-columns:repeat(auto-fill, minmax(min(100%, 230px), 1fr)); margin:12px 0}
+.s7-term{background:var(--surface); border:1px solid var(--border); border-top:3px solid var(--accent-ui);
+  border-radius:8px; padding:9px 12px; font-size:.86rem; line-height:1.5}
+.s7-term > b{display:block; font-size:.9rem; color:var(--text); margin:0 0 2px}
+.s7-term > span{color:var(--text-2)}
+
+/* what you must be able to do */
+ol.s7-cando{display:grid; gap:8px; grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  list-style:none; padding:0; margin:0 0 6px; counter-reset:c}
+ol.s7-cando > li{counter-increment:c; display:flex; gap:10px; align-items:flex-start; margin:0; max-width:none;
+  background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:.87rem; line-height:1.45}
+ol.s7-cando > li::before{content:counter(c); flex:none; width:22px; height:22px; border-radius:50%;
+  border:1.5px solid var(--accent-line); color:var(--accent-ui); font:700 .72rem/19px var(--sans); text-align:center}
+
+/* answer ladder: one rung per mark band */
+.s7-ladder{display:grid; gap:10px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); align-items:start}
+.s7-rung{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px}
+.s7-rung-h{display:flex; align-items:baseline; justify-content:space-between; gap:8px}
+.s7-rung-h b{font-size:.92rem}
+.s7-min{font-size:.76rem; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
+.s7-rung-bar{display:block; height:6px; border-radius:999px; background:var(--track); margin:8px 0 10px; overflow:hidden}
+.s7-rung-bar i{display:block; height:100%; background:var(--accent-ui); border-radius:999px}
+.s7-rung-b{font-size:.88rem; line-height:1.55}
+.s7-rung-b > :first-child{margin-top:0}
+.s7-rung-b > :last-child{margin-bottom:0}
+.s7-rung-b ol.s7-flow{flex-direction:column; gap:14px}
+.s7-rung-b ol.s7-flow > li{margin:0}
+.s7-rung-b ol.s7-flow > li:not(:last-child)::after{content:"\2193"; right:auto; left:20px; top:auto; bottom:-17px; transform:none}
+
+/* common mistakes */
+.s7-traps{display:grid; gap:8px; grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr))}
+.s7-trap{display:flex; gap:10px; align-items:flex-start; background:var(--bad-soft); border:1px solid var(--bad-line);
+  border-radius:8px; padding:10px 12px; font-size:.87rem; line-height:1.5}
+.s7-x{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%;
+  background:var(--bad); color:var(--surface); font:700 .9rem/1 var(--sans); margin-top:1px}
+.s7-trap > div > :last-child{margin-bottom:0}
+
+/* practice cards */
+.s7-ex,.s7-pr{margin:0 0 10px}
+.s7-ex-tags{display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:0 0 8px}
+.s7-ex h4{margin:0 0 6px; font-size:.95rem}
+.s7-q{font-size:.93rem; font-weight:550; line-height:1.55}
+.s7-q > :last-child{margin-bottom:0}
+.s7-panel{margin:12px 0 0; padding:12px 0 0; border-top:1px dashed var(--border-2)}
+.s7-panel[hidden]{display:none}
+.s7-panel > :first-child{margin-top:0}
+.s7-panel > :last-child{margin-bottom:0}
+.s7-hint{display:flex; gap:8px; align-items:flex-start; margin:0; color:var(--text-2); font-size:.88rem}
+.s7-hint .s7-i{color:var(--warn); margin-top:2px}
+.s7-minis{display:grid; gap:8px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); margin:0 0 10px}
+.s7-mini{background:var(--surface-2); border-radius:8px; padding:9px 12px; font-size:.86rem}
+.s7-mini h5{margin:0 0 3px; font-size:.78rem; color:var(--text-2)}
+.s7-mini > div > :last-child{margin-bottom:0}
+ol.s7-steps{counter-reset:s; list-style:none; padding:0; margin:4px 0 10px}
+ol.s7-steps > li{counter-increment:s; position:relative; margin:0; padding:2px 0 12px 38px; font-size:.9rem; max-width:none}
+ol.s7-steps > li::before{content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%;
+  background:var(--accent-ui); color:var(--on-accent); font:700 .74rem/26px var(--sans); text-align:center}
+ol.s7-steps > li:not(:last-child)::after{content:""; position:absolute; left:13px; top:28px; bottom:2px; width:2px;
+  background:var(--accent-line)}
+.btn .s7-i{width:15px; height:15px}
+
+/* recognition flow: spot it → first move → trap */
+.s7-recog{display:grid; gap:22px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); margin:0 0 12px}
+.s7-rc{position:relative; background:var(--surface); border:1px solid var(--border); border-top:3px solid var(--accent-ui);
+  border-radius:var(--radius); padding:11px 14px; font-size:.87rem; line-height:1.5}
+.s7-rc h5{display:flex; align-items:center; gap:7px; margin:0 0 6px; font-size:.84rem}
+.s7-rc h5 .s7-i{width:16px; height:16px; color:var(--accent-ui)}
+.s7-rc ul{margin:0; padding-left:18px}
+.s7-rc p{margin:0 0 6px}
+.s7-rc > :last-child{margin-bottom:0}
+.s7-rc.is-move{border-top-color:var(--good)}
+.s7-rc.is-move h5 .s7-i{color:var(--good)}
+.s7-rc.is-trap{border-top-color:var(--bad); background:var(--bad-soft)}
+.s7-rc.is-trap h5 .s7-i{color:var(--bad)}
+.s7-rc + .s7-rc::before{content:"\2192"; position:absolute; left:-18px; top:22px; color:var(--muted); font-weight:700}
+.s7-quotes{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.s7-quotes-k{font-size:.78rem; font-weight:600; color:var(--muted); margin-right:4px}
+.s7-quotes q{font-size:.84rem; font-style:italic; background:var(--surface-2); border-radius:999px; padding:4px 11px; color:var(--text-2)}
+
+/* likely exam questions */
+.s7-qs{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius)}
+.s7-qrow{display:flex; gap:8px 16px; align-items:center; flex-wrap:wrap; padding:10px 14px}
+.s7-qrow + .s7-qrow{border-top:1px solid var(--border)}
+.s7-qt{flex:1 1 300px; font-size:.9rem; font-weight:550; line-height:1.45}
+.s7-qm{display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--muted); white-space:nowrap}
+.s7-qm b{color:var(--text); font-weight:650}
+.s7-qbar{display:inline-block; width:56px; height:6px; border-radius:999px; background:var(--track); overflow:hidden}
+.s7-qbar i{display:block; height:100%; background:var(--accent-ui)}
+.pill.s7-pred{border-style:dashed}
 
 /* ---------- 7 · responsive / print ---------- */
 @media (max-width:760px){
@@ -519,6 +672,11 @@ details.s7-los ul{margin:0; padding:12px 16px 12px 34px; font-size:.86rem; color
   .s7-pager{grid-template-columns:1fr}
   .s7-pager .s7-next{grid-column:1}
   .count{margin-left:0}
+  .s7-rc + .s7-rc::before{content:"\2193"; left:50%; top:-21px}
+  ol.s7-flow{flex-direction:column; gap:14px}
+  ol.s7-flow > li{margin:0; align-self:flex-start}
+  ol.s7-flow > li:not(:last-child)::after{content:"\2193"; right:auto; left:18px; top:auto; bottom:-17px; transform:none}
+  .s7-qm{white-space:normal; flex-wrap:wrap}
 }
 @media (max-width:520px){
   .sem7-strip .sem7-next{display:none}
@@ -529,3 +687,20 @@ details.s7-los ul{margin:0; padding:12px 16px 12px 34px; font-size:.86rem; color
   body{background:#fff}
   .card,.topic,.tc,.tcard{break-inside:avoid}
 }
+.s7-rc-m{margin-top:8px}
+.s7-rc-m > b{display:block; font-size:.8rem; color:var(--text-2)}
+.s7-rc ol.s7-flow{flex-direction:column; gap:12px}
+.s7-rc ol.s7-flow > li{margin:0}
+.s7-rc ol.s7-flow > li:not(:last-child)::after{content:"\2193"; right:auto; left:18px; top:auto; bottom:-16px; transform:none}
+.s7-markcard{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin:16px 0 0}
+.s7-rung > .s7-q{margin:0 0 8px; font-size:.9rem}
+.s7-rung .btnrow .btn{min-height:30px; font-size:.8rem}
+.s7-panel.s7-more-list{border-top:0; padding-top:0; margin-top:10px}
+.s7-key > div{flex:1; min-width:0}
+.s7-key .fx,.s7-prose .fx{overflow-x:auto}
+/* list items hold mixed inline text: a positioned counter instead of flex, so bold words wrap with the line */
+ol.s7-flow > li{display:block; position:relative; padding-left:36px; overflow-wrap:anywhere}
+ol.s7-flow > li::before{position:absolute; left:10px; top:8px}
+ol.s7-cando > li{display:block; position:relative; padding-left:44px; overflow-wrap:anywhere}
+ol.s7-cando > li::before{position:absolute; left:12px; top:10px}
+.s7-trap,.s7-term,.s7-rc,.s7-rung{overflow-wrap:anywhere}

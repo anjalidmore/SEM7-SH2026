@@ -4408,15 +4408,9 @@ function moduleTitle(m){
   return mo ? mo.title : m;
 }
 function topicCard(t){
-  var p = topicProgress(t), st = topicStatus(t.id);
-  var lab = st === "done" ? "finished" : (st === "progress" ? "in progress" : "not started");
-  return '<div class="tcard'+(t.priority === "high" ? " hi" : "")+'">'+
-    '<div class="trow"><span class="dot s-'+st+'" role="img" aria-label="'+lab+'"></span>'+
-      '<h3>'+esc(t.title)+'</h3>'+prioPill(t.priority)+'</div>'+
-    '<p class="small muted" style="margin:0">'+esc(t.summary)+'</p>'+
-    '<div class="qmeter">'+bar(p.pct)+
-      '<span class="qn">'+p.done+' / '+p.total+' questions</span>'+
-      '<button class="btn" data-go="topic" data-id="'+esc(t.id)+'">Open</button></div></div>';
+  var p = topicProgress(t);
+  return SEM7.ui.topicCard({title:esc(t.title), summary:esc(t.summary), high:t.priority === "high", pill:prioPill(t.priority),
+    state:topicStatus(t.id), done:p.done, total:p.total, attrs:'data-go="topic" data-id="'+esc(t.id)+'"'});
 }
 function topicSequence(){
   var out = [];
@@ -4435,96 +4429,52 @@ function markCount(){
 }
 /* ===== 18 · Dashboard — readiness over exam-priority topics only ===== */
 function viewDash(){
-  var o = overallProgress();
-  var pn = trackProgress("problem-solving");
-  var th = trackProgress("theory");
-  var UI = SEM7.ui;
-
-  var h = '<h1>Dashboard</h1>'+UI.stats([
-    {icon:"target", value:o.pct+"%", label:"Overall", count:o.done+" / "+o.total, pct:o.pct},
-    {icon:"formula", value:pn.pct+"%", label:"Numericals", count:pn.done+" / "+pn.total, pct:pn.pct},
-    {icon:"book", value:th.pct+"%", label:"Theory", count:th.done+" / "+th.total, pct:th.pct}
-  ]);
-
   /* study next: the first exam-priority topic already started, else the first not started */
   var open = examTopics().filter(function(t){ return topicStatus(t.id) !== "done"; });
   var nx = open.filter(function(t){ return topicStatus(t.id) === "progress"; })[0] || open[0];
-  if (nx) h += UI.next({kicker:"Study next &middot; "+esc(moduleName(nx.m)), title:esc(nx.title),
-    go:{label:"Open", attrs:'data-go="topic" data-id="'+esc(nx.id)+'"'}});
-
   var built = {};
   MODULES.forEach(function(m){ built[m.id] = {pct:moduleProgress(m.id).pct}; });
-  h += UI.modules("or", built, function(id){ return 'data-go="mod" data-m="'+id+'"'; });
-
-  app.innerHTML = h;
+  app.innerHTML = SEM7.ui.dashboard({code:"or", overall:overallProgress(),
+    numericals:trackProgress("problem-solving"), theory:trackProgress("theory"),
+    next:nx && {kicker:"Study next &middot; "+esc(moduleName(nx.m)), title:esc(nx.title), attrs:'data-go="topic" data-id="'+esc(nx.id)+'"'},
+    built:built, attrs:function(id){ return 'data-go="mod" data-m="'+id+'"'; }});
 }
 /* ===== 19 · Module tab ===== */
 var subTab = {};   /* session-lifetime only, never persisted */
 
+function shownTrack(m, track){
+  return trackOf(m, track).filter(function(t){ return !SEM7.coreOnly() || SEM7.isCore(t); });
+}
 function viewModule(m){
-  var mp = moduleProgress(m), tf = topicsFinished(m), lo = excludedCount(m);
+  var mp = moduleProgress(m), tf = topicsFinished(m);
   var h = SEM7.ui.head({eyebrow:esc(moduleName(m)), title:esc(moduleTitle(m)),
-    progress:{pct:mp.pct, done:mp.done, total:mp.total, note:tf.done+' / '+tf.total+' topics finished'},
-    sub: lo ? 'Exam-priority topics only. '+lo+' low-priority topics in this module are listed below but excluded from the figure.' : ''});
-
-  if (m === "m2"){
-    h += '<div class="box tip"><h5>Read this before you start</h5>'+
-      '<p>Queuing is the smallest module in the syllabus and the most formula-driven. That makes it the highest '+
-      'marks-per-minute topic on the paper: almost every question is pure substitution once you have &lambda; and &mu;. '+
-      'Do the Numericals sub-tab first.</p>'+
-      '<p><b>Module 2 is now backed by your class notes.</b> <span class="mono">OR_Notes.pdf</span> pp. 14&ndash;21 cover it '+
-      'properly &mdash; the six elements, the four server arrangements, <b>Kendall&rsquo;s notation</b>, transient vs steady '+
-      'state, the full probability set and two worked problems. Several of those appear <b>only</b> in the notes and not in '+
-      '<span class="mono">Queuing PPT.pdf</span>, which makes them prime exam material.</p></div>';
-  }
-
-
+    progress:{pct:mp.pct, done:mp.done, total:mp.total, note:tf.done+' / '+tf.total+' topics finished'}});
 
   var cur = subTab[m] || TRACKS[0].id;
-  h += '<div class="subtabs" role="tablist">';
-  TRACKS.forEach(function(tr){
-    var n = TOPICS.filter(function(t){ return t.m === m && t.type === tr.id; }).length;
-    h += '<button class="tab" role="tab" aria-selected="'+(cur === tr.id)+'" '+
-         'data-sub="'+esc(tr.id)+'" data-m="'+esc(m)+'">'+esc(tr.label)+' ('+n+')</button>';
-  });
-  h += '<button class="tab" role="tab" aria-selected="'+(cur === "review")+'" '+
-       'data-sub="review" data-m="'+esc(m)+'">Quick Review</button></div>';
+  h += SEM7.ui.subtabs(TRACKS.map(function(tr){
+    return {label:esc(tr.label), n:shownTrack(m, tr.id).length, on:cur === tr.id, attrs:'data-sub="'+esc(tr.id)+'" data-m="'+esc(m)+'"'};
+  }).concat([{label:"Quick Review", on:cur === "review", attrs:'data-sub="review" data-m="'+esc(m)+'"'}]));
 
   if (cur === "review"){
     (REVIEW[m] || []).forEach(function(c){
-      h += '<div class="card"><h4 style="margin-top:0">'+esc(c.t)+'</h4><p style="margin:0">'+c.b+'</p></div>';
+      h += '<div class="card"><h4 style="margin-top:0">'+esc(c.t)+'</h4>'+SEM7.ui.visualize('<p style="margin:0">'+c.b+'</p>')+'</div>';
     });
   } else {
-    trackOf(m, cur).forEach(function(t){ h += topicCard(t); });
+    var list = shownTrack(m, cur);
+    if (!list.length) h += '<div class="empty">'+(SEM7.coreOnly() ? "No Core topics in this track." : "No topics in this track.")+'</div>';
+    list.forEach(function(t){ h += topicCard(t); });
   }
 
   if (m === "m1"){
-    h += '<h2>In the folder, but no topic page yet</h2>'+
-      '<p class="small muted">Material for these arrived after this site was written. It is filed under '+
-      '<b>Module 1 - Introduction to OR &amp; Linear Programming</b> &mdash; study it from the folder directly.</p><ul class="small muted">';
+    h += '<details><summary>In the folder, but no topic page yet ('+M1_UNBUILT.length+')</summary><div class="det-body"><ul class="small muted">';
     M1_UNBUILT.forEach(function(g){ h += '<li>'+esc(g)+'</li>'; });
-    h += '</ul>'+
-      '<h2>Syllabus headings with no material anywhere</h2>'+
-      '<p class="small muted">Named in the Module 1 syllabus, but no file in the folder teaches them. '+
-      'Source them elsewhere if they are examinable for you.</p><ul class="small muted">';
+    h += '</ul></div></details><details><summary>Syllabus headings with no material anywhere ('+M1_GAPS.length+')</summary><div class="det-body"><ul class="small muted">';
     M1_GAPS.forEach(function(g){ h += '<li>'+esc(g)+'</li>'; });
-    h += '</ul>';
+    h += '</ul></div></details>';
   }
   app.innerHTML = h;
 }
-/* ===== 20 · Topic page — section order is fixed ===== */
-var revealed = {};   /* session-lifetime only */
-
-function qBtns(kind, id, hasHint){
-  var open = revealed[id] === true, hint = revealed[id+"_h"] === true;
-  var h = '<div class="btnrow">'+
-    '<button class="btn'+(open ? " on" : "")+'" data-rev="'+esc(id)+'">'+(open ? "Hide solution" : "Show solution")+'</button>';
-  if (hasHint) h += '<button class="btn'+(hint ? " on" : "")+'" data-hint="'+esc(id)+'">'+(hint ? "Hide hint" : "Hint")+'</button>';
-  h += '<button class="btn'+(isDone(kind, id) ? " on" : "")+'" data-mark="'+esc(kind)+'" data-id="'+esc(id)+'">'+
-       (isDone(kind, id) ? "Marked done" : "Mark done")+'</button></div>';
-  return h;
-}
-
+/* ===== 20 · Topic page — the shared six-section study method (SEM7.ui.topic) ===== */
 function viewTopic(id){
   var t = TBYID[id];
   if (!t){ viewDash(); return; }
@@ -4532,76 +4482,29 @@ function viewTopic(id){
   var meta = prioPill(t.priority);
   (t.los || []).forEach(function(n){ meta += '<span class="pill">LO'+n+'</span>'; });
   var modLink = 'data-go="mod" data-m="'+esc(t.m)+'"';
-  var h = SEM7.ui.head({
-    crumb:[{label:esc(moduleName(t.m))+' &middot; '+esc(moduleTitle(t.m)), attrs:modLink},
-           trk ? {label:esc(trk.label), attrs:modLink+' data-sub="'+esc(trk.id)+'"'} : null],
-    title:esc(t.title), meta:meta,
-    progress:{done:p.done, total:p.total, unit:"questions worked"}});
-
-  /* 1 · Concept */
-  h += '<h2>1 &middot; Concept</h2>'+t.whatIs+t.concept+
-       '<h4>What you must be able to do</h4><ul>';
-  t.needToKnow.forEach(function(n){ h += '<li>'+esc(n)+'</li>'; });
-  h += '</ul>';
-
-  /* 2 · How to write the answer */
-  h += '<h2>2 &middot; How to write the answer</h2>'+
-    '<div class="box"><h5>Short (2&ndash;3 marks)</h5><p>'+t.examAnswer.short+'</p></div>'+
-    '<div class="box"><h5>Medium (5 marks)</h5><p>'+t.examAnswer.medium+'</p></div>'+
-    '<div class="box"><h5>Long (10 marks)</h5><p>'+t.examAnswer.long+'</p></div>';
-
-  /* 3 · Common mistakes */
-  h += '<h2>3 &middot; Common mistakes</h2><div class="box mistake"><h5>Traps this topic is set to catch</h5><ul>';
-  t.mistakes.forEach(function(m){ h += '<li>'+m+'</li>'; });
-  h += '</ul></div>';
-
-  /* 4 · Practice */
-  h += '<h2>4 &middot; Practice</h2>'+
-       '<p class="small muted">Every solution is hidden. Treat each worked example as a question first.</p>';
-  (t.examples || []).forEach(function(e){
-    h += '<div class="card" id="'+esc(e.id)+'"><h4 style="margin-top:0">'+esc(e.title)+'</h4>'+
-      '<p style="margin:0 0 4px">'+e.q+'</p>'+qBtns("e", e.id, false);
-    if (revealed[e.id]){
-      h += '<div class="reveal"><ol>';
-      e.steps.forEach(function(s){ h += '<li>'+s+'</li>'; });
-      h += '</ol><div class="box tip"><h5>Answer</h5><p>'+e.answer+'</p></div>'+
-           '<div class="box warning"><h5>Watch out</h5><p>'+e.trap+'</p></div></div>';
-    }
-    h += '</div>';
-  });
-  (t.practice || []).forEach(function(pr){
-    h += '<div class="card" id="'+esc(pr.id)+'">'+
-      '<p style="margin:0 0 4px">'+pr.q+' <span class="pill">'+esc(pr.d)+'</span></p>'+
-      qBtns("p", pr.id, true);
-    if (revealed[pr.id+"_h"]) h += '<div class="reveal"><div class="box"><h5>Hint</h5><p>'+pr.hint+'</p></div></div>';
-    if (revealed[pr.id]) h += '<div class="reveal">'+pr.a+'</div>';
-    h += '</div>';
-  });
-
-  /* 5 · Question recognition */
-  h += '<h2>5 &middot; Question recognition</h2>'+
-    '<div class="card"><h4 style="margin-top:0">Clues that it is this topic</h4><ul>';
-  t.recognition.clues.forEach(function(c){ h += '<li>'+c+'</li>'; });
-  h += '</ul><h4>How the exam words it</h4><ul>';
-  t.recognition.wording.forEach(function(w){ h += '<li>&ldquo;'+esc(w)+'&rdquo;</li>'; });
-  h += '</ul></div>'+
-    '<div class="box tip"><h5>First move on the paper</h5><p>'+t.recognition.firstMove+'</p></div>'+
-    '<div class="box warning"><h5>The trap</h5><p>'+t.recognition.trap+'</p></div>';
-
-  /* 6 · Likely exam questions */
-  h += '<h2>6 &middot; Likely exam questions</h2>';
-  (t.questions || []).forEach(function(q){
-    h += '<div class="qrow"><span class="t">'+esc(q.q)+'</span>'+
-      '<span class="pill">'+q.marks+' marks</span>'+
-      '<span class="pill">'+(q.source === "source" ? "From source material" : "Likely exam pattern")+'</span></div>';
-  });
-
-  /* previous / next in course order, and back to the module */
   var nb = SEM7.ui.neighbours(topicSequence(), t.id, moduleName);
   function side(x){ return x && {title:esc(x.t.title), note:x.note, attrs:'data-go="topic" data-id="'+esc(x.t.id)+'"'}; }
-  h += SEM7.ui.pager({prev:side(nb.prev), next:side(nb.next), up:{label:'Back to '+esc(moduleName(t.m)), attrs:modLink}});
-
-  app.innerHTML = h;
+  var ea = t.examAnswer || {}, rc = t.recognition || {};
+  app.innerHTML = SEM7.ui.topic({
+    head:{
+      crumb:[{label:esc(moduleName(t.m))+' &middot; '+esc(moduleTitle(t.m)), attrs:modLink},
+             trk ? {label:esc(trk.label), attrs:modLink+' data-sub="'+esc(trk.id)+'"'} : null],
+      title:esc(t.title), meta:meta,
+      progress:{done:p.done, total:p.total, unit:"questions worked"}},
+    concept:t.whatIs+t.concept, can:(t.needToKnow || []).map(esc),
+    answer:[{label:"Short &middot; 2&ndash;3 marks", marks:3, body:ea.short},
+            {label:"Medium &middot; 5 marks", marks:5, body:ea.medium},
+            {label:"Long &middot; 10 marks", marks:10, body:ea.long}],
+    mistakes:t.mistakes,
+    examples:t.examples, practice:t.practice,
+    recog:{clues:rc.clues, wording:(rc.wording || []).map(esc), first:rc.firstMove, trap:rc.trap},
+    questions:(t.questions || []).map(function(q){ return {q:esc(q.q), marks:q.marks, source:q.source}; }),
+    mark:function(kind, id){
+      var k = kind === "ex" ? "e" : "p";
+      return {done:isDone(k, id), attrs:'data-mark="'+k+'" data-id="'+esc(id)+'"'};
+    },
+    pager:{prev:side(nb.prev), next:side(nb.next), up:{label:'Back to '+esc(moduleName(t.m)), attrs:modLink}}
+  });
 }
 /* ===== 21 · Recognition tab — the index, not the content ===== */
 function viewRecog(){
@@ -5149,8 +5052,6 @@ document.addEventListener("click", function(ev){
     return;
   }
   if (d.sub){ subTab[d.m] = d.sub; go({name:"mod", m:d.m}, true); return; }
-  if (d.rev){ revealed[d.rev] = !revealed[d.rev]; scrollKeep(render); return; }
-  if (d.hint){ revealed[d.hint+"_h"] = !revealed[d.hint+"_h"]; scrollKeep(render); return; }
   if (d.mark){
     var map = d.mark === "e" ? P.examples : P.practice;
     if (map[d.id]) delete map[d.id]; else map[d.id] = true;
