@@ -489,6 +489,18 @@ html[data-ui="a"] button.s7-mod{min-height:64px; padding:11px 14px; font:inherit
 .s7-topics li{display:flex; gap:12px; align-items:flex-start; margin:0; padding:11px 15px; font-size:.92rem; line-height:1.5; max-width:none}
 .s7-topics li + li{border-top:1px solid var(--border)}
 .s7-ring{flex:none; width:14px; height:14px; margin-top:4px; border-radius:50%; border:1.5px dashed var(--border-2)}
+/* Core only: a pill switch (SEM7.ui.coreToggle) */
+.s7-core,html[data-ui="a"] button.s7-core{display:inline-flex; align-items:center; gap:8px; min-height:32px; padding:0 12px 0 6px;
+  border-radius:999px; border:1px solid var(--border-2); background:var(--surface); color:var(--text-2);
+  font:600 .8rem/1 var(--sans); cursor:pointer; white-space:nowrap}
+.s7-core:hover,html[data-ui="a"] button.s7-core:hover{border-color:var(--muted); background:var(--surface)}
+.s7-core-k{position:relative; flex:none; width:30px; height:18px; border-radius:999px; background:var(--track);
+  transition:background .15s}
+.s7-core-k::after{content:""; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%;
+  background:#fff; box-shadow:0 1px 2px rgba(10,14,20,.3); transition:transform .15s}
+.s7-core[aria-checked="true"],html[data-ui="a"] button.s7-core[aria-checked="true"]{border-color:var(--accent-line); background:var(--accent-soft); color:var(--accent-ui)}
+.s7-core[aria-checked="true"] .s7-core-k{background:var(--accent-ui)}
+.s7-core[aria-checked="true"] .s7-core-k::after{transform:translateX(12px)}
 details.s7-los{margin-top:14px}
 details.s7-los > summary .s7-i{width:16px; height:16px; color:var(--accent-ui)}
 details.s7-los > summary span{color:var(--muted); font-weight:500}

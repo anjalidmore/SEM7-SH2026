@@ -87,8 +87,8 @@
   function count(n){ return Number.isFinite(n) && n >= 0 ? Math.round(n) : null; }
   function str(s, n){ return typeof s === "string" && s ? s.slice(0, n) : null; }
 
-  /* Read a summary and keep only well-formed fields. Version 1 summaries
-     (no topics, current or next) still read; those fields are just null. */
+  /* Read a summary and keep only well-formed fields. Older summaries (no
+     topics, core, current or next) still read; those fields are just null. */
   function readSummary(code){
     var raw = lsGet(PREFIX + code), o;
     if(!raw) return null;
@@ -108,13 +108,18 @@
       { id:o.current.id, title:str(o.current.title, 120) || o.current.id } : null;
     var next = o.next && str(o.next.title, 200) ?
       { title:str(o.next.title, 200), target:str(o.next.target, 120) } : null;
+    var c = o.core, core = null;
+    if(c && count(c.done) !== null && count(c.total) !== null && c.done <= c.total)
+      core = { done:count(c.done), total:count(c.total), pct: c.total ? Math.round(c.done / c.total * 100) : 0,
+        next:(Array.isArray(c.next) ? c.next : []).filter(function(x){ return x && str(x.title, 200); }).slice(0, 3)
+          .map(function(x){ return { title:str(x.title, 200), target:str(x.target, 120) }; }) };
     return {
       pct:pct,
       done: count(o.done),
       total: count(o.total),
       unit: str(o.unit, 30) || "items",
       label: str(o.label, 80) || "Progress",
-      topics:topics, current:current, next:next,
+      topics:topics, core:core, current:current, next:next,
       modules: mods,
       updatedAt: typeof o.updatedAt === "string" ? o.updatedAt : null
     };
@@ -181,14 +186,48 @@
     document.body.insertBefore(el, first);
   }
 
+  /* ---------- Core / Extra ----------
+     Every question or topic is Core (enough to score full) or Extra. A site tags
+     an item core:true|false; an untagged item falls back to the site's existing
+     priority mark, so priority:"high" is Core. All tags are provisional until the
+     subject's End Sem paper pattern is in shared/syllabus.js (coreProvisional).
+     "Core only" is one setting for all five sites, kept under sem7.coreOnly. */
+  var CORE_KEY = "sem7.coreOnly";
+  function isCore(x){ return !!x && (typeof x.core === "boolean" ? x.core : x.priority === "high"); }
+  function coreOnly(){ return lsGet(CORE_KEY) === "1"; }
+  function coreProvisional(code){ var s = syllabus(code); return !(s && s.paper); }
+  /* Sets the switch and redraws the page. A site that redraws in its own way
+     listens for "sem7:coreonly" and calls preventDefault(); otherwise the
+     site's global render() runs, keeping the scroll position. */
+  function setCoreOnly(on){
+    on = !!on;
+    lsSet(CORE_KEY, on ? "1" : "0");
+    Array.prototype.forEach.call(document.querySelectorAll("[data-s7-core]"), function(b){
+      b.setAttribute("aria-checked", on ? "true" : "false");
+    });
+    var ev;
+    try { ev = new CustomEvent("sem7:coreonly", { detail:{ on:on }, cancelable:true }); } catch(e){ ev = null; }
+    if(ev && !document.dispatchEvent(ev)) return;
+    if(typeof window.render === "function"){
+      var y = window.scrollY;
+      window.render();
+      window.scrollTo(0, y);
+    }
+  }
+  document.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest("[data-s7-core]");
+    if(b) setCoreOnly(b.getAttribute("aria-checked") !== "true");
+  });
+
   /* ---------- per-subject adapters ----------
      Each one calls the subject site's own progress functions, so the hub shows
      exactly the figure that site's dashboard shows, with that site's meaning.
      The names are the sites' own top-level globals, resolved when the adapter
      runs, after the site's script has loaded.
        hooks      the global functions every progress change passes through
-       summarize  overall figure, topic counts, module bars, and the site's own
-                  "study next" choice (the next item and its module)
+       summarize  overall figure, topic counts, module bars, the site's own
+                  "study next" choice (the next item and its module), and the
+                  Core figure with the next three Core items
        open       opens a `next.target` with the site's own navigation */
   function mod(m, pct, title){ return { id:m, name:"M" + String(m).replace(/\D/g, ""), title:title || null, pct:pct }; }
   function cur(m, title){ return m ? { id:m, title:title || m } : null; }
@@ -203,6 +242,15 @@
     return open.filter(function(t){ return status(t.id) === "progress"; })[0] || open[0] || null;
   }
   function doneCount(list, status){ return list.filter(function(t){ return status(t.id) === "done"; }).length; }
+  /* The Core figure: p is the site's own {done, total} over its Core items, and
+     the next three Core topics not done yet, started ones first. */
+  function coreFigure(p, list, status){
+    var open = list.filter(function(t){ return status(t.id) !== "done"; });
+    var started = open.filter(function(t){ return status(t.id) === "progress"; });
+    return { done:p.done, total:p.total,
+      next: started.concat(open.filter(function(t){ return started.indexOf(t) < 0; })).slice(0, 3)
+        .map(function(t){ return { title:t.title, target:"topic:" + t.id }; }) };
+  }
   function find(list, id){ return list.filter(function(x){ return x.id === id; })[0] || null; }
   /* Some sites keep titles as HTML ("Model Building &amp; Validation"); the summary holds plain text. */
   var scratch = null;
@@ -223,8 +271,14 @@
         if(n.topic) next = { title:n.topic.title, target:"topic:" + n.topic.id, m:n.topic.moduleId };
         else if(n.quiz) next = { title:n.quiz.title, target:"quiz:" + n.quiz.id, m:n.quiz.module };
         var m = next && find(COURSE.modules, next.m);
+        /* Core: the topic and practice items of Core topics (quizzes are Extra) */
+        var ct = ts.filter(function(t){ return !t.notCovered && isCore(t); }), cp = { done:0, total:0 };
+        COURSE.modules.forEach(function(x){ moduleItems(x).forEach(function(i){
+          if(i.kind !== "quiz" && find(ct, i.id)){ cp.total++; if(i.done) cp.done++; }
+        }); });
         return { label:"Study items completed", unit:"study items", pct:o.pct, done:o.done, total:o.total,
           topics:{ done:ts.filter(function(t){ return P.topics[t.id] === "done"; }).length, total:ts.length },
+          core: coreFigure(cp, ct, function(id){ var v = statusOf(id); return v === "prog" ? "progress" : v; }),
           current: m ? cur(m.id, "Module " + m.num + " · " + m.title) : null, next:next,
           modules: COURSE.modules.map(function(x){ return mod(x.id, moduleProgress(x).pct, x.title); }) };
       },
@@ -242,10 +296,26 @@
           var g = groups[code] || (groups[code] = { all:0, done:0 });
           g.all++; if(effectiveStatus(i) === "done") g.done++;
         }); });
+        /* Core: MSE Focus questions plus Core-tagged ones; practice inherits its parent's tag */
+        var src = {}, ci = [];
+        mods.forEach(function(m){ ["theory", "numericals", "solved"].forEach(function(k){
+          ((DATA[k] || {})[m] || []).forEach(function(q){ src[q.id] = q; (q.practice || []).forEach(function(x){ src[x.id] = x; }); });
+        }); });
+        FOCUS.forEach(function(t){ src[t.id] = t; (t.questions || []).forEach(function(x){ src[x.id] = x; }); });
+        mods.forEach(function(m){ moduleItems(m).forEach(function(i){
+          var own = src[i.id], par = i.parent && src[i.parent];
+          var c = own && typeof own.core === "boolean" ? own.core : par && typeof par.core === "boolean" ? par.core :
+            i.sub === "focus" || isCore(own) || isCore(par);
+          if(c) ci.push({ id:i.id, title:i.label, item:i });
+        }); });
+        var cs = function(id){ var v = effectiveStatus(find(ci, id).item); return v === "review" ? "progress" : v || "none"; };
+        var nc = coreFigure({ done:ci.filter(function(x){ return cs(x.id) === "done"; }).length, total:ci.length }, ci, cs);
+        nc.next.forEach(function(x){ x.target = "item:" + x.target.slice(6); });
         var keys = Object.keys(groups), nu = nextUp();
         var sub = nu.kind === "quiz" ? "quiz" : nu.kind === "solved" ? "solved" : "";
         return { label:"Items done", unit:"items", pct:o.pct, done:o.done, total:o.total,
           topics:{ done:keys.filter(function(k){ return groups[k].done === groups[k].all; }).length, total:keys.length },
+          core:nc,
           current: nu.m ? cur(nu.m, MODULE_TITLES[nu.m].replace(/\s+—\s+/, " · ")) : null,
           next: { title:String(nu.label), target: nu.m ? "module:" + nu.m + (sub ? ":" + sub : "") : "view:mock" },
           modules: mods.map(function(m){ return mod(m, moduleStats(m).pct, MODULE_TITLES[m].split("—").pop().trim()); }) };
@@ -253,6 +323,13 @@
       open:function(target){
         var t = split(target);
         if(t[0] === "view" && t[1] === "mock"){ ROUTE.view = "mock"; render(); return; }
+        if(t[0] === "item"){
+          var it = null;
+          Object.keys(MODULE_TITLES).forEach(function(m){ it = it || find(moduleItems(m), t[1]); });
+          if(it && it.sub === "focus") jumpToFocus(it.id);
+          else if(it) jumpTo(it.m, it.sub, it.id);
+          return;
+        }
         if(t[0] !== "module") return;
         var ms = split(t[1]);
         if(!MODULE_TITLES[ms[0]]) return;
@@ -268,6 +345,7 @@
         var m = next && next.m && find(MODULES, next.m);
         return { label:"Questions marked done", unit:"questions", pct:o.pct, done:o.done, total:o.total,
           topics:{ done:o.topicsDone, total:o.topics },
+          core: coreFigure(progressOf(TOPICS.filter(isCore)), TOPICS.filter(isCore), topicStatus),
           current: m ? cur(m.id, "Module " + m.num + " · " + m.title) : null, next:next,
           modules: MODULES.map(function(x){ return mod(x.id, moduleProgress(x.id).pct, x.title); }) };
       },
@@ -282,6 +360,7 @@
         var m = t && find(MODULES, t.m);
         return { label:"Exam-priority questions done", unit:"questions", pct:o.pct, done:o.done, total:o.total,
           topics:{ done:doneCount(list, topicStatus), total:list.length },
+          core: coreFigure(progressOf(TOPICS.filter(isCore)), TOPICS.filter(isCore), topicStatus),
           current: m ? cur(m.id, m.n + " · " + m.title) : null,
           next: t ? { title:t.title, target:"topic:" + t.id } : null,
           modules: MODULES.map(function(x){ return mod(x.id, moduleProgress(x.id).pct, x.title); }) };
@@ -296,6 +375,7 @@
         var m = t && find(MODULES, t.m);
         return { label:"High-priority questions done", unit:"questions", pct:o.pct, done:o.done, total:o.total,
           topics:{ done:doneCount(list, topicStatus), total:list.length },
+          core: coreFigure(progressOf(TOPICS.filter(isCore)), TOPICS.filter(isCore), topicStatus),
           current: m ? cur(m.id, "Module " + m.n + " · " + m.title) : null,
           next: t ? { title:t.title, target:"topic:" + t.id } : null,
           modules: MODULES.map(function(x){ return mod(x.id, moduleProgress(x.id).pct, x.title); }) };
@@ -319,8 +399,10 @@
         var r = summarize();
         if(!r || clampPct(r.pct) === null) return;
         lsSet(PREFIX + code, JSON.stringify({
-          v:2, subject:code, label:r.label || "Progress", unit:r.unit || "items", pct:clampPct(r.pct),
+          v:3, subject:code, label:r.label || "Progress", unit:r.unit || "items", pct:clampPct(r.pct),
           done:r.done, total:r.total, topics:r.topics || null,
+          core: r.core ? { done:r.core.done, total:r.core.total, next:(r.core.next || []).slice(0, 3).map(function(x){
+            return { title:plain(x.title), target:x.target }; }) } : null,
           current: r.current ? { id:r.current.id, title:plain(r.current.title) } : null,
           next: r.next ? { title:plain(r.next.title), target:r.next.target } : null,
           modules:(r.modules || []).map(function(m){ return { id:m.id, name:m.name, title:plain(m.title), pct:m.pct }; }),
@@ -641,8 +723,18 @@
       '<ul class="s7-topics">' + topics + "</ul>" + los;
   };
 
+  /* The "Core only" pill switch; `on` defaults to the saved setting. */
+  UI.coreToggle = function(on){
+    if(on == null) on = coreOnly();
+    var code = document.documentElement.getAttribute("data-subject");
+    return '<button type="button" class="s7-core" role="switch" data-s7-core aria-checked="' + (on ? "true" : "false") + '"' +
+      (code && coreProvisional(code) ? ' title="Core tags are provisional until the paper pattern is known"' : "") +
+      '><span class="s7-core-k" aria-hidden="true"></span>Core only</button>';
+  };
+
   window.SEM7 = {
     ui:UI, icon:icon,
+    isCore:isCore, coreOnly:coreOnly, setCoreOnly:setCoreOnly, coreProvisional:coreProvisional,
     syllabus:syllabus, syllabusModule:syllabusModule, pendingModules:pendingModules, isPending:isPending,
     EXAM:EXAM, SUBJECTS:SUBJECTS, byCode:byCode,
     countdown:countdown, dateParts:dateParts, examStart:examStart, examEnd:examEnd, dayDiff:dayDiff, addDays:addDays,

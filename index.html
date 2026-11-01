@@ -118,6 +118,11 @@ h2 .s7-i{color:var(--ink-mute)}
 .pct{display:flex; align-items:center; gap:10px}
 .pct b{font-size:1.4rem; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.01em; min-width:3ch}
 .pct .bar{flex:1}
+.pct.core{margin-top:-4px; font-size:.78rem; color:var(--ink-mute)}
+.pct.core .lbl{font-weight:600; min-width:3.6ch}
+.pct.core b{font-size:.86rem; min-width:4ch; color:var(--ink-soft)}
+.pct.core .bar{height:4px}
+.pct.core .n{font-variant-numeric:tabular-nums}
 .bar{height:6px; border-radius:99px; background:var(--track); overflow:hidden}
 .bar i{display:block; height:100%; background:var(--acc-ui, var(--ink-soft)); border-radius:99px}
 .mods{display:flex; align-items:center; gap:10px; font-size:.78rem; color:var(--ink-mute)}
@@ -298,6 +303,8 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
         '<div class="nm"><h3><a href="' + S.subjectHref(s) + '">' + esc(s.name) + '</a></h3><div class="dt">' + dateText(s) + '</div></div>' +
         '<span class="days' + (soon ? ' soon' : '') + '">' + esc(whenText(c)) + '</span></div>' +
       '<div class="pct"><b>' + pct + '%</b>' + bar(pct, s.short + " progress") + '</div>' +
+      (sum && sum.core ? '<div class="pct core"><span class="lbl">Core</span><b>' + sum.core.pct + '%</b>' +
+        bar(sum.core.pct, s.short + " Core progress") + '<span class="n">' + sum.core.done + '/' + sum.core.total + '</span></div>' : '') +
       '<div class="mods">' + pips + '<span class="ready" title="Modules with study material">' + ready + '/6 ready</span></div>' +
       (sum && sum.next ? '<div class="nexttopic">' + I("play") + '<span>' + esc(sum.next.title) + '</span></div>' : '') +
       '<div class="acts"><a class="btn' + (isNext ? ' primary' : '') + '" href="' + continueHref(s, sum) + '">' +

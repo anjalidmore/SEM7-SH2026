@@ -63,6 +63,9 @@ docs/PLAN.md          user-facing plan · docs/IMPLEMENTATION.md this file · do
 `ui.pending(code, mid)`, `ui.h2(icon, title, extra)`, `ui.head/crumb/progress/pager/neighbours`;
 `syllabus(code)`, `syllabusModule(code, mid)`, `pendingModules(code)`, `isPending(code, mid)`;
 `plan(now)` → `[{date, exam, main}]` from `STUDY_START` (16 Nov); `readSummary(code)`; `attach(code)`.
+Core/Extra: `isCore(item)` (`item.core` if boolean, else `priority==="high"`), `coreOnly()`, `setCoreOnly(on)`,
+`coreProvisional(code)` (true while `paper:null`), `ui.coreToggle(on?)`. The summary carries
+`core:{done,total,pct,next:[{title,target}]}` (next three Core items, started first).
 Icons: home calendar clock target checks check layers book play arrow back paper hourglass flag zap alert
 quiz formula search, plus subject icons ai nlp ads or dl. Add new ones to `ICON_PATHS` (24px grid, stroke).
 
@@ -127,8 +130,11 @@ from that subject's summary). Show "Core work left vs time left" as on track / b
 Needs `summary.core` from F2. Until then, use `topics`.
 
 ### P3 · F2 Core / Extra tiers *(platform API, then each subject)*
-Platform: extend the summary to `{core:{done,total}}`; add `SEM7.ui.coreToggle(on)` (a pill switch, persisted
-under `sem7.coreOnly`). The hub shows Core %. Subjects: tag every question/topic `core:true|false`, using
+Platform **(done 1 Nov)**: `summary.core` = `{done,total,pct,next}`; `SEM7.ui.coreToggle(on)` (pill switch, persisted
+under `sem7.coreOnly`); the hub shows Core % on each card. Until a site tags items, the adapters fall back to
+`priority:"high"` (NLP: `FOCUS` + high-priority theory; its numericals/solved have no priority, so they count as Extra
+until tagged). Clicking the toggle calls the site's `render()`; a site that redraws differently handles the
+`sem7:coreonly` event and calls `preventDefault()`. Subjects: tag every question/topic `core:true|false`, using
 the existing priority fields as the starting point (ADS/OR/DL `priority:"high"`, AI `priority`, NLP `FOCUS`).
 "Core only" hides the rest in module lists and counts. Wait for the paper patterns before final tagging; make the tags **provisional** until then.
 
@@ -190,4 +196,5 @@ Add one line when you finish something: date, workstream, what changed, commit.
 - 31 Oct · Phase 0–2 · monorepo, hub, design system, Modules 1–6 + pending pages, icon dashboards · 997458d
 - 31 Oct · C-AI (other session) · AI Modules 4–6 content ported · 997458d (pushed together with the above)
 - 31 Oct · P2 (part 1) · study plan starts 16 Nov, grouped by paper · *(this commit)*
+- 1 Nov · P3 (platform) · `SEM7.isCore/coreOnly/setCoreOnly/coreProvisional`, `ui.coreToggle`, `summary.core` with next 3 Core items for all five adapters, Core row on hub cards · *(this commit)*
 - 1 Nov · Phase 1 · live site verified (files match `main`, 138 checks pass); old-repo deletion left to the user · *(this commit)*
