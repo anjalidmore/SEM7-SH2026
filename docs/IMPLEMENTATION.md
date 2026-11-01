@@ -190,3 +190,4 @@ Add one line when you finish something: date, workstream, what changed, commit.
 - 31 Oct · Phase 0–2 · monorepo, hub, design system, Modules 1–6 + pending pages, icon dashboards · 997458d
 - 31 Oct · C-AI (other session) · AI Modules 4–6 content ported · 997458d (pushed together with the above)
 - 31 Oct · P2 (part 1) · study plan starts 16 Nov, grouped by paper · *(this commit)*
+- 1 Nov · Phase 1 · live site verified (files match `main`, 138 checks pass); old-repo deletion left to the user · *(this commit)*

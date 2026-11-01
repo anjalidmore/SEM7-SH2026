@@ -41,9 +41,11 @@ Monorepo, semester hub, progress bridge, one shared design system across all fiv
 ### Phase 1 — One repo, published (31 Oct – 1 Nov)
 - [x] History rewritten so every commit is yours alone, with no co-author lines
 - [x] `anjalidmore/SEM7-SH2026` created, public, GitHub Pages on `main` / root
-- [ ] Check the hub and all five subjects on the live URL (phone and laptop)
+- [x] Check the hub and all five subjects on the live URL (phone and laptop): live files match `main`;
+      138 headless checks at 1280/390/320 px, light and dark, no errors (1 Nov)
 - [ ] Delete the five old repos (`AI-SH2026`, `NLP-SH2026`, `ADS-SH2026`, `OR-SH2026`, `HMC-SH2026`).
       Progress is unaffected: it belongs to `anjalidmore.github.io`, not to the repo path.
+      You're deleting these by hand. Their local folders in `~/Desktop/projects/Sem7/` stay.
 
 ### Phase 2 — Every subject ESE-shaped, before content ✅ done (31 Oct)
 No notes needed. Everything here comes from the syllabus PDFs we already have.
