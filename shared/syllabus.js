@@ -82,71 +82,10 @@
     ads: { paper:null, modules:[
       { id:"m1", built:true, title:"Introduction to Data Science" },
       { id:"m2", built:true, title:"Data Exploration using Descriptive Statistics" },
-      { id:"m3", title:"Data Exploration using Inferential Statistics",
-        topics:[
-          "Normal and Poisson distributions",
-          "Testing of hypothesis, Central Limit Theorem",
-          "Confidence interval",
-          "Z-test, t-test",
-          "Type-I and Type-II errors",
-          "ANOVA"
-        ],
-        los:[
-          "LO 3.1: Apply the knowledge of statistics and numerical techniques to describe and analyse probability distributions such as normal and Poisson distributions.",
-          "LO 3.2: Apply the concepts of probability and statistics to compute confidence intervals and perform hypothesis tests such as Z-test, t-test, and ANOVA.",
-          "LO 3.3: Identify appropriate statistical methods and hypothesis testing procedures by determining the mathematical requirements of the given problem.",
-          "LO 3.4: Arrive at valid statistical conclusions by interpreting test statistics, p-values, confidence levels, and the implications of Type-I and Type-II errors."
-        ]},
-      { id:"m4", title:"Regression Analysis",
-        topics:[
-          "4.1 Mathematical and statistical equation: meaning of intercept and slope",
-          "4.2 Error term; measures of model fit: R², MAE, MAPE",
-          "4.3 Multiple Linear Regression model",
-          "4.4 Partial regression coefficients",
-          "4.5 Testing overall significance of the model fit",
-          "4.6 Testing individual regression coefficients"
-        ],
-        los:[
-          "LO 4.1: Apply the knowledge of statistics and numerical techniques to construct regression equations and interpret parameters such as intercept, slope, and error term.",
-          "LO 4.2: Apply the concepts of probability and statistics to compute model fit metrics such as R², MAE, and MAPE, and interpret their significance.",
-          "LO 4.3: Identify appropriate mathematical and statistical methods required for selecting suitable regression models such as simple, multiple, and partial regression.",
-          "LO 4.4: Analyze and interpret regression model outcomes using contemporary tools to assess significance of coefficients and overall model performance.",
-          "LO 4.5: Explore alternative regression model designs by examining different model structures and variable selections for meeting analytical requirements.",
-          "LO 4.6: Perform systematic evaluation of regression models by comparing fit statistics, significance tests, and error measures to select the optimal design."
-        ]},
-      { id:"m5", title:"Anomaly Detection",
-        topics:[
-          "5.1 Outliers and causes of outliers",
-          "5.2 Anomaly detection techniques",
-          "5.3 Outlier detection using statistics",
-          "5.4 Outlier detection using distance-based methods",
-          "5.5 Outlier detection using density-based methods",
-          "5.6 SMOTE"
-        ],
-        los:[
-          "LO 5.1: Apply statistical knowledge to explain the concept of outliers and identify their possible causes in real-world datasets.",
-          "LO 5.2: Apply probability and statistical techniques to detect anomalies using distribution-based and statistical thresholding methods.",
-          "LO 5.3: Identify appropriate mathematical and algorithmic approaches for detecting outliers using distance-based and density-based methods.",
-          "LO 5.4: Analyze and interpret results of anomaly detection techniques using contemporary analytical tools and visualizations.",
-          "LO 5.5: Explore alternative anomaly detection designs, including statistical, distance-based, and density-based techniques, to address varied data scenarios.",
-          "LO 5.6: Perform systematic evaluation of anomaly detection methods, including SMOTE for class imbalance, to determine the most effective solution.",
-          "LO 5.7: Identify suitable modern engineering and data science tools required for implementing anomaly detection algorithms effectively.",
-          "LO 5.8: Demonstrate proficiency in using discipline-specific tools for implementing anomaly detection techniques and interpreting their outputs."
-        ]},
-      { id:"m6", title:"Time Series Forecasting",
-        topics:[
-          "6.1 Taxonomy of time series forecasting methods; time series decomposition",
-          "6.2 Smoothing methods: average, moving average; time series with linear regression; ARIMA",
-          "6.3 Performance evaluation: MAE, RMSE, MAPE, MASE"
-        ],
-        los:[
-          "LO 6.1: Apply statistical and numerical techniques to interpret the taxonomy of time series forecasting methods and the components of time series decomposition such as trend, seasonality, and irregular variations.",
-          "LO 6.2: Apply concepts of probability and statistics to implement smoothing methods such as the average method, moving average smoothing, and exponential approaches for analysing time-dependent data.",
-          "LO 6.3: Identify appropriate mathematical and statistical methods, including linear regression and ARIMA, required for selecting suitable time series forecasting models.",
-          "LO 6.4: Analyze and interpret time series model outputs using contemporary analytical tools to understand forecast patterns and model behaviour.",
-          "LO 6.5: Identify modern analytical and visualization tools required for building, analysing, and validating time series forecasting models.",
-          "LO 6.6: Demonstrate proficiency in using discipline-specific tools to implement time series models, generate forecasts, and visualize predictions effectively."
-        ]}
+      { id:"m3", built:true, title:"Data Exploration using Inferential Statistics" },
+      { id:"m4", built:true, title:"Regression Analysis" },
+      { id:"m5", built:true, title:"Anomaly Detection" },
+      { id:"m6", built:true, title:"Time Series Forecasting" }
     ]},
 
     /* The OR syllabus has course-level outcomes only, so its modules carry no LOs. */

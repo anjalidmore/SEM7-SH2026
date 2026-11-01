@@ -32,10 +32,10 @@ h2.s7-h2 .s7-core{margin-left:auto}
       <button data-go="dashboard" class="active">Dashboard</button>
       <button data-go="m1">Module 1</button>
       <button data-go="m2">Module 2</button>
-      <button data-go="m3" class="s7-tab-pending">Module 3</button>
-      <button data-go="m4" class="s7-tab-pending">Module 4</button>
-      <button data-go="m5" class="s7-tab-pending">Module 5</button>
-      <button data-go="m6" class="s7-tab-pending">Module 6</button>
+      <button data-go="m3">Module 3</button>
+      <button data-go="m4">Module 4</button>
+      <button data-go="m5">Module 5</button>
+      <button data-go="m6">Module 6</button>
       <button data-go="recognition">Recognition</button>
       <button data-go="quiz">Quiz</button>
       <button data-go="formula">Formulae</button>
@@ -108,7 +108,23 @@ const MODULES = [
   { id:"m2", num:2, title:"Data Exploration using Descriptive Statistics", hours:12, co:"CO-2",
     blurb:"The numerical engine room of the paper. Types of data, classification and tabulation, diagrams and graphs, central tendency, spread, skewness, kurtosis, correlation and visualization.",
     contents:"2.1 Types of data, Properties of data · 2.2 Statistical data — Classification, Tabulation, Diagrammatic &amp; Graphic representation · 2.3 Univariate Exploration: Central Tendency, Spread, Symmetry, Skewness (Karl Pearson, Bowley), Kurtosis · 2.4 Multivariate Exploration: Central Data Point, Correlation, Karl Pearson Correlation Coefficient · 2.5 Data Visualization: Histogram, Quartile, Distribution Chart; Scatter Plot, Scatter Matrix, Bubble chart",
-    selfLearning:"Shape of distributions: heavy-tailed, light-tailed, multimodal. Advanced visualizations: Violin Plot, Boxen Plot, Pair plot, Heatmaps." }
+    selfLearning:"Shape of distributions: heavy-tailed, light-tailed, multimodal. Advanced visualizations: Violin Plot, Boxen Plot, Pair plot, Heatmaps." },
+  { id:"m3", num:3, title:"Data Exploration using Inferential Statistics", hours:6, co:"CO-3",
+    blurb:"From sample to population: normal and Poisson probabilities, the Central Limit Theorem, confidence intervals, z- and t-tests, errors of testing, and ANOVA.",
+    contents:"Overview of distributions: Normal, Poisson · Testing of hypothesis · Central Limit Theorem · Confidence interval · Z-test, t-test · Type-I and Type-II errors · ANOVA",
+    selfLearning:"Neyman-Pearson lemma: MP and UMP tests. Practical examples using Python/Excel/R." },
+  { id:"m4", num:4, title:"Regression Analysis", hours:10, co:"CO-4",
+    blurb:"Fit and judge regression models: slope and intercept, error measures and R², multiple regression with partial coefficients, and the F- and t-tests of significance.",
+    contents:"4.1 Mathematical and statistical equation, meaning of intercept and slope · 4.2 Error term, measures of model fit: R², MAE, MAPE · 4.3 Multiple linear regression model · 4.4 Partial regression coefficients · 4.5 Testing overall significance of the model fit · 4.6 Testing individual regression coefficients",
+    selfLearning:"Residual analysis and its importance in regression diagnostics. Real regression case studies (house prices, sales forecasting)." },
+  { id:"m5", num:5, title:"Anomaly Detection", hours:6, co:"CO-5",
+    blurb:"What outliers are and why they occur, and how to find them: statistical rules, distance- and density-based detection, and the Local Outlier Factor.",
+    contents:"5.1 Outliers, causes of outliers · 5.2 Anomaly detection techniques · 5.3 Outlier detection using statistics · 5.4 Outlier detection using distance-based methods · 5.5 Outlier detection using density-based methods · 5.6 SMOTE",
+    selfLearning:"Introduction to autoencoders for anomaly detection. Performance metrics for anomaly detection (AUC-PR, F1, confusion matrix)." },
+  { id:"m6", num:6, title:"Time Series Forecasting", hours:5, co:"CO-6",
+    blurb:"Components and taxonomy of forecasting, additive and multiplicative decomposition, smoothing forecasts, regression on time, and the MAE / RMSE / MAPE / MASE evaluation.",
+    contents:"6.1 Taxonomy of time series forecasting methods, time series decomposition · 6.2 Smoothing methods: average, moving average; time series analysis using linear regression; ARIMA · 6.3 Performance evaluation: MAE, RMSE, MAPE, MASE",
+    selfLearning:"Seasonal decomposition. Stationarity concept and tests." }
 ];
 
 /* Learning outcomes — verbatim from the official syllabus. */
@@ -122,7 +138,31 @@ const LOS = [
  {id:"LO 2.3", m:"m2", pi:"2.1.1", text:"Evaluate a given dataset to identify key objectives by examining univariate and multivariate characteristics using appropriate statistical measures."},
  {id:"LO 2.4", m:"m2", pi:"2.4.2", text:"Analyze and interpret data patterns using contemporary visualization tools through histograms, scatter plots, scatter matrices, bubble charts, and other graphical representations."},
  {id:"LO 2.5", m:"m2", pi:"5.1.1", text:"Identify suitable modern tools and techniques for performing univariate and multivariate data visualization."},
- {id:"LO 2.6", m:"m2", pi:"5.2.2", text:"Demonstrate proficiency in using appropriate data visualization tools to create histograms, scatter plots, bubble charts, and other graphical representations."}
+ {id:"LO 2.6", m:"m2", pi:"5.2.2", text:"Demonstrate proficiency in using appropriate data visualization tools to create histograms, scatter plots, bubble charts, and other graphical representations."},
+ {id:"LO 3.1", m:"m3", pi:"1.1.1", text:"Apply the knowledge of statistics and numerical techniques to describe and analyse probability distributions such as normal and Poisson distributions."},
+ {id:"LO 3.2", m:"m3", pi:"1.1.2", text:"Apply the concepts of probability and statistics to compute confidence intervals and perform hypothesis tests such as Z-test, t-test, and ANOVA."},
+ {id:"LO 3.3", m:"m3", pi:"2.1.3", text:"Identify appropriate statistical methods and hypothesis testing procedures by determining the mathematical requirements of the given problem."},
+ {id:"LO 3.4", m:"m3", pi:"2.4.4", text:"Arrive at valid statistical conclusions by interpreting test statistics, p-values, confidence levels, and the implications of Type-I and Type-II errors."},
+ {id:"LO 4.1", m:"m4", pi:"1.1.1", text:"Apply the knowledge of statistics and numerical techniques to construct regression equations and interpret parameters such as intercept, slope, and error term."},
+ {id:"LO 4.2", m:"m4", pi:"1.1.2", text:"Apply the concepts of probability and statistics to compute model fit metrics such as R², MAE, and MAPE, and interpret their significance."},
+ {id:"LO 4.3", m:"m4", pi:"2.1.3", text:"Identify appropriate mathematical and statistical methods required for selecting suitable regression models such as simple, multiple, and partial regression."},
+ {id:"LO 4.4", m:"m4", pi:"2.4.2", text:"Analyze and interpret regression model outcomes using contemporary tools to assess significance of coefficients and overall model performance."},
+ {id:"LO 4.5", m:"m4", pi:"3.2.1", text:"Explore alternative regression model designs by examining different model structures and variable selections for meeting analytical requirements."},
+ {id:"LO 4.6", m:"m4", pi:"3.3.1", text:"Perform systematic evaluation of regression models by comparing fit statistics, significance tests, and error measures to select the optimal design."},
+ {id:"LO 5.1", m:"m5", pi:"1.1.1", text:"Apply statistical knowledge to explain the concept of outliers and identify their possible causes in real-world datasets."},
+ {id:"LO 5.2", m:"m5", pi:"1.1.2", text:"Apply probability and statistical techniques to detect anomalies using distribution-based and statistical thresholding methods."},
+ {id:"LO 5.3", m:"m5", pi:"2.1.3", text:"Identify appropriate mathematical and algorithmic approaches for detecting outliers using distance-based and density-based methods."},
+ {id:"LO 5.4", m:"m5", pi:"2.4.2", text:"Analyze and interpret results of anomaly detection techniques using contemporary analytical tools and visualizations."},
+ {id:"LO 5.5", m:"m5", pi:"3.2.1", text:"Explore alternative anomaly detection designs, including statistical, distance-based, and density-based techniques, to address varied data scenarios."},
+ {id:"LO 5.6", m:"m5", pi:"3.3.1", text:"Perform systematic evaluation of anomaly detection methods, including SMOTE for class imbalance, to determine the most effective solution."},
+ {id:"LO 5.7", m:"m5", pi:"5.1.1", text:"Identify suitable modern engineering and data science tools required for implementing anomaly detection algorithms effectively."},
+ {id:"LO 5.8", m:"m5", pi:"5.2.2", text:"Demonstrate proficiency in using discipline-specific tools for implementing anomaly detection techniques and interpreting their outputs."},
+ {id:"LO 6.1", m:"m6", pi:"1.1.1", text:"Apply statistical and numerical techniques to interpret the taxonomy of time series forecasting methods and the components of time series decomposition such as trend, seasonality, and irregular variations."},
+ {id:"LO 6.2", m:"m6", pi:"1.1.2", text:"Apply concepts of probability and statistics to implement smoothing methods such as the average method, moving average smoothing, and exponential approaches for analysing time-dependent data."},
+ {id:"LO 6.3", m:"m6", pi:"2.1.3", text:"Identify appropriate mathematical and statistical methods, including linear regression and ARIMA, required for selecting suitable time series forecasting models."},
+ {id:"LO 6.4", m:"m6", pi:"2.4.2", text:"Analyze and interpret time series model outputs using contemporary analytical tools to understand forecast patterns and model behaviour."},
+ {id:"LO 6.5", m:"m6", pi:"5.1.1", text:"Identify modern analytical and visualization tools required for building, analysing, and validating time series forecasting models."},
+ {id:"LO 6.6", m:"m6", pi:"5.2.2", text:"Demonstrate proficiency in using discipline-specific tools to implement time series models, generate forecasts, and visualize predictions effectively."}
 ];
 
 /* Where each classification comes from, shown on the A vs B page. */
@@ -3977,6 +4017,1520 @@ TOPICS.push({
   {q:"Which visualization would you use for the given scenario, and why?", marks:5, d:"standard", priority:"medium", source:"source"},
   {q:"Distinguish between univariate and multivariate visualization.", marks:5, d:"basic", priority:"medium", source:"predicted"}]
 });
+/* ============================ MODULE 3 ============================== */
+
+TOPICS.push({
+ id:"m3t1", m:"m3", title:"Normal Distribution &amp; z-Scores",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 3.1"],
+ src:"Class notes, Chapter 3 (Normal and Poisson), pp. 2–13 · formula sheet p.6 (normal curve)",
+ summary:"Convert X to z, read areas from the z-table, add or subtract areas.",
+ whatIs:`<p>The <b>normal distribution</b> is the symmetric bell-shaped curve of a continuous variable. A variable X with mean μ and standard deviation σ is written <b>X ~ N(μ, σ²)</b>. The <b>standard normal</b> (z) distribution has μ = 0 and σ = 1, and any normal variable is converted to it with <b>z = (X − μ)/σ</b>.</p>
+<p>The z-table gives the <b>area from z = 0 to z</b> — the probability that Z lies between the mean and z. Every normal-probability question is built from those areas.</p>`,
+ needToKnow:[
+  "The pdf f(x) = (1/(σ√(2π))) · e<sup>−(x−μ)²/(2σ²)</sup>, and that total area under the curve = 1.",
+  "z = (X − μ)/σ, and that z says how many standard deviations X lies from the mean.",
+  "The empirical rule: about 68% within ±1σ, 95% within ±2σ, 99.7% within ±3σ.",
+  "Area from 0 to z is read from the table; the curve is symmetric, so area(−z to 0) = area(0 to z), and each half has area 0.5.",
+  "How to combine areas: same side → subtract; opposite sides → add; tail → 0.5 − area."],
+ recognition:{
+  clues:["<b>“Normally distributed with mean … and standard deviation (or variance) …”</b> → convert to z.",
+   "<b>“Standard normal variate”</b> or <b>Z</b> given directly → read the table straight away.",
+   "<b>“Probability that X lies between …”</b>, <b>“more than …”</b>, <b>“less than …”</b> → areas under the curve.",
+   "<b>“At least one of n”</b> → find p for one, then use 1 − (1 − p)ⁿ."],
+  wording:["Find the probability that a standard normal variate lies between 0.87 and 1.28.",
+   "For a normal variate with mean 2.5 and S.D. 3.5, find P(2 ≤ X ≤ 4.5).",
+   "Marks are normally distributed with mean 65 and variance 25. If 3 students are selected, find the probability that at least one scores more than 75."],
+  firstStep:"Write down μ and σ. If the question gives the <b>variance</b>, take its square root first. Then convert every X limit to a z value and <b>draw the curve with the shaded region</b>.",
+  method:"Sketch → z for each limit → table area(s) → add (opposite sides of 0), subtract (same side), or 0.5 − area (tail) → state the probability.",
+  trap:"Using the variance as σ. “Variance 25” means σ = 5, not 25."},
+ concept:`<div class="formula">z = (X − μ) / σ          X ~ N(μ, σ²)
+
+f(x) = 1/(σ√(2π)) · e^( −(x − μ)² / (2σ²) ),   −∞ &lt; x &lt; ∞</div>
+<h4>Combining areas — the only three cases</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Region</th><th>Rule</th><th>Example</th></tr></thead><tbody>
+<tr><td>Both limits on the <b>same side</b> of 0</td><td>Subtract the smaller area from the larger</td><td>P(0.87 &lt; Z &lt; 1.28) = 0.3997 − 0.3078 = 0.0919</td></tr>
+<tr><td>Limits on <b>opposite sides</b> of 0</td><td>Add the two areas</td><td>P(−0.34 &lt; Z &lt; 0.62) = 0.1331 + 0.2324 = 0.3655</td></tr>
+<tr><td>A <b>tail</b> (more than z &gt; 0)</td><td>0.5 − area(0 to z)</td><td>P(Z &gt; 2) = 0.5 − 0.4772 = 0.0228</td></tr>
+</tbody></table></div>
+<h4>Areas you will use most (0 to z)</h4>
+<div class="scroll"><table class="t num"><thead><tr><th>z</th><th>0.14</th><th>0.34</th><th>0.57</th><th>0.62</th><th>0.80</th><th>0.87</th><th>1.00</th><th>1.14</th><th>1.25</th><th>1.28</th><th>1.50</th><th>1.96</th><th>2.00</th></tr></thead><tbody>
+<tr><td>Area</td><td>0.0557</td><td>0.1331</td><td>0.2157</td><td>0.2324</td><td>0.2881</td><td>0.3078</td><td>0.3413</td><td>0.3729</td><td>0.3944</td><td>0.3997</td><td>0.4332</td><td>0.4750</td><td>0.4772</td></tr>
+</tbody></table></div>
+<div class="box neutral"><h5>Slips in the class notes</h5><p style="margin:0">Ex. 3(i): z for X = 2 is written 0.14 but is <b>−0.14</b> (the working then uses −0.14 correctly), and area 0.0557 is written “0.557”. Ex. 3(ii): the upper limit is written as both 5.5 and 5.3; the working uses <b>5.3</b> (z = +0.8, written “−0.8”). The final answers 0.2714 and 0.6610 are correct.</p></div>`,
+ examAnswer:{
+  short:"State X ~ N(μ, σ²), convert to z, give the table area and the probability.",
+  medium:"Sketch the curve with the shaded region, show each z calculation, the table areas and how they combine, then state the probability in words.",
+  long:"Add the properties of the normal curve (symmetric, mean = median = mode, total area 1, empirical rule), the pdf, and the meaning of the standard normal variate."},
+ mistakes:[
+  "Taking the variance as σ.",
+  "Adding areas when both limits lie on the same side of 0 (subtract instead).",
+  "Forgetting the 0.5 for a tail probability.",
+  "Dropping the minus sign on a z below the mean, then shading the wrong side."],
+ examples:[
+  {id:"ex_m3t1_1", topic:"m3t1", title:"Standard normal areas (same side and opposite sides)",
+   category:"Standard normal probability",
+   recog:"Z is already standard normal — no conversion. Decide whether the limits are on the same side of 0.",
+   need:"Table areas from 0 to z; add or subtract.",
+   q:"Find the probability that a standard normal variate takes a value (i) between 0.87 and 1.28, (ii) between −0.34 and 0.62.",
+   steps:[
+    "<b>(i)</b> Both limits are positive → same side → subtract.",
+    "Area(0 to 1.28) = 0.3997; area(0 to 0.87) = 0.3078.",
+    "P(0.87 &lt; Z &lt; 1.28) = 0.3997 − 0.3078 = <b>0.0919</b>.",
+    "<b>(ii)</b> −0.34 and 0.62 are on opposite sides of 0 → add.",
+    "By symmetry area(−0.34 to 0) = area(0 to 0.34) = 0.1331; area(0 to 0.62) = 0.2324.",
+    "P(−0.34 &lt; Z &lt; 0.62) = 0.1331 + 0.2324 = <b>0.3655</b>."],
+   answer:`<div class="formula">(i)  P(0.87 &lt; Z &lt; 1.28) = 0.3997 − 0.3078 = 0.0919
+(ii) P(−0.34 &lt; Z &lt; 0.62) = 0.1331 + 0.2324 = 0.3655</div>
+<div class="answer">(i) <b>0.0919</b> · (ii) <b>0.3655</b></div>`,
+   why:"The table only gives areas measured from the centre, so every region is built from centre-based pieces.",
+   trap:"Adding in (i). The region from 0.87 to 1.28 is a strip inside the 0-to-1.28 area, so it is a difference."},
+  {id:"ex_m3t1_2", topic:"m3t1", title:"Normal variate with given mean and S.D.",
+   category:"Non-standard normal probability",
+   recog:"μ and σ are given and the limits are in X units — convert to z first.",
+   need:"z = (X − μ)/σ, then combine areas.",
+   q:"For a normal variate with mean 2.5 and standard deviation 3.5, find (i) P(2 ≤ X ≤ 4.5), (ii) P(−1.5 ≤ X ≤ 5.3).",
+   steps:[
+    "<b>(i)</b> z₁ = (2 − 2.5)/3.5 = −0.14; z₂ = (4.5 − 2.5)/3.5 = 0.57.",
+    "Opposite sides → add: area(0 to 0.14) + area(0 to 0.57) = 0.0557 + 0.2157 = <b>0.2714</b>.",
+    "<b>(ii)</b> z₁ = (−1.5 − 2.5)/3.5 = −1.14; z₂ = (5.3 − 2.5)/3.5 = 0.80.",
+    "Opposite sides → add: 0.3729 + 0.2881 = <b>0.6610</b>."],
+   answer:`<div class="formula">(i)  P(−0.14 ≤ Z ≤ 0.57) = 0.0557 + 0.2157 = 0.2714
+(ii) P(−1.14 ≤ Z ≤ 0.80) = 0.3729 + 0.2881 = 0.6610</div>
+<div class="answer">(i) <b>0.2714</b> · (ii) <b>0.6610</b></div>`,
+   why:"Standardising moves any normal curve onto the single table you have.",
+   trap:"Rounding z to one decimal. Use two decimals, as the table does."},
+  {id:"ex_m3t1_3", topic:"m3t1", title:"“At least one of three” scores above 75",
+   category:"Normal + complement rule",
+   recog:"A normal tail probability for one person, then a question about several independent people.",
+   need:"Tail = 0.5 − area; P(at least one) = 1 − P(none).",
+   q:"Marks are normally distributed with mean 65 and variance 25. If 3 students are selected at random, what is the probability that at least one of them scores more than 75?",
+   steps:[
+    "σ = √25 = 5. z = (75 − 65)/5 = 2.",
+    "P(X &gt; 75) = P(Z &gt; 2) = 0.5 − 0.4772 = <b>0.0228</b>.",
+    "P(one student does not exceed 75) = 1 − 0.0228 = 0.9772.",
+    "The three are independent: P(none exceeds 75) = 0.9772³ = <b>0.9331</b>.",
+    "P(at least one exceeds 75) = 1 − 0.9331 = <b>0.0669</b>."],
+   answer:`<div class="formula">P(X &gt; 75) = 0.5 − 0.4772 = 0.0228
+P(none of 3) = (0.9772)³ = 0.9331
+P(at least one) = 1 − 0.9331</div>
+<div class="answer">P = <b>0.067</b> (about 6.7%)</div>`,
+   why:"“At least one” has many cases; its complement “none” has exactly one, so compute that and subtract from 1.",
+   trap:"Using σ = 25, which gives z = 0.4 and a nonsense answer."}],
+ practice:[
+  {id:"p_m3t1_1", d:"standard", marks:5, q:"Weights of packets are normally distributed with mean 60 g and S.D. 8 g. Find (a) P(X &gt; 72), (b) P(50 &lt; X &lt; 70).",
+   hint:"z = 1.5 for (a); ±1.25 for (b).",
+   a:`<b>(a)</b> z = (72 − 60)/8 = 1.5 → P(Z &gt; 1.5) = 0.5 − 0.4332 = <b>0.0668</b><br>
+<b>(b)</b> z = (50 − 60)/8 = −1.25 and (70 − 60)/8 = 1.25 → opposite sides → 0.3944 + 0.3944 = <b>0.7888</b>
+<div class="answer">(a) <b>0.0668</b> · (b) <b>0.7888</b></div>`},
+  {id:"p_m3t1_2", d:"basic", marks:5, q:"State five properties of the normal distribution and explain the 68–95–99.7 rule.",
+   a:`1. Bell-shaped and <b>symmetric</b> about the mean.<br>2. <b>Mean = median = mode</b>.<br>3. Total area under the curve = <b>1</b>; each half = 0.5.<br>4. The tails approach the x-axis but never touch it (−∞ &lt; x &lt; ∞).<br>5. Fully described by two parameters, μ and σ; with μ = 0, σ = 1 it is the <b>standard normal</b> (z) distribution.<br><br>
+<b>Empirical rule:</b> about <b>68%</b> of values lie within μ ± 1σ, <b>95%</b> within μ ± 2σ and <b>99.7%</b> within μ ± 3σ. So a value more than 3σ from the mean is very rare (about 3 in 1000), which is why ±3σ is used as an outlier threshold in Module 5.`}],
+ questions:[
+  {q:"Find probabilities for a standard normal variate between given z values.", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"For a normal variate with given mean and S.D., find P(a ≤ X ≤ b).", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"Explain the normal distribution, its properties and the empirical rule.", marks:5, d:"basic", priority:"medium", source:"predicted"}]
+});
+
+TOPICS.push({
+ id:"m3t2", m:"m3", title:"Poisson Distribution",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 3.1"],
+ src:"Class notes, Chapter 3 (Normal and Poisson), pp. 14–16",
+ summary:"Counts of rare events in a fixed interval. P(X = x) = e^(−m) mˣ / x!, and mean = variance.",
+ whatIs:`<p>The <b>Poisson distribution</b> models the <b>number of times an event happens in a fixed interval</b> of time or space when events are independent and occur at a constant average rate — calls per hour, accidents per week, printing mistakes per page.</p>
+<p>It is the limiting case of the binomial when n → ∞ and p → 0 with <b>np = m</b> finite.</p>`,
+ needToKnow:[
+  "P(X = x) = e<sup>−m</sup> · m<sup>x</sup> / x!, for x = 0, 1, 2, …; e = 2.718.",
+  "Mean = variance = m, so σ = √m.",
+  "The conditions: n very large, p very small, np = m finite, events independent.",
+  "“At most k” = sum from 0 to k; “at least 1” = 1 − P(0).",
+  "Applications: deaths from a disease, accidents in a week, calls at an exchange, cars passing a point, misprints on a page."],
+ recognition:{
+  clues:["<b>An average count per interval</b> (“4 calls in 10 minutes”, “2 mistakes per page”) → Poisson with m = that average.",
+   "<b>No fixed number of trials</b> is mentioned — only a rate.",
+   "<b>“Mean of the Poisson distribution is …”</b> → m is given directly."],
+  wording:["A switchboard receives an average of 4 emergency calls in 10 minutes. Find the probability of (i) at most 2 calls, (ii) exactly 3 calls.",
+   "If the mean of a Poisson distribution is 4, find P(m − 2σ < X < m + 2σ)."],
+  firstStep:"Identify m (the average count for the <b>same</b> interval the question asks about) and list exactly which x values are included.",
+  method:"Write the formula, list the x values, compute each term (factor out e<sup>−m</sup>), add, and state the probability.",
+  trap:"Strict inequalities: P(0 &lt; X &lt; 8) means x = 1 … 7, not 0 … 8."},
+ concept:`<div class="formula">P(X = x) = e^(−m) · m^x / x!        x = 0, 1, 2, …
+
+Mean = m        Variance = m        σ = √m</div>
+<div class="scroll"><table class="t"><thead><tr><th>Asked for</th><th>Compute</th></tr></thead><tbody>
+<tr><td>Exactly k</td><td>P(X = k)</td></tr>
+<tr><td>At most k</td><td>P(0) + P(1) + … + P(k)</td></tr>
+<tr><td>At least 1</td><td>1 − P(0) = 1 − e<sup>−m</sup></td></tr>
+<tr><td>Within m ± 2σ</td><td>Find the integer x values inside the limits, then add</td></tr>
+</tbody></table></div>
+<div class="box neutral"><h5>Note on the class notes</h5><p style="margin:0">Ex. 2 asks for “2 emergency calls” but the worked solution computes P(X ≤ 2) = 0.238 (at most 2). Read the wording in the exam: “exactly 2” is P(X = 2) = 0.1465.</p></div>`,
+ examAnswer:{
+  short:"State m, write the formula, substitute, give the probability.",
+  medium:"State the conditions for a Poisson model, identify m, list the x values, show each term and the total.",
+  long:"Add the binomial-limit derivation conditions, mean = variance, and three applications."},
+ mistakes:[
+  "Including the end points of a strict inequality.",
+  "Using an average for a different interval (rate per hour when the question asks per 10 minutes).",
+  "Forgetting 0! = 1, so P(0) = e<sup>−m</sup>."],
+ examples:[
+  {id:"ex_m3t2_1", topic:"m3t2", title:"Emergency calls — at most 2, exactly 3",
+   category:"Poisson probability",
+   recog:"An average count in a fixed interval; no number of trials.",
+   need:"P(X = x) = e<sup>−m</sup> mˣ / x!, with m = 4.",
+   q:"A hospital switchboard receives an average of 4 emergency calls in a 10-minute interval. Find the probability that in a 10-minute interval there are (i) at most 2 calls, (ii) exactly 3 calls.",
+   steps:[
+    "m = 4, e<sup>−4</sup> = 0.0183.",
+    "<b>(i)</b> P(X ≤ 2) = e<sup>−4</sup>(4⁰/0! + 4¹/1! + 4²/2!) = 0.0183 × (1 + 4 + 8) = 0.0183 × 13 = <b>0.238</b>.",
+    "<b>(ii)</b> P(X = 3) = e<sup>−4</sup> · 4³/3! = 0.0183 × 64/6 = 0.0183 × 10.667 = <b>0.195</b>."],
+   answer:`<div class="formula">P(X ≤ 2) = e^(−4)(1 + 4 + 8) = 13 e^(−4) = 0.238
+P(X = 3) = e^(−4) · 64/6 = 0.195</div>
+<div class="answer">(i) <b>0.238</b> · (ii) <b>0.195</b></div>`,
+   why:"Calls arrive independently at a constant average rate, which is exactly the Poisson setting.",
+   trap:"Treating “at most 2” as just P(X = 2)."},
+  {id:"ex_m3t2_2", topic:"m3t2", title:"Probability within m ± 2σ",
+   category:"Poisson — mean = variance",
+   recog:"Limits written in terms of m and σ → use mean = variance to get σ.",
+   need:"σ = √m; list the integer values strictly inside the limits.",
+   q:"If the mean of a Poisson distribution is 4, find P(m − 2σ &lt; X &lt; m + 2σ).",
+   steps:[
+    "Mean = variance = 4, so σ = 2. Limits: 4 − 4 = 0 and 4 + 4 = 8.",
+    "P(0 &lt; X &lt; 8) = P(X = 1, 2, …, 7).",
+    "= e<sup>−4</sup>(4/1! + 4²/2! + 4³/3! + 4⁴/4! + 4⁵/5! + 4⁶/6! + 4⁷/7!)",
+    "= 0.0183 × (4 + 8 + 10.667 + 10.667 + 8.533 + 5.689 + 3.251) = 0.0183 × 50.807 = <b>0.93</b>."],
+   answer:`<div class="formula">σ = √4 = 2  →  P(0 &lt; X &lt; 8) = Σ (x = 1 to 7) e^(−4) 4^x / x!
+                     = 0.0183 × 50.807</div>
+<div class="answer">P = <b>0.93</b></div>`,
+   why:"For a Poisson variable the variance equals the mean, so σ comes free from m.",
+   trap:"Including x = 0 and x = 8 — the inequalities are strict."}],
+ practice:[
+  {id:"p_m3t2_1", d:"standard", marks:5, q:"A typist makes on average 2 mistakes per page. Find the probability that a page has (a) no mistakes, (b) exactly 2 mistakes, (c) at least one mistake.",
+   hint:"m = 2, e⁻² = 0.1353.",
+   a:`<div class="formula">(a) P(0) = e^(−2) = 0.1353
+(b) P(2) = e^(−2) · 2²/2! = 0.1353 × 2 = 0.2707
+(c) P(X ≥ 1) = 1 − P(0) = 1 − 0.1353 = 0.8647</div>
+<div class="answer">(a) <b>0.1353</b> · (b) <b>0.2707</b> · (c) <b>0.8647</b></div>`},
+  {id:"p_m3t2_2", d:"basic", marks:5, q:"State the conditions under which the binomial distribution tends to the Poisson distribution, and give four applications.",
+   a:`<b>Conditions:</b> (i) the number of trials n is very large (n → ∞); (ii) the probability of success p is constant and very small (p → 0); (iii) np = m stays finite; (iv) each trial has two outcomes, success or failure, with p + q = 1. Then mean = variance = m.<br><br>
+<b>Applications:</b> number of deaths from a disease such as heart attack; accidents in a week or month; phone calls received at an exchange in a period; cars passing a point on a road; printing mistakes on a page.`}],
+ questions:[
+  {q:"Given an average rate, find Poisson probabilities for exactly / at most / at least k events.", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"State the conditions and applications of the Poisson distribution.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m3t3", m:"m3", title:"Central Limit Theorem &amp; Confidence Intervals",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 3.2","LO 3.4"],
+ src:"COMP B M3 deck slides 2–11 (CLT, CI, wait-time example) · slide 34 (CI with t)",
+ summary:"Sample means are approximately normal for n ≥ 30, with standard error σ/√n. CI = x̄ ± z·σ/√n (or t·s/√n for small samples).",
+ whatIs:`<p>The <b>Central Limit Theorem</b>: if many random samples of size n are drawn from <i>any</i> population with mean μ and S.D. σ, the sample means form an approximately <b>normal</b> distribution with mean μ and standard error <b>σ/√n</b>, provided n is large (rule of thumb n ≥ 30). The deck shows this with a skewed Poisson population (mean 4) and with a uniform die.</p>
+<p>A <b>confidence interval</b> uses that standard error to give a <b>range</b> for the unknown population mean, with a stated level of confidence — an interval estimate instead of a point estimate.</p>`,
+ needToKnow:[
+  "The CLT statement, the n ≥ 30 rule, and the standardized mean z = (x̄ − μ)/(σ/√n).",
+  "Point estimate (one number) vs interval estimate (a range plus a confidence level).",
+  "CI = x̄ ± z·(σ/√n); z = 1.645 (90%), 1.96 (95%), 2.576 (99%).",
+  "Use t with df = n − 1 and s in place of σ when σ is unknown and n &lt; 30.",
+  "What widens the interval: higher confidence, more variability; what narrows it: larger n."],
+ recognition:{
+  clues:["<b>“Find a range”, “limits within which”, “95% confidence”</b> → confidence interval.",
+   "<b>“Distribution of sample means”, “regardless of the population's shape”</b> → CLT.",
+   "<b>Small sample, σ not given</b> → t-based interval."],
+  wording:["A sample of 50 customers has mean waiting time 45 min with σ = 10 min. Construct a 95% confidence interval.",
+   "State and explain the Central Limit Theorem.",
+   "Find a reasonable range in which most of the mean I.Q. values of samples of 10 boys lie."],
+  firstStep:"Decide <b>z or t</b>: σ known or n ≥ 30 → z; σ unknown and n &lt; 30 → t with n − 1 df.",
+  method:"SE = σ/√n → margin = z × SE → CI = (x̄ − margin, x̄ + margin) → one-line interpretation.",
+  trap:"Dividing σ by n instead of √n."},
+ concept:`<div class="formula">Standard error         SE = σ / √n
+Confidence interval    CI = x̄ ± z · (σ / √n)
+Small sample (σ unknown, n &lt; 30):   CI = x̄ ± t(n−1) · (s / √n)</div>
+<div class="scroll"><table class="t"><thead><tr><th>Confidence</th><th>90%</th><th>95%</th><th>99%</th></tr></thead><tbody>
+<tr><td>z</td><td>1.645</td><td>1.96</td><td>2.576</td></tr></tbody></table></div>
+<div class="scroll"><table class="t"><thead><tr><th>Change</th><th>Effect on the interval</th></tr></thead><tbody>
+<tr><td>Higher confidence (99% vs 90%)</td><td>Wider</td></tr>
+<tr><td>Larger sample size n</td><td>Narrower</td></tr>
+<tr><td>More population variability σ</td><td>Wider</td></tr></tbody></table></div>`,
+ examAnswer:{
+  short:"State the CLT in one sentence, or compute SE, margin and the interval.",
+  medium:"Full interval working with the interpretation sentence (“We are 95% confident that the true mean lies between …”).",
+  long:"CLT statement with the dice/Poisson illustration, point vs interval estimate, the formula, a worked interval, and what widens or narrows it."},
+ mistakes:[
+  "Using z for a small sample with unknown σ.",
+  "Writing “95% of the data lie in the interval” — the interval is about the population <b>mean</b>.",
+  "Rounding the SE too early and getting the limits wrong in the second decimal."],
+ examples:[
+  {id:"ex_m3t3_1", topic:"m3t3", title:"95% CI for mean waiting time",
+   category:"Confidence interval (z)",
+   recog:"n = 50 ≥ 30 and σ given → z interval.",
+   need:"SE = σ/√n; z(95%) = 1.96.",
+   q:"A sample of 50 customers has a mean waiting time of 45 min. The population S.D. is 10 min. Construct a 95% confidence interval for the true mean waiting time.",
+   steps:[
+    "x̄ = 45, σ = 10, n = 50, z = 1.96.",
+    "SE = 10/√50 = 10/7.071 = <b>1.414</b>.",
+    "Margin = 1.96 × 1.414 = <b>2.77</b>.",
+    "CI = 45 ± 2.77 = <b>(42.23, 47.77)</b>."],
+   answer:`<div class="formula">SE = 10/√50 = 1.414      margin = 1.96 × 1.414 = 2.77
+CI = 45 ± 2.77</div>
+<div class="answer">95% CI = <b>(42.23, 47.77) minutes</b></div>
+We are 95% confident that the true average waiting time of all customers lies between 42.23 and 47.77 minutes.`,
+   why:"By the CLT, x̄ is normal with S.D. σ/√n, so 95% of sample means lie within 1.96 SE of μ.",
+   trap:"Using σ = 10 as the margin directly, without dividing by √n."}],
+ practice:[
+  {id:"p_m3t3_1", d:"standard", marks:5, q:"A sample of 64 items has mean 52; the population S.D. is 12. Construct a 99% confidence interval for the population mean.",
+   hint:"z = 2.576; SE = 12/8.",
+   a:`<div class="formula">SE = 12/√64 = 1.5      margin = 2.576 × 1.5 = 3.864
+CI = 52 ± 3.864</div>
+<div class="answer">99% CI = <b>(48.14, 55.86)</b></div>`},
+  {id:"p_m3t3_2", d:"basic", marks:5, q:"State the Central Limit Theorem and explain why it matters for hypothesis testing.",
+   a:`<b>CLT:</b> if x̄ is the mean of a random sample of size n from a population with mean μ and S.D. σ, then for large n (n ≥ 30) the sampling distribution of x̄ is approximately normal with mean μ and standard error σ/√n, <b>whatever the shape of the population</b>. Equivalently, z = (x̄ − μ)/(σ/√n) tends to the standard normal distribution as n → ∞.<br><br>
+<b>Why it matters:</b> z-tests and confidence intervals assume x̄ is normal. The CLT justifies that even when the data themselves are skewed (the deck's Poisson population with mean 4 gives a bell-shaped histogram of 10,000 sample means of size 50). It is also why the standard error σ/√n appears in every large-sample test.`}],
+ questions:[
+  {q:"State and explain the Central Limit Theorem with an example.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"Construct a confidence interval for the population mean.", marks:5, d:"standard", priority:"high", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m3t4", m:"m3", title:"Testing of Hypothesis: Procedure, Type I &amp; II Errors",
+ classification:"bonly", priority:"high", core:true, type:"theory", marks:5, los:["LO 3.3","LO 3.4"],
+ src:"COMP B M3 deck slides 12–21",
+ summary:"H₀ vs H₁, level of significance, one- vs two-tailed, the five-step procedure, and the two kinds of wrong decision.",
+ whatIs:`<p>A <b>statistical hypothesis</b> is an assumption about a population parameter. <b>Hypothesis testing</b> uses sample data to decide whether to accept or reject that assumption — is a new drug effective, is a process working properly, is a coin biased?</p>`,
+ needToKnow:[
+  "H₀ (null): a definite statement of no difference, H₀: μ = μ₀. H₁ (alternative): μ ≠ μ₀, μ &gt; μ₀ or μ &lt; μ₀.",
+  "Level of significance α: the maximum probability of rejecting a true H₀, fixed in advance (usually 5% or 1%); also called the size of the test.",
+  "The five steps: H₀ → H₁ (one- or two-tailed) → α → test statistic (z or t) → conclusion against the critical value.",
+  "Type I error = reject a true H₀ (probability α, producer's risk); Type II error = accept a false H₀ (probability β, consumer's risk).",
+  "Increasing the sample size is the only way to reduce both errors at once.",
+  "z vs t: n ≥ 30 → z; n &lt; 30 with σ known → z; n &lt; 30 with σ unknown → t."],
+ recognition:{
+  clues:["<b>“Explain the procedure”, “steps in testing”</b> → the five-step table.",
+   "<b>“Type I / Type II”, “producer's / consumer's risk”</b> → the 2 × 2 decision table.",
+   "<b>“Is it different” vs “is it greater / less”</b> → two-tailed vs one-tailed."],
+  wording:["Explain the procedure for testing a hypothesis.",
+   "Differentiate Type I and Type II errors with an example.",
+   "Distinguish one-tailed and two-tailed tests."],
+  firstStep:"Decide which of the three is asked: procedure, errors, or tails. Each has a fixed table.",
+  method:"Draw the table (steps / decision matrix / tails with rejection regions), then add one example.",
+  trap:"Swapping the risks. Type I rejects a <b>good</b> lot → the producer loses; Type II accepts a <b>bad</b> lot → the consumer loses."},
+ concept:`<h4>The five steps</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Step</th><th>What you do</th></tr></thead><tbody>
+<tr><td>1. Null hypothesis</td><td>Set H₀ from the problem: usually “no difference”, μ = μ₀.</td></tr>
+<tr><td>2. Alternative hypothesis</td><td>Set H₁ and decide one-tailed (&gt; or &lt;) or two-tailed (≠).</td></tr>
+<tr><td>3. Level of significance</td><td>Choose α (5% or 1%) in advance.</td></tr>
+<tr><td>4. Test statistic</td><td>z or t, depending on n and whether σ is known.</td></tr>
+<tr><td>5. Conclusion</td><td>|computed| &lt; critical → accept H₀; otherwise reject H₀.</td></tr></tbody></table></div>
+<h4>Which statistic</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Sample size</th><th>σ known</th><th>σ unknown</th></tr></thead><tbody>
+<tr><td>n ≥ 30</td><td>z-test</td><td>z-test (use s)</td></tr>
+<tr><td>n &lt; 30</td><td>z-test</td><td><b>t-test</b></td></tr></tbody></table></div>
+<h4>Errors of sampling</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Decision</th><th>H₀ true</th><th>H₀ false</th></tr></thead><tbody>
+<tr><td>Reject H₀</td><td><b>Type I error</b> · P = α · producer's risk (rejecting a good lot)</td><td>Correct</td></tr>
+<tr><td>Accept H₀</td><td>Correct</td><td><b>Type II error</b> · P = β · consumer's risk (accepting a bad lot)</td></tr></tbody></table></div>
+<h4>One- and two-tailed tests</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Test</th><th>Hypotheses</th><th>Rejection region</th></tr></thead><tbody>
+<tr><td>Two-tailed</td><td>H₀: μ = μ₀, H₁: μ ≠ μ₀</td><td>Both tails (α/2 each)</td></tr>
+<tr><td>Right-tailed</td><td>H₀: μ ≤ μ₀, H₁: μ &gt; μ₀</td><td>Right tail</td></tr>
+<tr><td>Left-tailed</td><td>H₀: μ ≥ μ₀, H₁: μ &lt; μ₀</td><td>Left tail</td></tr></tbody></table></div>`,
+ examAnswer:{
+  short:"Define the term asked (H₀, α, Type I error …) in one line each.",
+  medium:"The five-step table, or the 2 × 2 error table with α, β and the two risks, plus an example.",
+  long:"All three tables (steps, errors, tails) with the z-vs-t choice and one worked decision."},
+ mistakes:[
+  "Writing H₀ with an inequality only (H₀ must contain the equality).",
+  "Choosing α after looking at the result.",
+  "Calling Type II the producer's risk."],
+ examples:[
+  {id:"ex_m3t4_1", topic:"m3t4", title:"Type I and II errors in quality control",
+   category:"Errors of sampling",
+   recog:"A decision about a lot or a claim, and the question asks what can go wrong.",
+   need:"The 2 × 2 table and the two risks.",
+   q:"A factory tests H₀: “the lot is good” on a sample before shipping. Explain the Type I and Type II errors in this setting, and how both can be reduced together.",
+   steps:[
+    "<b>Type I:</b> the lot is good (H₀ true) but the sample leads us to reject it. Probability α. The producer loses a good lot → <b>producer's risk</b>.",
+    "<b>Type II:</b> the lot is bad (H₀ false) but the sample leads us to accept it. Probability β. The customer receives a bad lot → <b>consumer's risk</b>.",
+    "Lowering α alone raises β, and vice versa.",
+    "The only way to reduce both at once is to <b>increase the sample size</b>."],
+   answer:`<div class="answer">Type I = rejecting a good lot (α, producer's risk) · Type II = accepting a bad lot (β, consumer's risk) · reduce both by increasing n.</div>`,
+   why:"The test only sees a sample, so either wrong decision is possible; their probabilities trade off unless more information (a larger n) is collected.",
+   trap:"Saying α and β add up to 1. They are conditional on different states of the world."}],
+ practice:[
+  {id:"p_m3t4_1", d:"basic", marks:5, q:"Explain the general procedure for testing a hypothesis.",
+   a:`1. <b>Null hypothesis H₀</b> — a definite statement of no difference, e.g. H₀: μ = μ₀.<br>2. <b>Alternative hypothesis H₁</b> — μ ≠ μ₀ (two-tailed) or μ &gt; μ₀ / μ &lt; μ₀ (one-tailed).<br>3. <b>Level of significance α</b> — fixed in advance, usually 5% or 1%; the maximum risk of rejecting a true H₀.<br>4. <b>Test statistic</b> — z when n ≥ 30 or σ is known; t when n &lt; 30 and σ is unknown. Compute it under H₀.<br>5. <b>Conclusion</b> — compare with the table (critical) value: if |computed| &lt; critical, accept H₀; otherwise reject H₀, and state the result in the words of the problem.`},
+  {id:"p_m3t4_2", d:"basic", marks:5, q:"Distinguish one-tailed and two-tailed tests. When would you use each? Give the 5% critical z values.",
+   a:`A <b>two-tailed</b> test has H₁: μ ≠ μ₀ — a difference in either direction matters, so the rejection region is split between both tails. Critical |z| at 5% = <b>1.96</b>.<br>
+A <b>one-tailed</b> test has H₁: μ &gt; μ₀ (right-tailed) or μ &lt; μ₀ (left-tailed) — only one direction matters, so the whole α sits in one tail. Critical z at 5% = <b>1.645</b> (right) or <b>−1.645</b> (left).<br>
+Use a one-tailed test when the claim has a direction (“training <i>improves</i> scores”, “bulbs last <i>at least</i> 1200 h”); otherwise two-tailed.`}],
+ questions:[
+  {q:"Explain the steps in testing a hypothesis.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"Explain Type I and Type II errors.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"Distinguish one-tailed and two-tailed tests.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m3t5", m:"m3", title:"Z-Test for a Single Mean (large samples)",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 3.2","LO 3.4"],
+ src:"COMP B M3 deck slides 22–27 (critical values, ocean-depth example)",
+ summary:"Z = (x̄ − μ)/(σ/√n), compared with 1.96 (5%, two-tailed). The deck's ocean-depth example.",
+ whatIs:`<p>For a large sample (n ≥ 30), the z-test checks whether a sample mean differs significantly from a claimed population mean μ₀. All large-sample tests share one form: <b>Z = (observed − expected) / standard error</b>.</p>`,
+ needToKnow:[
+  "Z = (x̄ − μ)/(σ/√n); use the sample S.D. s if σ is unknown.",
+  "Critical values: two-tailed 1.96 (5%), 2.58 (1%), 1.645 (10%); one-tailed 1.645 (5%), 2.33 (1%), 1.28 (10%).",
+  "Decision: |Z| &lt; Zα → accept H₀; |Z| &gt; Zα → reject. If |Z| &gt; 3, reject outright.",
+  "The four large-sample tests named in the deck: single proportion, difference of proportions, single mean, difference of means."],
+ recognition:{
+  clues:["<b>n ≥ 30</b> and a claimed mean → single-mean z-test.",
+   "<b>“As previously recorded”, “claimed”, “specified”</b> value of μ → μ₀."],
+  wording:["The depth of the ocean was recorded as 57.4 fathoms. 40 readings gave mean 59.1, S.D. 5.2. Test at 5%.",
+   "A manufacturer claims bulbs last 1200 hours. A sample of 100 has mean 1180 and S.D. 90. Test the claim."],
+  firstStep:"Write x̄, μ₀, σ (or s), n and α, and decide the tail from the wording.",
+  method:"H₀, H₁, α → Z → table value → compare |Z| → conclusion in words.",
+  trap:"Using 1.645 for a two-tailed test (that is the one-tailed 5% value)."},
+ concept:`<div class="formula">Z = (x̄ − μ) / (σ / √n)        (σ unknown → use s)</div>
+<div class="scroll"><table class="t num"><thead><tr><th>α</th><th>1%</th><th>5%</th><th>10%</th></tr></thead><tbody>
+<tr><td>Two-tailed |Zα|</td><td>2.58</td><td>1.96</td><td>1.645</td></tr>
+<tr><td>Right-tailed Zα</td><td>2.33</td><td>1.645</td><td>1.28</td></tr>
+<tr><td>Left-tailed Zα</td><td>−2.33</td><td>−1.645</td><td>−1.28</td></tr></tbody></table></div>
+<div class="box neutral"><h5>Gap in the material</h5><p style="margin:0">The deck names four large-sample tests but gives the formula and an example only for the <b>single mean</b>. Difference of means and the two proportion tests have no formula in the class material yet.</p></div>`,
+ examAnswer:{
+  short:"Z value, table value, decision.",
+  medium:"All five steps with the Z calculation and a conclusion in the words of the problem.",
+  long:"Add the critical-value table and why the z-test is valid (CLT, n ≥ 30)."},
+ mistakes:[
+  "Dividing by σ instead of σ/√n.",
+  "Wrong tail: “different from” is two-tailed.",
+  "Stopping at “reject H₀” without saying what it means in context."],
+ examples:[
+  {id:"ex_m3t5_1", topic:"m3t5", title:"Ocean depth (deck example)",
+   category:"Z-test, single mean, two-tailed",
+   recog:"n = 40 ≥ 30, a previously recorded mean, “different” → two-tailed z.",
+   need:"Z = (x̄ − μ)/(σ/√n); Z₀.₀₅ = 1.96.",
+   q:"An oceanographer wants to check whether the depth of the ocean in a region is 57.4 fathoms, as previously recorded. Readings at 40 random locations gave a mean of 59.1 fathoms with S.D. 5.2 fathoms. Test at α = 0.05.",
+   steps:[
+    "H₀: μ = 57.4. H₁: μ ≠ 57.4 (two-tailed). α = 0.05.",
+    "SE = 5.2/√40 = 5.2/6.325 = 0.822.",
+    "Z = (59.1 − 57.4)/0.822 = 1.7/0.822 = <b>2.067</b>.",
+    "Tabulated Z₀.₀₅ (two-tailed) = 1.96.",
+    "2.067 &gt; 1.96 → <b>reject H₀</b>."],
+   answer:`<div class="formula">Z = (59.1 − 57.4) / (5.2/√40) = 2.067  &gt;  1.96</div>
+<div class="answer">H₀ rejected — the depth is significantly different from 57.4 fathoms.</div>`,
+   why:"With n = 40 the sample mean is approximately normal (CLT), so Z follows the standard normal under H₀.",
+   trap:"Concluding “the depth is 59.1”. The test only says it is not 57.4."}],
+ practice:[
+  {id:"p_m3t5_1", d:"standard", marks:5, q:"A manufacturer claims the mean life of bulbs is 1200 hours. A sample of 100 bulbs has mean 1180 hours and S.D. 90 hours. Test the claim at 5% (two-tailed).",
+   hint:"SE = 90/10 = 9.",
+   a:`H₀: μ = 1200; H₁: μ ≠ 1200; α = 0.05.<br>
+<div class="formula">Z = (1180 − 1200) / (90/√100) = −20 / 9 = −2.22      |Z| = 2.22</div>
+Tabulated Z₀.₀₅ = 1.96. Since 2.22 &gt; 1.96, <b>reject H₀</b>.
+<div class="answer">The mean life differs significantly from 1200 hours; the sample suggests it is lower.</div>`}],
+ questions:[
+  {q:"Test whether a sample mean differs significantly from a claimed population mean (large sample).", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"Name the four large-sample tests of significance.", marks:2, d:"basic", priority:"medium", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m3t6", m:"m3", title:"t-Tests: One-Sample, Independent &amp; Paired",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 3.2","LO 3.3","LO 3.4"],
+ src:"COMP B M3 deck slides 28–40 (I.Q., pig diets, shooting examples)",
+ summary:"Small samples with unknown σ. Three formulas, three df rules, three worked examples from the deck.",
+ whatIs:`<p>A <b>t-test</b> compares means when the population S.D. is unknown and the sample is small (n &lt; 30). There are three kinds: <b>one-sample</b> (sample vs a known population mean), <b>independent samples</b> (two unrelated groups) and <b>paired samples</b> (the same subjects measured twice).</p>`,
+ needToKnow:[
+  "One-sample: t = (x̄ − μ)/(s/√n), df = n − 1, with s² = Σ(x − x̄)²/(n − 1).",
+  "Independent: t = (x̄ − ȳ)/√(s²/n₁ + s²/n₂), pooled s² = [Σ(x − x̄)² + Σ(y − ȳ)²]/(n₁ + n₂ − 2), df = n₁ + n₂ − 2.",
+  "Paired: t = (d̄ − 0)/(s_d/√n) on the differences d, df = n − 1 (n = number of pairs).",
+  "Six steps: hypotheses → α → formula → df → table value → conclusion.",
+  "Which one: one group vs a value → one-sample; two separate groups → independent; before/after on the same subjects → paired."],
+ recognition:{
+  clues:["<b>One small sample and a claimed mean</b> → one-sample t.",
+   "<b>Two groups of different people</b> (diet A vs diet B, n₁ ≠ n₂ allowed) → independent t.",
+   "<b>“Before and after”, the same soldiers / patients</b> → paired t on the differences."],
+  wording:["A sample of 10 boys had I.Q.s 70, 120, 110, … Do these data support a population mean of 100?",
+   "Gains in weight of pigs on diets A and B are given. Do the diets differ significantly?",
+   "Scores of 10 soldiers before and after training are given. Is the training effective?"],
+  firstStep:"Decide <b>which t-test</b> from the design, then the <b>df</b>. Everything else follows.",
+  method:"Build the table (x, x − x̄, (x − x̄)²; or d, d − d̄, (d − d̄)²) → mean and s → t → t-table at the right df and tail → decision.",
+  trap:"Dividing by n instead of n − 1 when computing s² from raw data."},
+ concept:`<div class="scroll"><table class="t"><thead><tr><th>Test</th><th>Statistic</th><th>df</th></tr></thead><tbody>
+<tr><td>One-sample</td><td>t = (x̄ − μ) / (s/√n)</td><td>n − 1</td></tr>
+<tr><td>Independent</td><td>t = (x̄ − ȳ) / √(s²/n₁ + s²/n₂),  s² = [Σ(x−x̄)² + Σ(y−ȳ)²]/(n₁+n₂−2)</td><td>n₁ + n₂ − 2</td></tr>
+<tr><td>Paired</td><td>t = d̄ / (s_d/√n),  s_d² = Σ(d − d̄)²/(n − 1)</td><td>n − 1</td></tr></tbody></table></div>
+<p>t-table values used in the deck (5%): t(9) = 2.262 two-tailed, 1.833 one-tailed · t(25) = 2.06 two-tailed.</p>
+<div class="box neutral"><h5>Slip in the deck (paired example)</h5><p style="margin:0">The deck states H₁: μ ≠ μ₂ (two-tailed) but compares t = 2.16 with <b>1.83</b>, which is the <b>one-tailed</b> value for 9 df. Two-tailed, 2.16 &lt; 2.262 and H₀ would be <b>accepted</b>. The deck's conclusion (“training is useful”) is right for the one-tailed question “does training <i>improve</i> scores?”. In the exam, write H₁ as one-tailed (μ_after &gt; μ_before) if you use 1.833.</p></div>`,
+ examAnswer:{
+  short:"Formula, t value, table value, decision.",
+  medium:"Working table, mean and s, all six steps, conclusion in context.",
+  long:"Add the choice of test, df rule, and the assumptions (normal population, σ unknown, small n)."},
+ mistakes:[
+  "Using the independent test for before/after data on the same people.",
+  "Wrong df: independent uses n₁ + n₂ − 2.",
+  "Comparing a signed t with the table: compare |t|.",
+  "Mixing a two-tailed H₁ with a one-tailed table value."],
+ examples:[
+  {id:"ex_m3t6_1", topic:"m3t6", title:"One-sample t: I.Q. of 10 boys",
+   category:"One-sample t-test + t-interval",
+   recog:"One small sample (n = 10), σ unknown, claimed mean 100.",
+   need:"x̄, s with n − 1, t = (x̄ − μ)/(s/√n), df = 9.",
+   q:"A random sample of 10 boys had I.Q.s 70, 120, 110, 101, 88, 83, 95, 98, 107, 100. (a) Do these data support a population mean I.Q. of 100? (b) Find a reasonable range in which most mean I.Q. values of samples of 10 boys lie.",
+   steps:[
+    "x̄ = 972/10 = <b>97.2</b>. Σ(x − x̄)² = 1833.6.",
+    "s² = 1833.6/9 = 203.73 → s = <b>14.27</b>.",
+    "H₀: μ = 100; H₁: μ ≠ 100; α = 0.05; df = 9.",
+    "t = (97.2 − 100)/(14.27/√10) = −2.8/4.512 = −0.62 → |t| = <b>0.62</b>.",
+    "t(9, 0.05) two-tailed = 2.262. 0.62 &lt; 2.262 → <b>accept H₀</b>.",
+    "(b) 95% limits: 97.2 ± 2.262 × 4.512 = 97.2 ± 10.2 → <b>(87.0, 107.4)</b>."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>x</th><th>x − x̄</th><th>(x − x̄)²</th></tr></thead><tbody>
+<tr><td>70</td><td>−27.2</td><td>739.84</td></tr><tr><td>120</td><td>22.8</td><td>519.84</td></tr><tr><td>110</td><td>12.8</td><td>163.84</td></tr>
+<tr><td>101</td><td>3.8</td><td>14.44</td></tr><tr><td>88</td><td>−9.2</td><td>84.64</td></tr><tr><td>83</td><td>−14.2</td><td>201.64</td></tr>
+<tr><td>95</td><td>−2.2</td><td>4.84</td></tr><tr><td>98</td><td>0.8</td><td>0.64</td></tr><tr><td>107</td><td>9.8</td><td>96.04</td></tr>
+<tr><td>100</td><td>2.8</td><td>7.84</td></tr><tr><td><b>Σ = 972</b></td><td></td><td><b>1833.60</b></td></tr></tbody></table></div>
+<div class="formula">t = (97.2 − 100) / (14.27/√10) = −0.62      |t| = 0.62 &lt; t(9) = 2.262</div>
+<div class="answer">(a) H₀ accepted — the data support a mean I.Q. of 100. (b) 95% limits <b>87.0 to 107.4</b>.</div>`,
+   why:"σ is unknown and n is small, so the extra uncertainty in s is allowed for by the wider t distribution.",
+   trap:"s² = 1833.6/10 (dividing by n) gives s = 13.54 and a wrong t."},
+  {id:"ex_m3t6_2", topic:"m3t6", title:"Independent t: two pig diets",
+   category:"Independent samples t-test",
+   recog:"Two different groups of pigs, unequal sizes (12 and 15).",
+   need:"Pooled s², t = (x̄ − ȳ)/√(s²/n₁ + s²/n₂), df = n₁ + n₂ − 2.",
+   q:"Gains in weight (lb) of pigs on two diets. Diet A: 25, 32, 30, 34, 24, 14, 32, 24, 30, 31, 35, 25. Diet B: 44, 34, 22, 10, 47, 31, 40, 30, 32, 35, 18, 21, 35, 29, 22. Do the diets differ significantly at 5%?",
+   steps:[
+    "n₁ = 12, Σx = 336, x̄ = 28; n₂ = 15, Σy = 450, ȳ = 30.",
+    "Σ(x − x̄)² = 380; Σ(y − ȳ)² = 1410.",
+    "s² = (380 + 1410)/(12 + 15 − 2) = 1790/25 = <b>71.6</b>.",
+    "t = (30 − 28)/√(71.6/12 + 71.6/15) = 2/√10.74 = 2/3.277 = <b>0.61</b>.",
+    "df = 25, t(25, 0.05) = 2.06. 0.61 &lt; 2.06 → <b>accept H₀</b>."],
+   answer:`<div class="formula">s² = (380 + 1410)/25 = 71.6
+t = (30 − 28)/√(5.967 + 4.773) = 0.61  &lt;  t(25) = 2.06</div>
+<div class="answer">H₀ accepted — the diets do not differ significantly in their effect on weight.</div>`,
+   why:"Pooling the two sums of squares gives one estimate of the common variance, using all 27 observations.",
+   trap:"Using df = n − 1 for one group only."},
+  {id:"ex_m3t6_3", topic:"m3t6", title:"Paired t: shooting scores before and after training",
+   category:"Paired samples t-test",
+   recog:"The same 10 soldiers measured twice → work on the differences.",
+   need:"d = before − after, d̄, s_d with n − 1, t = d̄/(s_d/√n), df = 9.",
+   q:"Scores of 10 soldiers before and after intensive training. Before: 67, 24, 57, 55, 63, 54, 56, 68, 33, 43. After: 70, 38, 58, 58, 56, 67, 68, 75, 42, 38. Is the training effective? (α = 0.05)",
+   steps:[
+    "d = before − after: −3, −14, −1, −3, 7, −13, −12, −7, −9, 5. Σd = −50, d̄ = <b>−5</b>.",
+    "Σ(d − d̄)² = 482 → s_d² = 482/9 = 53.56 → s_d = <b>7.32</b>.",
+    "t = −5/(7.32/√10) = −5/2.315 = <b>−2.16</b>, |t| = 2.16.",
+    "The claim is that training <i>improves</i> scores → one-tailed H₁: μ_after &gt; μ_before; t(9, 0.05) one-tailed = 1.833.",
+    "2.16 &gt; 1.833 → <b>reject H₀</b>: training is effective."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>Soldier</th><th>Before</th><th>After</th><th>d</th><th>d − d̄</th><th>(d − d̄)²</th></tr></thead><tbody>
+<tr><td>1</td><td>67</td><td>70</td><td>−3</td><td>2</td><td>4</td></tr><tr><td>2</td><td>24</td><td>38</td><td>−14</td><td>−9</td><td>81</td></tr>
+<tr><td>3</td><td>57</td><td>58</td><td>−1</td><td>4</td><td>16</td></tr><tr><td>4</td><td>55</td><td>58</td><td>−3</td><td>2</td><td>4</td></tr>
+<tr><td>5</td><td>63</td><td>56</td><td>7</td><td>12</td><td>144</td></tr><tr><td>6</td><td>54</td><td>67</td><td>−13</td><td>−8</td><td>64</td></tr>
+<tr><td>7</td><td>56</td><td>68</td><td>−12</td><td>−7</td><td>49</td></tr><tr><td>8</td><td>68</td><td>75</td><td>−7</td><td>−2</td><td>4</td></tr>
+<tr><td>9</td><td>33</td><td>42</td><td>−9</td><td>−4</td><td>16</td></tr><tr><td>10</td><td>43</td><td>38</td><td>5</td><td>10</td><td>100</td></tr>
+<tr><td><b>Total</b></td><td></td><td></td><td><b>−50</b></td><td></td><td><b>482</b></td></tr></tbody></table></div>
+<div class="formula">t = −5 / (7.32/√10) = −2.16      |t| = 2.16 &gt; t(9) one-tailed = 1.833</div>
+<div class="answer">H₀ rejected — the training improves scores. (Two-tailed, 2.16 &lt; 2.262 would not be significant.)</div>`,
+   why:"Pairing removes the soldier-to-soldier variation, so the test sees only the change.",
+   trap:"Treating before and after as two independent groups."}],
+ practice:[
+  {id:"p_m3t6_1", d:"standard", marks:5, q:"A sample of 9 items has mean 52 and S.D. (with n − 1) 6. Test at 5% whether the population mean could be 50.",
+   hint:"t(8) two-tailed = 2.306.",
+   a:`H₀: μ = 50; H₁: μ ≠ 50; df = 8.
+<div class="formula">t = (52 − 50)/(6/√9) = 2/2 = 1.0  &lt;  t(8, 0.05) = 2.306</div>
+<div class="answer">H₀ accepted — the population mean could be 50.</div>`},
+  {id:"p_m3t6_2", d:"moderate", marks:10, q:"Five patients' scores before and after a treatment: before 10, 12, 9, 11, 13; after 12, 14, 10, 13, 14. Test at 5% whether the treatment changes the score.",
+   hint:"Work on d = after − before; df = 4; t(4) two-tailed = 2.776.",
+   a:`d = after − before = 2, 2, 1, 2, 1 → d̄ = 8/5 = <b>1.6</b>.<br>
+Σ(d − d̄)² = 0.16 + 0.16 + 0.36 + 0.16 + 0.36 = 1.2 → s_d² = 1.2/4 = 0.3 → s_d = <b>0.548</b>.
+<div class="formula">t = 1.6 / (0.548/√5) = 1.6 / 0.245 = 6.53  &gt;  t(4, 0.05) = 2.776</div>
+<div class="answer">H₀ rejected — the treatment changes (raises) the score significantly.</div>`}],
+ questions:[
+  {q:"One-sample t-test on given small-sample data, with 95% limits.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Independent samples t-test for two groups.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Paired t-test on before/after data.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Explain the three types of t-test with their formulas and degrees of freedom.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m3t7", m:"m3", title:"ANOVA: One-Way and Two-Way",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 3.2","LO 3.3","LO 3.4"],
+ src:"COMP B M3 deck slides 41–57 (wheat varieties, seeds × fertilizers)",
+ summary:"Compare three or more means at once with F = MS between / MS within. Build the ANOVA table.",
+ whatIs:`<p><b>Analysis of variance (ANOVA)</b> tests whether two or more population means differ. Running many t-tests inflates the Type I error rate; ANOVA compares all means in one test. It makes two estimates of the population variance — <b>between</b> samples and <b>within</b> samples — and compares them with the <b>F-ratio</b>.</p>
+<p><b>One-way</b> ANOVA has one factor (wheat variety). <b>Two-way</b> ANOVA has two factors at once (seed variety in columns, fertilizer in rows).</p>`,
+ needToKnow:[
+  "Why ANOVA instead of repeated t-tests.",
+  "One-way: SS between = Σ nⱼ(X̄ⱼ − X̿)², SS within = Σ Σ(X − X̄ⱼ)², SS total = SS between + SS within.",
+  "df: between k − 1, within n − k, total n − 1. MS = SS/df. F = MS between / MS within.",
+  "Two-way (one value per cell): correction factor T²/n; SS columns = Σ Tⱼ²/nⱼ − T²/n; SS rows = Σ Tᵢ²/nᵢ − T²/n; SS residual = total − columns − rows; df residual = (c − 1)(r − 1).",
+  "Decision: F &lt; table F → accept H₀ (no significant difference); F ≥ table F → reject."],
+ recognition:{
+  clues:["<b>Three or more groups</b> and “are the differences significant?” → ANOVA.",
+   "<b>One classifying factor</b> (varieties, machines, methods) → one-way.",
+   "<b>A grid with two factors</b> (seeds × fertilizers, workers × machines) → two-way."],
+  wording:["Set up an analysis of variance table for the per-acre production of three wheat varieties on 4 plots each.",
+   "Set up a two-way ANOVA table for the yields of seed varieties A, B, C under fertilizers W, X, Y, Z."],
+  firstStep:"Count k (groups) and n (total observations); for two-way, c (columns) and r (rows). Write the df column first.",
+  method:"Group means / totals → SS → df → MS → F → compare with F(df₁, df₂) → conclusion. Present it as the ANOVA table.",
+  trap:"Putting the df in the wrong order in F(v₁, v₂): v₁ is the numerator (between) df."},
+ concept:`<h4>One-way ANOVA table</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody>
+<tr><td>Between samples</td><td>Σ nⱼ(X̄ⱼ − X̿)²</td><td>k − 1</td><td>SS/(k − 1)</td><td>MS between / MS within</td></tr>
+<tr><td>Within samples</td><td>Σ Σ (X − X̄ⱼ)²</td><td>n − k</td><td>SS/(n − k)</td><td></td></tr>
+<tr><td>Total</td><td>Σ (X − X̿)²</td><td>n − 1</td><td></td><td></td></tr></tbody></table></div>
+<h4>Two-way ANOVA table (one observation per cell)</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody>
+<tr><td>Between columns</td><td>Σ Tⱼ²/nⱼ − T²/n</td><td>c − 1</td><td>SS/(c − 1)</td><td>MS columns / MS residual</td></tr>
+<tr><td>Between rows</td><td>Σ Tᵢ²/nᵢ − T²/n</td><td>r − 1</td><td>SS/(r − 1)</td><td>MS rows / MS residual</td></tr>
+<tr><td>Residual</td><td>Total − (columns + rows)</td><td>(c − 1)(r − 1)</td><td>SS/df</td><td></td></tr>
+<tr><td>Total</td><td>Σ X² − T²/n</td><td>cr − 1</td><td></td><td></td></tr></tbody></table></div>
+<div class="box neutral"><h5>Slips in the deck</h5><p style="margin:0">Step 5 of the one-way procedure is labelled “SS between” but defines <b>SS within</b>, and writes every group's deviations from X̄₁; each group uses its <b>own</b> mean X̄ⱼ. The X̿ = mean of sample means shortcut is exact only when the groups are equal in size; otherwise use the grand mean of all observations.</p></div>`,
+ examAnswer:{
+  short:"Define ANOVA and the F-ratio.",
+  medium:"The full ANOVA table for the given data with the conclusion.",
+  long:"Principle (two variance estimates), why not many t-tests, the steps, the table, and the conclusion; for two-way, both F-ratios with their conclusions."},
+ mistakes:[
+  "Forgetting to multiply by nⱼ in SS between.",
+  "Using n − 1 for the within df (it is n − k).",
+  "Dividing MS within by MS between.",
+  "Not checking SS total = SS between + SS within."],
+ examples:[
+  {id:"ex_m3t7_1", topic:"m3t7", title:"One-way ANOVA: three wheat varieties",
+   category:"One-way ANOVA",
+   recog:"Three varieties (k = 3), four plots each (n = 12), one factor.",
+   need:"Group means, grand mean, SS between and within, F(2, 9).",
+   q:"Per-acre production for three varieties of wheat, each on 4 plots. A: 6, 7, 3, 8. B: 5, 5, 3, 7. C: 5, 4, 3, 4. Set up the ANOVA table and state whether the variety differences are significant at 5%.",
+   steps:[
+    "Means: X̄_A = 24/4 = 6, X̄_B = 20/4 = 5, X̄_C = 16/4 = 4. Grand mean X̿ = 5.",
+    "SS between = 4(6 − 5)² + 4(5 − 5)² + 4(4 − 5)² = 4 + 0 + 4 = <b>8</b>.",
+    "SS within: A: 0 + 1 + 9 + 4 = 14; B: 0 + 0 + 4 + 4 = 8; C: 1 + 0 + 1 + 0 = 2 → <b>24</b>.",
+    "Check: SS total = 32 = 8 + 24 ✓.",
+    "MS between = 8/2 = 4; MS within = 24/9 = 2.67; F = 4/2.67 = <b>1.5</b>.",
+    "F(2, 9) at 5% = 4.26. 1.5 &lt; 4.26 → <b>accept H₀</b>."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>F(2, 9) 5%</th></tr></thead><tbody>
+<tr><td>Between samples</td><td>8</td><td>2</td><td>4.00</td><td>1.5</td><td>4.26</td></tr>
+<tr><td>Within samples</td><td>24</td><td>9</td><td>2.67</td><td></td><td></td></tr>
+<tr><td>Total</td><td>32</td><td>11</td><td></td><td></td><td></td></tr></tbody></table></div>
+<div class="answer">F = 1.5 &lt; 4.26 — the variety differences are not significant; they could have arisen by chance.</div>`,
+   why:"If the varieties were really different, the between-sample variance would be large relative to the natural plot-to-plot variance within each variety.",
+   trap:"SS between = (6−5)² + (5−5)² + (4−5)² = 2, forgetting the factor 4."},
+  {id:"ex_m3t7_2", topic:"m3t7", title:"Two-way ANOVA: seeds × fertilizers",
+   category:"Two-way ANOVA",
+   recog:"A grid: seed varieties in columns, fertilizers in rows, one value per cell.",
+   need:"T, correction factor, column and row totals, residual by subtraction.",
+   q:"Per-acre production (tonnes). Columns are seed varieties A, B, C; rows are fertilizers W, X, Y, Z. W: 6, 5, 5. X: 7, 5, 4. Y: 3, 3, 3. Z: 8, 7, 4. Set up the ANOVA table and test both factors at 5%.",
+   steps:[
+    "T = 60, n = 12, correction factor T²/n = 3600/12 = <b>300</b>.",
+    "Total SS = ΣX² − 300 = 332 − 300 = <b>32</b>.",
+    "Column totals A = 24, B = 20, C = 16: SS columns = (576 + 400 + 256)/4 − 300 = 308 − 300 = <b>8</b>.",
+    "Row totals W = 16, X = 16, Y = 9, Z = 19: SS rows = (256 + 256 + 81 + 361)/3 − 300 = 318 − 300 = <b>18</b>.",
+    "SS residual = 32 − (8 + 18) = <b>6</b>, df = (3 − 1)(4 − 1) = 6, MS = 1.",
+    "F seeds = 4/1 = 4 &lt; F(2, 6) = 5.14 → not significant. F fertilizers = 6/1 = 6 &gt; F(3, 6) = 4.76 → significant."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>5% table F</th></tr></thead><tbody>
+<tr><td>Between columns (seeds)</td><td>8</td><td>2</td><td>4</td><td>4</td><td>F(2, 6) = 5.14</td></tr>
+<tr><td>Between rows (fertilizers)</td><td>18</td><td>3</td><td>6</td><td>6</td><td>F(3, 6) = 4.76</td></tr>
+<tr><td>Residual</td><td>6</td><td>6</td><td>1</td><td></td><td></td></tr>
+<tr><td>Total</td><td>32</td><td>11</td><td></td><td></td><td></td></tr></tbody></table></div>
+<div class="answer">Seed differences are <b>not significant</b>; fertilizer differences <b>are significant</b> at 5%.</div>`,
+   why:"Taking the fertilizer variation out of the residual leaves a much smaller error term (MS = 1 instead of 2.67), which is why two-way ANOVA can detect effects that one-way misses.",
+   trap:"Dividing row totals by 4 instead of by the number of values in each row (3)."}],
+ practice:[
+  {id:"p_m3t7_1", d:"standard", marks:10, q:"Three teaching methods were tried on 3 students each. Scores — Method 1: 4, 5, 6; Method 2: 6, 7, 8; Method 3: 8, 9, 10. Test at 5% whether the methods differ. (F(2, 6) = 5.14)",
+   hint:"Means 5, 7, 9; grand mean 7.",
+   a:`SS between = 3[(5 − 7)² + (7 − 7)² + (9 − 7)²] = 3 × 8 = <b>24</b>; SS within = 2 + 2 + 2 = <b>6</b>; total = 30.
+<div class="scroll"><table class="t num"><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody>
+<tr><td>Between</td><td>24</td><td>2</td><td>12</td><td>12</td></tr><tr><td>Within</td><td>6</td><td>6</td><td>1</td><td></td></tr><tr><td>Total</td><td>30</td><td>8</td><td></td><td></td></tr></tbody></table></div>
+<div class="answer">F = 12 &gt; 5.14 — the methods differ significantly.</div>`},
+  {id:"p_m3t7_2", d:"basic", marks:5, q:"Explain the basic principle of ANOVA and why it is preferred to several t-tests.",
+   a:`ANOVA tests the equality of several means by making <b>two estimates of the population variance</b>: one from the variation <b>between</b> the sample means and one from the variation <b>within</b> the samples. Under H₀ (all means equal) both estimate the same variance, so F = MS between / MS within is close to 1. A large F means the sample means are further apart than chance allows → reject H₀.<br><br>
+Comparing k groups with t-tests needs k(k − 1)/2 tests, and each carries a risk α of a Type I error, so the overall chance of a false “significant” result grows. ANOVA tests all the means in <b>one</b> test at level α.`}],
+ questions:[
+  {q:"Set up a one-way ANOVA table for the given data and state whether the differences are significant.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Set up a two-way ANOVA table and test both factors.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Explain the principle of ANOVA.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
+/* ============================ MODULE 4 ============================== */
+
+TOPICS.push({
+ id:"m4t1", m:"m4", title:"Simple Linear Regression: Slope, Intercept, Least Squares",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 4.1","LO 4.3"],
+ src:"COMP B M4 deck slides 2–10 · M6 deck expenditure example (same least-squares method)",
+ summary:"Fit y′ = ax + b by least squares, interpret slope and intercept, predict. Correlation vs regression.",
+ whatIs:`<p><b>Regression</b> models the relationship between a <b>dependent</b> (target) variable Y and one or more <b>independent</b> (predictor) variables X, so that Y can be predicted from X. It measures the <b>average relationship</b> between the variables.</p>
+<p><b>Simple linear regression</b> fits one straight line, y′ = ax + b, through the points so that the errors (vertical distances from the points to the line) are as small as possible in the least-squares sense.</p>`,
+ needToKnow:[
+  "Slope a = [nΣxy − ΣxΣy] / [nΣx² − (Σx)²]; intercept b = (Σy − aΣx)/n = ȳ − a x̄.",
+  "Slope = change in y for a one-unit increase in x; intercept = predicted y when x = 0.",
+  "Error (residual) e = y − y′; the line passes through (x̄, ȳ) and Σe = 0.",
+  "Correlation vs regression: degree vs nature of relationship; no cause-effect vs cause-effect; no prediction vs prediction; r_xy = r_yx vs b_xy ≠ b_yx; independent of origin and scale vs independent of origin only.",
+  "Types: simple vs multiple, linear vs non-linear, partial vs total."],
+ recognition:{
+  clues:["<b>Pairs (x, y) and “fit a line”, “least squares”, “estimate y when x = …”</b> → simple regression.",
+   "<b>“Meaning of slope / intercept”</b> → interpret a and b in the units of the problem.",
+   "<b>“Differentiate correlation and regression”</b> → the five-row table."],
+  wording:["Find the regression line y = ax + b by the method of least squares and estimate y for x = 6.",
+   "Explain the meaning of the intercept and slope in a regression equation.",
+   "Distinguish between correlation and regression."],
+  firstStep:"Make the table with columns x, y, xy, x² and get the four totals plus n.",
+  method:"a from the formula → b = (Σy − aΣx)/n → write y′ = ax + b → substitute the new x → interpret a and b.",
+  trap:"Mixing up the notation. The deck writes y′ = ax + b with <b>a = slope</b>; many textbooks write Y = a + bX with b = slope. State your notation."},
+ concept:`<div class="formula">y′ = a x + b
+
+a (slope)     = [ n Σxy − Σx Σy ] / [ n Σx² − (Σx)² ]  =  Σ(x − x̄)(y − ȳ) / Σ(x − x̄)²
+b (intercept) = ( Σy − a Σx ) / n  =  ȳ − a x̄</div>
+<div class="scroll"><table class="t"><thead><tr><th>Basis</th><th>Correlation</th><th>Regression</th></tr></thead><tbody>
+<tr><td>Purpose</td><td>Degree of relationship between X and Y</td><td>Nature of the relationship, to predict one from the other</td></tr>
+<tr><td>Cause and effect</td><td>Not assumed</td><td>X is the cause, Y the effect</td></tr>
+<tr><td>Prediction</td><td>Not possible</td><td>Possible, using the regression line</td></tr>
+<tr><td>Symmetry</td><td>r_xy = r_yx</td><td>b_xy ≠ b_yx</td></tr>
+<tr><td>Origin and scale</td><td>Independent of both</td><td>Independent of origin, not of scale</td></tr></tbody></table></div>
+<div class="box neutral"><h5>Slips in the deck</h5><p style="margin:0">The intercept formula is printed as b = (Σy − <b>b</b>Σx)/n; it should use the slope: b = (Σy − <b>a</b>Σx)/n (the boxed ȳ − a x̄ beside it is right). The deck also calls the dependent variable “target or explanatory”; <b>explanatory</b> means the independent variable.</p></div>`,
+ examAnswer:{
+  short:"Formula for a and b, the fitted line, one prediction.",
+  medium:"Full x, y, xy, x² table, a and b, the line, the prediction and what a and b mean.",
+  long:"Add fitted values and errors with MAE/R² (see the next topic) and the correlation-vs-regression table."},
+ mistakes:[
+  "Using (Σx)² where Σx² is needed, or the reverse.",
+  "Computing b before a, or with the wrong letter.",
+  "Interpreting the intercept when x = 0 is meaningless in context without saying so."],
+ examples:[
+  {id:"ex_m4t1_1", topic:"m4t1", title:"Monthly expenditure: fit and predict",
+   category:"Least-squares line",
+   recog:"x = month 1–5, y = expenditure; “find the regression line” and “estimate month 6”.",
+   need:"Σx, Σy, Σxy, Σx², n.",
+   q:"The expenditure (₹ thousand) of an organisation for months 1–5 is 12, 19, 29, 37, 45. Find the regression line y = ax + b by least squares and estimate the expenditure in month 6.",
+   steps:[
+    "n = 5, Σx = 15, Σy = 142, Σxy = 510, Σx² = 55.",
+    "a = (5 × 510 − 15 × 142)/(5 × 55 − 15²) = (2550 − 2130)/(275 − 225) = 420/50 = <b>8.4</b>.",
+    "b = (142 − 8.4 × 15)/5 = (142 − 126)/5 = <b>3.2</b>.",
+    "Line: <b>y′ = 8.4x + 3.2</b>.",
+    "Month 6: y′ = 8.4 × 6 + 3.2 = <b>53.6</b>."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>x</th><th>y</th><th>xy</th><th>x²</th></tr></thead><tbody>
+<tr><td>1</td><td>12</td><td>12</td><td>1</td></tr><tr><td>2</td><td>19</td><td>38</td><td>4</td></tr><tr><td>3</td><td>29</td><td>87</td><td>9</td></tr>
+<tr><td>4</td><td>37</td><td>148</td><td>16</td></tr><tr><td>5</td><td>45</td><td>225</td><td>25</td></tr>
+<tr><td><b>15</b></td><td><b>142</b></td><td><b>510</b></td><td><b>55</b></td></tr></tbody></table></div>
+<div class="formula">a = 420/50 = 8.4      b = (142 − 126)/5 = 3.2      y′ = 8.4x + 3.2</div>
+<div class="answer">Month 6 estimate = <b>₹53.6 thousand</b>. Expenditure rises by about ₹8.4 thousand per month.</div>`,
+   why:"Least squares chooses the line that minimises Σe², which gives these closed-form a and b.",
+   trap:"Using n = 6 because the prediction is for month 6. n is the number of data points (5)."}],
+ practice:[
+  {id:"p_m4t1_1", d:"standard", marks:10, q:"Advertising spend x (₹ lakh): 1, 2, 3, 4, 5. Sales y (₹ lakh): 3, 4, 6, 7, 10. Fit y′ = ax + b, interpret a and b, and predict sales when x = 6.",
+   hint:"Σxy = 107, Σx² = 55.",
+   a:`Σx = 15, Σy = 30, Σxy = 107, Σx² = 55, n = 5.
+<div class="formula">a = (5 × 107 − 15 × 30)/(5 × 55 − 225) = (535 − 450)/50 = 1.7
+b = (30 − 1.7 × 15)/5 = (30 − 25.5)/5 = 0.9
+y′ = 1.7x + 0.9      x = 6 → y′ = 11.1</div>
+<b>Slope 1.7:</b> each extra ₹1 lakh of advertising adds about ₹1.7 lakh of sales. <b>Intercept 0.9:</b> predicted sales with no advertising (an extrapolation, since x = 0 is outside the data).
+<div class="answer">y′ = 1.7x + 0.9 · predicted sales at x = 6: <b>₹11.1 lakh</b></div>`},
+  {id:"p_m4t1_2", d:"basic", marks:5, q:"Distinguish between correlation and regression.",
+   a:`<div class="scroll"><table class="t"><thead><tr><th>Basis</th><th>Correlation</th><th>Regression</th></tr></thead><tbody>
+<tr><td>Measures</td><td>Degree of relationship</td><td>Nature of relationship, for prediction</td></tr>
+<tr><td>Cause-effect</td><td>Not assumed</td><td>X cause, Y effect</td></tr>
+<tr><td>Prediction</td><td>No</td><td>Yes, from the regression line</td></tr>
+<tr><td>Symmetry</td><td>r_xy = r_yx</td><td>b_xy ≠ b_yx</td></tr>
+<tr><td>Origin and scale</td><td>Independent of both</td><td>Independent of origin only</td></tr></tbody></table></div>`}],
+ questions:[
+  {q:"Fit a regression line by least squares and predict a value.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Explain the meaning of the intercept and slope.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"Distinguish between correlation and regression.", marks:5, d:"basic", priority:"high", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m4t2", m:"m4", title:"Error Term &amp; Model Fit: R², MAE, MSE, RMSE, MAPE",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 4.2","LO 4.6"],
+ src:"COMP B M4 deck slides 9–13 · M6 deck regression evaluation",
+ summary:"From actual and predicted values: MAE, MSE, RMSE, MAPE and R² = 1 − SSE/SST, with what each one tells you.",
+ whatIs:`<p>The <b>error term</b> is the part of y the model does not explain: e = y − ŷ. Five measures summarise the errors. The first four measure how <b>wrong</b> the predictions are; <b>R²</b> measures how much of the variation in y the model <b>explains</b>.</p>`,
+ needToKnow:[
+  "MAE = (1/n) Σ|y − ŷ| — same unit as y, treats all errors equally.",
+  "MSE = (1/n) Σ(y − ŷ)² — penalises large errors, sensitive to outliers. RMSE = √MSE — back in the unit of y.",
+  "MAPE = (100/n) Σ|y − ŷ|/|y| — a percentage, scale-free, unreliable when y is near 0.",
+  "R² = 1 − Σ(y − ŷ)²/Σ(y − ȳ)² = 1 − SSE/SST; 0 ≤ R² ≤ 1; R² = 0.95 means 95% of the variation in y is explained.",
+  "Lower MAE/RMSE/MAPE is better; higher R² is better."],
+ recognition:{
+  clues:["<b>A table of actual and predicted values</b> → compute the error columns.",
+   "<b>“How good is the fit”, “evaluate the model”</b> → R² plus one error measure.",
+   "<b>“Which metric is sensitive to outliers”</b> → MSE/RMSE."],
+  wording:["For the actual and predicted values below, compute MAE, RMSE, MAPE and R².",
+   "Explain R² and interpret R² = 0.96."],
+  firstStep:"Add columns e, |e|, e², |e|/y and (y − ȳ)² to the table.",
+  method:"Total each column → divide by n → take √ for RMSE, ×100 for MAPE → R² = 1 − Σe²/Σ(y − ȳ)² → one-line interpretation of each.",
+  trap:"Signed errors cancel: Σe is 0 for a least-squares line. Always use |e| or e²."},
+ concept:`<div class="formula">MAE  = (1/n) Σ |y − ŷ|
+MSE  = (1/n) Σ (y − ŷ)²          RMSE = √MSE
+MAPE = (100/n) Σ |y − ŷ| / |y|   (%)
+R²   = 1 − Σ(y − ŷ)² / Σ(y − ȳ)²  =  1 − SSE / SST</div>
+<div class="scroll"><table class="t"><thead><tr><th>Measure</th><th>Unit</th><th>Strength</th><th>Weakness</th></tr></thead><tbody>
+<tr><td>MAE</td><td>Same as y</td><td>Easy to interpret, robust</td><td>Does not stress large errors</td></tr>
+<tr><td>MSE</td><td>y²</td><td>Penalises large errors</td><td>Hard to interpret; outlier-sensitive</td></tr>
+<tr><td>RMSE</td><td>Same as y</td><td>Penalises large errors, interpretable</td><td>Outlier-sensitive</td></tr>
+<tr><td>MAPE</td><td>%</td><td>Scale-free, compares datasets</td><td>Breaks down when y ≈ 0</td></tr>
+<tr><td>R²</td><td>none, 0–1</td><td>Share of variation explained</td><td>Always rises with more predictors (see adjusted R²)</td></tr></tbody></table></div>`,
+ examAnswer:{
+  short:"Formula and one-line meaning of the measure asked.",
+  medium:"Full error table, all measures, and an interpretation.",
+  long:"Add the comparison table of strengths and weaknesses and when to prefer each."},
+ mistakes:[
+  "Forgetting the square root for RMSE.",
+  "Dividing |e| by ŷ instead of y in MAPE.",
+  "Reading R² = 0.9 as “90% accurate predictions” — it is variation explained."],
+ examples:[
+  {id:"ex_m4t2_1", topic:"m4t2", title:"Evaluating the expenditure line",
+   category:"Regression error measures",
+   recog:"A fitted line and the data → compute ŷ, then the error table.",
+   need:"MAE, RMSE, MAPE, R².",
+   q:"For the expenditure line y′ = 8.4x + 3.2 (months 1–5, y = 12, 19, 29, 37, 45), compute MAE, RMSE, MAPE and R².",
+   steps:[
+    "ŷ = 11.6, 20.0, 28.4, 36.8, 45.2 → e = 0.4, −1.0, 0.6, 0.2, −0.2.",
+    "Σ|e| = 2.4 → MAE = 2.4/5 = <b>0.48</b>.",
+    "Σe² = 1.6 → MSE = 0.32 → RMSE = <b>0.566</b>.",
+    "Σ|e|/y = 0.0333 + 0.0526 + 0.0207 + 0.0054 + 0.0044 = 0.1165 → MAPE = <b>2.33%</b>.",
+    "ȳ = 28.4, SST = Σ(y − ȳ)² = 268.96 + 88.36 + 0.36 + 73.96 + 275.56 = 707.2 → R² = 1 − 1.6/707.2 = <b>0.998</b>."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>x</th><th>y</th><th>ŷ</th><th>e</th><th>|e|</th><th>e²</th><th>|e|/y</th></tr></thead><tbody>
+<tr><td>1</td><td>12</td><td>11.6</td><td>0.4</td><td>0.4</td><td>0.16</td><td>0.0333</td></tr>
+<tr><td>2</td><td>19</td><td>20.0</td><td>−1.0</td><td>1.0</td><td>1.00</td><td>0.0526</td></tr>
+<tr><td>3</td><td>29</td><td>28.4</td><td>0.6</td><td>0.6</td><td>0.36</td><td>0.0207</td></tr>
+<tr><td>4</td><td>37</td><td>36.8</td><td>0.2</td><td>0.2</td><td>0.04</td><td>0.0054</td></tr>
+<tr><td>5</td><td>45</td><td>45.2</td><td>−0.2</td><td>0.2</td><td>0.04</td><td>0.0044</td></tr>
+<tr><td></td><td></td><td></td><td><b>0.0</b></td><td><b>2.4</b></td><td><b>1.60</b></td><td><b>0.1165</b></td></tr></tbody></table></div>
+<div class="answer">MAE = <b>0.48</b> · RMSE = <b>0.566</b> · MAPE = <b>2.33%</b> · R² = <b>0.998</b></div>
+The line misses actual expenditure by about ₹0.48 thousand (2.3%) on average and explains 99.8% of its variation.`,
+   why:"Each measure answers a different question: typical size of a miss (MAE), penalised size (RMSE), relative size (MAPE), share explained (R²).",
+   trap:"Σe = 0 here — that is a property of least squares, not a perfect model."}],
+ practice:[
+  {id:"p_m4t2_1", d:"standard", marks:5, q:"Actual: 10, 12, 15, 18, 20. Predicted: 11, 12, 14, 19, 18. Compute MAE, MSE, RMSE, MAPE and R².",
+   hint:"ȳ = 15.",
+   a:`e = −1, 0, 1, −1, 2.
+<div class="formula">MAE  = (1 + 0 + 1 + 1 + 2)/5 = 1.0
+MSE  = (1 + 0 + 1 + 1 + 4)/5 = 1.4        RMSE = √1.4 = 1.183
+MAPE = (10% + 0 + 6.67% + 5.56% + 10%)/5 = 6.44%
+SST  = 25 + 9 + 0 + 9 + 25 = 68           R² = 1 − 7/68 = 0.897</div>
+<div class="answer">MAE 1.0 · MSE 1.4 · RMSE 1.18 · MAPE 6.44% · R² 0.897</div>`},
+  {id:"p_m4t2_2", d:"basic", marks:5, q:"Explain the coefficient of determination R². What does R² = 0.95 mean, and why is R² alone not enough?",
+   a:`R² is the proportion of the total variation in y explained by the model: R² = 1 − SSE/SST, with 0 ≤ R² ≤ 1. R² = 0 is the poorest fit, R² = 1 a perfect fit. <b>R² = 0.95</b> means 95% of the variation in y is explained by the predictors.<br><br>
+R² <b>always increases</b> when another predictor is added, even a useless one, so it rewards overfitting. Use <b>adjusted R²</b> to compare models with different numbers of predictors, and an error measure (MAE/RMSE) to see how large the misses are.`}],
+ questions:[
+  {q:"Compute MAE, RMSE, MAPE and R² for given actual and predicted values.", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"Explain R² and its interpretation.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"Compare MAE, MSE, RMSE and MAPE.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m4t3", m:"m4", title:"Multiple Linear Regression &amp; Partial Regression Coefficients",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 4.1","LO 4.3","LO 4.5"],
+ src:"COMP B M4 deck slides 14–25 (Y, X₁, X₂ eight-row example)",
+ summary:"Y′ = b₀ + b₁X₁ + b₂X₂ from deviation sums. Each bᵢ is the change in Y per unit Xᵢ with the other X held constant.",
+ whatIs:`<p><b>Multiple linear regression</b> predicts Y from several independent variables: Y = β₀ + β₁X₁ + … + βₖXₖ + ε. Each slope βᵢ is a <b>partial regression coefficient</b>: the change in Y for a one-unit increase in Xᵢ <b>keeping all other predictors constant</b>.</p>`,
+ needToKnow:[
+  "Deviation sums: Σx₁² = ΣX₁² − (ΣX₁)²/n; Σx₂² likewise; Σx₁y = ΣX₁Y − ΣX₁ΣY/n; Σx₂y; Σx₁x₂ = ΣX₁X₂ − ΣX₁ΣX₂/n.",
+  "b₁ = [Σx₂² Σx₁y − Σx₁x₂ Σx₂y] / [Σx₁² Σx₂² − (Σx₁x₂)²].",
+  "b₂ = [Σx₁² Σx₂y − Σx₁x₂ Σx₁y] / [Σx₁² Σx₂² − (Σx₁x₂)²].",
+  "b₀ = Ȳ − b₁X̄₁ − b₂X̄₂.",
+  "Interpretation: Y = 10 + 2X₁ + 3X₂ → one more unit of X₁ adds 2 to Y with X₂ fixed."],
+ recognition:{
+  clues:["<b>Y with two predictor columns X₁, X₂</b> → multiple regression.",
+   "<b>“Partial regression coefficient”, “holding … constant”</b> → interpret each bᵢ."],
+  wording:["Fit a multiple regression equation Y on X₁ and X₂ for the data below and predict Y for X₁ = 74, X₂ = 14.",
+   "Explain partial regression coefficients with an example."],
+  firstStep:"Build the nine-column table: Y, X₁, X₂, Y², X₁², X₂², X₁X₂, X₁Y, X₂Y, and total every column.",
+  method:"Five deviation sums → b₁, b₂ (same denominator) → means → b₀ → equation → prediction → interpretation.",
+  trap:"Sign errors: Σx₁x₂ and Σx₂y are often negative, and −(−) becomes +."},
+ concept:`<div class="formula">Y′ = b₀ + b₁X₁ + b₂X₂
+
+D  = Σx₁² · Σx₂² − (Σx₁x₂)²
+b₁ = [ Σx₂² · Σx₁y − Σx₁x₂ · Σx₂y ] / D
+b₂ = [ Σx₁² · Σx₂y − Σx₁x₂ · Σx₁y ] / D
+b₀ = Ȳ − b₁X̄₁ − b₂X̄₂</div>
+<p>Steps in a full multiple regression analysis: <b>1</b> fit the equation · <b>2</b> estimate unknown values · <b>3</b> goodness of fit R² · <b>4</b> overall F-test (if not significant, stop) · <b>5</b> t-test for each coefficient. Steps 3–5 are in the next topic.</p>
+<div class="box neutral"><h5>Slips in the deck</h5><p style="margin:0">The Σx₂² line prints (1452)²/8 but uses 145²/8 = 2628.125 (correct value). The b₂ line prints −683.5 for Σx₂y; it is −953.5 (the result −1.6561 is correct).</p></div>`,
+ examAnswer:{
+  short:"Equation form and the meaning of a partial coefficient.",
+  medium:"The fitted equation with the sums shown and one prediction.",
+  long:"The full table, all five deviation sums, b₁, b₂, b₀, the prediction, and the interpretation of every coefficient."},
+ mistakes:[
+  "Using raw sums (ΣX₁Y) in place of deviation sums (Σx₁y).",
+  "Different denominators for b₁ and b₂ — they share D.",
+  "Interpreting b₁ without “keeping X₂ constant”."],
+ examples:[
+  {id:"ex_m4t3_1", topic:"m4t3", title:"Fit Y on X₁ and X₂ (deck example)",
+   category:"Multiple regression — fitting",
+   recog:"Eight rows of Y, X₁, X₂ → two-predictor least squares.",
+   need:"The five deviation sums, b₁, b₂, b₀.",
+   q:"Fit Y′ = b₀ + b₁X₁ + b₂X₂ and predict Y for X₁ = 74, X₂ = 14.<br>Y: 140, 155, 159, 179, 192, 200, 212, 215 · X₁: 60, 62, 67, 70, 71, 72, 75, 78 · X₂: 22, 25, 24, 20, 15, 14, 14, 11",
+   steps:[
+    "Totals: n = 8, ΣY = 1452, ΣX₁ = 555, ΣX₂ = 145, ΣX₁² = 38,767, ΣX₂² = 2,823, ΣX₁X₂ = 9,859, ΣX₁Y = 101,895, ΣX₂Y = 25,364, ΣY² = 268,980.",
+    "Σx₁² = 38,767 − 555²/8 = <b>263.875</b>; Σx₂² = 2,823 − 145²/8 = <b>194.875</b>.",
+    "Σx₁y = 101,895 − 555 × 1452/8 = <b>1,162.5</b>; Σx₂y = 25,364 − 145 × 1452/8 = <b>−953.5</b>; Σx₁x₂ = 9,859 − 555 × 145/8 = <b>−200.375</b>.",
+    "D = 263.875 × 194.875 − (−200.375)² = 51,422.9 − 40,150.1 = 11,272.8.",
+    "b₁ = [194.875 × 1,162.5 − (−200.375)(−953.5)]/D = (226,542.2 − 191,057.6)/11,272.8 = <b>3.1479</b>.",
+    "b₂ = [263.875 × (−953.5) − (−200.375)(1,162.5)]/D = (−251,604.8 + 232,935.9)/11,272.8 = <b>−1.6561</b>.",
+    "Means Ȳ = 181.5, X̄₁ = 69.375, X̄₂ = 18.125 → b₀ = 181.5 − 3.1479(69.375) + 1.6561(18.125) = <b>−6.8675</b>.",
+    "Ŷ(74, 14) = −6.8675 + 3.1479 × 74 − 1.6561 × 14 = <b>202.89</b>."],
+   answer:`<div class="formula">Ŷ = −6.8675 + 3.1479 X₁ − 1.6561 X₂
+Ŷ(X₁ = 74, X₂ = 14) = 202.89</div>
+<div class="answer">Holding X₂ constant, each unit of X₁ adds about 3.15 to Y. Holding X₁ constant, each unit of X₂ <b>reduces</b> Y by about 1.66.</div>`,
+   why:"Solving the two normal equations together separates the effect of each predictor from the other, which a pair of simple regressions cannot do when X₁ and X₂ are correlated (here r₁₂ = −0.88).",
+   trap:"Writing the X₂ effect as positive. The sign of b₂ carries the meaning."}],
+ practice:[
+  {id:"p_m4t3_1", d:"standard", marks:5, q:"Given n = 10, Ȳ = 30, X̄₁ = 5, X̄₂ = 4, Σx₁² = 10, Σx₂² = 10, Σx₁x₂ = 6, Σx₁y = 20, Σx₂y = 16, fit the regression of Y on X₁ and X₂.",
+   hint:"D = 100 − 36 = 64.",
+   a:`<div class="formula">D  = 10 × 10 − 6² = 64
+b₁ = (10 × 20 − 6 × 16)/64 = 104/64 = 1.625
+b₂ = (10 × 16 − 6 × 20)/64 = 40/64 = 0.625
+b₀ = 30 − 1.625 × 5 − 0.625 × 4 = 19.375</div>
+<div class="answer">Ŷ = 19.375 + 1.625X₁ + 0.625X₂</div>`},
+  {id:"p_m4t3_2", d:"basic", marks:5, q:"Explain partial regression coefficients using the model Y = 10 + 2X₁ + 3X₂. Predict Y for X₁ = 5, X₂ = 4.",
+   a:`A partial regression coefficient bᵢ measures the change in Y for a one-unit increase in Xᵢ <b>while all other predictors are held constant</b>, isolating that variable's own effect.<br>
+b₁ = 2: if X₁ rises by 1 with X₂ fixed, Y rises by 2. b₂ = 3: if X₂ rises by 1 with X₁ fixed, Y rises by 3. b₀ = 10 is Y when both are 0.<br>
+<div class="answer">Y = 10 + 2(5) + 3(4) = <b>32</b></div>`}],
+ questions:[
+  {q:"Fit a multiple regression equation with two predictors and predict Y.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Explain partial regression coefficients with an example.", marks:5, d:"basic", priority:"high", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m4t4", m:"m4", title:"Testing the Model: R², Adjusted R², F-test, t-test for Coefficients",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 4.4","LO 4.6"],
+ src:"COMP B M4 deck slides 17–40 (same eight-row example)",
+ summary:"R² from b₁Σx₁y + b₂Σx₂y, the overall F-test table, adjusted R², and t = bᵢ / SE(bᵢ) for each predictor.",
+ whatIs:`<p>After fitting, a multiple regression is checked in order: <b>goodness of fit</b> (R² and adjusted R²), the <b>overall F-test</b> (does the model explain anything at all?), and, only if that is significant, a <b>t-test for each coefficient</b> (which predictors matter?).</p>`,
+ needToKnow:[
+  "Σy² = ΣY² − (ΣY)²/n; explained SS = R²Σy² = b₁Σx₁y + b₂Σx₂y; R² = explained/Σy².",
+  "Adjusted R² = 1 − (1 − R²)(n − 1)/(n − k − 1); it rises only if a new variable helps more than chance.",
+  "F-test: H₀: b₁ = b₂ = … = 0. F = MSR/MSE = [(n − k − 1)R²]/[k(1 − R²)], df (k, n − k − 1).",
+  "If the F-test accepts H₀, stop — do not test individual b's.",
+  "t-test: H₀: bᵢ = 0; t = bᵢ/SE(bᵢ), SE(b₁) = √{ [Σ(y − ŷ)²/(n − k − 1)] / [Σx₁²(1 − r₁₂²)] }, df = n − k − 1."],
+ recognition:{
+  clues:["<b>“Test the overall significance”</b> → F-test table.",
+   "<b>“Is X₁ a significant predictor?”</b> → t-test on b₁.",
+   "<b>“Adjusted R²”, “overfitting”</b> → the adjustment formula."],
+  wording:["Test the overall significance of the fitted model at 5%.",
+   "Test whether each regression coefficient is significant.",
+   "Why is adjusted R² preferred to R² in multiple regression?"],
+  firstStep:"Write n, k and df = n − k − 1 first; every test below uses them.",
+  method:"R² → ANOVA table (SS, df, MS, F) → compare with F(k, n − k − 1) → if significant, t for each b → compare with t(n − k − 1).",
+  trap:"Using df = n − 1 for the error term. With k predictors it is n − k − 1."},
+ concept:`<div class="formula">Σy² = ΣY² − (ΣY)²/n              R² = (b₁Σx₁y + b₂Σx₂y) / Σy²
+Adjusted R² = 1 − (1 − R²) · (n − 1)/(n − k − 1)
+F = [(n − k − 1) R²] / [k (1 − R²)]        df = (k, n − k − 1)
+t = bᵢ / SE(bᵢ)                             df = n − k − 1</div>
+<div class="scroll"><table class="t"><thead><tr><th>Source</th><th>df</th><th>SS</th><th>MS</th><th>F</th></tr></thead><tbody>
+<tr><td>Regression</td><td>k</td><td>R²Σy²</td><td>R²Σy²/k</td><td>MSR/MSE</td></tr>
+<tr><td>Error</td><td>n − k − 1</td><td>(1 − R²)Σy²</td><td>(1 − R²)Σy²/(n − k − 1)</td><td></td></tr>
+<tr><td>Total</td><td>n − 1</td><td>Σy²</td><td></td><td></td></tr></tbody></table></div>
+<div class="box neutral"><h5>Slip in the deck</h5><p style="margin:0">The b₂ t-test slide repeats the b₁ formula and numbers (Σx₁², 3.1479, t = 3.756) and then states t = −1.72. The correct working uses <b>Σx₂² = 194.875</b> and <b>b₂ = −1.6561</b>, shown below.</p></div>`,
+ examAnswer:{
+  short:"R² (or adjusted R²) with its meaning, or the F decision.",
+  medium:"R², the F-test table and the decision.",
+  long:"R², adjusted R², the full F table, and t-tests for both coefficients with conclusions."},
+ mistakes:[
+  "Testing individual coefficients when the F-test was not significant.",
+  "Comparing a negative t with the table without taking |t|.",
+  "Using F(5, 2) instead of F(2, 5): numerator df first."],
+ examples:[
+  {id:"ex_m4t4_1", topic:"m4t4", title:"R², F-test and t-tests for the eight-row model",
+   category:"Model significance",
+   recog:"The fitted model Ŷ = −6.8675 + 3.1479X₁ − 1.6561X₂ from the previous topic, n = 8, k = 2.",
+   need:"Σy², R², F, SE(b₁), SE(b₂), t.",
+   q:"For the model Ŷ = −6.8675 + 3.1479X₁ − 1.6561X₂ fitted to 8 observations (ΣY² = 268,980, ΣY = 1452, Σx₁y = 1162.5, Σx₂y = −953.5, Σx₁² = 263.875, Σx₂² = 194.875, Σx₁x₂ = −200.375), find R² and adjusted R², test the overall model, and test each coefficient at 5%.",
+   steps:[
+    "Σy² = 268,980 − 1452²/8 = 268,980 − 263,538 = <b>5,442</b>.",
+    "Explained SS = 3.1479 × 1,162.5 + (−1.6561)(−953.5) = 3,659.43 + 1,579.13 = <b>5,238.56</b> → R² = 5,238.56/5,442 = <b>0.9626</b>.",
+    "Adjusted R² = 1 − (0.0374)(7/5) = <b>0.948</b>.",
+    "Error SS = 5,442 − 5,238.56 = 203.44, df = 5, MSE = 40.69. MSR = 5,238.56/2 = 2,619.28. F = 2,619.28/40.69 = <b>64.37</b> &gt; F(2, 5) = 5.79 → model significant.",
+    "r₁₂ = −200.375/√(263.875 × 194.875) = −0.884; 1 − r₁₂² = 0.2192.",
+    "SE(b₁) = √[40.69/(263.875 × 0.2192)] = <b>0.839</b> → t₁ = 3.1479/0.839 = <b>3.75</b> &gt; 2.571 → X₁ significant.",
+    "SE(b₂) = √[40.69/(194.875 × 0.2192)] = <b>0.976</b> → t₂ = −1.6561/0.976 = −1.70, |t₂| = <b>1.70</b> &lt; 2.571 → X₂ not significant."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>Source</th><th>df</th><th>SS</th><th>MS</th><th>F</th></tr></thead><tbody>
+<tr><td>Regression</td><td>2</td><td>5,238.56</td><td>2,619.28</td><td>64.37</td></tr>
+<tr><td>Error</td><td>5</td><td>203.44</td><td>40.69</td><td></td></tr>
+<tr><td>Total</td><td>7</td><td>5,442.00</td><td></td><td></td></tr></tbody></table></div>
+<div class="answer">R² = 0.963 (adj. 0.948) · F = 64.37 &gt; 5.79, model significant · t₁ = 3.75 (significant) · |t₂| = 1.70 (not significant) at t(5) = 2.571</div>
+About 96% of the variation in Y is explained jointly by X₁ and X₂, but once X₁ is in the model, X₂ adds no significant information on its own.`,
+   why:"The F-test asks whether the predictors together explain Y; the t-tests ask whether each adds something given the other. With X₁ and X₂ strongly correlated (r₁₂ = −0.88), their effects overlap.",
+   trap:"Concluding X₂ is useless in general. It is not significant <i>in the presence of</i> X₁."}],
+ practice:[
+  {id:"p_m4t4_1", d:"standard", marks:5, q:"A regression with k = 3 predictors on n = 20 observations has R² = 0.80. Find adjusted R² and test the overall significance at 5% (F(3, 16) = 3.24).",
+   a:`<div class="formula">Adjusted R² = 1 − (1 − 0.80)(19/16) = 1 − 0.2375 = 0.7625
+F = [(20 − 3 − 1) × 0.80] / [3 × 0.20] = 12.8 / 0.6 = 21.33</div>
+<div class="answer">Adjusted R² = <b>0.763</b> · F = 21.33 &gt; 3.24 → the model is significant overall.</div>`},
+  {id:"p_m4t4_2", d:"standard", marks:5, q:"In the model above, b₂ = 2.4 with SE(b₂) = 0.8. Test H₀: b₂ = 0 at 5% (t(16) = 2.120).",
+   a:`<div class="formula">t = 2.4 / 0.8 = 3.0  &gt;  t(16, 0.05) = 2.120</div>
+<div class="answer">Reject H₀ — X₂ is a significant predictor of Y.</div>`}],
+ questions:[
+  {q:"Find R² for a fitted multiple regression and interpret it.", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"Test the overall significance of the model using the F-test.", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"Test the significance of individual regression coefficients.", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"Explain adjusted R² and why it is needed.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
+/* ============================ MODULE 5 ============================== */
+
+TOPICS.push({
+ id:"m5t1", m:"m5", title:"Outliers, Causes of Outliers &amp; Detection Techniques",
+ classification:"bonly", priority:"high", core:true, type:"theory", marks:5, los:["LO 5.1","LO 5.5"],
+ src:"Textbook: Kotu &amp; Deshpande, Data Science Concepts and Practice, Ch. 13.1 (no COMP B deck for 5.1–5.5 yet)",
+ summary:"What an outlier is, the four causes, and the five families of detection technique.",
+ whatIs:`<p>An <b>outlier</b> (anomaly) is a data object markedly different from the other objects in a dataset. It is always defined <b>in context</b>: a high income is an outlier in a middle-class neighbourhood but not among luxury-car owners. <b>Anomaly detection</b> is the process of finding them.</p>`,
+ needToKnow:[
+  "Four causes: data errors · normal variance in the data · data from another distribution class · wrong distributional assumptions.",
+  "Why the cause matters: errors are removed or corrected; legitimate outliers may be the point of the analysis (fraud) or set aside to generalise.",
+  "Five technique families: statistical (distribution-based) · distance-based · density-based · clustering · classification.",
+  "Supervised (labelled outliers available → classification) vs unsupervised (distance, density, clustering).",
+  "Applications: credit-card fraud, click fraud, network intrusion, sensor faults."],
+ recognition:{
+  clues:["<b>“What is an outlier”, “causes of outliers”</b> → definition + the four causes with examples.",
+   "<b>“Techniques for anomaly detection”</b> → the five families with one line each."],
+  wording:["Define outliers and explain their causes with examples.",
+   "Explain the various anomaly detection techniques."],
+  firstStep:"Give the definition with the “in context” point, then the list asked for.",
+  method:"One heading per cause or technique, one sentence of meaning, one example.",
+  trap:"Saying outliers should always be removed. A legitimate outlier (a fraud, a bot) can be exactly what you are looking for."},
+ concept:`<h4>Causes of outliers</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Cause</th><th>Meaning</th><th>Example</th></tr></thead><tbody>
+<tr><td>Data errors</td><td>Measurement, human or collection errors</td><td>A height recorded as 1.70 cm</td></tr>
+<tr><td>Normal variance</td><td>Legitimate but rare values in the tails (0.3% lie beyond 3σ)</td><td>A billion-dollar income; a 7-ft person</td></tr>
+<tr><td>Another distribution class</td><td>Points generated by a different process</td><td>A bot making 100,000 page views a day</td></tr>
+<tr><td>Distributional assumptions</td><td>Expected spikes the model ignores</td><td>Library use in exam week; retail sales the day after Thanksgiving</td></tr></tbody></table></div>
+<h4>Detection techniques</h4>
+<div class="scroll"><table class="t"><thead><tr><th>Family</th><th>Idea</th></tr></thead><tbody>
+<tr><td>Statistical / distribution-based</td><td>Fit a distribution (e.g. normal); points in the far tails (beyond ±3σ) are outliers</td></tr>
+<tr><td>Distance-based</td><td>Outliers are far from their nearest neighbours</td></tr>
+<tr><td>Density-based</td><td>Outliers sit in low-density regions (LOF handles varying density)</td></tr>
+<tr><td>Clustering</td><td>Outliers do not belong to any cluster, or form small far-away clusters</td></tr>
+<tr><td>Classification</td><td>Needs labelled data with an “outlier” class; outliers are rare, so oversample them</td></tr></tbody></table></div>
+<div class="box neutral"><h5>Gap in the material</h5><p style="margin:0">No COMP B slides for 5.1–5.5 or for <b>5.6 SMOTE</b> have been received. This topic follows the course textbook. SMOTE has no source yet and is not covered here.</p></div>`,
+ examAnswer:{
+  short:"Definition of an outlier with the context point.",
+  medium:"Definition, the four causes with examples, and what to do with each.",
+  long:"Add the five technique families and one application such as click fraud."},
+ mistakes:[
+  "Listing causes without examples.",
+  "Confusing distance-based (far from neighbours) with density-based (in a sparse region)."],
+ examples:[
+  {id:"ex_m5t1_1", topic:"m5t1", title:"Classifying the cause of an outlier",
+   category:"Causes of outliers",
+   recog:"A scenario with one unusual value; the question asks why it occurs and what to do.",
+   need:"The four causes and the action each implies.",
+   q:"Identify the likely cause of each outlier and what you would do: (a) an age of 245 in a patient table; (b) one customer with 900 transactions a day on a shopping site; (c) a surge in electricity demand during a heat wave.",
+   steps:[
+    "(a) An impossible value → <b>data error</b>. Correct it from the source or treat it as missing.",
+    "(b) Far outside human behaviour → <b>data from another distribution class</b> (an automated program). Investigate; flag or filter bots.",
+    "(c) Expected given the conditions → <b>distributional assumption</b>: the model ignored the season. Keep it and model the effect."],
+   answer:`<div class="answer">(a) data error · (b) another distribution class · (c) distributional assumption</div>`,
+   why:"Knowing the cause decides the action: fix, isolate, or model.",
+   trap:"Deleting (b) and (c) as “bad data” — both are real."}],
+ practice:[
+  {id:"p_m5t1_1", d:"basic", marks:5, q:"Explain any four anomaly detection techniques.",
+   a:`<b>Statistical (distribution-based):</b> fit a distribution such as the normal using the mean and S.D.; points beyond a threshold such as ±3σ are outliers. Considers one attribute at a time (Mahalanobis distance extends it to many).<br>
+<b>Distance-based:</b> score each point by its distance to its k-th nearest neighbour; outliers are far from other points and get the highest scores.<br>
+<b>Density-based:</b> outliers lie in low-density regions; e.g. a point is an outlier if at least a fraction p of points lie farther than distance d from it. LOF compares a point's density with its neighbours'.<br>
+<b>Clustering:</b> points that do not join any cluster, or form small clusters far from the rest, are outliers.<br>
+<b>Classification:</b> with labelled data that includes an “outlier” class, any classifier can predict outliers; outliers are rare, so they are oversampled.`}],
+ questions:[
+  {q:"What are outliers? Explain the causes of outliers.", marks:5, d:"basic", priority:"high", source:"predicted"},
+  {q:"Explain the techniques used for anomaly detection.", marks:5, d:"basic", priority:"high", source:"predicted"}]
+});
+
+TOPICS.push({
+ id:"m5t2", m:"m5", title:"Outlier Detection using Statistics: 3σ Rule and IQR Fences",
+ classification:"bonly", priority:"medium", core:false, type:"problem-solving", marks:5, los:["LO 5.2"],
+ src:"Textbook Ch. 13.1.2 (normal model, ±3σ) · formula sheet p.5 (box plot fences, Module 2)",
+ summary:"Flag points with |z| > 3, or outside Q1 − 1.5 IQR and Q3 + 1.5 IQR.",
+ whatIs:`<p>Statistical outlier detection builds a <b>distribution model</b> of the data and flags points that do not fit it. Two rules cover the exam: the <b>3σ rule</b> on the normal model, and the <b>IQR fences</b> of the box plot from Module 2.</p>`,
+ needToKnow:[
+  "z = (x − μ)/σ; |z| &gt; 3 → outlier (only 0.26% of normal data lie beyond 3σ).",
+  "IQR = Q3 − Q1; lower fence Q1 − 1.5 IQR; upper fence Q3 + 1.5 IQR; outside → outlier.",
+  "The IQR rule does not assume normality and is not distorted by the outlier itself.",
+  "Limitations: one attribute at a time; the true distribution may be unknown or not fit the model."],
+ recognition:{
+  clues:["<b>Mean and S.D. given, “flag unusual values”</b> → 3σ rule.",
+   "<b>Raw data list, “using the box plot / IQR”</b> → quartiles and fences."],
+  wording:["Mean daily transactions are 200 with S.D. 15. Which of 250, 160, 245 are outliers by the 3σ rule?",
+   "Detect outliers in the data using the IQR method."],
+  firstStep:"For z: compute each z. For IQR: sort the data and locate Q1 at (N + 1)/4 and Q3 at 3(N + 1)/4.",
+  method:"Threshold → compare each point → list the outliers → one sentence on the method's assumption.",
+  trap:"Calling z = 3.0 an outlier. The rule is <b>more than</b> 3 standard deviations."},
+ concept:`<div class="formula">z = (x − μ) / σ           outlier if |z| &gt; 3
+
+IQR = Q3 − Q1
+Lower fence = Q1 − 1.5 × IQR       Upper fence = Q3 + 1.5 × IQR</div>
+<p>A single extreme value inflates both the mean and σ, which can hide it from the z rule (masking). The IQR fences use quartiles, which the extreme value barely moves.</p>`,
+ examAnswer:{
+  short:"Rule and the outliers found.",
+  medium:"Full working (z values or quartiles and fences) and the list of outliers.",
+  long:"Both methods on the same data, with the comparison of assumptions and robustness."},
+ mistakes:[
+  "Using 1.5 × IQR from the median instead of from Q1 and Q3.",
+  "Forgetting to sort the data before locating quartiles."],
+ examples:[
+  {id:"ex_m5t2_1", topic:"m5t2", title:"IQR fences and the z rule on the same data",
+   category:"Statistical outlier detection",
+   recog:"A small list with one value far from the rest.",
+   need:"Q1, Q3 by the (N + 1) positions; z with population σ.",
+   q:"Daily orders over 11 days: 12, 15, 14, 10, 13, 16, 11, 14, 45, 13, 15. Detect outliers using (a) the IQR method, (b) the 3σ rule.",
+   steps:[
+    "Sorted: 10, 11, 12, 13, 13, 14, 14, 15, 15, 16, 45; N = 11.",
+    "Q1 = (N + 1)/4 = 3rd value = <b>12</b>; Q3 = 3(N + 1)/4 = 9th value = <b>15</b>; IQR = 3.",
+    "Fences: 12 − 4.5 = <b>7.5</b> and 15 + 4.5 = <b>19.5</b> → <b>45</b> is an outlier.",
+    "Mean = 178/11 = 16.18; σ = 9.27 (population).",
+    "z(45) = (45 − 16.18)/9.27 = <b>3.11</b> &gt; 3 → outlier; every other |z| &lt; 1."],
+   answer:`<div class="formula">IQR = 15 − 12 = 3     fences 7.5 and 19.5
+z(45) = (45 − 16.18) / 9.27 = 3.11</div>
+<div class="answer">Both methods flag <b>45</b>. Note how 45 itself raised the mean to 16.18 and σ to 9.27. In a small sample no value can have |z| above √(n − 1), so with 10 or fewer values the 3σ rule can never fire, while the IQR fences still can.</div>`,
+   why:"Quartiles depend on order, not size, so one extreme value cannot drag the fences toward itself.",
+   trap:"Computing the mean and σ without the suspect value and then claiming it as a z-rule result — state which you did."}],
+ practice:[
+  {id:"p_m5t2_1", d:"basic", marks:5, q:"Mean daily transactions are 200 with S.D. 15. Using the 3σ rule, which of 250, 160 and 245 are outliers?",
+   a:`<div class="formula">z(250) = 50/15 = 3.33   → |z| &gt; 3, outlier
+z(160) = −40/15 = −2.67 → not an outlier
+z(245) = 45/15 = 3.00  → on the threshold, not beyond it</div>
+<div class="answer">Only <b>250</b> is an outlier (245 is borderline and worth a look).</div>`}],
+ questions:[
+  {q:"Detect outliers in the given data using the IQR / box plot method.", marks:5, d:"standard", priority:"medium", source:"predicted"},
+  {q:"Explain outlier detection using statistical methods.", marks:5, d:"basic", priority:"medium", source:"predicted"}]
+});
+
+TOPICS.push({
+ id:"m5t3", m:"m5", title:"Distance-Based &amp; Density-Based Outlier Detection",
+ classification:"bonly", priority:"high", core:true, type:"theory", marks:5, los:["LO 5.3","LO 5.5"],
+ src:"Textbook Ch. 13.2–13.3 · LOF handout data reused for the k-distance example",
+ summary:"Score each point by its distance to the k-th nearest neighbour, or by the density around it. Choice of k and normalisation matter.",
+ whatIs:`<p><b>Distance-based</b> detection gives every point a score equal to its distance to its <b>k-th nearest neighbour</b>; outliers are far from other points, so they score highest. <b>Density-based</b> detection flags points in <b>low-density</b> regions: a point X is an outlier if at least a fraction <b>p</b> of all points lie more than distance <b>d</b> from X (Knorr &amp; Ng).</p>`,
+ needToKnow:[
+  "Distance score = distance to the k-th nearest neighbour; sort and take the top n, or apply a threshold.",
+  "Effect of k: k = 1 misses a pair of outliers next to each other; a large k can flag a small genuine cluster.",
+  "Normalise the attributes first (e.g. z-transformation) so a large-scale attribute does not dominate.",
+  "Density-based parameters: distance d and proportion p (e.g. 95%).",
+  "Both fail when densities vary across the data; LOF fixes this by comparing a point with its own neighbours.",
+  "Cost: distances to all points, expensive for many records and attributes."],
+ recognition:{
+  clues:["<b>“k-th nearest neighbour”, “distance score”</b> → distance-based.",
+   "<b>“Low-density region”, parameters d and p</b> → density-based.",
+   "<b>“Varying density”</b> → LOF (next topic)."],
+  wording:["Explain distance-based outlier detection. What is the effect of k?",
+   "Compare distance-based and density-based outlier detection."],
+  firstStep:"State the score each method gives a point, then its parameters.",
+  method:"Definition → score → parameters and their effect → one limitation → when LOF is needed.",
+  trap:"Forgetting normalisation — with raw income and credit score, income alone decides the distances."},
+ concept:`<div class="scroll"><table class="t"><thead><tr><th></th><th>Distance-based</th><th>Density-based</th><th>LOF</th></tr></thead><tbody>
+<tr><td>Score</td><td>Distance to k-th nearest neighbour</td><td>Fraction of points beyond distance d</td><td>Neighbours' density ÷ own density</td></tr>
+<tr><td>Parameters</td><td>k, distance measure</td><td>d, p, distance measure</td><td>k, distance measure</td></tr>
+<tr><td>Varying density</td><td>Fails</td><td>Fails</td><td>Handles it</td></tr></tbody></table></div>
+<h4>k-distance scores on the LOF handout points (Manhattan)</h4>
+<div class="scroll"><table class="t num"><thead><tr><th>Point</th><th>a (0,0)</th><th>b (0,1)</th><th>c (1,1)</th><th>d (3,0)</th></tr></thead><tbody>
+<tr><td>k = 1</td><td>1</td><td>1</td><td>1</td><td>3</td></tr>
+<tr><td>k = 2</td><td>2</td><td>1</td><td>2</td><td>3</td></tr></tbody></table></div>
+<p>d has the largest score for both k, so it is the top outlier.</p>`,
+ examAnswer:{
+  short:"Definition of the score for the method asked.",
+  medium:"Definition, parameters and their effect, one limitation.",
+  long:"Both methods with the comparison table and why LOF is needed for varying density."},
+ mistakes:[
+  "Using the average of all distances instead of the k-th nearest.",
+  "Saying density is proportional to distance (it is inversely related)."],
+ examples:[
+  {id:"ex_m5t3_1", topic:"m5t3", title:"Distance scores with k = 1 and k = 2",
+   category:"Distance-based scoring",
+   recog:"Points with coordinates and a value of k; “which point is the outlier?”.",
+   need:"Distance table, then the k-th smallest distance per point.",
+   q:"Points a(0,0), b(0,1), c(1,1), d(3,0). Using Manhattan distance, give each point's distance-based outlier score for k = 1 and k = 2 and name the top outlier.",
+   steps:[
+    "Manhattan distances: ab = 1, ac = 2, ad = 3, bc = 1, bd = 4, cd = 3.",
+    "Sorted distances: a: 1, 2, 3 · b: 1, 1, 4 · c: 1, 2, 3 · d: 3, 3, 4.",
+    "k = 1 scores (1st value): a 1, b 1, c 1, <b>d 3</b>.",
+    "k = 2 scores (2nd value): a 2, b 1, c 2, <b>d 3</b>."],
+   answer:`<div class="answer">d is the top outlier for both k = 1 (score 3) and k = 2 (score 3).</div>`,
+   why:"An isolated point is far even from its nearest neighbours, so any k-th distance is large.",
+   trap:"Including the point's distance to itself (0) as its first neighbour."}],
+ practice:[
+  {id:"p_m5t3_1", d:"basic", marks:5, q:"Compare distance-based and density-based outlier detection.",
+   a:`<b>Distance-based:</b> each point's score is its distance to the k-th nearest neighbour; the largest scores are outliers. Parameter k: too small misses grouped outliers, too large flags small genuine clusters. Needs normalised attributes.<br>
+<b>Density-based:</b> outliers occupy low-density regions; X is an outlier if at least a fraction p of points lie more than d away. Parameters d and p are hard to set when the data are unfamiliar; too small a d flags normal points.<br>
+<b>Common limitation:</b> both use a single global notion of “far” or “sparse”, so they fail when clusters have <b>different densities</b>. LOF solves this by comparing each point's density with that of its neighbours.`}],
+ questions:[
+  {q:"Explain distance-based outlier detection and the effect of k.", marks:5, d:"basic", priority:"high", source:"predicted"},
+  {q:"Explain density-based outlier detection and its limitation.", marks:5, d:"basic", priority:"high", source:"predicted"}]
+});
+
+TOPICS.push({
+ id:"m5t4", m:"m5", title:"Local Outlier Factor (LOF) with Manhattan Distance",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 5.3","LO 5.4"],
+ src:"COMP B handout “LOF using Manhattan distance” (8 slides) · textbook Ch. 13.4",
+ summary:"Four steps: k-distance and neighbourhood, reachability distance, lrd, LOF. LOF ≈ 1 normal, LOF > 1 outlier.",
+ whatIs:`<p><b>LOF</b> is a density-based method that compares the density around a point with the density around its neighbours, so it works when different parts of the data have <b>different densities</b>. LOF ≈ 1 means the point is as dense as its neighbours (normal); LOF clearly above 1 means it is sparser than its neighbours (outlier).</p>`,
+ needToKnow:[
+  "dist(p, q) = |x₁ − x₂| + |y₁ − y₂| (Manhattan).",
+  "k-distance(p) = distance to the k-th nearest neighbour; N_k(p) = all points within that distance (ties included).",
+  "reach-dist(p, o) = max(k-distance(o), dist(p, o)).",
+  "lrd(p) = |N_k(p)| / Σ reach-dist(p, o) over o in N_k(p).",
+  "LOF(p) = average lrd of N_k(p) / lrd(p)."],
+ recognition:{
+  clues:["<b>“LOF”, “local outlier factor”, “reachability distance”</b> → the four-step table method.",
+   "<b>Small set of 2-D points and a k</b> with “Manhattan” → this handout."],
+  wording:["For the points a(0,0), b(0,1), c(1,1), d(3,0), compute LOF with k = 2 using Manhattan distance and identify the outlier."],
+  firstStep:"Build the full distance table. Every later step reads from it.",
+  method:"Distance table → sorted distances, N_k and k-distance → reach-dist for each neighbour pair → lrd → LOF → rank.",
+  trap:"reach-dist uses the <b>neighbour's</b> k-distance (o), not the point's own."},
+ concept:`<div class="formula">k-distance(p)    = distance from p to its k-th nearest neighbour
+reach-dist(p, o) = max( k-distance(o), dist(p, o) )
+lrd(p)           = |N_k(p)| / Σ reach-dist(p, o)
+LOF(p)           = [ Σ lrd(o) / |N_k(p)| ] / lrd(p)</div>
+<div class="scroll"><table class="t"><thead><tr><th>LOF</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>≈ 1</td><td>Same density as its neighbours — normal</td></tr>
+<tr><td>&lt; 1</td><td>Denser than its neighbours — inside a cluster</td></tr>
+<tr><td>clearly &gt; 1</td><td>Sparser than its neighbours — outlier</td></tr></tbody></table></div>
+<p>The handout notes a product form Σlrd(o) × Σreach-dist(p, o) that gives 4× these values with the same ranking; use the average form above unless the question asks otherwise.</p>`,
+ examAnswer:{
+  short:"The four formulas and the LOF interpretation.",
+  medium:"The full calculation for a small dataset.",
+  long:"All tables (distance, k-distance and neighbourhood, reach-dist, lrd, LOF), the ranking, and why LOF handles varying density."},
+ mistakes:[
+  "Dropping a tied neighbour from N_k (b has two neighbours at distance 1).",
+  "Using the point's own k-distance in reach-dist.",
+  "Inverting LOF (own lrd ÷ neighbours' lrd)."],
+ examples:[
+  {id:"ex_m5t4_1", topic:"m5t4", title:"LOF for four points, k = 2 (handout)",
+   category:"LOF calculation",
+   recog:"Four 2-D points, k = 2, Manhattan distance.",
+   need:"All four steps.",
+   q:"Points a(0,0), b(0,1), c(1,1), d(3,0). Using k = 2 and Manhattan distance, compute the LOF of every point and identify the outlier.",
+   steps:[
+    "<b>Distances:</b> ab 1, ac 2, ad 3, bc 1, bd 4, cd 3.",
+    "<b>k-distance and N₂:</b> a: N = {b, c}, 2-dist 2 · b: {a, c}, 1 · c: {b, a}, 2 · d: {a, c}, 3.",
+    "<b>reach-dist:</b> a→b max(1,1) = 1, a→c max(2,2) = 2 · b→a max(2,1) = 2, b→c max(2,1) = 2 · c→b max(1,1) = 1, c→a max(2,2) = 2 · d→a max(2,3) = 3, d→c max(2,3) = 3.",
+    "<b>lrd:</b> a = 2/3 = 0.667 · b = 2/4 = 0.5 · c = 2/3 = 0.667 · d = 2/6 = 0.333.",
+    "<b>LOF:</b> a = [(0.5 + 0.667)/2]/0.667 = 0.875 · b = [(0.667 + 0.667)/2]/0.5 = 1.33 · c = 0.875 · d = [(0.667 + 0.667)/2]/0.333 = <b>2.00</b>."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>Point</th><th>N₂</th><th>2-dist</th><th>Σ reach-dist</th><th>lrd</th><th>avg lrd of N₂</th><th>LOF</th></tr></thead><tbody>
+<tr><td>a</td><td>b, c</td><td>2</td><td>1 + 2 = 3</td><td>0.667</td><td>0.583</td><td>0.88</td></tr>
+<tr><td>b</td><td>a, c</td><td>1</td><td>2 + 2 = 4</td><td>0.5</td><td>0.667</td><td>1.33</td></tr>
+<tr><td>c</td><td>b, a</td><td>2</td><td>1 + 2 = 3</td><td>0.667</td><td>0.583</td><td>0.88</td></tr>
+<tr><td>d</td><td>a, c</td><td>3</td><td>3 + 3 = 6</td><td>0.333</td><td>0.667</td><td><b>2.00</b></td></tr></tbody></table></div>
+<div class="answer">d is the outlier (LOF 2.00, about twice as sparse as its neighbours). Ranking: d &gt; b &gt; a = c.</div>`,
+   why:"reach-dist smooths distances inside a cluster (a close point gets the neighbour's k-distance), so only genuinely isolated points get low lrd.",
+   trap:"Writing 2-dist(b) = 4: b's two nearest are a and c, both at 1."}],
+ practice:[
+  {id:"p_m5t4_1", d:"moderate", marks:10, q:"Four points on a line: P = 1, Q = 2, R = 4, S = 9. Using k = 2 and distance |x − y|, compute the LOF of each point and identify the outlier.",
+   hint:"2-distances: P 3, Q 2, R 3, S 7.",
+   a:`<b>Distances:</b> PQ 1, PR 3, PS 8, QR 2, QS 7, RS 5.<br>
+<b>N₂ and 2-dist:</b> P {Q, R} 3 · Q {P, R} 2 · R {Q, P} 3 · S {R, Q} 7.<br>
+<b>reach-dist:</b> P→Q max(2,1) = 2, P→R max(3,3) = 3 · Q→P max(3,1) = 3, Q→R max(3,2) = 3 · R→Q max(2,2) = 2, R→P max(3,3) = 3 · S→R max(3,5) = 5, S→Q max(2,7) = 7.<br>
+<b>lrd:</b> P 2/5 = 0.4 · Q 2/6 = 0.333 · R 2/5 = 0.4 · S 2/12 = 0.167.<br>
+<b>LOF:</b> P (0.333 + 0.4)/2 ÷ 0.4 = 0.92 · Q (0.4 + 0.4)/2 ÷ 0.333 = 1.2 · R 0.92 · S (0.4 + 0.333)/2 ÷ 0.167 = <b>2.2</b>.
+<div class="answer">S is the outlier (LOF 2.2). Ranking: S &gt; Q &gt; P = R.</div>`}],
+ questions:[
+  {q:"Compute LOF for a small dataset using Manhattan distance and identify the outlier.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Explain LOF and why it handles varying density.", marks:5, d:"standard", priority:"high", source:"predicted"}]
+});
+
+/* ============================ MODULE 6 ============================== */
+
+TOPICS.push({
+ id:"m6t1", m:"m6", title:"Time Series: Components, Taxonomy of Forecasting, ARIMA",
+ classification:"bonly", priority:"high", core:true, type:"theory", marks:5, los:["LO 6.1","LO 6.3"],
+ src:"COMP B M6 deck slides 1–12 · textbook Ch. 12 (taxonomy, ARIMA)",
+ summary:"Trend, seasonality, cyclical, irregular. Decomposition, smoothing, regression and ML forecasting families. ARIMA in one paragraph.",
+ whatIs:`<p>A <b>time series</b> is data arranged in order of the time of occurrence — sales, prices, production. <b>Time series forecasting</b> builds models from the historical time-stamped data to predict future values, which are completely unavailable at the time of the forecast.</p>`,
+ needToKnow:[
+  "Four components: trend (long-term movement), seasonality (fixed-interval repetition), cyclical (long swings without a fixed period, e.g. business cycles), irregular / noise (random).",
+  "Taxonomy: decomposition-based (classical, STS, X11) · smoothing-based (moving averages, exponential smoothing) · regression-based (regression, regression with seasonality, ARIMA) · machine-learning-based (neural networks).",
+  "Uses: predicting trends, detecting patterns and anomalies, risk mitigation, planning, competitive advantage.",
+  "When to use forecasting (consistent data, patterns exist, future depends on past) and when to avoid it (noisy data, no pattern, unknown drivers).",
+  "ARIMA(p, d, q): AR = regression on its own p past values; I = differencing d times to make the series stationary; MA = regression on q past forecast errors."],
+ recognition:{
+  clues:["<b>“Components of time series”</b> → the four-row table with examples.",
+   "<b>“Taxonomy”, “classify forecasting methods”</b> → the four families.",
+   "<b>“ARIMA”, “stationary”, “differencing”</b> → the ARIMA paragraph."],
+  wording:["Explain the components of a time series with examples.",
+   "Explain the taxonomy of time series forecasting techniques.",
+   "Write a short note on ARIMA."],
+  firstStep:"Decide which list is asked, then give one example per item.",
+  method:"Definition → table (component / family) → example per row → one line on when forecasting is appropriate.",
+  trap:"Confusing seasonal (fixed period, within a year) with cyclical (no fixed period, several years)."},
+ concept:`<div class="scroll"><table class="t"><thead><tr><th>Component</th><th>Description</th><th>Example</th></tr></thead><tbody>
+<tr><td>Trend</td><td>Long-term increase, decrease or stability; linear or non-linear</td><td>Steady growth in smartphone users</td></tr>
+<tr><td>Seasonality</td><td>Regular pattern repeating at fixed intervals (daily, monthly, yearly)</td><td>Ice-cream sales every summer; Diwali sales</td></tr>
+<tr><td>Cyclical</td><td>Long-term fluctuations without a fixed period, linked to business cycles</td><td>Boom and recession in housing</td></tr>
+<tr><td>Irregular (noise)</td><td>Random, unpredictable variation</td><td>A strike, a flood, a data error</td></tr></tbody></table></div>
+<div class="scroll"><table class="t"><thead><tr><th>Family</th><th>Methods</th></tr></thead><tbody>
+<tr><td>Decomposition-based</td><td>Classical, STS, X11</td></tr>
+<tr><td>Smoothing-based</td><td>Average, moving average, exponential smoothing (Holt, Holt-Winters)</td></tr>
+<tr><td>Regression-based</td><td>Linear regression on time, regression with seasonality, ARIMA</td></tr>
+<tr><td>Machine-learning-based</td><td>Neural networks on windowed (lagged) data</td></tr></tbody></table></div>
+<h4>ARIMA in brief (textbook)</h4>
+<p><b>Autocorrelation</b>: a series is correlated with its own lagged values. <b>AR(p)</b>: yₜ is a linear combination of its previous p values. A <b>stationary</b> series does not depend on time; <b>differencing</b> (yₜ − yₜ₋₁) removes trend, and seasonal differencing (yₜ − yₜ₋ₘ) removes seasonality. <b>MA(q)</b>: yₜ depends on the previous q forecast errors. <b>ARIMA(p, d, q)</b> combines the three; ARIMA(0, 1, 0) is the random-walk (naïve) model.</p>`,
+ examAnswer:{
+  short:"Define time series and list the four components.",
+  medium:"The component table with examples, or the taxonomy table.",
+  long:"Both tables, applications, when to use or avoid forecasting, and a paragraph on ARIMA(p, d, q)."},
+ mistakes:[
+  "Calling a yearly festival pattern “cyclical”.",
+  "Listing ARIMA under smoothing methods; the deck's taxonomy puts it under regression-based."],
+ examples:[
+  {id:"ex_m6t1_1", topic:"m6t1", title:"Identify the components in a sales story",
+   category:"Components of time series",
+   recog:"A description of a series; name the component behind each feature.",
+   need:"The four definitions.",
+   q:"Monthly sales of an AC company rose steadily from 2015 to 2024, peaked every April–May, fell sharply in 2020 during a lockdown, and dipped during the 2016–2018 slowdown. Name the component behind each feature.",
+   steps:[
+    "Steady rise over ten years → <b>trend</b>.",
+    "Peak every April–May → <b>seasonality</b> (fixed yearly period).",
+    "2016–2018 slowdown, a multi-year swing with no fixed period → <b>cyclical</b>.",
+    "2020 lockdown fall, a one-off unpredictable event → <b>irregular</b>."],
+   answer:`<div class="answer">Trend · Seasonality · Cyclical · Irregular</div>`,
+   why:"The test is the period: fixed and short → seasonal; long and variable → cyclical; none → irregular.",
+   trap:"Treating the lockdown dip as cyclical."}],
+ practice:[
+  {id:"p_m6t1_1", d:"basic", marks:5, q:"Write a short note on ARIMA.",
+   a:`ARIMA (AutoRegressive Integrated Moving Average), developed by Box and Jenkins, is a regression-based forecasting model built on <b>autocorrelation</b> — a series' correlation with its own past values.<br>
+<b>AR(p):</b> yₜ = l + α₁yₜ₋₁ + … + αₚyₜ₋ₚ + e — regression on the previous p values.<br>
+<b>I(d):</b> the model needs a <b>stationary</b> series (not dependent on time), so the data are differenced d times: y′ₜ = yₜ − yₜ₋₁ (seasonal: yₜ − yₜ₋ₘ).<br>
+<b>MA(q):</b> yₜ = I + eₜ + θ₁eₜ₋₁ + … + θ_q eₜ₋q — regression on the previous q forecast errors.<br>
+ARIMA(p, d, q) combines them; coefficients are estimated by maximum likelihood. Choosing p, d, q is its main difficulty. ARIMA(0, 1, 0) is the random walk (naïve) model.`}],
+ questions:[
+  {q:"Explain the components of a time series with examples.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"Explain the taxonomy of time series forecasting methods.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"Write a short note on ARIMA.", marks:5, d:"standard", priority:"medium", source:"predicted"}]
+});
+
+TOPICS.push({
+ id:"m6t2", m:"m6", title:"Time Series Decomposition: Additive &amp; Multiplicative",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 6.1","LO 6.4"],
+ src:"COMP B M6 deck slides 13–37 (quarterly sales example) · two decomposition videos",
+ summary:"Centred 2×4 moving average for trend, detrend, average by quarter, adjust the indices, then forecast = trend ± or × seasonal.",
+ whatIs:`<p><b>Decomposition</b> splits a series into Trend (T), Seasonal (S) and Residual (R) components, estimates each separately, and recombines them to describe or forecast the series. <b>Additive</b>: Y = T + S + R, when seasonal swings stay the same size. <b>Multiplicative</b>: Y = T × S × R, when swings grow with the level.</p>`,
+ needToKnow:[
+  "Centred 2×4 moving average for quarterly data: T(t) = [½Y(t−2) + Y(t−1) + Y(t) + Y(t+1) + ½Y(t+2)] / 4; the first and last two quarters get no trend.",
+  "Detrend: Y − T (additive) or Y / T (multiplicative).",
+  "Seasonal index = average detrended value per quarter, adjusted so the indices sum to 0 (additive) or to 4 (multiplicative).",
+  "Trend per quarter = (last T − first T) / number of quarters between them.",
+  "Forecast: trend projected from the last T, then + S (additive) or × S (multiplicative)."],
+ recognition:{
+  clues:["<b>Quarterly (or monthly) data over several years</b> and “seasonal indices” / “forecast Q2 of next year” → decomposition.",
+   "<b>“Swings stay the same size”</b> → additive; <b>“swings grow with the level”</b> → multiplicative."],
+  wording:["Using additive decomposition, find the seasonal indices and forecast Q2 of year 4.",
+   "Distinguish additive and multiplicative decomposition."],
+  firstStep:"Write the series as one column t = 1 … 12 and compute the centred moving average column.",
+  method:"T → Y − T (or Y/T) → arrange by quarter, average → adjust → trend slope → count quarters from the last T → forecast.",
+  trap:"Counting quarters from the last data point (t = 12) instead of from the last <b>trend</b> value (t = 10)."},
+ concept:`<div class="formula">Additive:        Y = T + S + R      detrend Y − T     Σ S = 0
+Multiplicative:  Y = T × S × R      detrend Y / T     Σ S = 4 (quarters)
+
+T(t) = [ ½Y(t−2) + Y(t−1) + Y(t) + Y(t+1) + ½Y(t+2) ] / 4
+Forecast = (T_last + h × slope) + S   or   (T_last + h × slope) × S</div>
+<div class="scroll"><table class="t"><thead><tr><th>Model</th><th>Use when</th><th>Example</th></tr></thead><tbody>
+<tr><td>Additive</td><td>Seasonal swings stay about the same size</td><td>100 + 15 − 3 = 112</td></tr>
+<tr><td>Multiplicative</td><td>Seasonal swings grow with the level</td><td>100 × 1.15 × 0.97 = 111.55</td></tr></tbody></table></div>
+<div class="box neutral"><h5>Slips in the deck</h5><p style="margin:0">Every moving-average line is labelled “Example, t = 3” although each is for a different t. On the Y5Q3 slide the timeline labels are misnumbered; the count from Y3Q2 (t = 10) to Y5Q3 (t = 19) is <b>9 quarters</b>, which the deck uses correctly.</p></div>`,
+ examAnswer:{
+  short:"Formulas of both models and when to use each.",
+  medium:"Seasonal indices from the given detrended values and one forecast.",
+  long:"Full table: centred moving average, detrending, seasonal-index table with adjustment, trend slope, and forecasts."},
+ mistakes:[
+  "Using a plain 4-point average (not centred) for quarterly data.",
+  "Skipping the adjustment so the indices do not sum to 0 (or 4).",
+  "Adding a multiplicative index instead of multiplying."],
+ examples:[
+  {id:"ex_m6t2_1", topic:"m6t2", title:"Additive decomposition of quarterly sales",
+   category:"Additive decomposition + forecast",
+   recog:"Three years of quarterly sales, swings roughly constant in size.",
+   need:"Centred MA, Y − T, indices summing to 0, slope, forecast.",
+   q:"Quarterly sales — Year 1: 18, 20, 34, 44 · Year 2: 22, 20, 38, 48 · Year 3: 18, 20, 42, 56. Using additive decomposition, find the seasonal indices and forecast Q2 of year 4 and Q3 of year 5.",
+   steps:[
+    "Centred MA, e.g. T(3) = (½·18 + 20 + 34 + 44 + ½·22)/4 = 29.5. T for t = 3 … 10: 29.5, 30, 30.5, 31.5, 31.5, 31, 31.5, 33.",
+    "Y − T for t = 3 … 10: 4.5, 14, −8.5, −11.5, 6.5, 17, −13.5, −13.",
+    "Average by quarter: Q1 (−8.5 − 13.5)/2 = −11; Q2 (−11.5 − 13)/2 = −12.25; Q3 (4.5 + 6.5)/2 = 5.5; Q4 (14 + 17)/2 = 15.5. Sum = −2.25.",
+    "Adjust: subtract −2.25/4 = −0.5625, i.e. add 0.5625 → S = <b>−10.4375, −11.6875, 6.0625, 16.0625</b> (sum 0).",
+    "Slope = (33 − 29.5)/(10 − 3) = <b>0.5</b> per quarter.",
+    "Y4Q2 is t = 14, 4 quarters after t = 10: T = 33 + 4 × 0.5 = 35 → forecast 35 − 11.6875 = <b>23.31</b>.",
+    "Y5Q3 is t = 19, 9 quarters after t = 10: T = 33 + 4.5 = 37.5 → forecast 37.5 + 6.0625 = <b>43.56</b>."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>t</th><th>Quarter</th><th>Y</th><th>T</th><th>Y − T</th></tr></thead><tbody>
+<tr><td>1</td><td>Y1Q1</td><td>18</td><td>—</td><td>—</td></tr><tr><td>2</td><td>Y1Q2</td><td>20</td><td>—</td><td>—</td></tr>
+<tr><td>3</td><td>Y1Q3</td><td>34</td><td>29.5</td><td>4.5</td></tr><tr><td>4</td><td>Y1Q4</td><td>44</td><td>30.0</td><td>14.0</td></tr>
+<tr><td>5</td><td>Y2Q1</td><td>22</td><td>30.5</td><td>−8.5</td></tr><tr><td>6</td><td>Y2Q2</td><td>20</td><td>31.5</td><td>−11.5</td></tr>
+<tr><td>7</td><td>Y2Q3</td><td>38</td><td>31.5</td><td>6.5</td></tr><tr><td>8</td><td>Y2Q4</td><td>48</td><td>31.0</td><td>17.0</td></tr>
+<tr><td>9</td><td>Y3Q1</td><td>18</td><td>31.5</td><td>−13.5</td></tr><tr><td>10</td><td>Y3Q2</td><td>20</td><td>33.0</td><td>−13.0</td></tr>
+<tr><td>11</td><td>Y3Q3</td><td>42</td><td>—</td><td>—</td></tr><tr><td>12</td><td>Y3Q4</td><td>56</td><td>—</td><td>—</td></tr></tbody></table></div>
+<div class="scroll"><table class="t num"><thead><tr><th></th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Sum</th></tr></thead><tbody>
+<tr><td>Raw average</td><td>−11</td><td>−12.25</td><td>5.5</td><td>15.5</td><td>−2.25</td></tr>
+<tr><td>Seasonal index S</td><td>−10.4375</td><td>−11.6875</td><td>6.0625</td><td>16.0625</td><td>0</td></tr></tbody></table></div>
+<div class="answer">Forecast Y4Q2 = <b>23.31</b> · Y5Q3 = <b>43.56</b></div>
+Q1 and Q2 run below trend, Q3 and Q4 above it (Q4 by about 16).`,
+   why:"The centred average spans exactly one year, so it cancels the seasonal pattern and leaves the trend; what remains after removing the trend is seasonal plus noise, and averaging by quarter removes most of the noise.",
+   trap:"Forecasting Y4Q2 as 33 − 11.69: the trend must first be carried forward 4 quarters."},
+  {id:"ex_m6t2_2", topic:"m6t2", title:"Multiplicative decomposition of the same data",
+   category:"Multiplicative decomposition + forecast",
+   recog:"Same series; the question asks for the multiplicative model.",
+   need:"Y / T, indices summing to 4, forecast = T × S.",
+   q:"For the same quarterly sales, use multiplicative decomposition to find the seasonal indices and forecast Q2 of year 4 and Q3 of year 5.",
+   steps:[
+    "Y / T for t = 3 … 10: 1.153, 1.467, 0.721, 0.635, 1.206, 1.548, 0.571, 0.606.",
+    "Average by quarter: Q1 0.646, Q2 0.6205, Q3 1.1795, Q4 1.5075. Sum = 3.9535.",
+    "Adjust: divide each by 3.9535/4 = 0.9884 → S = <b>0.654, 0.628, 1.193, 1.525</b> (sum 4).",
+    "Same trend: T(Y4Q2) = 35, T(Y5Q3) = 37.5.",
+    "Forecasts: 35 × 0.628 = <b>21.98</b>; 37.5 × 1.193 = <b>44.75</b>."],
+   answer:`<div class="answer">S = 0.654, 0.628, 1.193, 1.525 · Y4Q2 = <b>21.98</b> · Y5Q3 = <b>44.75</b></div>
+Q4 sales are about 52% above trend; Q2 sales about 37% below.`,
+   why:"In the multiplicative model the season scales the trend, so the indices are ratios and average to 1 per quarter.",
+   trap:"Making the indices sum to 0; multiplicative indices sum to the number of seasons."}],
+ practice:[
+  {id:"p_m6t2_1", d:"standard", marks:5, q:"Using the indices above (trend 33 at t = 10, slope 0.5), forecast Q4 of year 4 with (a) the additive and (b) the multiplicative model.",
+   hint:"Y4Q4 is t = 16, six quarters after t = 10.",
+   a:`T(16) = 33 + 6 × 0.5 = <b>36</b>.
+<div class="formula">(a) Additive:       36 + 16.0625 = 52.06
+(b) Multiplicative: 36 × 1.525   = 54.90</div>`},
+  {id:"p_m6t2_2", d:"basic", marks:5, q:"Distinguish additive and multiplicative decomposition and list the steps of classical decomposition.",
+   a:`<b>Additive</b> Y = T + S + R: the seasonal swing is a fixed amount whatever the level; indices sum to 0. <b>Multiplicative</b> Y = T × S × R: the swing is a fixed proportion and grows with the level; indices sum to the number of seasons.<br>
+<b>Classical steps:</b> 1. Estimate the trend T with a centred moving average. 2. Detrend: Y − T or Y / T. 3. Average the detrended values by season and adjust them → S. 4. Residual R = Y − T − S or Y / (T × S). 5. Forecast by projecting the trend and adding or multiplying the seasonal index.`}],
+ questions:[
+  {q:"Find seasonal indices by additive decomposition and forecast future quarters.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Find seasonal indices by multiplicative decomposition and forecast.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Distinguish additive and multiplicative decomposition.", marks:5, d:"basic", priority:"high", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m6t3", m:"m6", title:"Smoothing Methods: Average, Moving Average, Exponential",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 6.2"],
+ src:"COMP B M6 deck slides 38–46 · textbook Ch. 12.2 (naïve, exponential smoothing)",
+ summary:"One-step-ahead forecasts from past values: average of all, average of the last k, or exponentially weighted.",
+ whatIs:`<p>In <b>smoothing</b> methods, each forecast is a function of the past few observations. They forecast <b>one step ahead</b> (h = 1). Notation: yₜ observed, Fₜ forecast, eₜ = yₜ − Fₜ error.</p>`,
+ needToKnow:[
+  "Average method: Fₜ = (y₁ + … + yₜ₋₁)/(t − 1). Old data never leave, so it reacts slowly.",
+  "Moving average (k): Fₜ = (yₜ₋₁ + … + yₜ₋ₖ)/k. Old values drop out; no forecast for the first k points; k must be chosen.",
+  "Naïve: Fₙ₊₁ = yₙ; seasonal naïve: Fₙ₊₁ = yₙ₊₁₋ₛ.",
+  "Simple exponential smoothing (textbook): Fₙ₊₁ = α yₙ + (1 − α) Fₙ, 0 &lt; α &lt; 1; higher α follows the data closely, lower α smooths more; α = 1 is the naïve forecast.",
+  "Holt adds a trend term (β); Holt-Winters adds seasonality (γ)."],
+ recognition:{
+  clues:["<b>A short series and “forecast the next value”</b> with “average” / “moving average of 3” / “α” → smoothing.",
+   "<b>“Why is the moving average better than the average method?”</b> → reaction to change."],
+  wording:["Forecast y₇ using the average method and a 3-period moving average.",
+   "Using exponential smoothing with α = 0.3, forecast the next value."],
+  firstStep:"Write t, yₜ, Fₜ and eₜ columns and mark from which t the first forecast exists.",
+  method:"Compute each Fₜ from the earlier values only → eₜ = yₜ − Fₜ → the error measures (next topic).",
+  trap:"Including yₜ itself in the forecast for period t."},
+ concept:`<div class="formula">Average:            Fₜ = (y₁ + y₂ + … + yₜ₋₁) / (t − 1)
+Moving average k:   Fₜ = (yₜ₋₁ + yₜ₋₂ + … + yₜ₋ₖ) / k
+Exponential:        Fₙ₊₁ = α yₙ + (1 − α) Fₙ        (start F₂ = y₁)
+Error:              eₜ = yₜ − Fₜ   (positive → forecast too low)</div>
+<div class="scroll"><table class="t"><thead><tr><th>Method</th><th>Weights on the past</th><th>Reacts to change</th></tr></thead><tbody>
+<tr><td>Average</td><td>Equal on all past values</td><td>Slowly</td></tr>
+<tr><td>Moving average</td><td>Equal on the last k, zero before</td><td>Faster</td></tr>
+<tr><td>Exponential</td><td>Decaying: α, α(1 − α), α(1 − α)², …</td><td>Tunable with α</td></tr></tbody></table></div>`,
+ examAnswer:{
+  short:"Formula and the forecast.",
+  medium:"The full forecast table with errors.",
+  long:"Two or three methods on the same series, their error measures, and which is better and why."},
+ mistakes:[
+  "Starting the 3-period moving average at t = 3 (the first forecast is for t = 4).",
+  "Using α on the old forecast and (1 − α) on the new value (reversed)."],
+ examples:[
+  {id:"ex_m6t3_1", topic:"m6t3", title:"Average vs 3-period moving average (deck)",
+   category:"Smoothing forecasts",
+   recog:"Six observations, forecast the seventh by two methods.",
+   need:"Both formulas; errors eₜ = yₜ − Fₜ.",
+   q:"y = 20, 22, 21, 25, 24, 26 for t = 1 … 6. Compute the forecasts and errors by (a) the average method and (b) a 3-period moving average, and forecast t = 7.",
+   steps:[
+    "(a) F₂ = 20; F₃ = 21; F₄ = 63/3 = 21; F₅ = 88/4 = 22; F₆ = 112/5 = 22.4; F₇ = 138/6 = <b>23</b>.",
+    "Errors: e₂ = 2, e₃ = 0, e₄ = 4, e₅ = 2, e₆ = 3.6.",
+    "(b) F₄ = (20 + 22 + 21)/3 = 21; F₅ = (22 + 21 + 25)/3 = 22.67; F₆ = (21 + 25 + 24)/3 = 23.33; F₇ = (25 + 24 + 26)/3 = <b>25</b>.",
+    "Errors: e₄ = 4, e₅ = 1.33, e₆ = 2.67."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>t</th><th>y</th><th>F (average)</th><th>e</th><th>F (3-MA)</th><th>e</th></tr></thead><tbody>
+<tr><td>1</td><td>20</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>2</td><td>22</td><td>20.00</td><td>2.00</td><td>—</td><td>—</td></tr>
+<tr><td>3</td><td>21</td><td>21.00</td><td>0.00</td><td>—</td><td>—</td></tr><tr><td>4</td><td>25</td><td>21.00</td><td>4.00</td><td>21.00</td><td>4.00</td></tr>
+<tr><td>5</td><td>24</td><td>22.00</td><td>2.00</td><td>22.67</td><td>1.33</td></tr><tr><td>6</td><td>26</td><td>22.40</td><td>3.60</td><td>23.33</td><td>2.67</td></tr>
+<tr><td>7</td><td>?</td><td><b>23.00</b></td><td></td><td><b>25.00</b></td><td></td></tr></tbody></table></div>
+<div class="answer">F₇ = 23 (average) · F₇ = 25 (3-MA). The moving average follows the rising series more closely.</div>`,
+   why:"The average keeps the old low values forever; the moving average lets them drop out of the window.",
+   trap:"Dividing the average-method sum by t instead of t − 1."}],
+ practice:[
+  {id:"p_m6t3_1", d:"standard", marks:5, q:"y = 40, 44, 41, 47, 50, 48 for t = 1 … 6. Forecast t = 7 by (a) the average method, (b) a 3-period moving average, (c) exponential smoothing with α = 0.3 and F₂ = y₁.",
+   hint:"(c) Fₜ₊₁ = 0.3yₜ + 0.7Fₜ.",
+   a:`(a) F₇ = (40 + 44 + 41 + 47 + 50 + 48)/6 = 270/6 = <b>45</b><br>
+(b) F₇ = (47 + 50 + 48)/3 = <b>48.33</b><br>
+(c) F₂ = 40; F₃ = 0.3(44) + 0.7(40) = 41.2; F₄ = 0.3(41) + 0.7(41.2) = 41.14; F₅ = 0.3(47) + 0.7(41.14) = 42.90; F₆ = 0.3(50) + 0.7(42.90) = 45.03; F₇ = 0.3(48) + 0.7(45.03) = <b>45.92</b>
+<div class="answer">F₇: 45 (average) · 48.33 (3-MA) · 45.92 (exponential, α = 0.3)</div>`}],
+ questions:[
+  {q:"Forecast using the average method and the moving average method.", marks:5, d:"standard", priority:"high", source:"source"},
+  {q:"Explain smoothing-based forecasting methods.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
+TOPICS.push({
+ id:"m6t4", m:"m6", title:"Forecast Evaluation: MAE, RMSE, MAPE, MASE (and Regression on Time)",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 6.3","LO 6.4"],
+ src:"COMP B M6 deck slides 40–60 (average, moving average and regression evaluations)",
+ summary:"Score a forecast with MAE, RMSE, MAPE and MASE; MASE < 1 beats the naïve forecast.",
+ whatIs:`<p>Forecasts are compared with four error measures. MAE, RMSE and MAPE are as in Module 4. <b>MASE</b> (Hyndman and Koehler) divides the model's MAE by the MAE of the <b>naïve</b> forecast (each value predicted by the previous one), so it says whether the model beats the simplest possible baseline.</p>`,
+ needToKnow:[
+  "MAE = (1/n) Σ|eₜ|; RMSE = √[(1/n) Σeₜ²]; MAPE = (100/n) Σ|eₜ|/yₜ.",
+  "MASE = MAE / naïve MAE, naïve MAE = average of |yₜ − yₜ₋₁|.",
+  "MASE &lt; 1 → better than naïve; MASE &gt; 1 → worse.",
+  "Linear regression on time: y′ = a·t + b by least squares, then the same four measures."],
+ recognition:{
+  clues:["<b>A forecast table and “evaluate” / “compare the methods”</b> → the four measures.",
+   "<b>“Naïve”, “scaled error”, MASE</b> → add the |yₜ − yₜ₋₁| column."],
+  wording:["Evaluate the moving average forecasts using MAE, RMSE, MAPE and MASE.",
+   "Fit a linear trend to the data and evaluate it with MAE, RMSE, MAPE and MASE."],
+  firstStep:"Add columns |e|, e², |e|/y and the naïve error |yₜ − yₜ₋₁| to the forecast table.",
+  method:"Total each column → MAE, RMSE, MAPE → naïve MAE → MASE → say which method is better.",
+  trap:"Using signed errors, which cancel."},
+ concept:`<div class="formula">MAE  = (1/n) Σ |eₜ|                 RMSE = √[ (1/n) Σ eₜ² ]
+MAPE = (100/n) Σ |eₜ| / yₜ  (%)
+MASE = MAE / [ average of |yₜ − yₜ₋₁| ]      &lt; 1 beats the naïve forecast</div>
+<div class="box neutral"><h5>Which periods go into the naïve MAE?</h5><p style="margin:0">The deck averages |yₜ − yₜ₋₁| over the <b>periods being evaluated</b> (t = 2 … 6 for the average method, t = 4 … 6 for the moving average, all of t = 2 … 5 for the regression). The formula slide defines it over the whole series (j = 2 … n), which for the moving-average example gives naïve MAE 2.00 and MASE 1.33 instead of 1.14. Follow the deck in the exam, and state which periods you used.</p></div>`,
+ examAnswer:{
+  short:"Formula of the measure asked and its meaning.",
+  medium:"Full error table and all four measures for one method.",
+  long:"Two methods side by side with all measures and a recommendation."},
+ mistakes:[
+  "Dividing by y in the wrong row for MAPE.",
+  "Forgetting that MASE needs its own naïve column.",
+  "Calling a lower MASE worse."],
+ examples:[
+  {id:"ex_m6t4_1", topic:"m6t4", title:"Average method vs moving average: all four measures",
+   category:"Forecast evaluation",
+   recog:"Two sets of forecasts for the same series → compare with the four measures.",
+   need:"|e|, e², |e|/y, naïve errors.",
+   q:"For y = 20, 22, 21, 25, 24, 26 evaluate (a) the average-method forecasts (t = 2 … 6) and (b) the 3-period moving-average forecasts (t = 4 … 6) using MAE, RMSE, MAPE and MASE.",
+   steps:[
+    "(a) |e| = 2, 0, 4, 2, 3.6 → Σ = 11.6 → MAE = <b>2.32</b>. Σe² = 36.96 → RMSE = √7.392 = <b>2.72</b>.",
+    "|e|/y = 9.09%, 0%, 16%, 8.33%, 13.85% → MAPE = 47.27/5 = <b>9.45%</b>.",
+    "Naïve errors t = 2 … 6: 2, 1, 4, 1, 2 → mean 2.00 → MASE = 2.32/2 = <b>1.16</b>.",
+    "(b) |e| = 4, 1.33, 2.67 → MAE = 8/3 = <b>2.67</b>. Σe² = 16 + 1.78 + 7.11 = 24.89 → RMSE = √8.30 = <b>2.88</b>.",
+    "|e|/y = 16%, 5.56%, 10.26% → MAPE = <b>10.60%</b>.",
+    "Naïve errors t = 4 … 6: 4, 1, 2 → mean 2.33 → MASE = 2.67/2.33 = <b>1.14</b>."],
+   answer:`<div class="scroll"><table class="t num"><thead><tr><th>Method</th><th>MAE</th><th>RMSE</th><th>MAPE</th><th>MASE</th></tr></thead><tbody>
+<tr><td>Average</td><td>2.32</td><td>2.72</td><td>9.45%</td><td>1.16</td></tr>
+<tr><td>3-period moving average</td><td>2.67</td><td>2.88</td><td>10.60%</td><td>1.14</td></tr></tbody></table></div>
+<div class="answer">Both MASE values are above 1: neither beats the naïve forecast on this short series.</div>`,
+   why:"Scaling by the naïve error makes MASE comparable across series of different size and tells you whether the method is worth using at all.",
+   trap:"Comparing the two MAEs directly: they are computed over different periods (5 vs 3 forecasts)."},
+  {id:"ex_m6t4_2", topic:"m6t4", title:"Linear regression on time: expenditure",
+   category:"Regression forecast + evaluation",
+   recog:"Values against month numbers 1 … 5; “fit a line, estimate month 6, evaluate”.",
+   need:"Least squares (Module 4), then the four measures.",
+   q:"Expenditure for months 1–5: 12, 19, 29, 37, 45. The least-squares line is y′ = 8.4t + 3.2. Estimate month 6 and evaluate the model with MAE, RMSE, MAPE and MASE.",
+   steps:[
+    "Month 6: y′ = 8.4 × 6 + 3.2 = <b>53.6</b>.",
+    "Fitted 11.6, 20.0, 28.4, 36.8, 45.2 → |e| = 0.4, 1.0, 0.6, 0.2, 0.2 → MAE = 2.4/5 = <b>0.48</b>.",
+    "Σe² = 1.6 → RMSE = √0.32 = <b>0.566</b>.",
+    "Σ|e|/y = 0.1165 → MAPE = <b>2.33%</b>.",
+    "Naïve errors: 7, 10, 8, 8 → mean 8.25 → MASE = 0.48/8.25 = <b>0.058</b>."],
+   answer:`<div class="answer">Month 6 ≈ <b>53.6</b> thousand · MAE 0.48 · RMSE 0.566 · MAPE 2.33% · MASE 0.058</div>
+MASE is far below 1, so the trend line is much better than the naïve forecast and the month-6 estimate is reliable.`,
+   why:"The series has a strong steady trend, which a straight line captures and the naïve forecast lags behind by one step.",
+   trap:"Using the 5 errors in the naïve average; there are only 4 month-to-month changes."}],
+ practice:[
+  {id:"p_m6t4_1", d:"standard", marks:10, q:"y = 40, 44, 41, 47, 50, 48. 3-period moving-average forecasts for t = 4, 5, 6 are 41.67, 44, 46. Compute MAE, RMSE, MAPE and MASE (naïve errors over t = 4 … 6).",
+   a:`e = 47 − 41.67 = 5.33, 50 − 44 = 6, 48 − 46 = 2.
+<div class="formula">MAE  = (5.33 + 6 + 2)/3 = 4.44
+RMSE = √[(28.44 + 36 + 4)/3] = √22.81 = 4.78
+MAPE = (11.35% + 12% + 4.17%)/3 = 9.17%
+Naïve: |47 − 41| = 6, |50 − 47| = 3, |48 − 50| = 2 → mean 3.67
+MASE = 4.44 / 3.67 = 1.21</div>
+<div class="answer">MAE 4.44 · RMSE 4.78 · MAPE 9.17% · MASE 1.21 (worse than naïve)</div>`},
+  {id:"p_m6t4_2", d:"basic", marks:5, q:"Explain MAE, RMSE, MAPE and MASE and when each is preferred.",
+   a:`<b>MAE</b> — average absolute error, in the unit of the data; easy to interpret and treats all errors equally.<br>
+<b>RMSE</b> — square root of the mean squared error; penalises large errors more, so prefer it when big misses are costly.<br>
+<b>MAPE</b> — average absolute error as a percentage of the actual value; scale-free, good for comparing series of different size, unreliable when actual values are near zero.<br>
+<b>MASE</b> — MAE divided by the naïve forecast's MAE; scale-free and works near zero; MASE &lt; 1 means the model beats the naïve forecast.`}],
+ questions:[
+  {q:"Evaluate forecasts using MAE, RMSE, MAPE and MASE.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Fit a linear trend by least squares, forecast, and evaluate it.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Explain MASE and how to interpret it.", marks:5, d:"basic", priority:"medium", source:"source"}]
+});
+
 /* =====================================================================
    QUIZ BANK
    Each question carries the topic id it tests, so wrong answers feed
@@ -4189,7 +5743,77 @@ const QUIZ = [
  e:"A bubble chart encodes two variables by x- and y-position and a third by BUBBLE AREA (a fourth can be added with colour). A scatter plot handles only two; a scatter matrix shows many pairs but each cell still shows only two; a histogram is univariate."},
 {t:"m2t16", m:"m2", stage:"concept", q:"A scatter matrix is best described as:",
  o:["A scatter plot with very many points","A grid of scatter plots showing every pairwise combination of variables","A scatter plot with a fitted regression line","A three-dimensional scatter plot"], a:1,
- e:"A scatter matrix (pairs plot) is a GRID of small scatter plots, one cell per pair of variables, so every pairwise relationship in a multi-variable dataset can be inspected at once. It is the fastest way to find which pairs are worth investigating further."}
+ e:"A scatter matrix (pairs plot) is a GRID of small scatter plots, one cell per pair of variables, so every pairwise relationship in a multi-variable dataset can be inspected at once. It is the fastest way to find which pairs are worth investigating further."},
+/* ---------------- MODULE 3 ---------------- */
+{t:"m3t6", m:"m3", stage:"recognise", q:"Scores of the same 12 students are recorded before and after a coaching course. Which test checks whether the course helped?",
+ o:["One-sample t-test","Independent samples t-test","Paired t-test","One-way ANOVA"], a:2,
+ e:"The same subjects are measured twice, so the observations come in pairs. Work on the differences d and use the paired t-test with n − 1 = 11 df."},
+{t:"m3t4", m:"m3", stage:"select", q:"n = 18, population S.D. unknown, testing a claimed mean. Which statistic?",
+ o:["z","t with 17 df","t with 18 df","F"], a:1,
+ e:"Small sample (n < 30) and σ unknown → t-test, df = n − 1 = 17."},
+{t:"m3t4", m:"m3", stage:"concept", q:"A Type I error is",
+ o:["accepting H₀ when it is false","rejecting H₀ when it is true","rejecting H₀ when it is false","choosing the wrong test"], a:1,
+ e:"Type I = reject a true H₀; its probability is α, the producer's risk. Accepting a false H₀ is a Type II error (β, consumer's risk)."},
+{t:"m3t5", m:"m3", stage:"solve", q:"A two-tailed z-test at 5% gives Z = 2.07. The decision is",
+ o:["Accept H₀ because 2.07 < 2.58","Reject H₀ because 2.07 > 1.96","Accept H₀ because 2.07 < 3","Reject H₀ because 2.07 > 1.645"], a:1,
+ e:"The two-tailed 5% critical value is 1.96. |Z| = 2.07 > 1.96 → reject H₀. 1.645 is the one-tailed 5% value; 2.58 is the two-tailed 1% value."},
+{t:"m3t7", m:"m3", stage:"select", q:"Three fertilizers are tried on 5 plots each. Degrees of freedom for the F-ratio?",
+ o:["(2, 12)","(3, 15)","(2, 14)","(14, 2)"], a:0,
+ e:"k = 3, n = 15: between df = k − 1 = 2, within df = n − k = 12. F(2, 12), numerator df first."},
+{t:"m3t3", m:"m3", stage:"concept", q:"Which change makes a confidence interval for the mean narrower?",
+ o:["Raising the confidence level from 90% to 99%","A larger sample size","A more variable population","Using t instead of z"], a:1,
+ e:"The margin is z·σ/√n. A larger n shrinks σ/√n. Higher confidence, larger σ, or the wider t distribution all widen the interval."},
+{t:"m3t2", m:"m3", stage:"concept", q:"For a Poisson distribution with mean 9, the standard deviation is",
+ o:["9","81","3","4.5"], a:2,
+ e:"In a Poisson distribution mean = variance = m, so σ = √9 = 3."},
+/* ---------------- MODULE 4 ---------------- */
+{t:"m4t1", m:"m4", stage:"solve", q:"n = 5, Σx = 15, Σy = 142, Σxy = 510, Σx² = 55. The slope of y′ = ax + b is",
+ o:["3.2","8.4","9.47","28.4"], a:1,
+ e:"a = (5×510 − 15×142)/(5×55 − 15²) = 420/50 = 8.4. Then b = (142 − 8.4×15)/5 = 3.2."},
+{t:"m4t2", m:"m4", stage:"concept", q:"Which error measure is most sensitive to a few large errors?",
+ o:["MAE","MAPE","RMSE","R²"], a:2,
+ e:"RMSE squares the errors before averaging, so large errors dominate. MAE treats every error equally."},
+{t:"m4t3", m:"m4", stage:"concept", q:"In Ŷ = −6.87 + 3.15X₁ − 1.66X₂, the value −1.66 means",
+ o:["Y falls by 1.66 when X₁ rises by 1","Y falls by 1.66 for each unit rise in X₂, holding X₁ constant","X₂ explains 1.66% of Y","X₂ is not significant"], a:1,
+ e:"A partial regression coefficient is the change in Y per unit of that predictor with the others held constant. Its sign gives the direction. Significance needs a t-test."},
+{t:"m4t4", m:"m4", stage:"select", q:"The overall F-test of a multiple regression accepts H₀. What next?",
+ o:["Test each coefficient with t-tests","Stop: the model is not significant","Compute adjusted R²","Drop the intercept"], a:1,
+ e:"H₀: b₁ = b₂ = … = 0. If the model as a whole explains nothing significant, there is no point testing the individual coefficients."},
+{t:"m4t4", m:"m4", stage:"concept", q:"Why is adjusted R² used in multiple regression?",
+ o:["R² can be negative","R² always rises when a predictor is added, even a useless one","Adjusted R² is easier to compute","R² ignores the intercept"], a:1,
+ e:"Adjusted R² = 1 − (1 − R²)(n − 1)/(n − k − 1) penalises extra predictors; it rises only if a new variable helps more than chance."},
+/* ---------------- MODULE 5 ---------------- */
+{t:"m5t1", m:"m5", stage:"recognise", q:"One IP address makes 200,000 page views a day on a news site. The most likely cause of this outlier is",
+ o:["Data entry error","Normal variance","Data from another distribution class (a bot)","Wrong distributional assumption"], a:2,
+ e:"Human readers make one to a few dozen views a day. 200,000 comes from a different process — an automated program — so it belongs to another distribution class."},
+{t:"m5t4", m:"m5", stage:"concept", q:"A point has LOF = 2.0. This means",
+ o:["It is twice as dense as its neighbours","It is about twice as sparse as its neighbours — an outlier","It has two neighbours","It is normal"], a:1,
+ e:"LOF = average lrd of the neighbours ÷ own lrd. A value well above 1 means its density is lower than its neighbours'."},
+{t:"m5t4", m:"m5", stage:"solve", q:"k-distance(o) = 2 and dist(p, o) = 3. reach-dist(p, o) is",
+ o:["2","3","5","1.5"], a:1,
+ e:"reach-dist(p, o) = max(k-distance(o), dist(p, o)) = max(2, 3) = 3."},
+{t:"m5t2", m:"m5", stage:"solve", q:"Q1 = 12 and Q3 = 15. The upper IQR fence is",
+ o:["16.5","18","19.5","22.5"], a:2,
+ e:"IQR = 3; upper fence = Q3 + 1.5 × IQR = 15 + 4.5 = 19.5."},
+{t:"m5t3", m:"m5", stage:"concept", q:"Simple distance- and density-based detectors fail mainly when",
+ o:["The data have two attributes","Clusters have different densities","k is odd","Manhattan distance is used"], a:1,
+ e:"One global distance or density threshold cannot fit both a tight and a loose cluster. LOF compares each point with its own neighbourhood to fix this."},
+/* ---------------- MODULE 6 ---------------- */
+{t:"m6t1", m:"m6", stage:"recognise", q:"Ice-cream sales peak every summer. This is",
+ o:["Trend","Seasonality","Cyclical variation","Irregular variation"], a:1,
+ e:"A pattern repeating at a fixed interval within a year is seasonal. Cyclical swings have no fixed period and last several years."},
+{t:"m6t2", m:"m6", stage:"select", q:"Seasonal swings grow larger as sales grow. Which decomposition?",
+ o:["Additive","Multiplicative","Neither — use the average method","Either gives the same result"], a:1,
+ e:"Growing swings mean the seasonal effect is a proportion of the level: Y = T × S × R."},
+{t:"m6t2", m:"m6", stage:"concept", q:"In additive decomposition of quarterly data, the adjusted seasonal indices must sum to",
+ o:["0","1","4","100"], a:0,
+ e:"Additive indices are deviations from trend and sum to 0. Multiplicative indices are ratios and sum to 4 for quarters."},
+{t:"m6t3", m:"m6", stage:"solve", q:"y = 20, 22, 21, 25, 24, 26. The 3-period moving-average forecast for t = 7 is",
+ o:["23","24","25","26"], a:2,
+ e:"F₇ = (25 + 24 + 26)/3 = 25. The average method would give 138/6 = 23."},
+{t:"m6t4", m:"m6", stage:"concept", q:"A forecasting method has MASE = 1.16. This means",
+ o:["It is 16% accurate","It is worse than the naïve forecast","It is better than the naïve forecast","Its MAPE is 1.16%"], a:1,
+ e:"MASE = MAE ÷ naïve MAE. Above 1 → the model's errors are larger than the naïve forecast's."},
 ];
 /* =====================================================================
    FORMULA / REFERENCE SHEET — transcribed from the teacher's own sheet,
@@ -4275,7 +5899,47 @@ const FORMULAE = [
  {f:"k-fold: Train per iteration = N − N/k", m:"The held-out fold is NOT available for training", w:"The most common slip", r:"m1t6"},
  {f:"LOOCV: Train = n−1, Test = 1, Iterations = n", m:"k equals the number of records", w:"Very small datasets", r:"m1t6"},
  {f:"Accuracy_cv = (1/k) Σ Accuracy_i", m:"Average across the k folds", w:"Reporting cross-validated performance", r:"m1t6"},
- {f:"Leave-P-Out: C(n, p) iterations", m:"Grows explosively — C(10,2) = 45", w:"Only for very small datasets", r:"m1t6"}]}
+ {f:"Leave-P-Out: C(n, p) iterations", m:"Grows explosively — C(10,2) = 45", w:"Only for very small datasets", r:"m1t6"}]},
+{g:"Module 3 — Distributions and Estimation", items:[
+ {f:"z = (X − μ) / σ", m:"Standard normal variate", w:"Converting a normal variable to the z-table", r:"m3t1"},
+ {f:"f(x) = 1/(σ√(2π)) · e^(−(x−μ)²/(2σ²))", m:"Normal pdf", w:"Definition of the normal distribution", r:"m3t1"},
+ {f:"P(X = x) = e^(−m) mˣ / x!", m:"Poisson probability; mean = variance = m", w:"Counts of rare events at a constant average rate", r:"m3t2"},
+ {f:"z = (x̄ − μ) / (σ/√n)", m:"Standardized sample mean (CLT)", w:"Large samples, n ≥ 30", r:"m3t3"},
+ {f:"CI = x̄ ± z · σ/√n", m:"Confidence interval; z = 1.645 / 1.96 / 2.576", w:"90% / 95% / 99% interval for μ", r:"m3t3"}]},
+{g:"Module 3 — Tests of Hypothesis", items:[
+ {f:"Z = (x̄ − μ) / (σ/√n)", m:"z-test, single mean; s in place of σ if unknown", w:"n ≥ 30; critical 1.96 (5%, two-tailed)", r:"m3t5"},
+ {f:"t = (x̄ − μ) / (s/√n),  df = n − 1", m:"One-sample t; s² = Σ(x − x̄)²/(n − 1)", w:"n < 30, σ unknown", r:"m3t6"},
+ {f:"t = (x̄ − ȳ) / √(s²/n₁ + s²/n₂),  df = n₁ + n₂ − 2", m:"Independent t; s² = [Σ(x−x̄)² + Σ(y−ȳ)²]/(n₁+n₂−2)", w:"Two unrelated groups", r:"m3t6"},
+ {f:"t = d̄ / (s_d/√n),  df = n − 1", m:"Paired t on differences d", w:"Before/after on the same subjects", r:"m3t6"},
+ {f:"F = MS between / MS within", m:"One-way ANOVA; df (k − 1, n − k)", w:"Three or more group means", r:"m3t7"},
+ {f:"SS between = Σ nⱼ(X̄ⱼ − X̿)²,  SS within = ΣΣ(X − X̄ⱼ)²", m:"One-way sums of squares", w:"ANOVA table", r:"m3t7"},
+ {f:"SS cols = ΣTⱼ²/nⱼ − T²/n,  SS rows = ΣTᵢ²/nᵢ − T²/n", m:"Two-way ANOVA; residual = total − cols − rows, df (c−1)(r−1)", w:"Two factors, one value per cell", r:"m3t7"}]},
+{g:"Module 4 — Regression", items:[
+ {f:"a = [nΣxy − ΣxΣy] / [nΣx² − (Σx)²]", m:"Slope of y′ = ax + b", w:"Simple least-squares line", r:"m4t1"},
+ {f:"b = (Σy − aΣx)/n = ȳ − a x̄", m:"Intercept", w:"After the slope", r:"m4t1"},
+ {f:"MAE = Σ|y − ŷ|/n,  MSE = Σ(y − ŷ)²/n,  RMSE = √MSE", m:"Absolute and squared error measures", w:"Model fit from actual vs predicted", r:"m4t2"},
+ {f:"MAPE = (100/n) Σ|y − ŷ|/|y|", m:"Percentage error", w:"Scale-free comparison", r:"m4t2"},
+ {f:"R² = 1 − Σ(y − ŷ)²/Σ(y − ȳ)²", m:"Coefficient of determination, 0 to 1", w:"Share of variation explained", r:"m4t2"},
+ {f:"b₁ = [Σx₂²Σx₁y − Σx₁x₂Σx₂y] / [Σx₁²Σx₂² − (Σx₁x₂)²]", m:"Partial coefficient of X₁ (deviation sums); b₂ by swapping 1 and 2", w:"Two-predictor regression", r:"m4t3"},
+ {f:"b₀ = Ȳ − b₁X̄₁ − b₂X̄₂", m:"Intercept of the multiple regression", w:"After b₁ and b₂", r:"m4t3"},
+ {f:"R² = (b₁Σx₁y + b₂Σx₂y) / Σy²", m:"R² for two predictors; Σy² = ΣY² − (ΣY)²/n", w:"Goodness of fit", r:"m4t4"},
+ {f:"Adj R² = 1 − (1 − R²)(n − 1)/(n − k − 1)", m:"Penalises extra predictors", w:"Comparing models", r:"m4t4"},
+ {f:"F = [(n − k − 1)R²] / [k(1 − R²)]", m:"Overall significance; df (k, n − k − 1)", w:"Test the model first", r:"m4t4"},
+ {f:"t = bᵢ / SE(bᵢ),  SE(b₁) = √{[Σ(y−ŷ)²/(n−k−1)] / [Σx₁²(1 − r₁₂²)]}", m:"Individual coefficient; df n − k − 1", w:"Only if the F-test is significant", r:"m4t4"}]},
+{g:"Module 5 — Anomaly Detection", items:[
+ {f:"|z| > 3", m:"3σ rule on the normal model", w:"Statistical outlier detection", r:"m5t2"},
+ {f:"Q1 − 1.5 IQR,  Q3 + 1.5 IQR", m:"IQR fences", w:"Distribution-free outlier rule", r:"m5t2"},
+ {f:"dist(p, q) = |x₁ − x₂| + |y₁ − y₂|", m:"Manhattan distance", w:"LOF handout", r:"m5t4"},
+ {f:"reach-dist(p, o) = max(k-dist(o), dist(p, o))", m:"Reachability distance", w:"LOF step 2", r:"m5t4"},
+ {f:"lrd(p) = |N_k(p)| / Σ reach-dist(p, o)", m:"Local reachability density", w:"LOF step 3", r:"m5t4"},
+ {f:"LOF(p) = [Σ lrd(o)/|N_k(p)|] / lrd(p)", m:"≈ 1 normal, > 1 outlier", w:"LOF step 4", r:"m5t4"}]},
+{g:"Module 6 — Time Series", items:[
+ {f:"T(t) = [½Y(t−2) + Y(t−1) + Y(t) + Y(t+1) + ½Y(t+2)] / 4", m:"Centred 2×4 moving average (trend)", w:"Quarterly decomposition", r:"m6t2"},
+ {f:"Y = T + S + R   |   Y = T × S × R", m:"Additive (ΣS = 0) | multiplicative (ΣS = 4)", w:"Constant vs growing seasonal swings", r:"m6t2"},
+ {f:"Fₜ = (y₁ + … + yₜ₋₁)/(t − 1)", m:"Average method", w:"One-step forecast", r:"m6t3"},
+ {f:"Fₜ = (yₜ₋₁ + … + yₜ₋ₖ)/k", m:"Moving average of k periods", w:"One-step forecast", r:"m6t3"},
+ {f:"Fₙ₊₁ = αyₙ + (1 − α)Fₙ", m:"Simple exponential smoothing (textbook)", w:"Weighted towards recent data", r:"m6t3"},
+ {f:"MASE = MAE / mean|yₜ − yₜ₋₁|", m:"Scaled error; < 1 beats the naïve forecast", w:"Comparing forecasting methods", r:"m6t4"}]}
 ];
 
 /* =====================================================================
@@ -4285,7 +5949,7 @@ const FORMULAE = [
    ===================================================================== */
 const AB_MAP = {
  note:"Both divisions follow the same official syllabus (CEPEC7041), so at module level the coverage is identical. The differences are in worked examples, emphasis and a handful of sub-topics. Where COMP A and COMP B use different examples for the same concept, that is noted rather than merged.",
- sameness:"Every one of the 24 topics in this site is taught to COMP B. 20 of the 24 are also clearly present in the COMP A material, making them COMMON — the highest study priority.",
+ sameness:"Every one of the 24 Module 1–2 topics is taught to COMP B. 20 of the 24 are also clearly present in the COMP A material, making them COMMON — the highest study priority.",
  rows:[
  {topic:"Definition of Data Science, AI/ML/DS relationship", a:true, b:true, c:"common", note:"Identical definition in both. COMP B adds the traditional-programming vs ML input/output diagram."},
  {topic:"Volume, Dimensionality, Complexity", a:true, b:true, c:"common", note:"COMP A drills it harder — the Apollo Hospital case study and a three-dataset ranking exercise. Worth borrowing for practice."},
@@ -4473,7 +6137,53 @@ BUILDING THE TABLE
 <tr><td>Mean ≫ Median</td><td>“The mean is more than double the median, a red flag that extreme values are dragging the average up. The median is the better measure of the typical value.”</td></tr>
 <tr><td>Small C.V.</td><td>“Lower coefficient of variation means less variability relative to the average — this dataset is more consistent.”</td></tr>
 <tr><td>Small Q.D.</td><td>“A small quartile deviation means high uniformity and low variation among the central data.”</td></tr>
-</tbody></table></div>`}
+</tbody></table></div>`},
+/* ------------------------------ MODULE 3 ------------------------------ */
+{m:"m3", h:"Which test?", b:`<div class="scroll"><table class="t"><thead><tr><th>Situation</th><th>Test</th><th>df</th></tr></thead><tbody>
+<tr><td>One mean, n ≥ 30 (or σ known)</td><td>z = (x̄ − μ)/(σ/√n)</td><td>—</td></tr>
+<tr><td>One mean, n &lt; 30, σ unknown</td><td>One-sample t</td><td>n − 1</td></tr>
+<tr><td>Two separate groups, small</td><td>Independent t (pooled s²)</td><td>n₁ + n₂ − 2</td></tr>
+<tr><td>Same subjects before / after</td><td>Paired t on d</td><td>n − 1</td></tr>
+<tr><td>Three or more groups, one factor</td><td>One-way ANOVA, F</td><td>(k − 1, n − k)</td></tr>
+<tr><td>Grid of two factors</td><td>Two-way ANOVA, F</td><td>(c − 1, (c−1)(r−1)) and (r − 1, (c−1)(r−1))</td></tr></tbody></table></div>`},
+{m:"m3", h:"Module 3 in eight lines", b:`<ol class="list" style="margin-bottom:0">
+<li><b>Normal:</b> z = (X − μ)/σ; same side subtract, opposite sides add, tail = 0.5 − area.</li>
+<li><b>Poisson:</b> e<sup>−m</sup>mˣ/x!, mean = variance = m.</li>
+<li><b>CLT:</b> x̄ is normal with SE σ/√n for n ≥ 30, whatever the population.</li>
+<li><b>CI:</b> x̄ ± 1.96σ/√n (95%); t·s/√n for small samples.</li>
+<li><b>Steps:</b> H₀ → H₁ → α → statistic → compare with the table value.</li>
+<li><b>Type I</b> = reject true H₀ (α, producer's risk); <b>Type II</b> = accept false H₀ (β, consumer's risk).</li>
+<li><b>Critical z:</b> 1.96 two-tailed, 1.645 one-tailed at 5%.</li>
+<li><b>ANOVA:</b> F = MS between/MS within; accept H₀ if F &lt; table F.</li></ol>`},
+/* ------------------------------ MODULE 4 ------------------------------ */
+{m:"m4", h:"Module 4 in eight lines", b:`<ol class="list" style="margin-bottom:0">
+<li><b>Line:</b> y′ = ax + b; a = [nΣxy − ΣxΣy]/[nΣx² − (Σx)²]; b = ȳ − a x̄.</li>
+<li><b>Slope</b> = change in y per unit x; <b>intercept</b> = y at x = 0.</li>
+<li><b>Errors:</b> MAE, MSE, RMSE = √MSE, MAPE %; lower is better.</li>
+<li><b>R²</b> = 1 − SSE/SST = share of variation explained.</li>
+<li><b>Multiple:</b> five deviation sums → b₁, b₂ (shared denominator) → b₀ = Ȳ − b₁X̄₁ − b₂X̄₂.</li>
+<li><b>Partial coefficient:</b> effect of one X with the others held constant.</li>
+<li><b>F-test first</b>, df (k, n − k − 1); if not significant, stop.</li>
+<li><b>t-test</b> each b: t = b/SE(b), df n − k − 1. Adjusted R² penalises extra predictors.</li></ol>`},
+/* ------------------------------ MODULE 5 ------------------------------ */
+{m:"m5", h:"Module 5 in seven lines", b:`<ol class="list" style="margin-bottom:0">
+<li><b>Outlier:</b> markedly different from the rest, always in context.</li>
+<li><b>Causes:</b> data errors · normal variance · another distribution class · distributional assumptions.</li>
+<li><b>Techniques:</b> statistical · distance · density · clustering · classification.</li>
+<li><b>Statistical:</b> |z| &gt; 3, or outside Q1 − 1.5 IQR / Q3 + 1.5 IQR.</li>
+<li><b>Distance:</b> score = distance to the k-th nearest neighbour; normalise first.</li>
+<li><b>LOF:</b> k-distance → reach-dist = max(k-dist(o), dist) → lrd = k/Σreach → LOF = avg neighbour lrd/own lrd.</li>
+<li><b>SMOTE (5.6):</b> no class material received yet.</li></ol>`},
+/* ------------------------------ MODULE 6 ------------------------------ */
+{m:"m6", h:"Module 6 in eight lines", b:`<ol class="list" style="margin-bottom:0">
+<li><b>Components:</b> trend · seasonality (fixed period) · cyclical (no fixed period) · irregular.</li>
+<li><b>Taxonomy:</b> decomposition · smoothing · regression (incl. ARIMA) · machine learning.</li>
+<li><b>Additive</b> Y = T + S + R (ΣS = 0); <b>multiplicative</b> Y = T × S × R (ΣS = 4).</li>
+<li><b>Trend:</b> centred 2×4 moving average; slope = (last T − first T)/quarters between.</li>
+<li><b>Forecast:</b> project trend from the last T, then + S or × S.</li>
+<li><b>Smoothing:</b> average of all past · average of last k · exponential αyₙ + (1 − α)Fₙ.</li>
+<li><b>Measures:</b> MAE, RMSE, MAPE, MASE = MAE/naïve MAE (&lt; 1 beats naïve).</li>
+<li><b>ARIMA(p, d, q):</b> AR on past values, differencing for stationarity, MA on past errors.</li></ol>`},
 ];
 function reviewOf(m){ return REVIEW.filter(r => r.m === m); }
 /* =====================================================================
@@ -4774,7 +6484,7 @@ function vDashboard(){
 }
 
 /* --------------------------- MODULE VIEW ---------------------------- */
-let subTab = {m1:"theory", m2:"theory"};
+let subTab = {m1:"theory", m2:"theory", m3:"theory", m4:"theory", m5:"theory", m6:"theory"};
 
 function topicCard(t){
   const tp = topicProgress(t);
@@ -5016,6 +6726,23 @@ function vRecognition(){
    '              imbalanced classes -> stratified k-fold\n'+
    '              small + expensive  -> bootstrap\n</div>';
 
+  h += '<h2>Which Module 3 test?</h2>'+
+   '<div class="dtree">What is being compared?\n'+
+   '     |\n'+
+   '     +-- ONE mean vs a claimed value\n'+
+   '     |        +-- n >= 30, or sigma known     -> Z-TEST\n'+
+   '     |        +-- n < 30 and sigma unknown    -> ONE-SAMPLE t   (df n-1)\n'+
+   '     |\n'+
+   '     +-- TWO means\n'+
+   '     |        +-- different subjects          -> INDEPENDENT t  (df n1+n2-2)\n'+
+   '     |        +-- same subjects before/after  -> PAIRED t       (df n-1)\n'+
+   '     |\n'+
+   '     +-- THREE or more means\n'+
+   '     |        +-- one factor                  -> ONE-WAY ANOVA\n'+
+   '     |        +-- two factors (grid)          -> TWO-WAY ANOVA\n'+
+   '     |\n'+
+   '     +-- a RANGE for the mean, not a yes/no  -> CONFIDENCE INTERVAL\n</div>';
+
   /* Compact lookup: one line per topic, linking straight to it */
   h += '<h2>Clue &rarr; topic lookup</h2>'+
     '<p class="lead" style="margin-top:-.4rem">The single strongest clue for each topic, and the first move to make. '+
@@ -5054,7 +6781,7 @@ function vQuiz(){
   let h = '<h1>Quiz</h1>';
 
   if(!quizState){
-    h += '<p class="lead">'+QUIZ.length+' questions across both modules. They test four different skills, and your results are tracked separately for each: '+
+    h += '<p class="lead">'+QUIZ.length+' questions across all modules. They test four different skills, and your results are tracked separately for each: '+
       '<b>recognising</b> the question type, <b>selecting</b> the right method, <b>solving</b>, and <b>concept recall</b>. '+
       'Wrong answers feed the weak-topic detector on the dashboard.</p>';
     if(qo.n) h += '<div class="banner info">Your running accuracy so far: <b>'+qo.pct+'%</b> ('+qo.c+' of '+qo.n+' correct). '+
@@ -5067,7 +6794,7 @@ function vQuiz(){
       h += '</div>';
     }
     h += '<div class="toolbar"><label for="qm">Module</label><select id="qm" data-qs="module">'+
-      '<option value="all"'+(quizSetup.module==="all"?" selected":"")+'>Both modules</option>'+
+      '<option value="all"'+(quizSetup.module==="all"?" selected":"")+'>All modules</option>'+
       MODULES.map(m=>'<option value="'+m.id+'"'+(quizSetup.module===m.id?" selected":"")+'>Module '+m.num+' only</option>').join("")+
       '</select><label for="qn">Questions</label><select id="qn" data-qs="n">'+
       [8,12,20,QUIZ.length].map(n=>'<option value="'+n+'"'+(quizSetup.n===n?" selected":"")+'>'+(n===QUIZ.length?"All ("+n+")":n)+'</option>').join("")+
@@ -5169,14 +6896,16 @@ function vCompare(){
   const nCommon = rows.filter(r=>r.c==="common").length;
   const nB = rows.filter(r=>r.c==="bonly").length;
   const nA = rows.filter(r=>r.c==="aonly").length;
+  /* COMP A material exists for Modules 1–2 only, so the comparison covers those */
+  const ab = TOPICS.filter(t => t.m === "m1" || t.m === "m2"), abp = progressOf(ab);
 
   let h = '<h1>COMP A vs COMP B</h1><p class="lead">You are in <b>COMP B</b>, so COMP B is the primary syllabus. '+
     'COMP A is analysed here for two reasons: to find the <b>common ground</b>, which is the safest place to spend study time, '+
     'and to give you awareness of anything the other division covers that you do not.</p>';
 
   h += '<div class="banner info"><b>How to read this page.</b> '+esc(AB_MAP.note)+'</div>';
-  h += '<div class="banner alert"><b>The single most useful finding.</b> At <b>topic</b> level there is almost no difference &mdash; both divisions follow the same syllabus, so all '+TOPICS.length+
-    ' topics on this site are taught to both. The real differences are <b>inside</b> topics, at sub-topic level: '+countBExtras()+
+  h += '<div class="banner alert"><b>The single most useful finding.</b> At <b>topic</b> level there is almost no difference &mdash; both divisions follow the same syllabus, so all '+ab.length+
+    ' Module 1–2 topics are taught to both. Modules 3–6 are compared once COMP A material for them arrives. The real differences are <b>inside</b> topics, at sub-topic level: '+countBExtras()+
     ' sub-topics appear in the COMP B material only, and '+countAExtras()+' places where COMP A goes further are flagged for awareness. '+
     'Each one is called out on its own topic page, so you never have to guess which half of a topic is which.</div>';
 
@@ -5184,8 +6913,8 @@ function vCompare(){
    '<div class="stat"><div class="num" style="color:var(--good)">'+nCommon+'</div><div class="label">Common A+B</div><div class="sub">Highest priority</div></div>'+
    '<div class="stat"><div class="num" style="color:var(--accent)">'+nB+'</div><div class="label">COMP B only</div><div class="sub">Still your syllabus</div></div>'+
    '<div class="stat"><div class="num" style="color:var(--ink-mute)">'+nA+'</div><div class="label">COMP A only</div><div class="sub">Awareness</div></div>'+
-   '<div class="stat"><div class="num">'+overallProgress().pct+'%</div><div class="label">Your coverage</div>'+
-     '<div class="sub">across all '+TOPICS.length+' topics</div>'+pbar(overallProgress().pct, barClass(overallProgress().pct))+'</div>'+
+   '<div class="stat"><div class="num">'+abp.pct+'%</div><div class="label">Your coverage</div>'+
+     '<div class="sub">across the '+ab.length+' Module 1–2 topics</div>'+pbar(abp.pct, barClass(abp.pct))+'</div>'+
    '</div>';
 
   h += '<div class="box tip"><h5>Your priority order</h5>'+
@@ -5430,6 +7159,10 @@ function render(){
     case "dashboard":   h = vDashboard(); break;
     case "m1":          h = vModule("m1"); break;
     case "m2":          h = vModule("m2"); break;
+    case "m3":          h = vModule("m3"); break;
+    case "m4":          h = vModule("m4"); break;
+    case "m5":          h = vModule("m5"); break;
+    case "m6":          h = vModule("m6"); break;
     case "topic":       h = vTopic(currentTopic); break;
     case "recognition": h = vRecognition(); break;
     case "quiz":        h = vQuiz(); break;
