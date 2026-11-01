@@ -198,3 +198,4 @@ Add one line when you finish something: date, workstream, what changed, commit.
 - 31 Oct · P2 (part 1) · study plan starts 16 Nov, grouped by paper · *(this commit)*
 - 1 Nov · P3 (platform) · `SEM7.isCore/coreOnly/setCoreOnly/coreProvisional`, `ui.coreToggle`, `summary.core` with next 3 Core items for all five adapters, Core row on hub cards · *(this commit)*
 - 1 Nov · Phase 1 · live site verified (files match `main`, 138 checks pass); old-repo deletion left to the user · *(this commit)*
+- 1 Nov · P3 (ADS) · 24 topics tagged `core` from priority (21 Core, 3 Extra; provisional); Core only switch in the dashboard Modules heading; dashboard, module tiles, module lists and Study next follow it · *(this commit)*

@@ -16,6 +16,7 @@
 .hidden-body > :first-child{margin-top:0}
 table.t.num td:not(:first-child){text-align:right; font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:.95em}
 ul.list,ol.list{margin:.5rem 0; padding-left:1.3rem}
+h2.s7-h2 .s7-core{margin-left:auto}
 .toast{position:fixed; bottom:18px; left:50%; transform:translateX(-50%) translateY(180%); z-index:400; transition:transform .28s}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast:empty{display:none}
@@ -144,7 +145,7 @@ const TOPICS = [];
 
 TOPICS.push({
  id:"m1t1", m:"m1", title:"What Is Data Science? (and how AI / ML / DS relate)",
- classification:"common", priority:"high", type:"theory", marks:5, los:["LO 1.2"],
+ classification:"common", priority:"high", core:true, type:"theory", marks:5, los:["LO 1.2"],
  src:"COMP B M1 slides 15–21 · COMP A M1 slides 6–21 · class notes p.1 (13/7)",
  summary:"The definition you must be able to write verbatim, the four aliases, and the three nested fields.",
  whatIs:`<p><b>Data Science is an interdisciplinary field involving collecting, processing, storing, analyzing and interpreting large volumes of structured and unstructured data to extract meaningful insights and knowledge.</b></p>
@@ -232,7 +233,7 @@ and works out the program (the representative model) itself.</div>
 
 TOPICS.push({
  id:"m1t2", m:"m1", title:"Motivation: Volume, Dimensions and Complexity",
- classification:"common", priority:"high", type:"theory", marks:5, los:["LO 1.1"],
+ classification:"common", priority:"high", core:true, type:"theory", marks:5, los:["LO 1.1"],
  src:"COMP B M1 slides 23–27 · COMP A M1 slides 78–88 (Apollo Hospital case study) · class notes p.1",
  summary:"The three characteristics that motivate data science — and the case-study question type both classes drilled.",
  bExtras:["Confirmatory vs Exploratory analysis, and Tukey's line that neither replaces the other"],
@@ -347,7 +348,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m1t3", m:"m1", title:"Data Science Tasks and Examples",
- classification:"common", priority:"high", type:"theory", marks:5, los:["LO 1.3"],
+ classification:"common", priority:"high", core:true, type:"theory", marks:5, los:["LO 1.3"],
  src:"COMP B M1 slides 29–30 · COMP A M1 slides 90–103 · COMP A revision quiz Q4, Q9, Q10",
  summary:"Seven task types, their algorithms and examples — and how to recognise which task a business problem maps to.",
  aExtras:["COMP A lists Text Mining among the tasks; COMP B shows it on the task map without a table row."],
@@ -457,7 +458,7 @@ TOPICS.push({
 });
 TOPICS.push({
  id:"m1t4", m:"m1", title:"The Data Science Process (CRISP-DM, 5 steps)",
- classification:"common", priority:"high", type:"theory", marks:10, los:["LO 1.2","LO 1.3"],
+ classification:"common", priority:"high", core:true, type:"theory", marks:10, los:["LO 1.2","LO 1.3"],
  src:"COMP B M1 slides 32–77 · COMP A M1 slides 22–76 · class notes p.2 (CRISP-DM diagram)",
  summary:"The five-step framework, the diagram drawn in class, and the sub-steps of Prior Knowledge and Preparation.",
  bExtras:["The four named process frameworks: CRISP-DM, SEMMA, DMAIC, KDD", "The four named sub-steps of Prior Knowledge", "Correlation vs Causation as a named sub-step of the process"],
@@ -620,7 +621,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m1t5", m:"m1", title:"Overview of Data Preparation (cleaning and transforming)",
- classification:"common", priority:"high", type:"theory", marks:10, los:["LO 1.3","LO 1.4"],
+ classification:"common", priority:"high", core:true, type:"theory", marks:10, los:["LO 1.3","LO 1.4"],
  src:"COMP B M1 slides 42–51 (loan dataset) · COMP A M1 slides 36–51 (patient dataset) · syllabus 1.3",
  summary:"The five data-quality problems, the fix for each, and the five transformation operations. A syllabus sub-topic in its own right.",
  bExtras:["Normalization and label encoding, worked through on the loan dataset"],
@@ -732,7 +733,7 @@ TOPICS.push({
 });
 TOPICS.push({
  id:"m1t6", m:"m1", title:"Model Building &amp; Validation: Hold-out, k-Fold, LOOCV, Bootstrapping",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 1.4"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 1.4"],
  src:"COMP B M1 slides 54–71 · COMP A M1 slides 110–141 (incl. 10 numerical drills) · class notes p.3 · syllabus 1.4",
  summary:"The one Module 1 topic with genuine numericals. COMP A drilled ten split-calculation questions; COMP B drilled the concepts. Learn both halves.",
  bExtras:["Stratified k-Fold cross-validation", "Leave-P-Out cross-validation", "Ensemble modeling and the wisdom of crowds"],
@@ -920,7 +921,7 @@ That is what "with replacement" means.</div>
 
 TOPICS.push({
  id:"m1t7", m:"m1", title:"Data Science vs Data Analytics",
- classification:"common", priority:"high", type:"theory", marks:5, los:["LO 1.1","LO 1.3"],
+ classification:"common", priority:"high", core:true, type:"theory", marks:5, los:["LO 1.1","LO 1.3"],
  src:"COMP B M1 slides 79–82 · COMP A M1 slides 143–147 · COMP A revision quiz Q7, Q8 · syllabus 1.5",
  summary:"A named syllabus sub-topic, taught in both classes, and a guaranteed comparison-table question.",
  whatIs:`<p><b>Data Analytics</b> examines existing data to answer specific questions and explain what has already happened. <b>Data Science</b> builds models on data — often including analytics as a step — to predict future outcomes and automate decisions.</p>
@@ -1016,7 +1017,7 @@ Data Science    ->  looks AHEAD  ->  "what will happen & what to do"</div>`,
 
 TOPICS.push({
  id:"m1t8", m:"m1", title:"Applications of Data Science",
- classification:"common", priority:"medium", type:"theory", marks:5, los:["LO 1.3"],
+ classification:"common", priority:"medium", core:false, type:"theory", marks:5, los:["LO 1.3"],
  src:"COMP B M1 slides 84–89 · COMP A M1 slides 149–162 · syllabus 1.6",
  summary:"Six domains with concrete applications. Easy marks, but only if you give a real technique per application rather than vague praise.",
  whatIs:`<p>Syllabus sub-topic 1.6, taught in both classes across the same six domains. The self-learning list adds healthcare, finance, transportation and recommender systems as named case-study areas.</p>`,
@@ -1079,7 +1080,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m2t1", m:"m2", title:"Types of Data &amp; Levels of Measurement",
- classification:"common", priority:"high", type:"theory", marks:5, los:["LO 2.1"],
+ classification:"common", priority:"high", core:true, type:"theory", marks:5, los:["LO 2.1"],
  src:"COMP B M2 slides 10–20 · COMP A M2 slides 7–16 · syllabus 2.1",
  summary:"Nominal, Ordinal, Interval, Ratio — and the rule that the level decides which statistics are legal.",
  whatIs:`<p>A dataset consists of two types of data: <b>categorical</b> and <b>numerical</b>. Every column sits at one of <b>four levels of measurement</b>, and <b>the level determines which statistical calculations are valid</b>. That last sentence is the whole point of the topic.</p>`,
@@ -1186,7 +1187,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m2t2", m:"m2", title:"Classification of Data &amp; Frequency Distributions",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.1"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.1"],
  src:"COMP B M2 slides 22–47 · COMP A M2 slides 25–80 · class notes p.6 (starred) · CIA-2 part (a)",
  summary:"Building a frequency distribution from raw data — and the exclusive vs inclusive trap the class notes star. CIA-2 opened with exactly this.",
  whatIs:`<p><b>Classification</b> is the process of arranging raw data into groups or classes according to resemblances and similarities. A <b>frequency distribution</b> groups raw data into classes and records how many cases fall into each. When items are expressed as a proportion of the total it becomes a <b>relative frequency</b> (or percentage) distribution.</p>
@@ -1384,7 +1385,7 @@ Then:  SUBTRACT it from every lower limit
 });
 TOPICS.push({
  id:"m2t3", m:"m2", title:"Tabulation of Data",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.1"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.1"],
  src:"COMP B M2 slides 48–68 · COMP A M2 slides 82–125 · class notes p.7 (starred, with a drafted blank table)",
  summary:"Parts of a table, one-way to manifold, and the “draft a blank table” question both classes practised.",
  whatIs:`<p><b>Tabulation is the systematic arrangement of data</b> in rows and columns — the class notes' own definition. It sits between classification (grouping the data) and diagrams (picturing it).</p>
@@ -1533,7 +1534,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m2t4", m:"m2", title:"Diagrammatic Representation of Data",
- classification:"common", priority:"medium", type:"theory", marks:5, los:["LO 2.1","LO 2.4"],
+ classification:"common", priority:"medium", core:false, type:"theory", marks:5, los:["LO 2.1","LO 2.4"],
  src:"COMP B M2 slides 70–120 · COMP A M2 slides 127–182 · syllabus 2.2",
  summary:"One-, two- and three-dimensional diagrams, pictograms and cartograms — plus how to compute pie-chart angles.",
  whatIs:`<p>Diagrams present statistical data <b>pictorially</b>. Both classes teach the same taxonomy: diagrams are grouped by the number of dimensions used to represent magnitude.</p>`,
@@ -1688,7 +1689,7 @@ Check: all the angles must sum to 360 degrees.</div>
 
 TOPICS.push({
  id:"m2t5", m:"m2", title:"Graphic Representation: Histogram, Frequency Polygon, Ogive",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.4","LO 2.6"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.4","LO 2.6"],
  src:"COMP B M2 slides 122–142, 333–335 · COMP A M2 slides 184–220 (heavy on ogives) · CIA-2 part (e)",
  summary:"The graphs the exam asks you to draw — and to read a shape off. CIA-2 part (e) required histogram + frequency polygon plus an interpretation.",
  aExtras:["COMP A gives ogives (cumulative frequency curves) noticeably more attention than COMP B. Both are covered here."],
@@ -1848,7 +1849,7 @@ TOPICS.push({
 });
 TOPICS.push({
  id:"m2t6", m:"m2", title:"Arithmetic Mean (individual, discrete, continuous, combined, weighted)",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.2"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.2"],
  src:"COMP B M2 slides 146–174 · COMP A Central Tendency deck · class notes p.6 · formula sheet p.1",
  summary:"Three series types × three methods, plus combined and weighted mean. The single most reused calculation in the paper.",
  bExtras:["Weighted mean, and the ten-slide simple-vs-weighted comparison"],
@@ -2069,7 +2070,7 @@ Weighted mean = &Sigma;WX / &Sigma;W = 510 / 7 = 72.86</div>
 
 TOPICS.push({
  id:"m2t7", m:"m2", title:"Median (individual, discrete, continuous)",
- classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 2.2"],
  src:"COMP B M2 slides 176–193 · COMP A Central Tendency deck · formula sheet p.1 · CIA-2 (needed for Bowley)",
  summary:"The positional average. Needed in its own right, and again for Bowley's coefficient and the bimodal Karl Pearson formula.",
  whatIs:`<p>The median is the <b>middle value of an ordered dataset</b> — the value that divides the distribution into two equal halves. Because it depends on position rather than magnitude, it is <b>unaffected by extreme values</b>.</p>`,
@@ -2252,7 +2253,7 @@ TOPICS.push({
 });
 TOPICS.push({
  id:"m2t8", m:"m2", title:"Mode &amp; the Mean–Median–Mode Relationship",
- classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 2.2"],
  src:"COMP B M2 slides 195–215 · COMP A Central Tendency deck · class notes p.17 · formula sheet p.1",
  summary:"The modal formula, the empirical relation, and the bimodal case that CIA-2 quietly built into its data.",
  whatIs:`<p>The mode is the value that occurs <b>most frequently</b>. It is the only average that can be used for purely <b>nominal</b> data, and it is the one Karl Pearson's primary skewness formula needs.</p>`,
@@ -2414,7 +2415,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m2t9", m:"m2", title:"Quartiles, Deciles and Percentiles",
- classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2","LO 2.3"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 2.2","LO 2.3"],
  src:"COMP B M2 slides 258–263 · COMP A M2 measure-of-spread deck · formula sheet p.2 · class notes p.12",
  summary:"Partition values. Needed for quartile deviation, Bowley's skewness and the box plot — three separate exam questions depend on them.",
  whatIs:`<p>Quartiles, deciles and percentiles are <b>partition values</b> that divide an ordered distribution into equal parts: 4, 10 and 100 parts respectively. Q₂ = D₅ = P₅₀ = the median.</p>`,
@@ -2547,7 +2548,7 @@ Q3: 3N/4 = 150 -> Q3 = 38 + [(150 - 76)/99] × 2 = 39.49</div>
 });
 TOPICS.push({
  id:"m2t10", m:"m2", title:"Measures of Spread: Range, IQR &amp; Quartile Deviation",
- classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 2.2"],
  src:"COMP B M2 slides 219–240 · COMP A M2 measure-of-spread deck · class notes p.12 · formula sheet p.3",
  summary:"Why averages alone mislead, absolute vs relative measures, and the quartile deviation family.",
  bExtras:["Lorenz curve"],
@@ -2704,7 +2705,7 @@ Coefficient of Q.D.  = (Q3 - Q1)/(Q3 + Q1)</div>
 
 TOPICS.push({
  id:"m2t11", m:"m2", title:"Standard Deviation",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.2"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.2"],
  src:"COMP B M2 slides 242–255 · COMP A M2 measure-of-spread deck · class notes p.14 · formula sheet p.3",
  summary:"The most important measure of dispersion — and a required input to Karl Pearson's skewness and to kurtosis.",
  bExtras:["Coefficient of variation"],
@@ -2883,7 +2884,7 @@ Batsman B: (15/60) × 100 = 25.0 %</div>
 });
 TOPICS.push({
  id:"m2t12", m:"m2", title:"Skewness — Karl Pearson &amp; Bowley",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.2","LO 2.3"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.2","LO 2.3"],
  src:"COMP B M2 slides 265–286 · COMP A M2 Measure of Symmetry deck (48 slides) · class notes p.17 · formula sheet p.4 · CIA-2 parts (b)(c)(d)",
  summary:"The single highest-value topic in the paper. CIA-2 was built entirely around it, and both classes gave it a large block of teaching.",
  whatIs:`<p><b>Skewness is the lack of symmetry in a frequency distribution.</b> Two distributions can share the same mean and the same standard deviation yet look completely different in shape — skewness measures that difference. It tells you the <b>direction</b> and the <b>extent</b> of the asymmetry.</p>
@@ -3226,7 +3227,7 @@ Q3 = 40 + [(37.5 - 31)/9] × 10 = 47.22</div>
 });
 TOPICS.push({
  id:"m2t13", m:"m2", title:"Moments &amp; Kurtosis",
- classification:"common", priority:"high", type:"problem-solving", marks:5, los:["LO 2.2"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 2.2"],
  src:"COMP B M2 slides 288–295 · COMP A M2 slides 342–346 · formula sheet p.4",
  summary:"The four moments and β₂. Named explicitly in the syllabus, and one of the few places where the teacher's own summary table has a misprint worth knowing about.",
  whatIs:`<p><b>Moments</b> borrow from mechanics: a moment is force × distance, and a beam balances when the moments on both sides of the fulcrum are equal. Statistics uses the same idea about the mean. <b>Kurtosis</b> (Greek for “bulginess”) measures the <b>peakedness or flatness of a distribution near the mode, relative to the normal curve</b>.</p>`,
@@ -3429,7 +3430,7 @@ Discrete / Continuous series (use mid-points m for continuous):
 
 TOPICS.push({
  id:"m2t14", m:"m2", title:"Correlation &amp; the Central Data Point",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.2","LO 2.3"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.2","LO 2.3"],
  src:"COMP B M2 slides 298–326 · COMP A M2 Multivariate deck (53 slides) · class notes p.20 · formula sheet p.5",
  summary:"The whole of syllabus 2.4. The class notes tick Karl Pearson's method and cross out the others — a clear scope signal.",
  bExtras:["Concurrent deviation method (named in the method list, but crossed out in the class notes)"],
@@ -3722,7 +3723,7 @@ r = 13556 / 13969 = 0.97</div>
 });
 TOPICS.push({
  id:"m2t15", m:"m2", title:"Univariate Visualization: Box Plot &amp; Distribution Chart",
- classification:"common", priority:"high", type:"problem-solving", marks:10, los:["LO 2.4","LO 2.5","LO 2.6"],
+ classification:"common", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 2.4","LO 2.5","LO 2.6"],
  src:"COMP B M2 slides 332–344 · COMP A M2 Data Visualization deck · class notes p.22 (full worked box plot) · formula sheet p.5–6",
  summary:"The box plot with outlier detection is a complete numerical in its own right — and it is worked out in full in the class notes.",
  bExtras:["The normal distribution equation", "The empirical rule (68-95-99.7)"],
@@ -3894,7 +3895,7 @@ TOPICS.push({
 
 TOPICS.push({
  id:"m2t16", m:"m2", title:"Multivariate Visualization: Scatter Plot, Scatter Matrix, Bubble Chart",
- classification:"common", priority:"medium", type:"theory", marks:5, los:["LO 2.4","LO 2.5","LO 2.6"],
+ classification:"common", priority:"medium", core:false, type:"theory", marks:5, los:["LO 2.4","LO 2.5","LO 2.6"],
  src:"COMP B M2 slides 345–353 · COMP A M2 Data Visualization deck · syllabus 2.5",
  summary:"The three named multivariate charts, and how many variables each can show at once.",
  whatIs:`<p>Multivariate visualization shows the relationship between <b>two or more</b> variables at once. The syllabus names exactly three: <b>scatter plot, scatter matrix, bubble chart</b>.</p>`,
@@ -4629,7 +4630,11 @@ function progressOf(list){
 function overallProgress(){ return progressOf(TOPICS); }
 function moduleProgress(m){ return progressOf(topicsOf(m)); }
 function trackProgress(track){ return progressOf(TOPICS.filter(t => trackOf(t) === track)); }
-function moduleTrackProgress(m, track){ return progressOf(topicsInTrack(m, track)); }
+/* "Core only" (one setting for all five sites): the dashboard and the module
+   lists show and count Core topics alone. Topic pages, the pager and every
+   other page keep the full course. Tags are provisional until the paper pattern. */
+function coreOn(){ return !!(window.SEM7 && SEM7.coreOnly()); }
+function shown(list){ return coreOn() ? list.filter(SEM7.isCore) : list; }
 
 /* A vs B facts — used only on the comparison page */
 function hasBExtras(t){ return !!(t.bExtras && t.bExtras.length); }
@@ -4664,21 +4669,23 @@ function stageStats(){
 }
 
 /* ---------- "Study next" — transparent rule order ------------------- */
-function studyNext(){
+/* core: pick from Core topics only (the dashboard passes coreOn()) */
+function studyNext(core){
   const prio = t => (t.priority === "high" ? 0 : t.priority === "medium" ? 1 : 2);
   const started = t => topicProgress(t).done > 0 ? 0 : 1;
+  const pool = core ? TOPICS.filter(SEM7.isCore) : TOPICS;
 
-  const weak = weakTopics();
+  const weak = weakTopics().filter(w => pool.includes(w.topic));
   if(weak.length) return {topic:weak[0].topic, rule:1};
 
-  const c1 = TOPICS.filter(t => t.priority === "high" && topicStatus(t.id) === "progress");
+  const c1 = pool.filter(t => t.priority === "high" && topicStatus(t.id) === "progress");
   if(c1.length) return {topic:c1[0], rule:2};
 
-  const c2 = TOPICS.filter(t => t.priority === "high" && topicStatus(t.id) === "none")
+  const c2 = pool.filter(t => t.priority === "high" && topicStatus(t.id) === "none")
     .sort((a,b) => (trackOf(a)==="numerical"?0:1) - (trackOf(b)==="numerical"?0:1));
   if(c2.length) return {topic:c2[0], rule:3};
 
-  const c3 = TOPICS.filter(t => topicStatus(t.id) !== "done")
+  const c3 = pool.filter(t => topicStatus(t.id) !== "done")
     .sort((a,b) => prio(a)-prio(b) || started(a)-started(b));
   if(c3.length) return {topic:c3[0], rule:4};
 
@@ -4730,9 +4737,10 @@ let revealed = {};   /* session-only: which answers are showing */
 
 /* ---------------------------- DASHBOARD ----------------------------- */
 function vDashboard(){
-  const ov = overallProgress();
-  const th = trackProgress("theory"), nu = trackProgress("numerical");
-  const qz = quizOverall(), weak = weakTopics(), next = studyNext();
+  const scope = shown(TOPICS), ov = progressOf(scope);
+  const th = progressOf(scope.filter(t => trackOf(t) === "theory"));
+  const nu = progressOf(scope.filter(t => trackOf(t) === "numerical"));
+  const qz = quizOverall(), weak = weakTopics().filter(w => scope.includes(w.topic)), next = studyNext(coreOn());
 
   const UI = window.SEM7 && SEM7.ui;
   let h = '<h1>Dashboard</h1>';
@@ -4748,8 +4756,9 @@ function vDashboard(){
       : UI.next({title:next.view === "quiz" ? "Take the quiz" : "Exam Mode",
                  go:{label:"Open", attrs:'data-go="'+next.view+'"'}});
     const built = {};
-    MODULES.forEach(m => { built[m.id] = {pct:moduleProgress(m.id).pct}; });
-    h += UI.modules("ads", built, id => 'data-go="'+id+'"');
+    MODULES.forEach(m => { built[m.id] = {pct:progressOf(shown(topicsOf(m.id))).pct}; });
+    /* the Core only switch sits in the Modules heading */
+    h += UI.modules("ads", built, id => 'data-go="'+id+'"').replace("</h2>", UI.coreToggle()+"</h2>");
   }
 
   /* weak areas — only when the quiz has actually flagged something */
@@ -4782,9 +4791,9 @@ function topicCard(t){
 
 function vModule(mid){
   const m = moduleOf(mid);
-  const mp = moduleProgress(mid);
+  const mp = progressOf(shown(topicsOf(mid)));
   const tab = subTab[mid] || "theory";
-  const nTh = topicsInTrack(mid,"theory").length, nNu = topicsInTrack(mid,"numerical").length;
+  const nTh = shown(topicsInTrack(mid,"theory")).length, nNu = shown(topicsInTrack(mid,"numerical")).length;
 
   let h = SEM7.ui.head({eyebrow:'Module '+m.num, title:esc(m.title),
     progress:{pct:mp.pct, done:mp.done, total:mp.total, unit:"questions done"}});
@@ -4802,9 +4811,9 @@ function vModule(mid){
     return h;
   }
 
-  const list = sortedTrack(mid, tab);
-  if(!list.length) return h + '<div class="empty">No topics in this track.</div>';
-  const tp = moduleTrackProgress(mid, tab);
+  const list = shown(sortedTrack(mid, tab));
+  if(!list.length) return h + '<div class="empty">'+(coreOn() ? 'No Core topics in this track.' : 'No topics in this track.')+'</div>';
+  const tp = progressOf(list);
   h += '<p class="lead" style="margin-top:-.4rem">'+
     (tab === "numerical"
       ? 'Topics where you compute something and show working. '+tp.done+' of '+tp.total+' questions done.'
