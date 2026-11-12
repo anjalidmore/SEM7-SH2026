@@ -69,7 +69,7 @@ Kept small on purpose. Each one removes a decision you would otherwise make whil
 
 | # | Feature | What it does for you |
 |---|---|---|
-| F1 | **Exam-window planner** | *Started:* the hub now shows the fixed 16–30 Nov window above. *Next:* Each day shows morning / afternoon / evening blocks, each linked to a concrete list, plus "core work left vs. time left" so you know if you are on track. |
+| F1 | **Exam-window planner** | *Done 12 Nov:* day-by-day, module-wise timetable from `shared/studyplan.js` (weights, prerequisites, easy+hard pairing, borrowed time). *Earlier:* the hub now shows the fixed 16–30 Nov window above. *Next:* Each day shows morning / afternoon / evening blocks, each linked to a concrete list, plus "core work left vs. time left" so you know if you are on track. |
 | F2 | **Core / Extra tiers** | Every question is tagged *Core* (needed for full marks on the paper pattern) or *Extra*. A "Core only" switch on every subject hides the rest. Hub progress counts Core. This is the "just enough" mode. |
 | F3 | **Last-look sheet** | A one- or two-page printable page per subject, for the exam morning: formulas, must-know definitions, common mistakes and the Core question list. Built from data the sites already hold. |
 | F4 | **Shaky list** | One tap marks any item as shaky. The hub gathers shaky items from all subjects into one list for the night before each paper. |

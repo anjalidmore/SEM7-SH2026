@@ -20,6 +20,19 @@
 (function(){
   "use strict";
 
+  /* One theme for every page: "sem7.theme" is "light" or "dark" (anything else, or
+     nothing, follows the system). Applied here, first, so no page flashes the wrong
+     theme before its own script runs. Each page's toggle writes the same key. */
+  try {
+    var th = window.localStorage.getItem("sem7.theme");
+    if(th === "light" || th === "dark") document.documentElement.setAttribute("data-theme", th);
+  } catch(e){}
+  window.addEventListener("storage", function(e){
+    if(e.key !== "sem7.theme") return;
+    if(e.newValue === "light" || e.newValue === "dark") document.documentElement.setAttribute("data-theme", e.newValue);
+    else document.documentElement.removeAttribute("data-theme");
+  });
+
   var EXAM = { marks:50, duration:"2 hours", start:"10:30", end:"12:30" };
 
   /* Exam order. `keys` are the subject's own progress keys, used by the hub only
@@ -168,9 +181,53 @@
     var p = dateParts(s), c = countdown(s);
     var when = c.state === "done" ? "ESE done" :
       'ESE ' + p.dow + ' ' + p.day + ' ' + p.mon + ' &middot; <b>' + esc(c.text) + '</b>';
-    return '<a class="sem7-a sem7-home" href="../../index.html">' + icon("home") + 'Semester 7</a>' +
+    return '<button type="button" class="sem7-back" data-s7-back title="Back">' + icon("back") + 'Back</button>' +
+      '<a class="sem7-a sem7-home" href="../../index.html">' + icon("home") + 'Semester 7</a>' +
       '<span class="sem7-subs">' + subs + '</span>' +
       '<span class="sem7-next">' + when + '</span>';
+  }
+
+  /* ---------- back ----------
+     The sites route in memory, so the browser's Back would leave the site. Each
+     keeps a short stack of the views it has shown; Back restores the previous
+     one, and from a site's first view goes to the semester hub. */
+  var ROUTES = {
+    ai:  { get:function(){ return location.hash; }, set:function(r){ location.hash = r; } },
+    ads: { get:function(){ return { v:view, t:currentTopic }; },
+           set:function(r){ view = r.v; currentTopic = r.t; render(); window.scrollTo(0, 0); } },
+    or:  { get:function(){ return view; }, set:function(r){ go(r); } },
+    dl:  { get:function(){ return { v:VIEW.v, id:VIEW.id }; }, set:function(r){ go(r.v, r.id); } },
+    nlp: { get:function(){ return { view:ROUTE.view, topic:ROUTE.topic }; },
+           set:function(r){ ROUTE.view = r.view; ROUTE.topic = r.topic; render(); } }
+  };
+  function watchBack(code){
+    var rt = ROUTES[code], stack = [], restoring = false, last = null;
+    if(!rt) return;
+    function key(){ try { return JSON.stringify(rt.get()); } catch(e){ return null; } }
+    function note(){
+      if(restoring) return;
+      var k = key();
+      if(k === null || k === last) return;
+      last = k;
+      stack.push(k);
+      if(stack.length > 60) stack.shift();
+    }
+    var f = window.render;
+    if(typeof f === "function") window.render = function(){ var out = f.apply(this, arguments); note(); return out; };
+    if(code === "ai") window.addEventListener("hashchange", function(){ setTimeout(note, 0); });
+    note();
+    document.addEventListener("click", function(e){
+      var b = e.target.closest && e.target.closest("[data-s7-back]");
+      if(!b) return;
+      if(stack.length < 2){ location.href = "../../index.html"; return; }
+      stack.pop();
+      var prev = stack[stack.length - 1];
+      restoring = true;
+      try { rt.set(JSON.parse(prev)); last = prev; }
+      catch(err){ location.href = "../../index.html"; }
+      finally { restoring = false; }
+      note();
+    });
   }
 
   function mountStrip(s){
@@ -285,6 +342,7 @@
       open:function(target){
         var t = split(target);
         if((t[0] === "topic" && topicById(t[1])) || t[0] === "quiz") location.hash = "#/" + t[0] + "/" + t[1];
+        else if(t[0] === "module" && find(COURSE.modules, t[1])) location.hash = "#/module/" + t[1];
       }},
     nlp: { hooks:["saveProgress", "render"],
       summarize:function(){
@@ -353,6 +411,7 @@
         var t = split(target);
         if(t[0] === "topic" && TOPIC_BY_ID[t[1]]) openTopic(t[1]);
         else if(t[0] === "view" && (t[1] === "quiz" || t[1] === "exam")) goto(t[1]);
+        else if(t[0] === "module" && find(MODULES, t[1])) goto(t[1]);
       }},
     or: { hooks:["saveProgress", "render"],
       summarize:function(){
@@ -368,6 +427,7 @@
       open:function(target){
         var t = split(target);
         if(t[0] === "topic" && find(TOPICS, t[1])) go({ name:"topic", id:t[1] });
+        else if(t[0] === "module" && /^m[1-6]$/.test(t[1])) go({ name:"mod", m:t[1] });
       }},
     dl: { hooks:["saveProgress", "render"],
       summarize:function(){
@@ -383,6 +443,7 @@
       open:function(target){
         var t = split(target);
         if(t[0] === "topic" && find(TOPICS, t[1])) go("topic", t[1]);
+        else if(t[0] === "module" && /^m[1-6]$/.test(t[1])) go("module", t[1]);
       }}
   };
 
@@ -425,6 +486,7 @@
 
     try { mountStrip(s); } catch(e){}
     try { watchTabs(); } catch(e){}
+    try { watchBack(code); } catch(e){}
 
     /* Opened from the hub's Continue link: drop the bridge's hash, then open the
        target through the site. An unknown target leaves the site's dashboard. */

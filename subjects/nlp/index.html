@@ -9,7 +9,7 @@
 <script src="../../shared/syllabus.js"></script>
 <script>
 /* NLP had no theme switch; it uses the same three-way one as the other subjects. */
-(function(){ try { var t = localStorage.getItem("nlp_theme_v1"); if(t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch(e){} })();
+(function(){ try { var t = localStorage.getItem("sem7.theme"); if(t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch(e){} })();
 </script>
 <style>
 /* NLP only. Everything shared is in ../../shared/sem7.css */
@@ -4889,7 +4889,7 @@ function nl2br(s){ return esc(s).replace(/\n/g,"<br>"); }
 /* ================= NAV ================= */
 document.getElementById("brandBtn").addEventListener("click", ()=>{ ROUTE.view = "dashboard"; render(); });
 (function(){
-  const KEY = "nlp_theme_v1", ORDER = ["system","light","dark"], btn = document.getElementById("themeBtn");
+  const KEY = "sem7.theme", ORDER = ["system","light","dark"], btn = document.getElementById("themeBtn");
   function get(){ try{ return localStorage.getItem(KEY) || "system"; }catch(e){ return "system"; } }
   function apply(t){
     if(t === "system") document.documentElement.removeAttribute("data-theme");

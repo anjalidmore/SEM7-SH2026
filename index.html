@@ -167,6 +167,62 @@ h2 .note{margin-left:4px; font-size:.74rem; font-weight:600; color:var(--ink-mut
 .tt li.next .c{color:var(--acc-ui); font-weight:650}
 .tt li.done{opacity:.55}
 
+/* day-by-day timetable */
+.side{display:grid; grid-template-columns:minmax(0,1fr); gap:24px; min-width:0}
+.side section{margin-bottom:0}
+.tools{display:flex; align-items:center; gap:8px; margin:-4px 0 12px}
+.tools .btn{min-height:32px; padding:4px 12px; font-size:.8rem}
+.days-l{display:grid; gap:8px}
+.dc{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); min-width:0}
+.dc.now{box-shadow:inset 3px 0 0 var(--ink)}
+.dc.past{opacity:.55}
+.dc > summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:14px; padding:10px 16px; min-height:52px}
+.dc > summary::-webkit-details-marker{display:none}
+.dc > summary::after{content:""; flex:none; width:7px; height:7px; border-right:1.6px solid var(--ink-mute); border-bottom:1.6px solid var(--ink-mute); transform:rotate(45deg); margin-left:4px; transition:transform .15s}
+.dc[open] > summary::after{transform:rotate(-135deg)}
+.dc > summary .slots{flex:1}
+.dc .tot{font-size:.78rem; color:var(--ink-mute); font-variant-numeric:tabular-nums; white-space:nowrap}
+.dbody{border-top:1px solid var(--border); padding:4px 16px 8px}
+.sl{display:grid; grid-template-columns:104px minmax(0,1fr); gap:6px 14px; padding:10px 0}
+.sl + .sl{border-top:1px dashed var(--border)}
+.sl .tm{font-size:.78rem; color:var(--ink-mute); line-height:1.35; font-variant-numeric:tabular-nums}
+.sl .tm b{display:block; color:var(--ink); font-size:.84rem; font-weight:620}
+.its{list-style:none; margin:0; padding:0; display:grid; gap:8px; min-width:0}
+.it{display:flex; gap:10px; align-items:flex-start; min-width:0}
+.it .chip{flex:none; margin-top:1px}
+.it .tx{min-width:0; font-size:.86rem; line-height:1.4}
+.it .tx b{font-weight:620}
+.it .h{color:var(--ink-mute); font-size:.78rem; font-variant-numeric:tabular-nums; margin-left:4px}
+.it .fs{color:var(--ink-soft); font-size:.8rem; margin-top:1px}
+.kd{display:inline-block; font-size:.7rem; font-weight:650; padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:1px;
+  background:var(--panel-2); color:var(--ink-soft); border:1px solid var(--border); white-space:nowrap}
+.kd.k-learn,.kd.k-refresh{background:var(--acc-soft); color:var(--acc-ui); border-color:transparent}
+.kd.k-revise{background:none; color:var(--ink); border-color:var(--ink-mute)}
+.kd.k-lent{border-style:dashed}
+.kd.k-pend{border-style:dashed; color:var(--ink-mute)}
+.bud li{display:block; padding:12px 16px}
+.bud .r1{display:flex; align-items:center; gap:10px}
+.bud .r1 .nm{font-weight:620; font-size:.88rem; flex:none; min-width:3.2ch}
+.bud .r1 .bar{flex:1; position:relative}
+.bud .r1 .n{font-size:.78rem; color:var(--ink-mute); font-variant-numeric:tabular-nums; white-space:nowrap}
+.bud .core-mark{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--ink); opacity:.55}
+.bud .nt{margin-top:6px; font-size:.78rem; color:var(--ink-mute); line-height:1.4}
+.wt li{padding:9px 16px; gap:10px}
+.wt .t{flex:1; min-width:0; font-size:.82rem; line-height:1.3}
+.wt .t span{display:block; color:var(--ink-mute); font-size:.74rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.wt .bar{width:64px; flex:none}
+.wt .mk{width:4.2ch; text-align:right; flex:none; font-size:.8rem; font-weight:650; font-variant-numeric:tabular-nums}
+.how{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; font-size:.84rem; color:var(--ink-soft)}
+.how summary{cursor:pointer; font-weight:620; color:var(--ink)}
+.how ul{margin:10px 0 0; padding-left:18px; display:grid; gap:6px; line-height:1.45}
+@media (max-width:620px){
+  .dc > summary{padding:10px 14px; gap:10px; flex-wrap:wrap}
+  .dc > summary .day{width:100%}
+  .dbody{padding:4px 14px 8px}
+  .sl{grid-template-columns:minmax(0,1fr)}
+  .sl .tm b{display:inline; margin-right:8px}
+}
+
 footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
 
 @media (max-width:860px){
@@ -209,12 +265,33 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
     <div class="two">
       <section aria-labelledby="plan-h">
         <h2 id="plan-h"></h2>
-        <ol class="list" id="plan"></ol>
+        <div class="tools"><button type="button" class="btn" id="plan-all">Expand all</button></div>
+        <div class="days-l" id="plan"></div>
       </section>
-      <section aria-labelledby="tt-h">
-        <h2 id="tt-h"></h2>
-        <ol class="list tt" id="tt"></ol>
-      </section>
+      <div class="side">
+        <section aria-labelledby="tt-h">
+          <h2 id="tt-h"></h2>
+          <ol class="list tt" id="tt"></ol>
+        </section>
+        <section aria-labelledby="bud-h">
+          <h2 id="bud-h"></h2>
+          <ol class="list bud" id="budget"></ol>
+        </section>
+        <section aria-labelledby="wt-h">
+          <h2 id="wt-h"></h2>
+          <ol class="list wt" id="weights"></ol>
+        </section>
+        <details class="how">
+          <summary>How the timetable is made</summary>
+          <ul>
+            <li><b>Weight.</b> Hours plus learning outcomes. The three MSE modules count for 10 of 50 marks together; the rest carry 40. A CIA, a past internal paper or a lecturer hint lifts a module 10&ndash;15%.</li>
+            <li><b>Order.</b> Heaviest first. A module that unlocks a heavy one comes before it.</li>
+            <li><b>Load.</b> Each day pairs a hard module with an easy one: the weightiest in the morning, the lightest in the evening. The last half hour is a recall quiz.</li>
+            <li><b>Unequal days.</b> Hours go where a marginal hour earns most marks. A short window borrows up to 20% of an earlier subject's days; the rest of a subject's modules get a Core pass first, then a deeper one, then revision.</li>
+            <li><b>Estimates.</b> No paper pattern exists yet, so marks are estimated. Edit <code>shared/studyplan.js</code> and the timetable redraws.</li>
+          </ul>
+        </details>
+      </div>
     </div>
 
     <footer><p id="nojs">This page needs <code>shared/sem7.js</code> next to it.</p>
@@ -224,6 +301,7 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
 
 <script src="shared/sem7.js"></script>
 <script src="shared/syllabus.js"></script>
+<script src="shared/studyplan.js"></script>
 <script>
 (function(){
   "use strict";
@@ -278,8 +356,8 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
     var rel = n === 0 ? "Today" : n === 1 ? "Tomorrow" : p.dow;
     return '<b>' + rel + '</b>' + p.day + ' ' + p.mon;
   }
-  /* Where "Continue" goes: the site's own next item, else its dashboard. */
-  function continueHref(s, sum){ return S.subjectHref(s, sum && sum.next && sum.next.target); }
+  /* The hub links to each subject's dashboard; "study next" lives there. */
+  function continueHref(s, sum){ return S.subjectHref(s); }
 
   /* The six syllabus modules with the site's own module figures laid over them. */
   function modules(s, sum){
@@ -306,15 +384,94 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
       (sum && sum.core ? '<div class="pct core"><span class="lbl">Core</span><b>' + sum.core.pct + '%</b>' +
         bar(sum.core.pct, s.short + " Core progress") + '<span class="n">' + sum.core.done + '/' + sum.core.total + '</span></div>' : '') +
       '<div class="mods">' + pips + '<span class="ready" title="Modules with study material">' + ready + '/6 ready</span></div>' +
-      (sum && sum.next ? '<div class="nexttopic">' + I("play") + '<span>' + esc(sum.next.title) + '</span></div>' : '') +
       '<div class="acts"><a class="btn' + (isNext ? ' primary' : '') + '" href="' + continueHref(s, sum) + '">' +
-        (sum && sum.next ? 'Continue' : 'Open') + I("arrow") + '</a></div></li>';
+        'Open' + I("arrow") + '</a></div></li>';
   }
 
   function chip(s, sums, cls, text){
     return '<a class="chip acc' + (cls ? ' ' + cls : '') + '"' + accStyle(s) + ' href="' + continueHref(s, sums[s.code]) + '">' +
       I(cls === "paper" ? "paper" : s.code) + (text || esc(s.short)) + '</a>';
   }
+
+
+  /* ---------- timetable pieces ---------- */
+  var PLAN_CACHE = null, KIND = window.SEM7_PLAN ? window.SEM7_PLAN.KIND : {};
+  function hrs(h){ return (Math.round(h * 2) / 2) + "h"; }
+  function mod(PL, k){ return PL.mods[k]; }
+  function mchip(code, n, text){
+    var s = S.byCode(code);
+    return '<a class="chip acc" ' + accStyle(s) + ' href="' + S.subjectHref(s, "module:m" + n) + '" title="' + esc(s.name) + '">' + I(code) + esc(text || (s.short + ' M' + n)) + '</a>';
+  }
+  function itemHTML(it){
+    var s = S.byCode(it.code), PL = PLAN_CACHE, m = it.k ? mod(PL, it.k) : null, tx = "";
+    if(it.kind === "last"){
+      return '<li class="it acc"' + accStyle(s) + '><a class="chip paper acc" ' + accStyle(s) + ' href="' + S.subjectHref(s) + '">' + I("paper") + esc(s.short) + '</a><div class="tx"><b>Last look</b><span class="h">' + hrs(it.h) + '</span>' +
+        '<div class="fs">Core list, formulas, shaky items. Nothing new. Paper at ' + S.EXAM.start + '.</div></div></li>';
+    }
+    if(it.kind === "mock"){
+      return '<li class="it acc"' + accStyle(s) + '><a class="chip acc" ' + accStyle(s) + ' href="' + S.subjectHref(s) + '">' + I(it.code) + esc(s.short) + '</a><div class="tx"><b>Timed mock paper</b><span class="h">' + hrs(it.h) + '</span>' +
+        '<div class="fs">Write it to time (50 marks, 2 h), then redo every wrong answer.</div></div></li>';
+    }
+    if(it.kind === "recall"){
+      var ms = (it.mods || []).map(function(k){ return 'M' + mod(PL, k).n; }).join(", ");
+      return '<li class="it acc"' + accStyle(s) + '><a class="chip acc" ' + accStyle(s) + ' href="' + S.subjectHref(s) + '">' + I(it.code) + esc(s.short) + '</a><div class="tx"><b>Recall quiz</b><span class="h">' + hrs(it.h) + '</span>' +
+        '<div class="fs">Notes closed. Write what you remember of ' + esc(ms || "today") + ', then check.</div></div></li>';
+    }
+    var kind = it.kind, label = KIND[kind] || kind;
+    if(kind !== "revise") label += it.depth === "core" ? " &middot; Core pass" : "";
+    var first = kind === "revise" ? m.first.slice(0, 3) : m.first.slice(0, it.depth === "core" ? 3 : 5);
+    return '<li class="it acc"' + accStyle(s) + '>' + mchip(it.code, m.n) + '<div class="tx"><b>' + esc(m.title) + '</b>' +
+      '<span class="kd k-' + kind + '">' + label + '</span>' + (it.lent ? '<span class="kd k-lent" title="Borrowed from this subject\u2019s earlier days">pre-load</span>' : '') +
+      (m.built ? '' : '<span class="kd k-pend" title="No study material built yet">material pending</span>') +
+      '<span class="h">' + hrs(it.h) + '</span><div class="fs">' + (kind === "revise" ? "Solve and recall: " : "Start with: ") + esc(first.join(" \u00b7 ")) + '</div></div></li>';
+  }
+  function dayHTML(d, now, state){
+    var diff = S.dayDiff(now, d.date), isNow = diff === 0, past = diff < 0;
+    var total = d.slots.reduce(function(a, s){ return a + s.hours; }, 0);
+    var seen = {}, chips = "";
+    d.slots.forEach(function(sl){ sl.items.forEach(function(it){
+      var id = it.kind === "last" ? "last" + it.code : it.k || ("x" + it.code);
+      if(seen[id] || it.kind === "recall" || it.kind === "mock") return;
+      seen[id] = 1;
+      chips += it.kind === "last" ? '<a class="chip paper acc" ' + accStyle(S.byCode(it.code)) + ' href="' + S.subjectHref(S.byCode(it.code)) + '">' + I("paper") + esc(S.byCode(it.code).short) + ' paper</a>'
+        : mchip(it.code, PLAN_CACHE.mods[it.k].n);
+    }); });
+    if(!chips) d.slots.forEach(function(sl){ sl.items.forEach(function(it){ if(!seen[it.code]){ seen[it.code] = 1; chips += chip(S.byCode(it.code), {}, "", esc(S.byCode(it.code).short) + ' ' + KIND[it.kind].toLowerCase()); } }); });
+    var open = state && state.hasOwnProperty(d.ymd) ? state[d.ymd] : (isNow || (diff > 0 && S.dayDiff(now, S.studyStart()) > 0 && d.ymd === PLAN_CACHE.days[0].ymd));
+    var examTag = d.exam ? '<span class="kd k-learn acc" ' + accStyle(S.byCode(d.exam)) + '>' + esc(S.byCode(d.exam).short) + ' paper ' + esc(S.EXAM.start) + '</span>' : '';
+    return '<details class="dc' + (isNow ? ' now' : '') + (past ? ' past' : '') + '" data-d="' + d.ymd + '"' + (open ? ' open' : '') + '>' +
+      '<summary><div class="day">' + dayLabel(d.date, now) + '</div><div class="slots">' + chips + '</div><span class="tot">' + hrs(total) + '</span></summary>' +
+      '<div class="dbody">' + d.slots.map(function(sl){
+        return '<div class="sl"><div class="tm"><b>' + esc(sl.label) + '</b>' + sl.from + '&ndash;' + sl.to + '</div><ul class="its">' + sl.items.map(itemHTML).join("") + '</ul></div>';
+      }).join("") + '</div></details>';
+  }
+  function budgetHTML(r){
+    var s = S.byCode(r.code), pct = Math.min(100, Math.round(r.have / r.need * 100)), core = Math.min(100, Math.round(r.needCore / r.need * 100));
+    var notes = [];
+    if(r.borrowed > 0) notes.push('borrows ' + hrs(r.borrowed) + ' from earlier days');
+    if(r.left.length) notes.push('not scheduled: ' + r.left.map(function(m){ return 'M' + m.n; }).join(", ") + ' (lowest value)');
+    return '<li class="acc"' + accStyle(s) + '><div class="r1"><span class="nm">' + esc(r.short) + '</span>' +
+      '<div class="bar" role="progressbar" aria-label="' + esc(r.short) + ' hours against need" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i>' +
+      '<span class="core-mark" style="left:' + core + '%" title="Core pass only needs ' + hrs(r.needCore) + '"></span></div>' +
+      '<span class="n">' + hrs(r.have) + ' of ' + hrs(r.need) + '</span></div>' +
+      (notes.length ? '<div class="nt">' + esc(notes.join(" \u00b7 ")) + '</div>' : '') + '</li>';
+  }
+  function topModules(PL){
+    return Object.keys(PL.mods).map(function(k){ return PL.mods[k]; }).sort(function(a, b){ return b.marks - a.marks; }).slice(0, 8);
+  }
+  function weightHTML(m){
+    var s = S.byCode(m.code), w = Math.round(m.marks / 18 * 100);
+    var why = m.why.length ? m.why.join("; ") : "Hours and learning outcomes";
+    return '<li class="acc"' + accStyle(s) + ' title="' + esc(why) + '">' + mchip(m.code, m.n) +
+      '<div class="t">' + esc(m.title) + '<span>' + esc(why) + '</span></div>' +
+      '<div class="bar" role="img" aria-label="about ' + Math.round(m.marks) + ' marks"><i style="width:' + w + '%"></i></div>' +
+      '<span class="mk">' + Math.round(m.marks) + '</span></li>';
+  }
+  document.getElementById("plan-all").addEventListener("click", function(){
+    var all = document.querySelectorAll("#plan .dc"), anyShut = Array.prototype.some.call(all, function(d){ return !d.open; });
+    Array.prototype.forEach.call(all, function(d){ d.open = anyShut; });
+    this.textContent = anyShut ? "Collapse all" : "Expand all";
+  });
 
   /* ---------- render ---------- */
   function render(){
@@ -339,10 +496,10 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
       hero.innerHTML = '<span class="ico lg">' + I(next.code) + '</span>' +
         '<div class="what"><div class="k">Next paper &middot; ' + dateText(next) + ', ' + S.EXAM.start + '</div>' +
           '<div class="t">' + esc(next.name) + '</div>' +
-          (ps && ps.next ? '<div class="d">Up next: ' + esc(ps.next.title) + '</div>' : '') + '</div>' +
+          '</div>' +
         '<div class="count">' + (c.state === "upcoming" ? '<b>' + c.days + '</b><span>' + (c.days === 1 ? 'day' : 'days') + ' left</span>'
                                                        : '<b>' + esc(whenText(c)) + '</b>') + '</div>' +
-        '<div class="acts"><a class="btn primary" href="' + continueHref(next, ps) + '">' + (ps && ps.next ? 'Continue' : 'Open ' + esc(next.short)) + I("arrow") + '</a></div>';
+        '<div class="acts"><a class="btn primary" href="' + continueHref(next, ps) + '">' + 'Open ' + esc(next.short) + I("arrow") + '</a></div>';
     } else {
       hero.className = "hero";
       hero.innerHTML = '<span class="ico lg">' + I("check") + '</span><div class="what"><div class="t">All five papers are done.</div></div>';
@@ -363,33 +520,21 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
     /* subjects */
     document.getElementById("subs").innerHTML = list.map(function(s){ return cardHTML(s, sums[s.code], now, s === pick); }).join("");
 
-    /* sessions: the study window as blocks of days with the same paper, and each exam day on its own */
-    var days = S.plan(now), blocks = [];
-    days.forEach(function(d){
-      var last = blocks[blocks.length - 1];
-      if(!d.exam && last && !last.exam && last.main === d.main) last.to = d.date;
-      else blocks.push({ from:d.date, to:d.date, exam:d.exam, main:d.main });
-    });
-    var today = S.dayDiff(S.studyStart(), now) >= 0 ? now : null;
-    function inBlock(b){ return today && S.dayDiff(b.from, today) >= 0 && S.dayDiff(today, b.to) >= 0; }
-    function range(b){
-      var a = S.dateParts(b.from), z = S.dateParts(b.to);
-      return b.from.getTime() === b.to.getTime() ? '<b>' + a.dow + '</b>' + a.day + ' ' + a.mon
-        : '<b>' + a.dow + '&ndash;' + z.dow + '</b>' + a.day + '&ndash;' + z.day + ' ' + z.mon;
-    }
+    /* study timetable: day by day, module by module (shared/studyplan.js) */
+    var PL = window.SEM7_PLAN ? PLAN_CACHE || (PLAN_CACHE = window.SEM7_PLAN.build(now)) : null;
     var startsIn = S.dayDiff(now, S.studyStart());
-    document.getElementById("plan-h").innerHTML = I("clock") + "Study plan" +
+    document.getElementById("plan-h").innerHTML = I("clock") + "Study timetable" +
       (startsIn > 0 ? '<span class="note">starts in ' + plural(startsIn, "day") + '</span>' : '');
-    document.getElementById("plan").innerHTML = blocks.length ? blocks.map(function(b){
-      var n = S.dayDiff(b.from, b.to) + 1, slots = '';
-      if(b.exam){
-        slots += chip(b.exam, sums, "paper", esc(b.exam.short) + ' paper &middot; ' + S.EXAM.start);
-        if(b.main) slots += chip(b.main, sums) + '<span class="len">afternoon</span>';
-      } else {
-        slots += chip(b.main, sums) + '<span class="len">' + plural(n, "day") + '</span>';
-      }
-      return '<li' + (inBlock(b) ? ' class="now"' : '') + '><div class="day">' + range(b) + '</div><div class="slots">' + slots + '</div></li>';
-    }).join("") : '<li><div class="slots">No papers left to plan for.</div></li>';
+    document.getElementById("bud-h").innerHTML = I("layers") + "Time vs need";
+    document.getElementById("wt-h").innerHTML = I("target") + "Most weighted modules";
+    if(PL){
+      var openNow = {}, kept = document.querySelectorAll("#plan .dc");
+      Array.prototype.forEach.call(kept, function(d){ openNow[d.getAttribute("data-d")] = d.open; });
+      var hadState = kept.length > 0;
+      document.getElementById("plan").innerHTML = PL.days.map(function(d){ return dayHTML(d, now, hadState ? openNow : null); }).join("");
+      document.getElementById("budget").innerHTML = PL.summary.map(budgetHTML).join("");
+      document.getElementById("weights").innerHTML = topModules(PL).map(weightHTML).join("");
+    }
 
     /* timetable */
     document.getElementById("tt").innerHTML = list.map(function(s){
@@ -402,6 +547,24 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
   }
 
   render();
+
+  /* A subject only publishes its progress summary when its site is opened in this
+     browser. For a subject with no summary yet (or an old one), load its site in a
+     hidden frame once so the hub shows real progress without a manual visit. */
+  (function syncSummaries(){
+    var STALE = 6 * 3600 * 1000, now = Date.now();
+    S.SUBJECTS.forEach(function(s){
+      var sum = S.readSummary(s.code);
+      var fresh = sum && sum.core && sum.updatedAt && now - Date.parse(sum.updatedAt) < STALE;
+      if(fresh) return;
+      var f = document.createElement("iframe");
+      f.setAttribute("aria-hidden", "true"); f.tabIndex = -1;
+      f.style.cssText = "position:absolute;width:0;height:0;border:0;visibility:hidden";
+      f.onload = function(){ setTimeout(function(){ f.remove(); render(); }, 400); };
+      f.src = "subjects/" + s.code + "/index.html";
+      document.body.appendChild(f);
+    });
+  })();
   /* Stay current: another tab may have published a summary, and countdowns move. */
   window.addEventListener("storage", function(e){ if(!e.key || e.key.indexOf("sem7.") === 0) render(); });
   document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") render(); });
