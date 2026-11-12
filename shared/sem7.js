@@ -354,16 +354,15 @@
           var g = groups[code] || (groups[code] = { all:0, done:0 });
           g.all++; if(effectiveStatus(i) === "done") g.done++;
         }); });
-        /* Core: MSE Focus questions plus Core-tagged ones; practice inherits its parent's tag */
+        /* Core: Core-tagged ones; practice inherits its parent's tag */
         var src = {}, ci = [];
         mods.forEach(function(m){ ["theory", "numericals", "solved"].forEach(function(k){
           ((DATA[k] || {})[m] || []).forEach(function(q){ src[q.id] = q; (q.practice || []).forEach(function(x){ src[x.id] = x; }); });
         }); });
-        FOCUS.forEach(function(t){ src[t.id] = t; (t.questions || []).forEach(function(x){ src[x.id] = x; }); });
         mods.forEach(function(m){ moduleItems(m).forEach(function(i){
           var own = src[i.id], par = i.parent && src[i.parent];
           var c = own && typeof own.core === "boolean" ? own.core : par && typeof par.core === "boolean" ? par.core :
-            i.sub === "focus" || isCore(own) || isCore(par);
+            isCore(own) || isCore(par);
           if(c) ci.push({ id:i.id, title:i.label, item:i });
         }); });
         var cs = function(id){ var v = effectiveStatus(find(ci, id).item); return v === "review" ? "progress" : v || "none"; };
@@ -384,8 +383,7 @@
         if(t[0] === "item"){
           var it = null;
           Object.keys(MODULE_TITLES).forEach(function(m){ it = it || find(moduleItems(m), t[1]); });
-          if(it && it.sub === "focus") jumpToFocus(it.id);
-          else if(it) jumpTo(it.m, it.sub, it.id);
+          if(it) jumpTo(it.m, it.sub, it.id);
           return;
         }
         if(t[0] !== "module") return;
@@ -821,7 +819,7 @@
   UI.topicCard = function(o){
     var pct = o.total ? Math.round(o.done / o.total * 100) : (o.state === "done" ? 100 : 0);
     var st = o.state || stateOf(o.done || 0, o.total || 0);
-    return '<div class="s7-tcard' + (st === "done" ? " is-done" : (o.high ? " is-high" : "")) + '">' +
+    return '<div class="s7-tcard' + (o.linkTitle ? " is-link" : "") + (st === "done" ? " is-done" : (o.high ? " is-high" : "")) + '">' +
       '<div class="s7-tcard-h"><span class="s7-dot' + (st === "none" ? "" : " is-" + st) + '" role="img" aria-label="' + STATUS_LABEL[st] + '"></span>' +
       "<h3>" + (o.linkTitle ? '<button type="button" class="s7-tlink" ' + o.attrs + ">" + o.title + "</button>" : o.title) + "</h3>" + (o.pill || "") + "</div>" +
       (o.summary ? "<p>" + o.summary + "</p>" : "") +
@@ -1009,6 +1007,13 @@
   function analysisBox(a){
     return '<div class="box exam s7-analysis"><h5>Analyse the result</h5>' + (/^\s*</.test(a) ? a : "<p>" + a + "</p>") + "</div>";
   }
+  /* a linked topic card opens as a whole: forward a click anywhere on it to its title button */
+  document.addEventListener("click", function(ev){
+    var card = ev.target.closest && ev.target.closest(".s7-tcard.is-link");
+    if(!card || ev.target.closest("button, a")) return;
+    var b = card.querySelector(".s7-tlink");
+    if(b) b.click();
+  });
   function exampleCard(e, mark){
     var k = "ex-" + e.id, pre = (e.boxes || []).map(function(x){
       return '<div class="s7-mini"><h5>' + x.h + "</h5><div>" + x.b + "</div></div>";

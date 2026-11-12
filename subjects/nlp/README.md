@@ -12,16 +12,18 @@ GitHub Pages. It is wired to the shared Semester 7 layer (`../../shared/sem7.css
 
 ## What is in the site
 
-Content is built for **Modules 1–3** at the moment:
+Content is built for **Modules 1–6**:
 
 | Module | Title |
 |---|---|
 | 1 | Introduction to NLP |
 | 2 | Text Processing & Word-Level Analysis |
 | 3 | Syntax Analysis & Sequence Modeling |
+| 4 | Semantic Analysis & Word Representations |
+| 5 | Discourse & Advanced NLP |
+| 6 | Applications & Ethical Perspectives |
 
-**Modules 4–6 are not built yet.** Their decks, practice sets and a seminar PDF are now in
-`_resources/nlp/Comp B/` (see `_ORGANISATION.md`), so they are the open work.
+Modules 4–6 were built from the decks, practice sets and seminar PDF in `_resources/nlp/Comp B/`. There is no class material for 6.1 Machine Translation, 6.5 Ethics or 6.6 Low-resource languages: those follow the syllabus and standard textbook content. The MSE Focus tab has been removed.
 
 Each module follows the same study method as every other subject: dashboard → module page with
 **Numericals · Theory · Quick Review · Flashcards · Quiz** → topic page. The site also has an
