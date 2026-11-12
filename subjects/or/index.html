@@ -22,6 +22,21 @@
 #toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:200; opacity:0;
   transition:opacity 120ms; pointer-events:none}
 #toast.on{opacity:1}
+/* diagrams on topic pages (Modules 3, 4 and 6) */
+.dgm{margin:14px 0; padding:12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface)}
+.dgm{overflow-x:auto}
+.dgm svg{display:block; width:100%; min-width:520px; height:auto; max-width:660px; margin:0 auto}
+.dgm figcaption{font-size:.85em; color:var(--muted); margin-top:6px; text-align:center}
+.dg-ax{stroke:var(--border-2); stroke-width:1.5; fill:none}
+.dg-ln{stroke:var(--accent-ui); stroke-width:2.2; fill:none; stroke-linejoin:round}
+.dg-ln2{stroke:var(--warn); stroke-width:2; fill:none}
+.dg-ln3{stroke:var(--good); stroke-width:2; fill:none}
+.dg-ds{stroke:var(--muted); stroke-width:1; stroke-dasharray:4 3; fill:none}
+.dg-t{fill:var(--text-2); font:12px var(--sans)}
+.dg-tb{fill:var(--text); font:600 12px var(--sans)}
+.dg-bx{fill:var(--surface-2); stroke:var(--border-2); stroke-width:1.2}
+.dg-bx.hl{fill:var(--accent-soft); stroke:var(--accent-ui)}
+.dg-neg{fill:var(--warn-soft)}
 </style>
 </head>
 <body>
@@ -94,7 +109,10 @@ var LATER_MATERIAL = [
 var MODULES = [
   {id:"m1", n:"Module 1", title:"Introduction to OR & Linear Programming"},
   {id:"m2", n:"Module 2", title:"Queuing Models"},
-  {id:"m5", n:"Module 5", title:"Game Theory"}
+  {id:"m3", n:"Module 3", title:"Simulation"},
+  {id:"m4", n:"Module 4", title:"Dynamic Programming"},
+  {id:"m5", n:"Module 5", title:"Game Theory"},
+  {id:"m6", n:"Module 6", title:"Inventory Models"}
 ];
 
 /* Module 2 is in the stated exam scope but the folder contains no queuing
@@ -3373,9 +3391,1169 @@ var M2_KENDALL = [
 }
 ];
 /* ===== 10 · assemble topic list ===== */
+/* ===== 03b · helpers and diagrams for Modules 3, 4 and 6 ===== */
+function tbl(head, rows){
+  return "<div class='tw'><table><tr>"+head.map(function(h){ return "<th>"+h+"</th>"; }).join("")+"</tr>"+
+    rows.map(function(r){ return "<tr>"+r.map(function(c){ return "<td>"+c+"</td>"; }).join("")+"</tr>"; }).join("")+"</table></div>";
+}
+function bx(kind, title, body){ return "<div class='box "+kind+"'><h5>"+title+"</h5>"+body+"</div>"; }
+function mono(s){ return "<p class='mono blk'>"+s+"</p>"; }
+function dgm(svg, cap){ return "<figure class='dgm'>"+svg+(cap ? "<figcaption>"+cap+"</figcaption>" : "")+"</figure>"; }
+function svgOpen(w, h, label){
+  return "<svg viewBox='0 0 "+w+" "+h+"' role='img' aria-label='"+label+"' xmlns='http://www.w3.org/2000/svg'>";
+}
+function sTxt(x, y, s, cls, anchor){
+  return "<text x='"+x+"' y='"+y+"' class='"+(cls || "dg-t")+"'"+(anchor ? " text-anchor='"+anchor+"'" : "")+">"+s+"</text>";
+}
+
+/* Monte Carlo: a cumulative-probability bar cut into random-number intervals, with one random number landing on it */
+function dgMonteCarlo(){
+  var segs = [["00",0,0,"0"],["01–20",1,20,"10"],["21–35",21,35,"20"],["36–85",36,85,"30"],["86–97",86,97,"40"],["98–99",98,99,"50"]];
+  var x0 = 30, W = 540, u = W/100, y = 60, hgt = 34, s = svgOpen(600, 150, "Random numbers 00 to 99 cut into intervals, one per demand value");
+  segs.forEach(function(g, i){
+    var x = x0 + g[1]*u, w = (g[2]-g[1]+1)*u;
+    s += "<rect x='"+x+"' y='"+y+"' width='"+w+"' height='"+hgt+"' class='dg-bx"+(i === 3 ? " hl" : "")+"'/>";
+    if(w > 30){ s += sTxt(x+w/2, y+21, g[0], "dg-t", "middle"); }
+    s += sTxt(x+w/2, y+hgt+17, i === 0 ? "0" : g[3], "dg-tb", "middle");
+  });
+  s += sTxt(x0, y-30, "Random number line 00 – 99", "dg-t");
+  s += sTxt(x0, y+hgt+38, "Demand (cakes) read off the interval the random number lands in", "dg-t");
+  var rx = x0 + 48.5*u;
+  s += "<path d='M"+rx+" 18 V"+(y-2)+"' class='dg-ln' marker-end='url(#dgarr)'/>";
+  s += "<defs><marker id='dgarr' viewBox='0 0 8 8' refX='6' refY='4' markerWidth='7' markerHeight='7' orient='auto'><path d='M0 0L8 4L0 8z' fill='var(--accent-ui)'/></marker></defs>";
+  s += sTxt(rx+8, 22, "RN = 48", "dg-tb");
+  return s + "</svg>";
+}
+
+/* EOQ: stock sawtooth (left) and the cost curves with the minimum at the EOQ (right) */
+function dgEOQ(){
+  var s = svgOpen(640, 210, "Left: inventory falls from Q to zero and is refilled instantly. Right: carrying cost rises, ordering cost falls, total cost is lowest where they cross");
+  var ox = 40, oy = 170, top = 40, tw = 80;
+  s += "<path d='M"+ox+" "+(top-14)+" V"+oy+" H"+(ox+3*tw+16)+"' class='dg-ax'/>";
+  s += sTxt(ox+8, top-20, "Stock", "dg-t") + sTxt(ox+3*tw+16, oy+16, "Time", "dg-t", "end");
+  var d = "M"+ox+" "+top;
+  for(var i = 0; i < 3; i++){ d += " L"+(ox+(i+1)*tw)+" "+oy+" L"+(ox+(i+1)*tw)+" "+top; }
+  s += "<path d='"+d.replace(/ L(\d+) (\d+)$/, "")+"' class='dg-ln'/>";
+  s += "<path d='M"+ox+" "+((top+oy)/2)+" H"+(ox+3*tw)+"' class='dg-ds'/>";
+  s += sTxt(ox-6, top+4, "Q", "dg-tb", "end") + sTxt(ox+3*tw+4, (top+oy)/2+4, "Q/2 average", "dg-t");
+  s += "<path d='M"+ox+" "+(oy+8)+" H"+(ox+tw)+"' class='dg-ds'/>" + sTxt(ox+tw/2, oy+24, "T = Q/D", "dg-t", "middle");
+  /* cost curves: carrying = S*q, ordering = S/q, total = their sum, all against q = Q/EOQ */
+  var cx = 400, cy = 170, cw = 215, ch = 130, S = ch/3.6;
+  s += "<path d='M"+cx+" "+(cy-ch-14)+" V"+cy+" H"+(cx+cw+10)+"' class='dg-ax'/>";
+  s += sTxt(cx+8, cy-ch-8, "Cost", "dg-t") + sTxt(cx+cw+10, cy+16, "Order size Q", "dg-t", "end");
+  var carry = "", order = "", tot = "", q, X, j;
+  for(j = 0; j <= 48; j++){
+    q = 0.3 + j*0.0375; X = cx + q*cw/2.2;
+    var cc = S*q, oc = S/q, t = cc + oc;
+    carry += (carry ? " L" : "M") + X.toFixed(1)+" "+(cy-cc).toFixed(1);
+    if(oc <= ch) order += (order ? " L" : "M") + X.toFixed(1)+" "+(cy-oc).toFixed(1);
+    if(t <= ch) tot += (tot ? " L" : "M") + X.toFixed(1)+" "+(cy-t).toFixed(1);
+  }
+  s += "<path d='"+carry+"' class='dg-ln3'/><path d='"+order+"' class='dg-ln2'/><path d='"+tot+"' class='dg-ln'/>";
+  var mx = cx + cw/2.2, my = cy - 2*S;
+  s += "<path d='M"+mx.toFixed(1)+" "+my.toFixed(1)+" V"+cy+"' class='dg-ds'/><circle cx='"+mx.toFixed(1)+"' cy='"+my.toFixed(1)+"' r='4' fill='var(--accent-ui)'/>";
+  s += sTxt(mx, cy+16, "EOQ", "dg-tb", "middle");
+  s += sTxt(cx+cw, cy-S*2.1+18, "carrying (Q/2)·Ch", "dg-t", "end");
+  s += sTxt(cx+cw, cy-ch+22, "ordering (D/Q)·Co", "dg-t", "end");
+  s += sTxt(mx+36, my-22, "total", "dg-tb");
+  return s + "</svg>";
+}
+
+/* Sawtooth families: Model 2 (gradual build-up), Model 3 (shortages) and the reorder-level picture */
+function dgModel2(){
+  var s = svgOpen(560, 190, "Stock builds at rate p minus d during production, then falls at rate d");
+  var ox = 40, oy = 150, top = 40;
+  s += "<path d='M"+ox+" "+(top-14)+" V"+oy+" H540' class='dg-ax'/>" + sTxt(ox-6, top-2, "Stock", "dg-t", "end") + sTxt(540, oy+16, "Time", "dg-t", "end");
+  var d = "M"+ox+" "+oy;
+  for(var i = 0; i < 3; i++){ var b = ox+i*160; d += " L"+(b+50)+" "+top+" L"+(b+160)+" "+oy; }
+  s += "<path d='"+d+"' class='dg-ln'/>";
+  s += "<path d='M"+ox+" "+top+" H"+(ox+50)+"' class='dg-ds'/>" + sTxt(ox-6, top+4, "Imax", "dg-tb", "end");
+  s += sTxt(ox+25, oy+16, "tp", "dg-t", "middle") + sTxt(ox+105, oy+16, "demand only", "dg-t", "middle");
+  s += sTxt(ox+14, top+34, "slope p − d", "dg-t") + sTxt(ox+90, top+34, "slope −d", "dg-t");
+  s += "<path d='M"+ox+" "+(oy+26)+" H"+(ox+160)+"' class='dg-ds'/>" + sTxt(ox+80, oy+40, "one cycle T = Q/D", "dg-t", "middle");
+  return s + "</svg>";
+}
+function dgModel3(){
+  var s = svgOpen(560, 230, "Stock falls to zero, goes negative as demand is back-ordered, and the next delivery clears the back orders first");
+  var ox = 40, oy = 100, top = 28, bot = 190;
+  s += "<path d='M"+ox+" "+(top-12)+" V"+bot+"' class='dg-ax'/><path d='M"+ox+" "+oy+" H540' class='dg-ax'/>";
+  s += sTxt(ox-6, top, "+", "dg-tb", "end") + sTxt(ox-6, bot, "−", "dg-tb", "end") + sTxt(540, oy-6, "Time", "dg-t", "end");
+  var d = "M"+ox+" "+top;
+  for(var i = 0; i < 2; i++){ var b = ox+i*220; d += " L"+(b+130)+" "+oy+" L"+(b+220)+" "+bot+" L"+(b+220)+" "+top; }
+  s += "<rect x='"+(ox+130)+"' y='"+oy+"' width='90' height='"+(bot-oy)+"' class='dg-neg'/>";
+  s += "<path d='"+d.replace(/ L(\d+) (\d+)$/, "")+"' class='dg-ln'/>";
+  s += sTxt(ox+130+45, oy+(bot-oy)/2+4, "back-ordered", "dg-t", "middle");
+  s += sTxt(ox-6, top+14, "S", "dg-tb", "end") + sTxt(ox-6, bot-6, "Q − S", "dg-tb", "end");
+  s += sTxt(ox+65, oy-8, "t₁", "dg-t", "middle") + sTxt(ox+175, oy-8, "t₂", "dg-t", "middle");
+  s += "<path d='M"+ox+" "+(bot+18)+" H"+(ox+220)+"' class='dg-ds'/>" + sTxt(ox+110, bot+34, "T = t₁ + t₂", "dg-t", "middle");
+  return s + "</svg>";
+}
+function dgReorder(){
+  var s = svgOpen(610, 210, "Stock falls from the maximum level; an order is placed at the reorder level and arrives after the lead time just as stock reaches the safety stock");
+  var ox = 50, oy = 170, top = 28;
+  s += "<path d='M"+ox+" "+(top-12)+" V"+oy+" H540' class='dg-ax'/>" + sTxt(ox-6, top-2, "Stock", "dg-t", "end") + sTxt(540, oy+16, "Time", "dg-t", "end");
+  var ss = 130, rl = 84;
+  s += "<path d='M"+ox+" "+top+" L"+(ox+190)+" "+ss+" L"+(ox+190)+" "+top+" L"+(ox+380)+" "+ss+" L"+(ox+380)+" "+top+"' class='dg-ln'/>";
+  s += "<path d='M"+ox+" "+ss+" H520' class='dg-ds'/><path d='M"+ox+" "+rl+" H520' class='dg-ds'/><path d='M"+ox+" "+top+" H520' class='dg-ds'/>";
+  s += sTxt(528, top+4, "Max", "dg-tb") + sTxt(528, rl+4, "ROL", "dg-tb") + sTxt(528, ss+4, "Safety", "dg-tb");
+  var xr = ox + 190*((rl-top)/(ss-top));
+  s += "<path d='M"+xr.toFixed(1)+" "+rl+" V"+(oy)+"' class='dg-ds'/><path d='M"+(ox+190)+" "+(ss)+" V"+oy+"' class='dg-ds'/>";
+  s += "<path d='M"+xr.toFixed(1)+" "+(oy-10)+" H"+(ox+190)+"' class='dg-ln2' marker-end='url(#dgarr2)'/>";
+  s += "<defs><marker id='dgarr2' viewBox='0 0 8 8' refX='6' refY='4' markerWidth='7' markerHeight='7' orient='auto'><path d='M0 0L8 4L0 8z' fill='var(--warn)'/></marker></defs>";
+  s += sTxt((xr+ox+190)/2, oy-16, "lead time", "dg-t", "middle");
+  s += sTxt(xr, rl-8, "order placed", "dg-t", "middle");
+  return s + "</svg>";
+}
+
+/* Stagecoach network with optimal costs f(n) written on each node and the optimal route drawn bold */
+function dgStagecoach(){
+  var N = {A:[40,110],B:[170,40],C:[170,110],D:[170,180],E:[320,40],F:[320,110],G:[320,180],H:[450,70],I:[450,150],J:[570,110]};
+  var arcs = [["A","B",2],["A","C",4],["A","D",3],["B","E",7],["B","F",4],["B","G",6],["C","E",3],["C","F",2],["C","G",4],["D","E",4],["D","F",1],["D","G",5],
+              ["E","H",1],["E","I",4],["F","H",6],["F","I",3],["G","H",3],["G","I",3],["H","J",3],["I","J",4]];
+  var best = {"A-C":1,"A-D":1,"C-E":1,"D-E":1,"D-F":1,"E-H":1,"H-J":1,"F-I":1,"I-J":1};
+  var f = {A:11,B:11,C:7,D:8,E:4,F:7,G:6,H:3,I:4,J:0};
+  var s = svgOpen(620, 215, "Stagecoach network from A to J with the least cost from each node to J");
+  arcs.forEach(function(a){
+    var p = N[a[0]], q = N[a[1]], on = best[a[0]+"-"+a[1]];
+    s += "<path d='M"+p[0]+" "+p[1]+" L"+q[0]+" "+q[1]+"' class='"+(on ? "dg-ln" : "dg-ds")+"'/>";
+    s += "<rect x='"+((p[0]+q[0])/2-8)+"' y='"+((p[1]+q[1])/2-8)+"' width='16' height='15' rx='3' fill='var(--surface)'/>";
+    s += sTxt((p[0]+q[0])/2, (p[1]+q[1])/2+4, a[2], on ? "dg-tb" : "dg-t", "middle");
+  });
+  Object.keys(N).forEach(function(k){
+    s += "<circle cx='"+N[k][0]+"' cy='"+N[k][1]+"' r='15' class='dg-bx hl'/>" + sTxt(N[k][0], N[k][1]+4, k, "dg-tb", "middle");
+    s += sTxt(N[k][0], N[k][1]+30, "f = "+f[k], "dg-t", "middle");
+  });
+  return s + "</svg>";
+}
+
+/* The DP building block: state → decision → return and next state, stage after stage */
+function dgStages(){
+  var s = svgOpen(620, 130, "Each stage takes a state and a decision, earns a return, and hands a new state to the next stage");
+  [0,1,2].forEach(function(i){
+    var x = 20 + i*205;
+    s += "<rect x='"+x+"' y='28' width='150' height='62' rx='8' class='dg-bx"+(i === 1 ? " hl" : "")+"'/>";
+    s += sTxt(x+75, 22, "Stage n"+(i === 0 ? "+1" : (i === 1 ? "" : "−1")), "dg-tb", "middle");
+    s += sTxt(x+75, 52, "state s", "dg-t", "middle") + sTxt(x+75, 72, "decision x → return r", "dg-t", "middle");
+    if(i < 2){ s += "<path d='M"+(x+150)+" 59 H"+(x+205)+"' class='dg-ln' marker-end='url(#dgarr)'/>"; }
+  });
+  s += "<defs><marker id='dgarr' viewBox='0 0 8 8' refX='6' refY='4' markerWidth='7' markerHeight='7' orient='auto'><path d='M0 0L8 4L0 8z' fill='var(--accent-ui)'/></marker></defs>";
+  s += sTxt(310, 116, "f_n(s) = best of { r_n(s, x) + f_(n+1)(next state) }  — work backward from the last stage", "dg-t", "middle");
+  return s + "</svg>";
+}
+
+/* ===== 04 · Module 3 — Simulation ===== */
+var M3_TOPICS = [
+{
+  id:"m3t1", m:"m3", type:"theory", priority:"high", los:[],
+  title:"Simulation — definition, procedure, advantages and limitations",
+  summary:"What simulation is, when it replaces a formula, the steps of a study, and the four-and-four advantages and drawbacks list.",
+  whatIs:"<p>Simulation is a numerical technique for conducting experiments on a model of a real system over an extended period of time. You use it when the mathematics needed to describe the system realistically is too complex to give an analytical solution.</p>",
+  concept:"<div class='box tip'><h5>Definition to open with (Module 3 deck)</h5><p><b>Simulation is a numerical technique for conducting experiments that involves certain types of mathematical and logical relationships necessary to describe the behaviour and structure of a complex real-world system over an extended period of time.</b></p></div>"+
+    "<h4>Why it is used</h4><p>Many managerial problems are too complex for the mathematical techniques known so far. In that situation simulation is applied as a substitute for developing a mathematical model.</p>"+
+    "<h4>Examples in the deck</h4>"+tbl(["Example","What is being simulated"],[["Child's cycling path with signals and crossings","A real traffic system"],["Study of individual and group behaviour","Behaviour of people"],["Aircraft model in a wind tunnel","Flight conditions"],["Financial studies of risky investments","Outcomes under uncertainty"]])+
+    "<h4>Procedure of a simulation study</h4>"+mono("1. Define the problem and the measure of effectiveness\n2. Build the model: variables and the relations between them\n3. Fit a probability distribution to every uncertain variable\n4. Generate random numbers and draw values (run the experiment)\n5. Repeat for enough trials; record the results\n6. Analyse the output and decide")+
+    "<p class='small muted'>Steps 1–6 are the standard textbook procedure. Your deck gives only the seven-step <i>Monte Carlo</i> procedure, which is the next topic.</p>"+
+    "<h4>Advantages and disadvantages — the deck's lists</h4>"+tbl(["Advantages","Disadvantages"],[
+      ["A complicated system can be studied easily","It is <b>not an optimisation process</b>: it does not yield an optimum answer"],
+      ["We can investigate the effect of changing parameters of the model","A good model may be expensive, sometimes years to develop"],
+      ["Assesses the risk of a new policy before implementing it","Only situations involving uncertainty are considered"],
+      ["Easier to apply than pure analytical methods","It evaluates solutions; it does not generate the solution technique"]]),
+  needToKnow:[
+    "Define simulation in the deck's words and say when it is preferred to an analytical model.",
+    "List the steps of a simulation study.",
+    "State four advantages and four disadvantages.",
+    "Name three applications: inventory, queuing and training problems."
+  ],
+  recognition:{
+    clues:["&lsquo;What is simulation?&rsquo; or &lsquo;when is it used?&rsquo; with no data.","&lsquo;Advantages and limitations of simulation&rsquo;.","2–5 marks, no numbers."],
+    wording:["Define simulation. State its advantages and limitations.","Explain the procedure of a simulation study.","Why is simulation used when analytical solutions are not possible?"],
+    firstMove:"Write the definition, then a two-column advantages / disadvantages table. The table is quicker to write and easier to mark than paragraphs.",
+    trap:"Calling simulation an optimisation technique. It only evaluates the alternatives you feed it; the deck lists &lsquo;not an optimisation process&rsquo; as its first disadvantage."
+  },
+  examAnswer:{
+    short:"Definition in one sentence + one reason it is used (analytical solution too complex).",
+    medium:"Definition → 4 advantages and 4 disadvantages in a table → one example (wind tunnel, traffic, risky investment).",
+    long:"Definition → why it replaces analytical models → the procedure of a study → Monte Carlo as its main technique → advantages and disadvantages → applications (inventory, queuing, training)."
+  },
+  mistakes:[
+    "Writing that simulation gives the optimal answer. It gives an estimate from a sample of trials.",
+    "Listing only advantages. Examiners ask for both sides, and the disadvantages carry marks.",
+    "Describing simulation as a replacement for every model. It is used when the analytical model is too complex or does not exist."
+  ],
+  examples:[],
+  practice:[
+    {id:"m3t1p1", d:"easy", marks:4, q:"Define simulation. State two advantages and two limitations.",
+     hint:"Definition first, then a two-column table.",
+     a:"<p><b>Definition.</b> Simulation is a numerical technique for conducting experiments that involves mathematical and logical relationships needed to describe the behaviour and structure of a complex real-world system over an extended period of time.</p>"+tbl(["Advantages","Limitations"],[["Complicated systems can be studied easily","It is not an optimisation process; it gives no optimum answer"],["Risk of a new policy can be assessed before implementing it","A good model can be expensive and slow to develop"]])},
+    {id:"m3t1p2", d:"moderate", marks:5, q:"Why is simulation preferred to an analytical model for a complex queuing or inventory problem? Give one reason it can still mislead.",
+     hint:"Think about what you must assume for a formula, and what a sample of trials can and cannot show.",
+     a:"<p>An analytical model needs the system to fit a standard form (for example Poisson arrivals and exponential service). When the real system does not fit, no formula exists, but you can still describe each variable by a probability distribution and run the experiment many times.</p><p><b>It can mislead</b> because the output is an estimate from a finite sample of random draws: a short run gives an average that can sit well away from the true expected value, and it only evaluates the cases you try; it never tells you which case is best.</p>"}
+  ],
+  questions:[
+    {q:"Define simulation. Explain its advantages and disadvantages.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"Explain the procedure of a simulation study with an example of an application.", marks:5, d:"moderate", priority:"high", source:"predicted"}
+  ]
+},
+{
+  id:"m3t2", m:"m3", type:"theory", priority:"high", los:[],
+  title:"Monte Carlo method and random numbers",
+  summary:"The seven-step Monte Carlo procedure, what a random number is, and how cumulative probability turns into random-number intervals.",
+  whatIs:"<p>Monte Carlo simulation builds a statistical distribution from a series of random numbers. A random number picks a value from a probability distribution, and repeating that pick many times gives months or years of data in minutes on a computer.</p>",
+  concept:"<div class='box tip'><h5>Definition to open with (deck)</h5><p><b>Monte Carlo is a simulation technique in which statistical distribution functions are created by using a series of random numbers.</b> It is used for problems that cannot be represented adequately by mathematical models, or where the model has no analytical solution.</p></div>"+
+    "<h4>The seven steps — learn this order</h4>"+
+    "<ol><li>Identify the <b>measure of effectiveness</b>.</li><li>Decide the <b>variables</b> that influence it; keep the ones that matter.</li><li>Determine the <b>probability distribution</b> of each variable and construct its <b>cumulative</b> distribution.</li><li>Choose a stream of <b>random numbers</b>.</li><li>Treat each random number as a <b>decimal value of the cumulative probability</b> and read off the variable.</li><li>Put the simulated values into the formula for the measure of effectiveness.</li><li><b>Repeat</b> steps 5 and 6 until the sample is large enough for a reliable decision.</li></ol>"+
+    "<h4>Random number</h4><p>A random number is a number in a sequence whose probability of occurrence is the same as that of any other number in the sequence.</p>"+
+    "<h4>From probability to random-number intervals — the one skill the numericals need</h4>"+
+    dgm(dgMonteCarlo(), "Demand distribution of the bakery problem: 0.01, 0.20, 0.15, 0.50, 0.12, 0.02. The random number 48 falls in 36–85, so demand is 30.")+
+    mono("Probability   cumulative   random-number interval (two digits)\n0.01          0.01         00\n0.20          0.21         01 – 20\n0.15          0.36         21 – 35\n0.50          0.86         36 – 85\n0.12          0.98         86 – 97\n0.02          1.00         98 – 99")+
+    "<p>Rule: the interval for a value starts one above the previous cumulative figure and ends at its own cumulative figure, written in as many digits as the probabilities have decimal places (two decimals → two-digit random numbers 00–99; three decimals → 000–999).</p>"+
+    "<div class='box warning'><h5>Use the convention your question uses</h5><p>Some books number the intervals 01–100 with 00 standing for 100. The deck's problems use two-digit numbers, and the interval method above assumes 00–99. If a question supplies its own interval table, use that table.</p></div>"+
+    "<h4>Where it is used</h4><p>Inventory problems, queuing problems and training problems (deck). Random numbers come from a table or a computer generator (for example a linear congruential formula); in an exam you are always given the sequence.</p>",
+  needToKnow:[
+    "State the Monte Carlo definition and the seven steps in order.",
+    "Define a random number.",
+    "Build a cumulative distribution and assign random-number intervals.",
+    "Explain why more trials give a more reliable answer."
+  ],
+  recognition:{
+    clues:["&lsquo;Monte Carlo&rsquo; named.","&lsquo;Random numbers&rsquo; given as a list.","A probability table for demand, production or service time."],
+    wording:["Explain the Monte Carlo method with its steps.","What is a random number?","Using the following random numbers, simulate…"],
+    firstMove:"Write the cumulative-probability column next to the probability column and mark the random-number interval for every value before touching a single random number.",
+    trap:"Assigning intervals from the plain probability instead of the cumulative one, so that the intervals overlap or do not cover 00–99."
+  },
+  examAnswer:{
+    short:"Definition (distributions built from random numbers) + one line on use.",
+    medium:"Definition → seven steps as a numbered list → one worked cumulative-interval mini table.",
+    long:"Definition → seven steps → random number definition → interval assignment illustrated with a small distribution → uses (inventory, queuing, training) → advantages and limitations."
+  },
+  mistakes:[
+    "Starting an interval at the cumulative value instead of one above it (0.21 → 21, not 20, when the previous interval ended at 20).",
+    "Intervals that do not end at 99 (or 00 for 100). If the last interval is not 99 the cumulative column has an arithmetic slip.",
+    "Reading the random number as a probability of 0.48 instead of locating it in an interval."
+  ],
+  examples:[],
+  practice:[
+    {id:"m3t2p1", d:"easy", marks:3, q:"A machine breaks down 0 times a week with probability 0.30, once with 0.45, twice with 0.20 and three times with 0.05. Assign two-digit random-number intervals.",
+     hint:"Cumulative first: 0.30, 0.75, 0.95, 1.00.",
+     a:mono("Breakdowns  Probability  Cumulative  Interval\n0           0.30         0.30        00 – 29\n1           0.45         0.75        30 – 74\n2           0.20         0.95        75 – 94\n3           0.05         1.00        95 – 99")+"<p>Check: the last interval ends at 99 and the widths are 30, 45, 20 and 5, matching the probabilities.</p>"},
+    {id:"m3t2p2", d:"moderate", marks:4, q:"Why is the result of a Monte Carlo run with 10 random numbers not reliable, and what is done about it?",
+     hint:"Compare a simulated mean with the theoretical mean of the distribution.",
+     a:"<p>With 10 draws the sample mean is itself random. In the bakery problem the simulated mean demand is 22 cakes, but the distribution's expected demand is 0.01×0 + 0.20×10 + 0.15×20 + 0.50×30 + 0.12×40 + 0.02×50 = <b>25.8</b>. The gap is sampling error.</p><p><b>Remedy:</b> step 7 of the method: repeat until the sample is large enough. The error shrinks as the number of trials grows.</p>"}
+  ],
+  questions:[
+    {q:"Explain the Monte Carlo simulation method and list its steps.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"What is a random number? How are random numbers used to simulate a probability distribution?", marks:4, d:"moderate", priority:"high", source:"predicted"}
+  ]
+},
+{
+  id:"m3t3", m:"m3", type:"problem-solving", priority:"high", los:[],
+  title:"Monte Carlo simulation — worked procedure",
+  summary:"Cumulative column, random-number intervals, a table of trials, then the average. The two deck problems (bakery and mopeds) solved in full.",
+  whatIs:"<p>Every Monte Carlo numerical has the same four-column table: <b>trial → random number → value read from the intervals → quantity you are asked about</b>. The skill is the interval table; the rest is arithmetic.</p>",
+  concept:dgm(dgMonteCarlo(), "The mapping step: a random number lands in one interval and gives one value.")+
+    "<h4>The routine</h4>"+mono("1. Cumulative probability column\n2. Random-number intervals (00-99)\n3. For each random number: find its interval, read the value\n4. Compute the asked quantity for every trial\n5. Total and average over the trials")+
+    "<div class='box tip'><h5>What the questions ask for</h5><p>Average demand or production · stock left over or <b>shortage</b> (compare each simulated value with the stock held) · empty space and waiting units (compare with a fixed capacity).</p></div>",
+  needToKnow:[
+    "Build the interval table from a probability table.",
+    "Run a table of trials from a given random-number list, in the order given.",
+    "Compare each simulated value with a fixed stock or capacity to get excess and shortage.",
+    "Report the average from the simulated sample, not the theoretical mean."
+  ],
+  recognition:{
+    clues:["A probability table <b>and</b> a list of random numbers.","&lsquo;Simulate for the next n days&rsquo;.","Asks for average demand, stock situation, empty space or waiting items."],
+    wording:["Simulate the demand for the next 10 days using the following random numbers.","Find the average number of mopeds waiting in the factory and the average empty space on the lorry.","Estimate the daily average demand on the basis of the simulated data."],
+    firstMove:"Draw the three-column table (value, probability, cumulative) and add a fourth column of random-number intervals. Then build the trial table.",
+    trap:"Using the random numbers out of order, or reusing one. Take them in the order given, one per trial."
+  },
+  examAnswer:{
+    short:"Interval table + the simulated values and the average.",
+    medium:"Cumulative + interval table → trial table → totals and averages → one line interpreting the result.",
+    long:"Full procedure with the seven steps named, the interval table, the trial table, the result, and a remark that the answer is a sample estimate."
+  },
+  mistakes:[
+    "Dividing the total by the wrong count. Average over the number of trials (the number of random numbers).",
+    "Counting shortage as a negative excess. Excess and shortage are separate columns; use max(stock − demand, 0) and max(demand − stock, 0).",
+    "Quoting the theoretical expected value as the answer. The question asks for the simulated average."
+  ],
+  examples:[
+    {id:"m3t3e1", title:"Bakery demand — deck Problem 2",
+     q:"Daily demand for a cake is 0, 10, 20, 30, 40, 50 with probabilities 0.01, 0.20, 0.15, 0.50, 0.12, 0.02. Random numbers: 48, 78, 19, 51, 56, 77, 15, 14, 68, 09. Simulate demand for 10 days, find the stock situation if 30 cakes are made every day, and the average daily demand.",
+     body:tbl(["Demand","Probability","Cumulative","Interval"],[["0","0.01","0.01","00"],["10","0.20","0.21","01 – 20"],["20","0.15","0.36","21 – 35"],["30","0.50","0.86","36 – 85"],["40","0.12","0.98","86 – 97"],["50","0.02","1.00","98 – 99"]]),
+     steps:["Interval table above; every interval ends at 99.",
+       tbl(["Day","RN","Demand","Made","Unsold","Short"],[["1","48","30","30","0","0"],["2","78","30","30","0","0"],["3","19","10","30","20","0"],["4","51","30","30","0","0"],["5","56","30","30","0","0"],["6","77","30","30","0","0"],["7","15","10","30","20","0"],["8","14","10","30","20","0"],["9","68","30","30","0","0"],["10","09","10","30","20","0"],["<b>Total</b>","","<b>220</b>","300","<b>80</b>","<b>0</b>"]]),
+       "Average daily demand = 220 ÷ 10 = <b>22 cakes</b>.",
+       "Stock situation: demand never exceeds 30, so there is no shortage. Cakes are left over on four days (days 3, 7, 8 and 10), 20 each, 80 in total."],
+     answer:"<b>Average demand = 22 cakes a day.</b> No shortage in 10 days; 80 cakes left unsold over the period (20 on each of 4 days).",
+     why:"The expected demand of the distribution is 25.8, so 22 is lower only because 10 trials is a small sample.",
+     trap:"Random number 09 falls in 01–20 (demand 10), not in 00. Only the single number 00 gives demand 0."},
+    {id:"m3t3e2", title:"Moped production — deck Problem 1",
+     q:"Daily production of mopeds is 196 to 204 with probabilities 0.05, 0.09, 0.12, 0.14, 0.20, 0.15, 0.11, 0.08, 0.06. A lorry carries 200. Using random numbers 82, 89, 78, 24, 53, 61, 18, 45, 04, 23, 50, 77, 27, 54, 10, find the average number of mopeds waiting in the factory and the average number of empty spaces on the lorry.",
+     body:tbl(["Production","Prob.","Cumulative","Interval"],[["196","0.05","0.05","00 – 04"],["197","0.09","0.14","05 – 13"],["198","0.12","0.26","14 – 25"],["199","0.14","0.40","26 – 39"],["200","0.20","0.60","40 – 59"],["201","0.15","0.75","60 – 74"],["202","0.11","0.86","75 – 85"],["203","0.08","0.94","86 – 93"],["204","0.06","1.00","94 – 99"]]),
+     steps:[tbl(["Day","RN","Output","Waiting (output − 200, if positive)","Empty space (200 − output, if positive)"],[["1","82","202","2","0"],["2","89","203","3","0"],["3","78","202","2","0"],["4","24","198","0","2"],["5","53","200","0","0"],["6","61","201","1","0"],["7","18","198","0","2"],["8","45","200","0","0"],["9","04","196","0","4"],["10","23","198","0","2"],["11","50","200","0","0"],["12","77","202","2","0"],["13","27","199","0","1"],["14","54","200","0","0"],["15","10","197","0","3"],["<b>Total</b>","","","<b>10</b>","<b>14</b>"]]),
+       "Average waiting = 10 ÷ 15 = <b>0.67</b> mopeds a day.",
+       "Average empty space = 14 ÷ 15 = <b>0.93</b> spaces a day."],
+     answer:"<b>About 0.67 mopeds wait per day and 0.93 lorry spaces are empty per day</b> (10 and 14 over 15 days).",
+     trap:"Waiting and empty space are measured against the lorry capacity of 200, one day at a time. Do not net a day's excess against another day's empty space."}
+  ],
+  practice:[
+    {id:"m3t3p1", d:"easy", marks:5, q:"A newsagent's daily demand for a paper is 3, 4, 5, 6 with probabilities 0.10, 0.30, 0.40, 0.20. He stocks 5 papers a day. Simulate six days with random numbers 38, 91, 17, 62, 05, 84. Find the papers unsold, the sales lost, and the average demand.",
+     hint:"Cumulative 0.10, 0.40, 0.80, 1.00 gives intervals 00–09, 10–39, 40–79, 80–99.",
+     a:tbl(["Day","RN","Demand","Unsold","Lost"],[["1","38","4","1","0"],["2","91","6","0","1"],["3","17","4","1","0"],["4","62","5","0","0"],["5","05","3","2","0"],["6","84","6","0","1"]])+"<p>Unsold = 4 papers, sales lost = 2 papers, average demand = 28 ÷ 6 = <b>4.67</b> (theoretical expected demand is 4.70).</p>"},
+    {id:"m3t3p2", d:"moderate", marks:5, q:"Using the moped problem's distribution, find the theoretical mean daily production and compare it with the simulated mean of the 15 days.",
+     hint:"Simulated mean = (total output) ÷ 15. Output over 15 days = 15 × 200 + 10 − 14.",
+     a:"<p>Theoretical mean = Σ value × probability = 196(0.05) + 197(0.09) + 198(0.12) + 199(0.14) + 200(0.20) + 201(0.15) + 202(0.11) + 203(0.08) + 204(0.06) = <b>200.00</b>.</p><p>Simulated mean = 200 + (10 − 14)/15 = <b>199.73</b>. The two are close but not equal, which is the sampling error of a 15-trial run.</p>"}
+  ],
+  questions:[
+    {q:"Using the given random numbers, simulate the demand for the next 10 days and estimate the average daily demand.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"Simulate the daily production of a factory against a fixed lorry capacity and find the average waiting stock and empty space.", marks:5, d:"moderate", priority:"high", source:"source"}
+  ]
+},
+{
+  id:"m3t4", m:"m3", type:"problem-solving", priority:"medium", los:[],
+  title:"Simulating a queue or appointment system",
+  summary:"Two random draws per customer, a start time, a waiting time and an idle time. The dentist's clinic (deck Problem 3) in full.",
+  whatIs:"<p>When customers wait for a single server, simulation tracks <b>arrival time, service time, start of service, waiting time and server idle time</b> for one customer after another. Each uncertain quantity gets its own interval table.</p>",
+  concept:mono("start of service  = later of (arrival time, time the server becomes free)\nwaiting time      = start of service - arrival time\nserver idle time  = start of service - time the server became free (if positive)\nend of service    = start + service time")+
+    "<div class='box tip'><h5>State your interval assumption</h5><p>When the question lists categories without telling you the order of the intervals, assign them <b>in the order the table lists them</b> and say so. The numbers depend on that choice.</p></div>",
+  needToKnow:[
+    "Draw the customer table with start, waiting, end and idle columns.",
+    "Generate service times from the cumulative distribution.",
+    "Compute average waiting time and total server idle time.",
+    "State assumptions about the order of intervals and the arrival schedule."
+  ],
+  recognition:{
+    clues:["Fixed appointment or arrival times and a random service time.","&lsquo;Average waiting time&rsquo; and &lsquo;idleness of the doctor / server&rsquo;.","Random numbers given for service time (and sometimes for arrivals)."],
+    wording:["Simulate the clinic for four hours and determine the average waiting time for patients and the idleness of the doctor.","Simulate the arrival and service of five customers and find the average waiting time."],
+    firstMove:"Write the interval table, then the column headings: arrival | RN | service | start | wait | end | idle.",
+    trap:"Letting a patient start at his arrival time when the doctor is still busy. Start = the later of arrival and the doctor's free time."
+  },
+  examAnswer:{
+    short:"The table of patients with waiting times and the two averages asked for.",
+    medium:"Interval table → customer table → average waiting time and total idle time → one-line interpretation.",
+    long:"Assumptions → interval table → full table → average waiting, idle time and utilisation → comment on the system (the clinic is over-booked)."
+  },
+  mistakes:[
+    "Starting the clock at 0 when the question starts at 8 a.m. Write times as clock times or minutes after opening, consistently.",
+    "Forgetting that the doctor is idle only when the next patient has not yet arrived.",
+    "Dividing total waiting by the number of patients who waited, not by all patients."
+  ],
+  examples:[
+    {id:"m3t4e1", title:"Dentist's clinic — deck Problem 3",
+     q:"A dentist books 30-minute appointments from 8 a.m. Work and probabilities: filling 45 min (0.40), crown 60 (0.15), cleaning 15 (0.15), extraction 45 (0.10), check-up 15 (0.20). Patients arrive exactly on schedule. Simulate four hours with random numbers 40, 82, 11, 34, 25, 66, 17, 79. Find the average waiting time and the doctor's idle time.",
+     body:tbl(["Category","Time","Prob.","Cumulative","Interval"],[["Filling","45","0.40","0.40","00 – 39"],["Crown","60","0.15","0.55","40 – 54"],["Cleaning","15","0.15","0.70","55 – 69"],["Extraction","45","0.10","0.80","70 – 79"],["Check-up","15","0.20","1.00","80 – 99"]]),
+     steps:["Four hours at one patient every 30 minutes gives <b>8 patients</b>, arriving at 8:00, 8:30, … 11:30.",
+       tbl(["Patient","Arrives","RN","Work","Time","Starts","Wait","Ends","Idle"],[["1","8:00","40","Crown","60","8:00","0","9:00","0"],["2","8:30","82","Check-up","15","9:00","30","9:15","0"],["3","9:00","11","Filling","45","9:15","15","10:00","0"],["4","9:30","34","Filling","45","10:00","30","10:45","0"],["5","10:00","25","Filling","45","10:45","45","11:30","0"],["6","10:30","66","Cleaning","15","11:30","60","11:45","0"],["7","11:00","17","Filling","45","11:45","45","12:30","0"],["8","11:30","79","Extraction","45","12:30","60","13:15","0"]]),
+       "Total waiting = 0 + 30 + 15 + 30 + 45 + 60 + 45 + 60 = 285 minutes. Average = 285 ÷ 8 = <b>35.6 minutes</b>.",
+       "The doctor starts the next patient the moment the last one ends every time, so the idle time is <b>0</b>."],
+     answer:"<b>Average waiting time ≈ 35.6 minutes; the doctor is never idle</b> (the last patient finishes at 1:15 p.m.).",
+     why:"Mean work time is 0.4×45 + 0.15×60 + 0.15×15 + 0.1×45 + 0.2×15 = 36.75 minutes per patient, longer than the 30-minute slot, so the queue builds up through the morning.",
+     trap:"Assigning the intervals in a different order of the categories changes every answer. Use the order the question lists the categories, and say so."}
+  ],
+  practice:[
+    {id:"m3t4p1", d:"moderate", marks:6, q:"Customers arrive at a counter with inter-arrival times of 1, 2, 3 minutes (probabilities 0.2, 0.5, 0.3) and are served in 2 or 3 minutes (probabilities 0.6, 0.4). The first customer arrives at time 0. Inter-arrival random numbers for customers 2–5 are 63, 12, 88, 41; service random numbers for customers 1–5 are 27, 75, 44, 90, 08. Find the average waiting time and the server's idle time.",
+     hint:"Inter-arrival intervals: 1 → 00–19, 2 → 20–69, 3 → 70–99. Service: 2 → 00–59, 3 → 60–99.",
+     a:tbl(["Cust.","Arrives","Service","Starts","Wait","Ends"],[["1","0","2","0","0","2"],["2","2","3","2","0","5"],["3","3","2","5","2","7"],["4","6","3","7","1","10"],["5","8","2","10","2","12"]])+"<p>Total waiting = 5 minutes, average = <b>1 minute</b>. The server is idle for <b>0</b> minutes after time 0 (busy 12 of the 12 minutes).</p>"}
+  ],
+  questions:[
+    {q:"Simulate a single-server clinic for four hours and find the average waiting time of patients and the idle time of the doctor.", marks:8, d:"hard", priority:"medium", source:"source"}
+  ]
+}
+];
+
+/* ===== 05 · Module 4 — Dynamic Programming =====
+   The folder holds no teaching material for this module. Everything below follows the standard textbook method
+   (Hillier & Lieberman; Taha) and the six headings of the syllabus. Check it against your teacher's slides if they arrive. */
+var M4_NOTE = bx("warning","No lecture material for this module","<p>The folder has nothing on Dynamic Programming. This topic is written from the standard textbook method and the syllabus headings. Treat the <b>method</b> as reliable; check the <b>wording and the question style</b> against your teacher's slides.</p>");
+var M4_TOPICS = [
+{
+  id:"m4t1", m:"m4", type:"theory", priority:"high", los:[],
+  title:"Characteristics of dynamic programming",
+  summary:"Stages, states, decisions, the principle of optimality and the recursion. The vocabulary every DP answer is written in.",
+  whatIs:"<p>Dynamic programming solves a problem that can be cut into a sequence of <b>stages</b> by solving one stage at a time, so that a decision at every stage is chosen with the future in mind. It does not have one formula; it has one <i>idea</i>.</p>",
+  concept:M4_NOTE+dgm(dgStages(), "The building block of every dynamic programming problem.")+
+    "<h4>The five characteristics</h4>"+tbl(["Characteristic","Meaning"],[
+      ["<b>Stages</b>","The problem splits into steps; a decision is made at each (cities, months, projects, items)."],
+      ["<b>States</b>","What you must know at a stage to decide it: money left, capacity left, node reached. Defined so the past does not matter."],
+      ["<b>Decision (policy) variable</b>","What you choose at a stage; it moves the system to a state of the next stage."],
+      ["<b>Return function</b>","The cost or profit of a stage as a function of state and decision."],
+      ["<b>Recursion</b>","f<sub>n</sub>(s) = best over x of { r<sub>n</sub>(s, x) + f<sub>n+1</sub>(next state) }, solved from the last stage back to the first."]])+
+    "<div class='box tip'><h5>Principle of optimality (Bellman)</h5><p><b>An optimal policy has the property that, whatever the initial state and decision, the remaining decisions must form an optimal policy for the state that results.</b> This is why you may solve the last stage first and never revisit it.</p></div>"+
+    "<h4>Backward and forward recursion</h4><p><b>Backward</b>: start from the last stage, ending at the first (stagecoach, capital budgeting, cargo). <b>Forward</b>: start at the first stage (employment smoothing). Both give the same optimum; the exam question usually fixes which is convenient.</p>"+
+    "<h4>Why it beats listing every route</h4><p>The stagecoach network of the next topic has 18 routes. DP evaluates each arc once. The saving grows enormously with the number of stages.</p>"+
+    "<h4>The six problems on your syllabus</h4>"+tbl(["Problem","Stage","State","Decision"],[
+      ["Stagecoach / shortest path","Step along the route","Node you are at","Next node"],
+      ["Cargo loading","Item type","Capacity left","How many units of the item"],
+      ["Capital budgeting","Project / plant","Funds left","Money allotted"],
+      ["Reliability","Component","Budget left","Number of parallel copies"],
+      ["Employment smoothing","Month","Workforce last month","Workforce this month"]]),
+  needToKnow:[
+    "Define stage, state, decision and return function.",
+    "State the principle of optimality.",
+    "Write the general backward recursion.",
+    "Identify stage, state and decision in each of the syllabus problems."
+  ],
+  recognition:{
+    clues:["&lsquo;Characteristics&rsquo;, &lsquo;principle of optimality&rsquo;, &lsquo;features of DP&rsquo;.","No data given, 4–5 marks.","&lsquo;Explain with an example&rsquo;."],
+    wording:["State the characteristics of a dynamic programming problem.","Explain Bellman's principle of optimality.","Define stage, state and return function."],
+    firstMove:"List the five characteristics as a table, then state the principle of optimality in one sentence, then give the recursion.",
+    trap:"Defining a state as &lsquo;a stage&rsquo;. A stage is <i>when</i> you decide; a state is <i>what you know</i> when you decide."
+  },
+  examAnswer:{
+    short:"Principle of optimality in one sentence + stage / state / decision defined.",
+    medium:"The five characteristics as a table → principle of optimality → general recursion formula.",
+    long:"Characteristics → principle of optimality → recursion with backward and forward forms → a small example (stagecoach) → the six problem types."
+  },
+  mistakes:[
+    "Stating the principle of optimality as &lsquo;always take the cheapest next step&rsquo;. That is a greedy rule, and DP exists because greedy fails.",
+    "Writing a recursion without naming the stage and state it is a function of.",
+    "Calling the first stage of a backward solution &lsquo;stage 1&rsquo; and the last &lsquo;stage n&rsquo; inconsistently inside one answer."
+  ],
+  examples:[],
+  practice:[
+    {id:"m4t1p1", d:"easy", marks:4, q:"State Bellman's principle of optimality and say why it lets us solve a multistage problem backward.",
+     hint:"The remaining decisions must be optimal for the state that results.",
+     a:"<p><b>Principle.</b> An optimal policy has the property that, whatever the initial state and initial decision, the remaining decisions must constitute an optimal policy with regard to the state resulting from the first decision.</p><p><b>Why backward works.</b> The best way to finish from a state does not depend on how you arrived there. So you can compute and store the best value from every state of the last stage, then use those values to decide the stage before, and so on back to the start, never recomputing a later stage.</p>"},
+    {id:"m4t1p2", d:"moderate", marks:5, q:"For a capital-budgeting problem with 4 projects and a budget of 10 lakh, name the stage, state, decision and the recursion.",
+     hint:"A project is a stage; money left is the state.",
+     a:"<p><b>Stage</b>: a project (4 stages). <b>State</b> s: money still unallotted when this project is reached (0 to 10). <b>Decision</b> x: money allotted to this project (0 ≤ x ≤ s). <b>Return</b> R<sub>n</sub>(x): profit of project n for an allotment x.</p><p><b>Recursion</b>: f<sub>n</sub>(s) = max over x of { R<sub>n</sub>(x) + f<sub>n+1</sub>(s − x) }, with f<sub>5</sub>(s) = 0. The answer is f<sub>1</sub>(10).</p>"}
+  ],
+  questions:[
+    {q:"Explain the characteristics of a dynamic programming problem and state the principle of optimality.", marks:5, d:"moderate", priority:"high", source:"predicted"},
+    {q:"Define stage, state, decision variable and return function with an example.", marks:4, d:"easy", priority:"high", source:"predicted"}
+  ]
+},
+{
+  id:"m4t2", m:"m4", type:"problem-solving", priority:"high", los:[],
+  title:"Stagecoach problem — shortest path by dynamic programming",
+  summary:"A network in stages, solved from the destination backward with one table per stage. Cost 11 by three equally good routes.",
+  whatIs:"<p>A traveller goes from A to J in four moves. Each arc has a cost (or distance). The shortest route is found by working back from J and recording, for every node, the least cost to finish and the node to go to next.</p>",
+  concept:M4_NOTE+dgm(dgStagecoach(), "The network, the least cost to J from each node (f), and the optimal routes in bold.")+
+    "<h4>The recursion</h4>"+mono("f(node) = min over next nodes of { arc cost + f(next node) },   f(J) = 0\nStage k = how many moves are still left.")+
+    "<div class='box tip'><h5>Layout that scores</h5><p>One table per stage: rows are the nodes of the stage, columns are the possible next nodes, each cell is <b>arc + f(next)</b>, then the minimum and the node chosen.</p></div>",
+  needToKnow:[
+    "Set up stages from the destination backward.",
+    "Fill a table of arc + f(next) for every node.",
+    "Trace the optimal route(s) forward from the start, using the recorded choices.",
+    "Spot ties and report every optimal route."
+  ],
+  recognition:{
+    clues:["A network drawn left to right in columns of nodes.","&lsquo;Shortest path&rsquo;, &lsquo;minimum cost route&rsquo;, &lsquo;stage-coach&rsquo;.","The method named: dynamic programming."],
+    wording:["Find the shortest route from A to J by dynamic programming.","A salesman travels from city 1 to city 10; find the minimum cost route."],
+    firstMove:"Label stages by moves remaining, write f(J) = 0, and make a table for the stage just before the destination.",
+    trap:"Working forward and choosing the cheapest first arc (a greedy route). In this network that gives A–B–F–I–J = 13, not the optimum 11."
+  },
+  examAnswer:{
+    short:"The f-values for every node and the optimal route with its cost.",
+    medium:"The recursion → one table per stage → the optimal route(s) traced from the start.",
+    long:"Stage / state definitions → recursion → full tables → the route(s) → a sentence on why the principle of optimality justifies the backward solution."
+  },
+  mistakes:[
+    "Adding the arc cost to f of the <i>current</i> node instead of f of the node you are going to.",
+    "Choosing the minimum arc at each step instead of arc + f(next).",
+    "Stopping at the first optimal route when there is a tie: the answer should list them all."
+  ],
+  examples:[
+    {id:"m4t2e1", title:"A to J — four stages, backward recursion",
+     q:"Arc costs: A→B 2, C 4, D 3 · B→E 7, F 4, G 6 · C→E 3, F 2, G 4 · D→E 4, F 1, G 5 · E→H 1, I 4 · F→H 6, I 3 · G→H 3, I 3 · H→J 3 · I→J 4. Find the minimum cost route from A to J.",
+     steps:["<b>One move left</b> (H, I): f(H) = 3 (→J), f(I) = 4 (→J).",
+       "<b>Two moves left</b>:"+tbl(["Node","→H","→I","f","Go to"],[["E","1 + 3 = 4","4 + 4 = 8","<b>4</b>","H"],["F","6 + 3 = 9","3 + 4 = 7","<b>7</b>","I"],["G","3 + 3 = 6","3 + 4 = 7","<b>6</b>","H"]]),
+       "<b>Three moves left</b>:"+tbl(["Node","→E","→F","→G","f","Go to"],[["B","7 + 4 = 11","4 + 7 = 11","6 + 6 = 12","<b>11</b>","E or F"],["C","3 + 4 = 7","2 + 7 = 9","4 + 6 = 10","<b>7</b>","E"],["D","4 + 4 = 8","1 + 7 = 8","5 + 6 = 11","<b>8</b>","E or F"]]),
+       "<b>Four moves left</b>:"+tbl(["Node","→B","→C","→D","f","Go to"],[["A","2 + 11 = 13","4 + 7 = 11","3 + 8 = 11","<b>11</b>","C or D"]]),
+       "Trace from A: <b>A→C→E→H→J</b>, <b>A→D→E→H→J</b> and <b>A→D→F→I→J</b>, each of cost 11."],
+     answer:"<b>Minimum cost = 11</b>, by three routes: A–C–E–H–J, A–D–E–H–J, A–D–F–I–J.",
+     why:"The greedy route A–B–F–I–J costs 2 + 4 + 3 + 4 = 13. The cheapest first arc (A→B, cost 2) leads into the most expensive part of the network.",
+     trap:"B has a tie (E or F), but B is not on any optimal route, so the tie does not matter for the answer."}
+  ],
+  practice:[
+    {id:"m4t2p1", d:"easy", marks:5, q:"Arcs: O→A 3, O→B 5 · A→C 4, A→D 6 · B→C 2, B→D 3 · C→T 5 · D→T 2. Find the shortest route from O to T by dynamic programming.",
+     hint:"One move left: C and D. Then A and B. Then O.",
+     a:tbl(["Node","Options (arc + f)","f","Go to"],[["C","5 + 0","5","T"],["D","2 + 0","2","T"],["A","4 + 5 = 9, 6 + 2 = 8","8","D"],["B","2 + 5 = 7, 3 + 2 = 5","5","D"],["O","3 + 8 = 11, 5 + 5 = 10","<b>10</b>","B"]])+"<p>Route <b>O→B→D→T</b>, cost <b>10</b>.</p>"},
+    {id:"m4t2p2", d:"moderate", marks:3, q:"In the A–J network, a driver always takes the cheapest arc out of the node he is at. What route and cost does he get, and why is it not optimal?",
+     hint:"Follow the smallest arc from each node.",
+     a:"<p>A→B (2), B→F (4), F→I (3), I→J (4): cost <b>13</b>. The optimum is 11.</p><p>Cheapest-next-arc looks only one step ahead. The principle of optimality needs the <i>cost to finish</i> from the next node as well as the arc cost, which is what f(next) supplies.</p>"}
+  ],
+  questions:[
+    {q:"Find the shortest route in the given network from the origin to the destination using dynamic programming.", marks:8, d:"moderate", priority:"high", source:"predicted"}
+  ]
+},
+{
+  id:"m4t3", m:"m4", type:"problem-solving", priority:"medium", los:[],
+  title:"Cargo loading (knapsack) by dynamic programming",
+  summary:"Stage = item type, state = capacity left, decision = how many units. Maximise the value that fits.",
+  whatIs:"<p>A vessel of capacity W can carry several item types with weight w<sub>i</sub> and value v<sub>i</sub>. Choose the number of units of each, x<sub>i</sub>, to maximise total value without exceeding the capacity.</p>",
+  concept:M4_NOTE+mono("Maximise   Σ v_i x_i      subject to   Σ w_i x_i ≤ W,   x_i integer ≥ 0\nf_i(s) = max over x of { v_i x + f_(i+1)(s − w_i x) },   x = 0, 1, … , floor(s / w_i)")+
+    "<p>For the version where each item is available <b>once only</b> (0–1 knapsack) restrict x to 0 or 1.</p>",
+  needToKnow:[
+    "State the recursion with stage, state and decision named.",
+    "Fill one table per item over capacities 0 to W.",
+    "Trace the decisions back to read x for every item.",
+    "Know the 0–1 restriction."
+  ],
+  recognition:{
+    clues:["A capacity (tonnes, volume) and a list of items with weight and value.","&lsquo;Cargo loading&rsquo;, &lsquo;knapsack&rsquo;, &lsquo;fly-away kit&rsquo;.","Whole units only."],
+    wording:["A ship can carry 5 tonnes; find the most valuable load by dynamic programming.","How many units of each item should be loaded to maximise the total return?"],
+    firstMove:"Write the problem as: maximise Σ v x subject to Σ w x ≤ W, then the recursion, then a table with capacity 0…W across the top.",
+    trap:"Allowing fractions of an item. DP loads whole units unless the question says otherwise."
+  },
+  examAnswer:{
+    short:"Formulation, recursion, and the optimal load with its value.",
+    medium:"Formulation → recursion → table for each item → backward trace of x.",
+    long:"As medium, with stages, states and decisions defined and a sentence on why the best value per tonne is not enough."
+  },
+  mistakes:[
+    "Loading by best value per tonne alone. It can work on some data, but fails when the best-ratio item leaves capacity that nothing else fills. DP checks every combination.",
+    "Tables that stop at the capacity of the first item instead of running 0 to W.",
+    "Forgetting the zero-load decision x = 0."
+  ],
+  examples:[
+    {id:"m4t3e1", title:"Three item types, capacity 5",
+     q:"Item 1: weight 2, value 65. Item 2: weight 3, value 80. Item 3: weight 1, value 30. Capacity 5. Load whole units to maximise value.",
+     steps:["Work item 3 first (last stage), then item 2, then item 1. Entry = best value for capacity s.",
+       tbl(["Capacity s","0","1","2","3","4","5"],[["f₃(s), item 3 only: x₃","0 (0)","30 (1)","60 (2)","90 (3)","120 (4)","150 (5)"],["f₂(s), items 3,2: x₂","0 (0)","30 (0)","60 (0)","90 (0)","120 (0)","150 (0)"],["f₁(s), items 3,2,1: x₁","0 (0)","30 (0)","65 (1)","95 (1)","130 (2)","<b>160</b> (2)"]]),
+       "Item 2 is never loaded: three tonnes of item 2 give 80, but three tonnes of item 3 give 90, and 2 + 1 tonnes of items 1 and 3 give 95.",
+       "At capacity 5: x₁ = 2 (value 130, 4 tonnes used), leaving capacity 1, which f₂(1) = 30 fills with one unit of item 3 (x₃ = 1).",
+       "Check: 2×65 + 0×80 + 1×30 = 160 and weight 2×2 + 1 = 5."],
+     answer:"<b>Load 2 units of item 1 and 1 unit of item 3: maximum value 160</b>, using exactly 5 tonnes.",
+     trap:"The table entry shows the decision in brackets. Read the decision at capacity 5 in the <i>last</i> row, subtract its weight, then read the row above."}
+  ],
+  practice:[
+    {id:"m4t3p1", d:"moderate", marks:6, q:"Capacity 7. Item A: weight 2, value 20. Item B: weight 3, value 35. Item C: weight 4, value 50. Find the best whole-unit load.",
+     hint:"Item values per unit weight are 10, 11.67 and 12.5, but check combinations that fill 7 exactly.",
+     a:"<p>Combinations that fit: C+B (weight 7, value <b>85</b>), C+A (6, 70), B+B+A (8: too heavy), A×3 (6, 60), B+A+A (7, 75). The best is <b>one unit of B and one of C, value 85</b>.</p><p>By tables: f(7) = 85 with x<sub>C</sub> = 1, remaining capacity 3 filled by one B.</p>"}
+  ],
+  questions:[
+    {q:"A vessel has capacity W. Determine the most valuable cargo using dynamic programming.", marks:8, d:"moderate", priority:"medium", source:"predicted"}
+  ]
+},
+{
+  id:"m4t4", m:"m4", type:"problem-solving", priority:"medium", los:[],
+  title:"Capital budgeting — allocating funds to projects",
+  summary:"Stage = project, state = funds left, decision = amount allotted. Maximise total return from a fixed budget.",
+  whatIs:"<p>A budget has to be shared among several projects (or plants), each with a table of the return for every possible allotment. DP finds the split that maximises total return.</p>",
+  concept:M4_NOTE+mono("f_n(s) = max over x in 0..s of { R_n(x) + f_(n+1)(s − x) },   f_last+1 (s) = 0\nAnswer: f_1(total budget)"),
+  needToKnow:[
+    "Set up stage, state and decision for a budget split.",
+    "Build one table per project for every budget level.",
+    "Read the optimal allotment for each project by working back through the tables.",
+    "Check the total allotment equals the budget."
+  ],
+  recognition:{
+    clues:["A table of returns against money allotted for each project or plant.","&lsquo;Allocate a budget&rsquo;, &lsquo;distribute funds&rsquo;.","Whole-unit allotments (lakh, crore, thousand)."],
+    wording:["How should Rs 5 crore be allotted among three plants to maximise total return?","Use dynamic programming to allocate the budget among the projects."],
+    firstMove:"Write R<sub>1</sub>, R<sub>2</sub>, R<sub>3</sub> in one table, then start with the last project: f₃(s) = R₃(s).",
+    trap:"Letting the allotments add up to less than the budget. Money left over is only optimal if returns can fall (they cannot here)."
+  },
+  examAnswer:{
+    short:"Optimal allotment per project and the maximum return.",
+    medium:"Recursion → stage tables → traced allotment → check that the allotments sum to the budget.",
+    long:"As medium, with stage, state and decision defined, and a sentence on how the tables give the answer for every smaller budget as well."
+  },
+  mistakes:[
+    "Starting the tables at the first project, which needs f₂ that you do not yet have. Start at the last project.",
+    "Reading the maximum from the wrong column of the return table.",
+    "Not checking that x ≤ s in each cell."
+  ],
+  examples:[
+    {id:"m4t4e1", title:"Rs 5 crore among three projects",
+     q:"Returns (Rs lakh) for allotments 0 to 5 crore: Project 1: 0, 5, 8, 9, 10, 10. Project 2: 0, 4, 9, 12, 13, 13. Project 3: 0, 3, 7, 11, 14, 16. Allocate the Rs 5 crore.",
+     steps:["Last stage (project 3): f₃(s) = R₃(s), with x₃ = s.",
+       "Project 2: f₂(s) = max over x of {R₂(x) + f₃(s − x)}."+tbl(["s","0","1","2","3","4","5"],[["f₂(s)","0","4","9","12","16","20"],["x₂*","0","1","2","2","2","2"]]),
+       "For example f₂(4) = max{0 + 14, 4 + 11, 9 + 7, 12 + 3, 13 + 0} = 16, at x₂ = 2.",
+       "Project 1 needs only s = 5: f₁(5) = max{0 + 20, 5 + 16, 8 + 12, 9 + 9, 10 + 4, 10 + 0} = <b>21</b>, at x₁ = 1.",
+       "Trace: x₁ = 1 leaves 4; x₂*(4) = 2 leaves 2; x₃ = 2."],
+     answer:"<b>Allot 1, 2, 2 crore to projects 1, 2, 3 respectively: maximum return 21</b> (5 + 9 + 7).",
+     trap:"x₂*(5) = 2 as well, but you only need s = 4 for project 2 because project 1 took 1 crore. Read the table at the state you have left, not at the full budget."}
+  ],
+  practice:[
+    {id:"m4t4p1", d:"moderate", marks:6, q:"Budget 4 units. Returns for allotments 0 to 4: Project 1: 0, 6, 9, 11, 12. Project 2: 0, 5, 10, 12, 13. Project 3: 0, 4, 8, 12, 14. Find the best allocation.",
+     hint:"f₃(s) = R₃(s); build f₂ for s = 0…4; then f₁(4).",
+     a:tbl(["s","0","1","2","3","4"],[["f₃(s)","0","4","8","12","14"],["f₂(s)","0","5","10","14","18"],["x₂*","0","1","2","2","2"],["f₁(s)","0","6","11","16","<b>20</b>"],["x₁*","0","1","1","1","1"]])+"<p>Trace: x₁ = 1 (return 6), leaves 3; x₂*(3) = 2 (return 10), leaves 1; x₃ = 1 (return 4). <b>Allocation 1, 2, 1; maximum return 20.</b></p>"}
+  ],
+  questions:[
+    {q:"A company has Rs 5 crore to distribute among three plants. Find the allocation that maximises the total return using dynamic programming.", marks:8, d:"moderate", priority:"medium", source:"predicted"}
+  ]
+},
+{
+  id:"m4t5", m:"m4", type:"problem-solving", priority:"medium", los:[],
+  title:"Reliability problems — redundancy within a budget",
+  summary:"Components in series, each with parallel spare copies. Choose the number of copies per component to maximise system reliability within a budget.",
+  whatIs:"<p>A system works only if <b>all</b> its components work (series). Each component can be duplicated in parallel: with k copies of reliability r, the component fails only if all k fail, so its reliability is 1 − (1 − r)<sup>k</sup>. More copies cost more. DP chooses the copies.</p>",
+  concept:M4_NOTE+mono("Stage = component   State = budget left   Decision = copies k (k ≥ 1)\nR_i(k) = 1 − (1 − r_i)^k\nf_i(s) = max over k of { R_i(k) × f_(i+1)(s − k c_i) }       f_last+1 (s) = 1")+
+    "<div class='box warning'><h5>The recursion multiplies; it does not add</h5><p>System reliability is a product of the component reliabilities, so f is built by multiplying. Start the last stage from f = 1, not 0.</p></div>",
+  needToKnow:[
+    "Compute the reliability of k parallel copies.",
+    "Write the multiplicative recursion.",
+    "Make one table per component, every cell limited by the budget.",
+    "Trace the copies back and check the total cost."
+  ],
+  recognition:{
+    clues:["&lsquo;Reliability&rsquo;, &lsquo;components in series&rsquo;, &lsquo;parallel units&rsquo;, &lsquo;standby&rsquo;.","A cost per copy and a budget.","Asks for the number of copies of each component."],
+    wording:["Determine the number of parallel units of each component to maximise system reliability within the budget.","A system has three components in series; how many spare units should be fitted?"],
+    firstMove:"Write R<sub>i</sub>(k) = 1 − (1 − r<sub>i</sub>)<sup>k</sup> for each component for k = 1, 2, 3 before building the tables.",
+    trap:"Adding reliabilities. The system reliability is the product, so the objective and the recursion are multiplicative."
+  },
+  examAnswer:{
+    short:"Copies for each component and the maximum reliability.",
+    medium:"Recursion → tables from the last component → traced copies and a cost check.",
+    long:"As medium, with the formulation (stage, state, decision) and the series-parallel structure explained."
+  },
+  mistakes:[
+    "Using a budget row below the cost of one copy of every later component. Each remaining component needs at least one copy.",
+    "Using k = 0. A component with no copy makes the whole series system fail.",
+    "Rounding reliabilities early; carry four decimal places."
+  ],
+  examples:[
+    {id:"m4t5e1", title:"Three components, budget 8",
+     q:"Components 1, 2, 3 have reliabilities 0.6, 0.7, 0.5 and cost per copy 2, 3, 1. Budget 8. Find the number of copies of each that maximises system reliability.",
+     steps:["Component 3 (last stage, cost 1): f₃(s) = 1 − 0.5<sup>s</sup> with k₃ = s copies."+tbl(["s","1","2","3","4","5","6"],[["f₃(s)","0.5","0.75","0.875","0.9375","0.9688","0.9844"]]),
+       "Component 2 (cost 3): f₂(s) = max over k of {R₂(k) × f₃(s − 3k)}, where R₂(1) = 0.7, R₂(2) = 0.91."+tbl(["s","4","5","6","7","8"],[["f₂(s)","0.35","0.525","0.6125","0.6563","0.6825"],["k₂*","1","1","1","1","2"]]),
+       "Component 1 (cost 2): R₁(1) = 0.6, R₁(2) = 0.84. At s = 8: k = 1 gives 0.6 × f₂(6) = 0.6 × 0.6125 = <b>0.3675</b>; k = 2 gives 0.84 × f₂(4) = 0.84 × 0.35 = 0.294. (k = 3 costs 6, leaving 2: not enough for components 2 and 3.)",
+       "Trace: k₁ = 1 (cost 2), budget 6; k₂*(6) = 1 (cost 3), budget 3; k₃ = 3 copies (cost 3).",
+       "Reliability = 0.6 × 0.7 × (1 − 0.5³) = 0.6 × 0.7 × 0.875 = 0.3675."],
+     answer:"<b>One copy of component 1, one of component 2, three of component 3: system reliability 0.3675</b> at a cost of exactly 8.",
+     trap:"The cheapest component gets the most copies because its copies are cheapest to add, even though its reliability is lowest. The tables find this; intuition does not."}
+  ],
+  practice:[
+    {id:"m4t5p1", d:"moderate", marks:6, q:"Two components in series have reliabilities 0.5 and 0.6 and cost per copy 1 and 2. Budget 6. Find the copies of each that maximise system reliability.",
+     hint:"Component 2 (cost 2): k = 1, 2 are possible. Then component 1 gets the rest.",
+     a:tbl(["Option","k₁","k₂","Cost","Reliability"],[["a","4","1","4 + 2 = 6","(1 − 0.5⁴) × 0.6 = 0.5625"],["b","2","2","2 + 4 = 6","(1 − 0.5²) × (1 − 0.4²) = 0.75 × 0.84 = <b>0.63</b>"],["c","1","2","1 + 4 = 5","0.5 × 0.84 = 0.42"]])+"<p><b>Two copies of each; reliability 0.63.</b> By tables: f₂(s) for the last component, then f₁(6) = max over k₁.</p>"}
+  ],
+  questions:[
+    {q:"A system has three components in series. Determine the number of parallel units of each to maximise reliability subject to a budget, using dynamic programming.", marks:8, d:"hard", priority:"medium", source:"predicted"}
+  ]
+},
+{
+  id:"m4t6", m:"m4", type:"problem-solving", priority:"medium", los:[],
+  title:"Employment smoothening — workforce over the months",
+  summary:"Match the workforce to monthly requirements while balancing the cost of idle excess workers against the cost of hiring. Forward recursion.",
+  whatIs:"<p>Each month needs at least b<sub>i</sub> workers. Keeping more than needed costs money, and hiring costs money too, so it can pay to carry some excess workers through a quiet month rather than fire and re-hire. DP finds the workforce for every month.</p>",
+  concept:M4_NOTE+mono("x_i = workforce in month i  (b_i ≤ x_i ≤ highest requirement)\nExcess cost  C1(x_i − b_i)    Hiring cost  C2(x_i − x_(i−1))  (zero if the workforce falls)\nf_i(x_i) = C1(x_i − b_i) + min over x_(i−1) of { C2(x_i − x_(i−1)) + f_(i−1)(x_(i−1)) }\nAnswer: min over x_n of f_n(x_n)")+
+    "<p>This is a <b>forward</b> recursion: the state of month i is the workforce, which is what month i + 1 needs to know to price its hiring.</p>",
+  needToKnow:[
+    "Define xi and the allowed range for each month.",
+    "Write the two costs and the forward recursion.",
+    "Build the stage tables and trace the plan back.",
+    "State the total cost and the month-by-month workforce."
+  ],
+  recognition:{
+    clues:["A requirement of workers for each month or period.","A cost of hiring (often fixed plus per person) and a cost of keeping extra workers.","&lsquo;Smoothen&rsquo;, &lsquo;workforce planning&rsquo;, &lsquo;employment&rsquo;."],
+    wording:["Determine the minimum cost employment plan for the next five months.","How many workers should be hired or kept in each month so that total cost is minimum?"],
+    firstMove:"Write the allowed values of x<sub>i</sub> for every month (from b<sub>i</sub> up to the largest requirement) and the cost functions C1 and C2 in numbers.",
+    trap:"Charging hiring cost when the workforce falls. Firing is free in this standard version; only an increase costs money. Use the question's own rule."
+  },
+  examAnswer:{
+    short:"The plan (workers each month) and the total cost.",
+    medium:"Cost functions → forward tables → traced plan → cost breakdown by month.",
+    long:"As medium, with the choice of excess against re-hiring explained for the month that shows it."
+  },
+  mistakes:[
+    "Allowing a workforce below the requirement. Each month x<sub>i</sub> ≥ b<sub>i</sub>.",
+    "Not starting from the initial workforce (here 0), so month 1 hires everyone.",
+    "Using f from the wrong month when building a table."
+  ],
+  examples:[
+    {id:"m4t6e1", title:"Five months, hiring has a fixed cost",
+     q:"Requirements for months 1–5: 5, 7, 8, 4, 6 workers. Excess workers cost 3 per worker per month. Hiring d workers costs 4 + 2d; firing is free. The initial workforce is 0. Find the minimum cost plan.",
+     steps:["Month 1: f₁(x) = 3(x − 5) + 4 + 2x."+tbl(["x₁","5","6","7","8"],[["f₁","14","19","24","29"]]),
+       "Month 2 (b = 7): f₂(x) = 3(x − 7) + min over x₁ of {C2(x − x₁) + f₁(x₁)}."+tbl(["x₂","7","8"],[["f₂","22 (x₁ = 5)","27 (x₁ = 5)"]]),
+       "Month 3 (b = 8): only x₃ = 8. f₃(8) = min{C2(1) + f₂(7), C2(0) + f₂(8)} = min{6 + 22, 0 + 27} = <b>27</b> (x₂ = 8).",
+       "Month 4 (b = 4): the workforce may drop from 8 for free, so f₄(x) = 27 + 3(x − 4)."+tbl(["x₄","4","5","6","7","8"],[["f₄","27","30","33","36","39"]]),
+       "Month 5 (b = 6): f₅(6) = min over x₄ of {C2(6 − x₄) + f₄(x₄)} = min{8 + 27, 6 + 30, 0 + 33, …} = <b>33</b> (x₄ = 6); f₅(7) = 39; f₅(8) = 45.",
+       "Trace back from the minimum f₅(6) = 33: x₅ = 6, x₄ = 6, x₃ = 8, x₂ = 8, x₁ = 5.",
+       "Cost by month: month 1 hire 5 = 14; month 2 hire 3 = 10 plus 1 excess = 3; month 3 = 0; month 4 excess 2 = 6; month 5 = 0. Total 14 + 13 + 0 + 6 + 0 = 33."],
+     answer:"<b>Workforce 5, 8, 8, 6, 6 for the five months; minimum total cost 33.</b>",
+     trap:"Month 2 carries one excess worker (cost 3) so that month 3's extra worker is already on the payroll: hiring 3 at once costs 10 + 3 = 13, while hiring 2 now and 1 in month 3 costs 8 + 6 = 14. The fixed hiring charge is what makes extra workers worth keeping."}
+  ],
+  practice:[
+    {id:"m4t6p1", d:"hard", marks:8, q:"Requirements for 4 months: 3, 5, 2, 4. Excess costs 2 per worker per month. Hiring d workers costs 6 + d; firing is free; initial workforce 0. Find the minimum cost plan.",
+     hint:"Stage tables: f₁(x) = 2(x − 3) + 6 + x for x = 3, 4, 5.",
+     a:tbl(["Month","Values of f","Chosen previous"],[["1 (x = 3, 4, 5)","9, 12, 15","—"],["2 (x = 5)","15","x₁ = 5"],["3 (x = 2, 3, 4, 5)","15, 17, 19, 21","x₂ = 5"],["4 (x = 4, 5)","19, 23","x₃ = 4 (for x₄ = 4)"]])+"<p>Minimum <b>19</b> at x₄ = 4. Plan <b>5, 5, 4, 4</b>: month 1 hire 5 (11) + 2 excess (4) = 15; month 2 = 0; month 3 excess 2 × 2 = 4; month 4 = 0. Total 19.</p>"}
+  ],
+  questions:[
+    {q:"A firm needs workers in each of the next months. Excess labour and hiring both cost money. Find the employment plan of minimum cost by dynamic programming.", marks:8, d:"hard", priority:"medium", source:"predicted"}
+  ]
+}
+];
+
+/* ===== 06 · Module 6 — Inventory Models =====
+   Sources: 6.01 deck (concepts, Models 1–4) and the handwritten problems 6.02–6.10. */
+var M6_TOPICS = [
+{
+  id:"m6t1", m:"m6", type:"theory", priority:"high", los:[],
+  title:"Inventory — types, costs and terminology",
+  summary:"What inventory is, why it is held, the three cost types and the vocabulary (lead time, ROL, safety stock). The definitions question.",
+  whatIs:"<p>Inventory is the stock of items held for sale, in the process of manufacture, or waiting to be used. Inventory control balances the loss from not having an item against the cost of carrying it, and answers two questions: <b>when</b> to order and <b>how much</b> to order.</p>",
+  concept:"<h4>Types of inventory</h4>"+tbl(["Type","Meaning"],[["Raw material","Bought, not yet processed"],["Finished parts","Bought-out or made components"],["Work in process (WIP)","Partly made"],["Finished goods","Ready for sale"],["Tools; maintenance, repair and operating stores","Supplies that support production"]])+
+    "<h4>Why inventory is kept</h4><ul><li>To stabilise production.</li><li>To take advantage of price discounts.</li><li>To satisfy demand during the replenishment period.</li><li>To prevent loss of sales.</li><li>To keep pace with changing market conditions.</li></ul>"+
+    "<h4>The three costs</h4>"+tbl(["Cost","What it is","Symbol"],[["<b>Ordering (set-up) cost</b>","Raising the indent, requisition to execution of the order, receipt and inspection. Per order, not per unit.","C<sub>o</sub>"],["<b>Carrying (holding) cost</b>","Rent, lighting, handling equipment, breakage, deterioration. Per unit per year, or a % of unit cost.","C<sub>h</sub> = C<sub>p</sub>·I"],["<b>Shortage cost</b>","Incurred when demand arrives and the item is not in stock.","C<sub>s</sub>"]])+
+    "<h4>Terminology</h4>"+tbl(["Term","Meaning"],[["Demand","Number of items required per unit of time"],["Order cycle","Time between two successive orders"],["Lead time","Time between placing an order and receiving the item"],["Safety (buffer) stock","Stock held to cover delay in supply and sudden demand"],["Re-order level (ROL)","Stock level at which an order is placed"],["Re-order quantity (ROQ)","Quantity ordered at the ROL; equal to the EOQ"],["Minimum / maximum level","Lowest stock to keep for smooth production / the level not to exceed"]])+
+    "<p class='small muted'>The deck defines &lsquo;buffer stock&rsquo; two ways (safety stock on one slide, normal lead-time consumption on another). In an answer use the first.</p>"+
+    "<h4>Objectives of inventory control</h4><p>To meet demand on time, smooth production, gain economies in purchase and production lots, and balance ordering cost, carrying cost and shortage cost, while minimising deterioration, obsolescence and pilferage.</p>",
+  needToKnow:[
+    "Define inventory and inventory control; give the two questions it answers.",
+    "List the types of inventory and five reasons for holding it.",
+    "Define ordering, carrying and shortage cost.",
+    "Define lead time, safety stock, ROL and ROQ."
+  ],
+  recognition:{
+    clues:["&lsquo;Define&rsquo;, &lsquo;explain the costs&rsquo;, &lsquo;terms used in inventory control&rsquo;.","No data given.","2–5 marks."],
+    wording:["What is inventory control? Explain the costs involved.","Define lead time, safety stock and reorder level.","Why do firms hold inventory?"],
+    firstMove:"Two-column table, one row per term; for costs add the symbol you will use later.",
+    trap:"Treating ordering cost as a cost per unit. It is per <i>order</i>; the cost per unit is the price C<sub>p</sub>."
+  },
+  examAnswer:{
+    short:"Definition + the two questions it answers (when, how much).",
+    medium:"Costs table (ordering, carrying, shortage) + five reasons for holding stock.",
+    long:"Types → reasons → costs → terminology → objectives → the cost-balance picture leading to EOQ."
+  },
+  mistakes:[
+    "Confusing carrying cost per unit per year with the percentage I. C<sub>h</sub> = C<sub>p</sub> × I.",
+    "Listing ordering cost as part of the price of the item.",
+    "Mixing up ROL (a stock level) with ROQ (a quantity)."
+  ],
+  examples:[],
+  practice:[
+    {id:"m6t1p1", d:"easy", marks:4, q:"Explain the three types of inventory cost and say how each changes as the order quantity increases.",
+     hint:"Larger orders mean fewer orders but more stock on hand.",
+     a:tbl(["Cost","Effect of a larger order quantity"],[["Ordering cost","Falls: fewer orders per year, (D/Q)·C<sub>o</sub>"],["Carrying cost","Rises: more stock is held on average, (Q/2)·C<sub>h</sub>"],["Shortage cost","Falls: with larger lots a stock-out is less likely"]])+"<p>The EOQ is the order quantity where ordering plus carrying cost is least.</p>"},
+    {id:"m6t1p2", d:"easy", marks:3, q:"Distinguish lead time, safety stock and reorder level.",
+     hint:"One is a time, one is a quantity held, one is a trigger.",
+     a:"<p><b>Lead time</b>: time from placing an order to receiving it. <b>Safety stock</b>: extra stock kept against delay in supply or sudden demand. <b>Reorder level</b>: the stock level at which an order is placed; it equals the demand during lead time plus the safety stock.</p>"}
+  ],
+  questions:[
+    {q:"What is inventory control? Explain the different types of inventory costs.", marks:5, d:"easy", priority:"high", source:"predicted"},
+    {q:"Define lead time, re-order level, safety stock and economic order quantity.", marks:4, d:"easy", priority:"high", source:"predicted"}
+  ]
+},
+{
+  id:"m6t2", m:"m6", type:"theory", priority:"medium", los:[],
+  title:"Selective inventory control — ABC, VED, FSN and the rest",
+  summary:"Why items are classified, the ABC procedure with its 10 / 20 / 70 rule, and the one-line meaning of VED, FSN, HML, SDE, SOS, XYZ.",
+  whatIs:"<p>Treating every item equally wastes effort. Selective control classifies items and gives close control to the few that matter most.</p>",
+  concept:"<h4>ABC analysis (Always Better Control)</h4>"+
+    mono("1. List all items\n2. Annual usage x unit value  = annual consumption value\n3. Rank by that value, highest first\n4. Cumulative percentage of the total value\n5. Top 10% of items = A    next 20% = B    remaining 70% = C")+
+    "<p>The deck's rule is by <b>number of items</b> (10 / 20 / 70). In practice A items are about 70% of the value, so A gets close control, C items little.</p>"+
+    tbl(["Advantages","Disadvantages"],[["Selective control; quick rewarding results","Needs standardised, codified items"],["Close control of A, simple records for C","Considers money value only, not importance to production"],["Points out obsolete stock; basis for allocating funds","Periodic review is difficult if ABC is the only analysis"]])+
+    "<h4>The other classifications</h4>"+tbl(["Code","Basis","Categories"],[
+      ["<b>VED</b>","Criticality","<b>V</b>ital (shortage stops work), <b>E</b>ssential (efficiency suffers), <b>D</b>esirable (easy to buy)"],
+      ["<b>FSN</b>","Movement of issues","<b>F</b>ast, <b>S</b>low, <b>N</b>on-moving (controls obsolescence)"],
+      ["<b>HML</b>","Unit price","<b>H</b>igh, <b>M</b>edium, <b>L</b>ow price"],
+      ["<b>SDE</b>","Availability","<b>S</b>carce, <b>D</b>ifficult, <b>E</b>asy to procure"],
+      ["<b>SOS</b>","Season","<b>S</b>easonal, <b>O</b>ff-<b>s</b>easonal"],
+      ["<b>XYZ</b>","Value of stock held","X high value … Z low value"]])+
+    "<h4>ABC combined with VED</h4>"+tbl(["","V items","E items","D items"],[["A","Constant control, regular follow-up","Moderate stock","Nil stock"],["B","Moderate stock","Moderate stock","Low stock"],["C","High stock","Moderate stock","Very low stock"]]),
+  needToKnow:[
+    "State the ABC procedure and the 10 / 20 / 70 rule.",
+    "Give two advantages and two disadvantages of ABC.",
+    "Expand VED, FSN, HML, SDE, SOS, XYZ and state each basis.",
+    "Read the ABC × VED matrix."
+  ],
+  recognition:{
+    clues:["&lsquo;Classify the items&rsquo;, &lsquo;ABC&rsquo;, &lsquo;selective control&rsquo;.","A list of items with annual usage and unit cost.","&lsquo;VED&rsquo; or &lsquo;FSN&rsquo; named."],
+    wording:["Explain ABC analysis with its advantages and limitations.","Write short notes on VED, FSN and HML analysis.","Classify the following items into A, B and C."],
+    firstMove:"Compute usage × price for each item, rank, and write the cumulative-percentage column before assigning classes.",
+    trap:"Classifying by quantity or by unit price instead of annual usage <b>value</b>. A cheap item used in huge numbers can be A."
+  },
+  examAnswer:{
+    short:"ABC in three lines: value-ranked, A = top 10% items, B next 20%, C last 70%.",
+    medium:"Procedure → classes → advantages and disadvantages table.",
+    long:"ABC (procedure, advantages, disadvantages) → VED → FSN → one line each on HML, SDE, SOS, XYZ → ABC × VED matrix."
+  },
+  mistakes:[
+    "Confusing HML (unit price) with ABC (annual usage value).",
+    "Saying VED measures money value. It measures criticality.",
+    "Writing the class percentages as percentages of value when the deck states them as shares of the number of items."
+  ],
+  examples:[],
+  practice:[
+    {id:"m6t2p1", d:"moderate", marks:5, q:"Ten items have annual usage values (Rs) of 70000, 12000, 8000, 3000, 2000, 1500, 1200, 1000, 800, 500. Classify them by ABC analysis.",
+     hint:"Total is Rs 1,00,000. Top 1 item, next 2 items, remaining 7 items.",
+     a:tbl(["Class","Items","Annual value","% of total value"],[["A (top 10% of items)","1 item: 70000","70,000","70%"],["B (next 20%)","2 items: 12000, 8000","20,000","20%"],["C (last 70%)","7 items: 3000 … 500","10,000","10%"]])+"<p>Seven items make up 70% of the items but only 10% of the value, which is why C items get the simplest control.</p>"},
+    {id:"m6t2p2", d:"moderate", marks:4, q:"A part is vital, costs little and is used in large quantity. In which ABC class and which VED class is it, and how should it be stocked?",
+     hint:"V says critical; low annual value points to C.",
+     a:"<p>Class <b>C</b> by value (low annual usage value) and <b>V</b> by criticality. The ABC × VED matrix puts C–V at <b>high stock</b>: because a shortage stops work and the carrying cost is small, keep a generous stock.</p>"}
+  ],
+  questions:[
+    {q:"Explain ABC analysis. State its advantages and limitations.", marks:5, d:"easy", priority:"medium", source:"predicted"},
+    {q:"Write short notes on VED and FSN analysis.", marks:4, d:"easy", priority:"medium", source:"predicted"}
+  ]
+},
+{
+  id:"m6t3", m:"m6", type:"problem-solving", priority:"high", los:[],
+  title:"Model 1 — classical EOQ",
+  summary:"Instantaneous replenishment, no shortage. Q* = √(2DCo/Ch), then orders per year, cycle time and minimum cost.",
+  whatIs:"<p>The basic model: demand is constant and known, replenishment is instantaneous (zero lead time), the price is constant, carrying cost depends on average stock, and no shortage is allowed. Order cost falls and carrying cost rises with Q; the EOQ is where total cost is least.</p>",
+  concept:dgm(dgEOQ(), "Stock falls steadily from Q to zero (average Q/2). The total cost curve is lowest where carrying and ordering cost are equal.")+
+    "<div class='box tip'><h5>The formulas (D annual demand, C<sub>o</sub> per order, C<sub>h</sub> per unit per year)</h5>"+
+    mono("Total cost per year   TC = (D/Q) Co + (Q/2) Ch        [+ D Cp if purchase cost is included]\nEOQ                 Q* = sqrt( 2 D Co / Ch )\nCarrying cost as %  Ch = Cp x I,   so  Q* = sqrt( 2 D Co / (Cp I) )\nOrders per year     N* = D / Q*\nCycle time          T* = Q* / D = 1 / N*\nMinimum cost        TCmin = sqrt( 2 D Co Ch )")+"</div>"+
+    "<p>At the EOQ the annual ordering cost equals the annual carrying cost. This is derived by setting dTC/dQ = 0.</p>"+
+    "<div class='box warning'><h5>Say whether the total cost includes the purchase cost</h5><p>The deck's TC<sub>min</sub> = √(2DC<sub>o</sub>C<sub>h</sub>) covers ordering and carrying only. When the question says &lsquo;total annual cost&rsquo; with a price, add D·C<sub>p</sub>. Write which one you computed.</p></div>",
+  needToKnow:[
+    "State the five assumptions of the basic model.",
+    "Derive Q* from TC = (D/Q)Co + (Q/2)Ch.",
+    "Compute Q*, N*, T* and TCmin.",
+    "Use Ch = CpI when carrying cost is a percentage."
+  ],
+  recognition:{
+    clues:["Demand per year, cost per order, carrying cost, <b>no</b> mention of production rate or shortage.","&lsquo;Economic order quantity&rsquo;, &lsquo;optimum number of orders&rsquo;.","Carrying cost given as a % of inventory value."],
+    wording:["Determine EOQ, the optimum number of orders per annum and the minimum total cost.","Find the optimum period of supply per optimum order."],
+    firstMove:"Write D, C<sub>o</sub>, C<sub>h</sub> (or C<sub>p</sub> and I) with units, then the formula, then substitute.",
+    trap:"Using a per-month demand with a per-year carrying cost. D and C<sub>h</sub> must refer to the same period."
+  },
+  examAnswer:{
+    short:"Q* formula with data substituted, and the value.",
+    medium:"Data list → Q* → N* → TC<sub>min</sub> (with whether purchase cost is included).",
+    long:"Assumptions → TC derivation → Q* → N*, T*, TC<sub>min</sub> → one line interpreting: ordering cost = carrying cost at the optimum."
+  },
+  mistakes:[
+    "Using C<sub>h</sub> = I instead of C<sub>p</sub> × I when carrying cost is a percentage.",
+    "Rounding Q* before computing N* and TC<sub>min</sub>; keep the unrounded value, round the final answer.",
+    "Calling N* = 5.19 &lsquo;5 orders&rsquo; without comment. The deck's own solution writes 5.194 ≈ 5."
+  ],
+  examples:[
+    {id:"m6t3e1", title:"Demand 10,000 units, price Rs 2, order cost Rs 36, carrying 9%",
+     q:"ABC Corporation has a demand of 10,000 units a year. A unit costs Rs 2 and an order costs Rs 36. Carrying cost is 9% of average inventory investment. Find the EOQ, the optimum number of orders a year and the minimum total inventory cost.",
+     steps:["D = 10,000; C<sub>p</sub> = 2; C<sub>o</sub> = 36; I = 0.09, so C<sub>h</sub> = 2 × 0.09 = 0.18 per unit per year.",
+       "Q* = √(2 × 10,000 × 36 / 0.18) = √4,000,000 = <b>2,000 units</b>.",
+       "N* = D / Q* = 10,000 / 2,000 = <b>5 orders</b> a year.",
+       "TC<sub>min</sub> = √(2 × 10,000 × 36 × 0.18) = √129,600 = <b>Rs 360</b>.",
+       "Check: ordering (D/Q)C<sub>o</sub> = 5 × 36 = 180; carrying (Q/2)C<sub>h</sub> = 1000 × 0.18 = 180. Equal, sum 360."],
+     answer:"<b>EOQ = 2,000 units; 5 orders a year; minimum inventory cost Rs 360</b> (ordering and carrying, excluding the purchase price).",
+     trap:"The check line (ordering = carrying) takes ten seconds and catches almost every substitution slip."},
+    {id:"m6t3e2", title:"Supply of 3600 units, set-up Rs 80, carrying Rs 1.2 per unit per year",
+     q:"A manufacturer supplies 3600 units a year. Carrying cost is Rs 1.2 per unit per year and set-up cost is Rs 80 per run. Find the EOQ, the number of orders, the minimum annual inventory cost and the optimum period of supply.",
+     steps:["Here C<sub>h</sub> is given directly: 1.2.",
+       "Q* = √(2 × 3600 × 80 / 1.2) = √480,000 = 692.8 ≈ <b>693 units</b>.",
+       "N* = 3600 / 693 = 5.19 ≈ <b>5 orders</b> a year.",
+       "TC<sub>min</sub> = √(2 × 3600 × 80 × 1.2) = √691,200 = <b>Rs 831.38</b>.",
+       "T* = 1 / N* = 1 / 5 = <b>0.2 year</b> (about 2.4 months); using the exact N* = 5.194 it is 0.1925 year."],
+     answer:"<b>EOQ ≈ 693 units; N* ≈ 5; TC<sub>min</sub> = Rs 831.38; T* ≈ 0.2 year.</b>",
+     why:"Whole-number orders are not forced by the formula; N* = 5.194 means the best average is a little over five orders a year."},
+    {id:"m6t3e3", title:"Fluid: 50,000 litres, Rs 20 a litre, order cost Rs 80, carrying 15% (May-17)",
+     q:"A company uses 50,000 litres a year at Rs 20 per litre. The cost of ordering is Rs 80 and carrying cost is 15% of the unit cost. Find the EOQ, the number of orders, the time between orders (assume 300 working days) and the total annual cost.",
+     steps:["C<sub>h</sub> = 20 × 0.15 = 3 per litre per year.",
+       "Q* = √(2 × 50,000 × 80 / 3) = √2,666,667 = 1,632.99 ≈ <b>1,633 litres</b>.",
+       "N* = 50,000 / 1,633 = 30.6 orders; T* = 1 / 30.61 = 0.03266 year × 300 = 9.8 ≈ <b>10 working days</b>.",
+       "Total annual cost including purchase = D·C<sub>p</sub> + √(2 D C<sub>o</sub> C<sub>h</sub>) = 50,000 × 20 + √24,000,000 = 10,00,000 + 4,898.98 = <b>Rs 10,04,899</b>."],
+     answer:"<b>EOQ ≈ 1,633 litres; about 30.6 orders; one order every 10 working days; total annual cost ≈ Rs 10,04,899.</b>",
+     trap:"This question wants the purchase cost in the total (D·C<sub>p</sub>); Example 1 did not. Read &lsquo;total cost&rsquo; carefully."}
+  ],
+  practice:[
+    {id:"m6t3p1", d:"easy", marks:5, q:"Annual demand 4800 units, ordering cost Rs 75 per order, carrying cost Rs 2 per unit per year. Find the EOQ, number of orders per year and the minimum cost of ordering and carrying.",
+     hint:"The numbers are chosen so that Q* is a whole number.",
+     a:"<p>Q* = √(2 × 4800 × 75 / 2) = √360,000 = <b>600 units</b>. N* = 4800/600 = <b>8</b>. TC<sub>min</sub> = √(2 × 4800 × 75 × 2) = √1,440,000 = <b>Rs 1,200</b> (ordering 8 × 75 = 600, carrying 300 × 2 = 600).</p>"},
+    {id:"m6t3p2", d:"moderate", marks:4, q:"In the previous problem the firm orders 1,000 units at a time instead of the EOQ. By what percentage does annual cost rise?",
+     hint:"TC(Q) = (D/Q)C<sub>o</sub> + (Q/2)C<sub>h</sub>.",
+     a:"<p>TC(1000) = (4800/1000) × 75 + (1000/2) × 2 = 360 + 1000 = Rs 1,360. TC<sub>min</sub> = 1,200. Rise = 160/1200 = <b>13.3%</b>. A 67% larger order raises cost only 13%, because the curve is flat near the EOQ.</p>"},
+    {id:"m6t3p3", d:"moderate", marks:4, q:"Show that at the EOQ the annual ordering cost equals the annual carrying cost.",
+     hint:"Substitute Q* = √(2DC<sub>o</sub>/C<sub>h</sub>) into each cost.",
+     a:"<p>Ordering cost (D/Q*)C<sub>o</sub> = D C<sub>o</sub>/√(2DC<sub>o</sub>/C<sub>h</sub>) = √(DC<sub>o</sub>C<sub>h</sub>/2). Carrying cost (Q*/2)C<sub>h</sub> = (C<sub>h</sub>/2)√(2DC<sub>o</sub>/C<sub>h</sub>) = √(DC<sub>o</sub>C<sub>h</sub>/2). They are equal, and their sum is 2√(DC<sub>o</sub>C<sub>h</sub>/2) = √(2DC<sub>o</sub>C<sub>h</sub>).</p>"}
+  ],
+  questions:[
+    {q:"Derive the EOQ formula for the basic inventory model.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"Find EOQ, number of orders per year, and minimum annual inventory cost (Rs 36 per order, demand 10,000 units, Rs 2 per unit, carrying 9%).", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"Find EOQ, number of orders, time between orders and total annual cost for 50,000 litres at Rs 20 a litre.", marks:5, d:"easy", priority:"high", source:"source"}
+  ]
+},
+{
+  id:"m6t4", m:"m6", type:"problem-solving", priority:"high", los:[],
+  title:"Model 2 — finite replenishment (production model)",
+  summary:"Stock builds up gradually at rate p − d while producing. Q* = √(2DCo / (Ch(1 − d/p))).",
+  whatIs:"<p>When goods are produced at a finite rate p while being consumed at rate d (p &gt; d), stock does not jump to Q; it builds up at p − d during the production run t<sub>p</sub> and then falls at d. The model suits manufacturing, so it is also called the production or economic batch model.</p>",
+  concept:dgm(dgModel2(), "Stock peaks at I<sub>max</sub> = (p − d)t<sub>p</sub> = Q(1 − d/p), not at Q.")+
+    "<div class='box tip'><h5>The formulas</h5>"+
+    mono("tp = Q / p                         production time per run\nImax = (p - d) tp = Q (1 - d/p)     highest stock\nAverage stock = Imax / 2\nTC = (D/Q) Co + (Imax / 2) Ch = (D/Q) Co + (Q/2)(1 - d/p) Ch\nQ*  = sqrt( 2 D Co / ( Ch (1 - d/p) ) )\nTCmin = sqrt( 2 D Co Ch (1 - d/p) )\nN*  = D / Q*")+"</div>"+
+    "<p>As p → ∞ the factor (1 − d/p) → 1 and the formula becomes Model 1.</p>"+
+    "<div class='box warning'><h5>Put p and d in the same unit as D</h5><p>If p and d are per <i>hour</i> and D is per <i>year</i>, convert first: D = d × hours per day × days per year. Only the ratio d/p is unit-free.</p></div>",
+  needToKnow:[
+    "State why average stock is (Q/2)(1 − d/p).",
+    "Derive or recall Q* and TCmin.",
+    "Convert hourly rates to an annual D before substituting.",
+    "Compute N*, tp and Imax."
+  ],
+  recognition:{
+    clues:["&lsquo;Produces at the rate of&rsquo;, &lsquo;production rate&rsquo;, &lsquo;manufactured and sold at a constant rate&rsquo;.","Two rates p and d.","&lsquo;Optimal number of cycles / production runs&rsquo;."],
+    wording:["Determine the optimal number of cycles required in a year for the manufacture of this item.","Find the economic batch size and the production time."],
+    firstMove:"Write p, d, C<sub>o</sub>, C<sub>h</sub> and convert everything to one time unit. Compute D first.",
+    trap:"Using Model 1 because &lsquo;demand&rsquo; appears. If a production rate is given, the (1 − d/p) factor must be in the formula."
+  },
+  examAnswer:{
+    short:"Q* with (1 − d/p) and the value.",
+    medium:"Unit conversion → Q* → N* → TC<sub>min</sub> or I<sub>max</sub> as asked.",
+    long:"Assumptions → build-up diagram → derivation of average stock → Q* → N*, t<sub>p</sub>, I<sub>max</sub>, TC<sub>min</sub>."
+  },
+  mistakes:[
+    "Using I<sub>max</sub> = Q. The peak stock is Q(1 − d/p).",
+    "Mixing hourly p and d with annual D.",
+    "Taking C<sub>h</sub> = I when C<sub>p</sub> is given; use C<sub>p</sub>I."
+  ],
+  examples:[
+    {id:"m6t4e1", title:"Cable plant: p = 5000 m/h, d = 2500 m/h, Rs 5/m, 25%, set-up Rs 4050",
+     q:"A company produces cable at 5000 metres per hour. It is used at 2500 metres per hour. Cost of cable is Rs 5 per metre, carrying cost 25%, set-up cost Rs 4050 per setup. Determine the optimal number of cycles a year. (One 8-hour shift, 365 days.)",
+     steps:["D = d × 8 × 365 = 2500 × 8 × 365 = <b>7,300,000 m</b> a year.",
+       "C<sub>h</sub> = C<sub>p</sub> I = 5 × 0.25 = 1.25 per metre per year; 1 − d/p = 1 − 0.5 = 0.5.",
+       "Q* = √(2 × 7,300,000 × 4050 / (1.25 × 0.5)) = √(5.913 × 10<sup>10</sup> / 0.625) = <b>307,584 m</b>.",
+       "N* = D / Q* = 7,300,000 / 307,584 = 23.73 ≈ <b>24 cycles</b>.",
+       "Extra: t<sub>p</sub> = Q*/p = 61.5 hours; I<sub>max</sub> = Q*(1 − d/p) = 153,792 m."],
+     answer:"<b>About 24 production cycles a year</b> (Q* ≈ 3.08 lakh metres per cycle).",
+     trap:"The question does not give D. It has to be built from the hourly consumption and the working time; the scan assumes 365 days and one 8-hour shift. State your assumption."}
+  ],
+  practice:[
+    {id:"m6t4p1", d:"moderate", marks:6, q:"Annual demand 4800 units, production rate 12000 units a year, set-up cost Rs 75, carrying cost Rs 2 per unit per year. Find the economic lot size, the maximum stock and the minimum annual cost of set-up and carrying.",
+     hint:"d = D = 4800, so d/p = 0.4.",
+     a:"<p>Q* = √(2 × 4800 × 75 / (2 × 0.6)) = √600,000 = <b>774.6 ≈ 775 units</b>. I<sub>max</sub> = 774.6 × 0.6 = <b>465 units</b>. TC<sub>min</sub> = √(2 × 4800 × 75 × 2 × 0.6) = √864,000 = <b>Rs 929.5</b>.</p><p>Compare with Model 1 on the same data (Q* = 600, cost Rs 1,200): a finite production rate gives larger lots and a lower cost.</p>"}
+  ],
+  questions:[
+    {q:"Derive the economic batch quantity for inventory when replenishment is gradual.", marks:6, d:"moderate", priority:"high", source:"source"},
+    {q:"A company produces an item at a finite rate and uses it at a constant rate; find the optimal number of production runs per year.", marks:5, d:"moderate", priority:"high", source:"source"}
+  ]
+},
+{
+  id:"m6t5", m:"m6", type:"problem-solving", priority:"high", los:[],
+  title:"Model 3 — shortages permitted (back orders)",
+  summary:"Q* = √(2DCo/Ch · (Ch+Cs)/Cs). Stock may go negative; back orders are cleared when the next lot arrives.",
+  whatIs:"<p>If the cost of a shortage per unit is finite, it can pay to let demand go unmet for a while and fill it from the next delivery. The order quantity is then larger than the EOQ, and part of each lot clears back orders.</p>",
+  concept:dgm(dgModel3(), "Stock S is positive for t₁, then back orders (Q − S) build up for t₂.")+
+    "<div class='box tip'><h5>The formulas (C<sub>s</sub> = shortage cost per unit per period)</h5>"+
+    mono("Q* = sqrt( 2 D Co / Ch  x  (Ch + Cs) / Cs )            order quantity\nS* = sqrt( 2 D Co / Ch  x  Cs / (Ch + Cs) )            stock left after clearing back orders\nBack-ordered = Q* - S*\nTCmin = sqrt( 2 D Co Ch  x  Cs / (Ch + Cs) )\nCycle T = Q*/D ,   t1 = S*/D ,   t2 = (Q* - S*)/D")+"</div>"+
+    "<p>Notation follows the deck: S = units left after the back orders are filled (the highest stock), Q − S = shortage per cycle. If C<sub>s</sub> → ∞ the factor (C<sub>h</sub> + C<sub>s</sub>)/C<sub>s</sub> → 1 and you recover Model 1.</p>"+
+    "<h4>When a production rate is also given</h4><p>Combine Models 2 and 3: <span class='mono'>Q* = √( 2DC<sub>o</sub> / (C<sub>h</sub>(1 − d/p)) × (C<sub>h</sub> + C<sub>s</sub>)/C<sub>s</sub> )</span>.</p>"+
+    "<div class='box warning'><h5>Check the notation of the question</h5><p>Some books call the maximum stock Q − S and the back-order level S. Define your symbols in the answer before substituting.</p></div>",
+  needToKnow:[
+    "State the effect of allowing shortages on Q*.",
+    "Compute Q*, S*, the back-ordered quantity and TCmin.",
+    "Find t1, t2 and the cycle time.",
+    "Combine the production-rate factor with the shortage factor."
+  ],
+  recognition:{
+    clues:["&lsquo;Shortage cost&rsquo;, &lsquo;back orders&rsquo;, &lsquo;shortages are permitted&rsquo;.","Three costs given: ordering, carrying, shortage.","&lsquo;How often to make a production run&rsquo; with a shortage cost."],
+    wording:["Determine EOQ and how often to make production runs.","Determine the optimal lot size and the time between set-ups."],
+    firstMove:"Write all three costs and check their units are per unit per period, with D in the same period.",
+    trap:"Using C<sub>s</sub> as a cost per shortage occurrence. It is per unit short, per unit time."
+  },
+  examAnswer:{
+    short:"Q* with the (C<sub>h</sub> + C<sub>s</sub>)/C<sub>s</sub> factor and the number.",
+    medium:"Q* → S* → back-ordered quantity → time between orders.",
+    long:"Assumptions → diagram → derivation → Q*, S*, TC<sub>min</sub>, t<sub>1</sub>, t<sub>2</sub>."
+  },
+  mistakes:[
+    "Putting C<sub>s</sub> in the numerator of the first factor. Q* has (C<sub>h</sub> + C<sub>s</sub>)/C<sub>s</sub>, S* has C<sub>s</sub>/(C<sub>h</sub> + C<sub>s</sub>).",
+    "Reporting S* as the shortage. The shortage is Q* − S*.",
+    "Mixing a monthly cost with an annual demand."
+  ],
+  examples:[
+    {id:"m6t5e1", title:"25 units a month, Rs 30 an order, carrying 0.5, shortage 0.3",
+     q:"Demand is uniform at 25 units a month. Ordering cost is Rs 30. Inventory carrying cost is Rs 0.5 per unit per month and shortage cost is Rs 0.3 per unit per month. Determine the EOQ and how often to order.",
+     steps:["D = 25 per month; C<sub>o</sub> = 30; C<sub>h</sub> = 0.5; C<sub>s</sub> = 0.3.",
+       "Q* = √(2 × 25 × 30 / 0.5 × (0.5 + 0.3)/0.3) = √(3000 × 2.667) = √8000 = 89.44 ≈ <b>90 units</b>.",
+       "Time between orders = Q*/D = 90/25 = <b>3.6 months</b>.",
+       "Extra: S* = √(3000 × 0.3/0.8) = √1125 = 33.5 units; back-ordered = 89.44 − 33.54 = 55.9 units; TC<sub>min</sub> = √(2 × 25 × 30 × 0.5 × 0.375) = Rs 16.77 a month; t<sub>1</sub> = S*/D = 1.34 months, t<sub>2</sub> = 2.24 months."],
+     answer:"<b>Q* ≈ 90 units, ordered every 3.6 months</b>; about 34 units remain after back orders and 56 units are back-ordered.",
+     why:"Without shortages Model 1 gives √(3000) = 54.8 units. Permitting a cheap shortage (0.3 against 0.5 carrying) makes the lot much larger."},
+    {id:"m6t5e2", title:"Production rate and shortage together",
+     q:"Demand 6000 units a year, set-up cost Rs 500, production rate 36,000 a year, holding cost Rs 8 per unit per year, shortage cost Rs 20 per unit per year. Find the optimal lot size and the time between set-ups.",
+     steps:["Both a production rate and a shortage cost are given, so use the combined model. Here d = D = 6000, p = 36,000, d/p = 1/6.",
+       "Q* = √( 2 × 6000 × 500 / (8 × 5/6) × (8 + 20)/20 ) = √( 900,000 × 1.4 ) = √1,260,000 = 1,122.5 ≈ <b>1,123 units</b>.",
+       "Time between set-ups = Q*/D = 1123/6000 = 0.187 year ≈ <b>2.2 months</b>."],
+     answer:"<b>Optimal lot size ≈ 1,123 units, a set-up about every 2.2 months.</b>",
+     trap:"Do not drop (1 − d/p) just because a shortage cost is present. The scan's own solution carries both factors."}
+  ],
+  practice:[
+    {id:"m6t5p1", d:"moderate", marks:6, q:"Annual demand 1200 units, ordering cost Rs 40, holding cost Rs 3 per unit per year, shortage cost Rs 12 per unit per year. Find Q*, the maximum stock S*, the back-ordered quantity and the minimum annual cost.",
+     hint:"The data give whole-number answers.",
+     a:"<p>Q* = √(2 × 1200 × 40 / 3 × 15/12) = √(32,000 × 1.25) = √40,000 = <b>200 units</b>. S* = √(32,000 × 12/15) = √25,600 = <b>160 units</b>. Back-ordered = 200 − 160 = <b>40 units</b>. TC<sub>min</sub> = √(2 × 1200 × 40 × 3 × 12/15) = √230,400 = <b>Rs 480</b>.</p><p>Without shortages (Model 1) Q* = √32,000 = 179 and TC = Rs 537, so allowing shortages saves about Rs 57 a year.</p>"}
+  ],
+  questions:[
+    {q:"Derive the optimal order quantity when shortages are permitted.", marks:6, d:"hard", priority:"high", source:"predicted"},
+    {q:"Determine the economic order quantity and how often to order when shortage is permitted (25 units a month).", marks:5, d:"moderate", priority:"high", source:"source"}
+  ]
+},
+{
+  id:"m6t6", m:"m6", type:"problem-solving", priority:"high", los:[],
+  title:"Model 4 — price breaks (quantity discounts)",
+  summary:"Compute the EOQ at each price, keep it only if it lies in the price range, and compare total costs including purchase cost.",
+  whatIs:"<p>The supplier gives a lower unit price for orders of a minimum size Q<sub>B</sub>. The cheaper price lowers the purchase cost but the larger lot raises carrying cost, so the choice is made by comparing the <b>total annual cost</b>, which now includes D·C<sub>p</sub>.</p>",
+  concept:"<div class='box tip'><h5>The total cost to compare</h5>"+mono("TC(Q, price c) = D c + (D/Q) Co + (Q/2) c I")+"</div>"+
+    "<h4>Procedure — single price break at Q<sub>B</sub></h4>"+mono("1. Q2 = sqrt( 2 D Co / (C2 I) )   at the lower (discount) price C2\n2. If Q2 >= Q_B  -> order Q2, done (the discount is accepted)\n3. If Q2 <  Q_B  -> compute Q1 = sqrt( 2 D Co / (C1 I) ) at the ordinary price\n4. Compare TC(Q_B at C2)   with   TC(Q1 at C1)\n5. Order the quantity with the lower total cost")+
+    "<h4>Several price breaks</h4>"+mono("1. Start at the LOWEST price and move up\n2. At each price compute EOQ_i = sqrt( 2 D Co / (C_i I) )\n3. EOQ_i inside its range  -> candidate Q = EOQ_i\n   EOQ_i below its range    -> candidate Q = the range's lower limit\n   (EOQ_i above its range   -> not feasible at this price)\n4. Total cost of every candidate; choose the least")+
+    "<div class='box warning'><h5>A slip in the folder's own solution</h5><p>The solved problem 6.07 (Rs 6 item, 5% discount at 500) computes TC at 500 = Rs 14,061.6 and TC at 400 = Rs 14,784, which is lower at 500, yet the page concludes &lsquo;discount should be avoided&rsquo;. The numbers say <b>accept the discount and order 500</b>; the closing words contradict them. Follow the numbers.</p></div>",
+  needToKnow:[
+    "State the total-cost expression with purchase cost.",
+    "Run the single-break procedure and decide.",
+    "Run the multiple-break procedure from the lowest price.",
+    "Decide which quantity to order and state the saving."
+  ],
+  recognition:{
+    clues:["&lsquo;Discount&rsquo;, &lsquo;price break&rsquo;, &lsquo;if 500 or more is purchased&rsquo;.","Several prices for several quantity ranges.","&lsquo;Is it advisable to accept the discount?&rsquo;"],
+    wording:["Whether it is advisable to accept the discount, and what should be the order quantity.","Find the optimal order quantity for each price break."],
+    firstMove:"Write the price table with its quantity ranges, then compute the EOQ at the lowest price first.",
+    trap:"Comparing only the EOQ values. The decision is by total cost including D·C<sub>p</sub>."
+  },
+  examAnswer:{
+    short:"EOQ at the discount price, whether it qualifies, the two total costs and the decision.",
+    medium:"Procedure steps with numbers → comparison table → recommendation.",
+    long:"Why the EOQ at a cheaper price can be infeasible → full procedure → comparison → the saving."
+  },
+  mistakes:[
+    "Leaving the purchase cost D·C<sub>p</sub> out of the total, so the discount never looks worth it.",
+    "Taking an EOQ that lies outside its price range as the answer. Use the range's lower limit instead.",
+    "Using the ordinary price in the carrying-cost term for the discounted lot: Q<sub>B</sub> C<sub>2</sub> I/2 uses the <i>discount</i> price."
+  ],
+  examples:[
+    {id:"m6t6e1", title:"Single break: Rs 6 item, 5% off at 500 or more",
+     q:"Annual requirement is 2400 units, each costs Rs 6. The manufacturer offers a 5% discount if 500 or more are purchased. Ordering cost is Rs 32 per order and carrying cost 16%. Is it advisable to accept the discount?",
+     steps:["D = 2400; C<sub>1</sub> = 6; C<sub>2</sub> = 0.95 × 6 = 5.7; C<sub>o</sub> = 32; I = 0.16; Q<sub>B</sub> = 500.",
+       "Q<sub>2</sub> = √(2 × 2400 × 32 / (5.7 × 0.16)) = 410.4 ≈ 411 &lt; 500, so the discount EOQ is not feasible.",
+       "Q<sub>1</sub> = √(2 × 2400 × 32 / (6 × 0.16)) = 400.",
+       "TC at Q<sub>B</sub> = 500: 2400 × 5.7 + (2400/500) × 32 + (500/2) × 5.7 × 0.16 = 13,680 + 153.6 + 228 = <b>Rs 14,061.6</b>.",
+       "TC at Q<sub>1</sub> = 400: 2400 × 6 + (2400/400) × 32 + (400/2) × 6 × 0.16 = 14,400 + 192 + 192 = <b>Rs 14,784</b>.",
+       "14,061.6 &lt; 14,784, so take the discount: order <b>500</b> units."],
+     answer:"<b>Accept the discount and order 500 units</b>: it saves Rs 722.4 a year.",
+     trap:"The handwritten solution ends &lsquo;discount should be avoided&rsquo;, which contradicts its own numbers. Write the conclusion that matches the cost comparison."},
+    {id:"m6t6e2", title:"Gears: 300 a year, Rs 36 each, Rs 2 discount at 200 or more",
+     q:"A company needs 300 special gears a year at Rs 36 each. Ordering cost is Rs 30 and carrying cost 20% a year. The supplier offers a discount of Rs 2 a unit on orders of 200 or more. Is the discount worth taking, and what is the order quantity?",
+     steps:["D = 300; C<sub>1</sub> = 36; C<sub>2</sub> = 34; C<sub>o</sub> = 30; I = 0.2; Q<sub>B</sub> = 200.",
+       "Q<sub>2</sub> = √(2 × 300 × 30 / (34 × 0.2)) = 51.4 ≈ 52 &lt; 200: not feasible. Q<sub>1</sub> = √(2 × 300 × 30 / (36 × 0.2)) = 50.",
+       "TC at 200 (price 34) = 300 × 34 + (300 × 30)/200 + (200/2) × 34 × 0.2 = 10,200 + 45 + 680 = <b>Rs 10,925</b>.",
+       "TC at 50 (price 36) = 300 × 36 + (300 × 30)/50 + (50/2) × 36 × 0.2 = 10,800 + 180 + 180 = <b>Rs 11,160</b>."],
+     answer:"<b>Accept the discount; order 200 gears</b> (saves Rs 235 a year).",
+     why:"The EOQ at the discount price (52) is far below 200, so the discount is taken at the break quantity, not at its own EOQ."},
+    {id:"m6t6e3", title:"Multiple breaks (Nov-19): Rs 40, 39, 38",
+     q:"Demand 1000 units a year, ordering cost Rs 50, carrying cost 25% of unit cost. Price Rs 40 for Q &lt; 150, Rs 39 for 150 ≤ Q &lt; 500, Rs 38 for Q ≥ 500. Find the order quantity.",
+     steps:["EOQ at Rs 38: √(2 × 1000 × 50/(38 × 0.25)) = 102.6 → 103, below 500: infeasible, so the candidate is the range limit <b>500</b>.",
+       "EOQ at Rs 39: 101.3 → 102, below 150: infeasible, so the candidate is <b>150</b>.",
+       "EOQ at Rs 40: 100, inside its range (Q &lt; 150): candidate <b>100</b>.",
+       tbl(["Q","Price","Total cost"],[["100","40","40,000 + 500 + 500 = <b>41,000</b>"],["150","39","39,000 + 333.3 + 731.25 = <b>40,064.6</b> (≈ 40,065)"],["500","38","38,000 + 100 + 2,375 = <b>40,475</b>"]])],
+     answer:"<b>Order 150 units at Rs 39</b>: total annual cost Rs 40,065 is the least of the three.",
+     trap:"The lowest price does not win here: 500 units at Rs 38 carries too much stock. Always compare."}
+  ],
+  practice:[
+    {id:"m6t6p1", d:"moderate", marks:5, q:"D = 1800 a year, ordering cost Rs 60, carrying cost 20%. Price Rs 10 for Q &lt; 300; Rs 9 for Q ≥ 300. Find the order quantity and the total annual cost.",
+     hint:"Start at the lower price. If its EOQ is feasible you are finished.",
+     a:"<p>EOQ at Rs 9 = √(2 × 1800 × 60 / (9 × 0.2)) = √120,000 = 346.4 ≥ 300: feasible. Because it is at the <b>lowest</b> price and feasible, no comparison is needed.</p><p>Order <b>346 units</b>. TC = 1800 × 9 + (1800/346.4) × 60 + (346.4/2) × 9 × 0.2 = 16,200 + 311.8 + 311.8 = <b>Rs 16,823.5</b>.</p>"},
+    {id:"m6t6p2", d:"moderate", marks:4, q:"For the same data, compute the total cost at Q = 329 (the EOQ at Rs 10, ignoring the break) and say why it is not the answer.",
+     hint:"Q = 329 is at least 300, so which price actually applies?",
+     a:"<p>At 329 units the buyer already qualifies for Rs 9, so Rs 10 does not apply; the EOQ at Rs 10 is infeasible for the price it assumes. Using the correct price Rs 9 at Q = 329: TC = 16,200 + 1800/329 × 60 + 329/2 × 1.8 = 16,200 + 328.3 + 296.1 = Rs 16,824.4, slightly above the 16,823.5 at 346. Compare each candidate at <b>its own</b> price.</p>"}
+  ],
+  questions:[
+    {q:"Whether it is advisable to accept a quantity discount, and what the order quantity should be.", marks:5, d:"moderate", priority:"high", source:"source"},
+    {q:"Find the optimal order quantity for an item with several price breaks.", marks:8, d:"hard", priority:"high", source:"source"}
+  ]
+},
+{
+  id:"m6t7", m:"m6", type:"problem-solving", priority:"medium", los:[],
+  title:"Reorder level, safety stock, maximum and average inventory",
+  summary:"Turn the EOQ into a stock-control plan: when to order (ROL) and the highest, lowest and average stock.",
+  whatIs:"<p>The EOQ says how much to order. The reorder level says <b>when</b>: as soon as stock falls to the demand expected during the lead time plus the safety stock.</p>",
+  concept:dgm(dgReorder(), "An order placed at the reorder level arrives after the lead time, as stock reaches the safety level.")+
+    mono("Daily demand        = D / working days\nLead-time demand    = daily demand x lead time\nROL                 = safety stock + lead-time demand\nMaximum stock       = EOQ + safety stock\nMinimum stock       = safety stock\nAverage stock       = (maximum + minimum) / 2  =  EOQ/2 + safety stock\nOrders per year     = D / EOQ"),
+  needToKnow:[
+    "Compute daily demand and lead-time consumption.",
+    "Write ROL, maximum, minimum and average inventory.",
+    "Find the EOQ first when it is not given.",
+    "Read these levels from the stock diagram."
+  ],
+  recognition:{
+    clues:["&lsquo;Procurement time&rsquo;, &lsquo;lead time&rsquo;, &lsquo;safety stock&rsquo;, working days per year.","&lsquo;Re-order level&rsquo;, &lsquo;maximum, minimum and average inventory&rsquo;."],
+    wording:["Determine the EOQ and the re-order level, maximum, minimum and average inventory.","When should an order be placed?"],
+    firstMove:"Compute the EOQ, then daily demand, then ROL. Draw the sawtooth with the four levels marked.",
+    trap:"Forgetting to add the safety stock to the lead-time demand when finding ROL."
+  },
+  examAnswer:{
+    short:"ROL with its two parts shown.",
+    medium:"EOQ → daily demand → ROL → max, min and average inventory.",
+    long:"As medium, with the diagram and a line saying the average stock is EOQ/2 + safety stock."
+  },
+  mistakes:[
+    "Using calendar days when the question gives working days.",
+    "Adding safety stock to the average inventory twice.",
+    "Taking minimum inventory as zero when a safety stock is held."
+  ],
+  examples:[
+    {id:"m6t7e1", title:"50,000 units, Rs 1.2, 15%, order cost Rs 45 (Nov-18)",
+     q:"Annual demand 50,000 units at Rs 1.2 each, carrying cost 15%, ordering cost Rs 45. There are 250 working days, procurement takes 10 days and safety stock is 500 units. Find the EOQ, the reorder level and the maximum, minimum and average inventory.",
+     steps:["EOQ = √(2 × 50,000 × 45 / (1.2 × 0.15)) = √25,000,000 = <b>5,000 units</b>.",
+       "Daily demand = 50,000 / 250 = 200. Lead-time demand = 200 × 10 = 2,000.",
+       "ROL = 500 + 2,000 = <b>2,500 units</b>.",
+       "Maximum = EOQ + safety stock = 5,000 + 500 = <b>5,500</b>. Minimum = <b>500</b>. Average = (5,500 + 500)/2 = <b>3,000</b>."],
+     answer:"<b>EOQ 5,000; ROL 2,500; maximum 5,500; minimum 500; average 3,000 units.</b>",
+     trap:"Average inventory is 3,000, not 2,500: it is EOQ/2 plus the safety stock (2,500 + 500)."}
+  ],
+  practice:[
+    {id:"m6t7p1", d:"easy", marks:5, q:"Annual demand 7200 units, 300 working days, lead time 6 days, safety stock 100, EOQ 600. Find the reorder level, maximum, minimum and average stock, and orders per year.",
+     hint:"Daily demand is 24.",
+     a:"<p>Daily demand = 7200/300 = 24; lead-time demand = 144. <b>ROL = 100 + 144 = 244</b>. Maximum = 600 + 100 = <b>700</b>; minimum = <b>100</b>; average = (700 + 100)/2 = <b>400</b>. Orders per year = 7200/600 = <b>12</b>.</p>"}
+  ],
+  questions:[
+    {q:"Determine the EOQ, re-order level, and the maximum, minimum and average inventory (50,000 units, 250 days, 10 days lead time, safety stock 500).", marks:6, d:"moderate", priority:"medium", source:"source"}
+  ]
+},
+{
+  id:"m6t8", m:"m6", type:"problem-solving", priority:"medium", los:[],
+  title:"Probabilistic inventory — single period and safety stock",
+  summary:"When demand is random: the critical ratio for a one-period order, and safety stock from a service level.",
+  whatIs:"<p>When demand is uncertain you cannot choose a quantity that matches it exactly. You choose how much risk to take. Two standard methods: a <b>single-period</b> (one-off order) rule, and a <b>safety stock</b> sized for a service level.</p>",
+  concept:bx("warning","Not in your folder","<p>The syllabus lists &lsquo;Probabilistic EOQ model&rsquo; but the deck and notes cover Models 1–4 only. This topic gives the two standard textbook methods. Check which version your teacher taught.</p>")+
+    "<h4>Method 1 — single-period order (marginal analysis)</h4>"+
+    mono("Cu = cost of under-stocking one unit (profit lost) = selling price - cost\nCo = cost of over-stocking one unit                  = cost - salvage value\nOrder the smallest Q such that   P(D <= Q)  >=  Cu / (Cu + Co)")+
+    "<p>Use the cumulative probability table of demand; the answer is the first stock level whose cumulative probability reaches the critical ratio.</p>"+
+    "<h4>Method 2 — safety stock for a service level (continuous demand)</h4>"+
+    mono("Lead-time demand ~ Normal(mean, sigma)\nSafety stock = z x sigma        (z from the service level: 95% -> 1.645, 99% -> 2.33)\nROL = mean lead-time demand + safety stock"),
+  needToKnow:[
+    "State the critical-ratio rule with Cu and Co.",
+    "Read the first cumulative probability that reaches the ratio.",
+    "Find safety stock and reorder level for a given service level.",
+    "Explain why higher service levels raise stock steeply."
+  ],
+  recognition:{
+    clues:["Demand given as a probability table and an item that cannot be carried over (perishable).","&lsquo;Probability of a stock-out&rsquo;, &lsquo;service level&rsquo;, standard deviation of demand."],
+    wording:["How many newspapers should be stocked to maximise expected profit?","Find the reorder level for a 95% service level."],
+    firstMove:"Write C<sub>u</sub> and C<sub>o</sub> from prices, then the ratio C<sub>u</sub>/(C<sub>u</sub> + C<sub>o</sub>), then scan the cumulative column.",
+    trap:"Using the cost price as C<sub>o</sub>. The over-stock loss is cost minus salvage value."
+  },
+  examAnswer:{
+    short:"The critical ratio and the stock level it gives.",
+    medium:"C<sub>u</sub>, C<sub>o</sub>, ratio → cumulative table → order quantity.",
+    long:"As medium, plus a line explaining that the optimum stocks more when under-stocking is the costlier error."
+  },
+  mistakes:[
+    "Choosing the stock level with probability just <i>below</i> the ratio. Take the first level whose cumulative probability is at or above it.",
+    "Using the average demand as the order quantity. That is correct only when C<sub>u</sub> = C<sub>o</sub> and the distribution is symmetric.",
+    "Mixing up z for 95% (1.645) and 97.5% (1.96)."
+  ],
+  examples:[
+    {id:"m6t8e1", title:"Single-period order",
+     q:"An item bought at Rs 6 sells at Rs 10; unsold units are salvaged at Rs 2. Demand is 20, 25, 30, 35, 40 with probabilities 0.10, 0.20, 0.30, 0.25, 0.15. How many should be stocked?",
+     steps:["C<sub>u</sub> = 10 − 6 = 4; C<sub>o</sub> = 6 − 2 = 4. Critical ratio = 4/8 = <b>0.5</b>.",
+       tbl(["Demand","20","25","30","35","40"],[["P(D)","0.10","0.20","0.30","0.25","0.15"],["Cumulative","0.10","0.30","<b>0.60</b>","0.85","1.00"]]),
+       "The first cumulative probability ≥ 0.5 is 0.60, at demand 30."],
+     answer:"<b>Stock 30 units.</b>",
+     trap:"When C<sub>u</sub> = C<sub>o</sub> the ratio is 0.5 and the rule picks the median demand (30), not the mean (30.75). Do not simply stock the average."},
+    {id:"m6t8e2", title:"Safety stock at a 95% service level",
+     q:"Demand during lead time is normally distributed with mean 200 and standard deviation 40. Find the safety stock and reorder level for a 95% service level.",
+     steps:["z for 95% = 1.645. Safety stock = 1.645 × 40 = 65.8 ≈ <b>66</b>.",
+       "ROL = 200 + 66 = <b>266 units</b>."],
+     answer:"<b>Safety stock ≈ 66 units; reorder at 266 units.</b>"}
+  ],
+  practice:[
+    {id:"m6t8p1", d:"moderate", marks:4, q:"Use the demand table of the example, but cost Rs 8, selling price Rs 14, salvage Rs 5. How many units should be stocked?",
+     hint:"C<sub>u</sub> = 6, C<sub>o</sub> = 3.",
+     a:"<p>Ratio = 6/(6 + 3) = 0.667. Cumulative probabilities: 0.10, 0.30, 0.60, 0.85, 1.00. The first at or above 0.667 is 0.85, at <b>35 units</b>. A larger under-stocking cost pushes the stock up from 30 to 35.</p>"},
+    {id:"m6t8p2", d:"easy", marks:3, q:"Lead-time demand has mean 500 and standard deviation 50. Find the reorder level for a 99% service level (z = 2.33).",
+     hint:"Safety stock = z × σ.",
+     a:"<p>Safety stock = 2.33 × 50 = 116.5 ≈ 117. ROL = 500 + 117 = <b>617 units</b>.</p>"}
+  ],
+  questions:[
+    {q:"Determine the optimal stock for a single-period perishable item with random demand.", marks:5, d:"moderate", priority:"medium", source:"predicted"}
+  ]
+}
+];
+
 var TOPICS = [].concat(M1_THEORY, M1_THEORY2, M1_NUM1, M1_NUM2, M1_NUM3, M1_QB, M1_COVER,
                        M2_TOPICS, M2_NUM, M2_KENDALL,
-                       M5_THEORY, M5_NUM, M5_ODD);
+                       M3_TOPICS, M4_TOPICS,
+                       M5_THEORY, M5_NUM, M5_ODD,
+                       M6_TOPICS);
 var TBYID = {};
 TOPICS.forEach(function(t){ TBYID[t.id] = t; });
 function topicsOf(m){ return TOPICS.filter(function(t){ return t.m === m; }); }
@@ -3624,6 +4802,128 @@ m5:[
  ["m5t10", "A matrix larger than 2×2, no saddle point, 10 marks",   "Start a deletion log in the margin"]
 ]
 };
+/* ===== 12b · Modules 3, 4 and 6: quick review, formulae, recognition, last-30 ===== */
+REVIEW.m3 = [
+ {t:"Simulation in one sentence", b:"A numerical technique for running experiments on a model of a complex system over an extended period, used when the mathematics is too complex for an analytical answer. <b>It is not an optimisation process.</b>"},
+ {t:"The Monte Carlo seven steps", b:"Measure of effectiveness &rarr; influencing variables &rarr; distribution and <b>cumulative</b> distribution &rarr; random numbers &rarr; read each as a decimal of the cumulative &rarr; put values into the formula &rarr; <b>repeat</b> until the sample is large enough."},
+ {t:"Probability to random-number interval", b:"Cumulative column first. An interval starts <b>one above</b> the previous cumulative figure and ends at its own. Two-decimal probabilities use 00&ndash;99. The last interval must end at 99."},
+ {t:"Use the numbers in the order given", b:"One random number per trial, in the order given, never reused. Average = total &divide; number of trials."},
+ {t:"Excess and shortage are separate columns", b:"Stock held 30, demand 10: unsold 20, short 0. Demand 40: short 10, unsold 0. Never net one day against another."},
+ {t:"Queue simulation columns", b:"arrival | RN | service | <b>start = later of arrival and server free</b> | wait = start &minus; arrival | end | idle. Say how you assigned intervals."},
+ {t:"A short run is only an estimate", b:"Bakery: simulated mean 22, expected value 25.8. The gap is sampling error and is why step 7 says repeat."}
+];
+REVIEW.m4 = [
+ {t:"The one idea", b:"Cut the problem into <b>stages</b>, define a <b>state</b> at each stage, choose a <b>decision</b>, and solve from the last stage back using f<sub>n</sub>(s) = best of { return + f<sub>n+1</sub>(next state) }."},
+ {t:"Principle of optimality", b:"Whatever the initial state and decision, the remaining decisions must be optimal for the state that results. It is why you may solve the last stage first and never revisit it."},
+ {t:"Stagecoach", b:"Table per stage: arc + f(next) for each possible next node; keep the minimum and the node. Trace forward from the start. <b>List every tied route.</b> Greedy cheapest-arc fails (13 against 11)."},
+ {t:"Cargo loading", b:"Stage = item, state = capacity left, decision = units. f<sub>i</sub>(s) = max{ v<sub>i</sub>x + f<sub>i+1</sub>(s &minus; w<sub>i</sub>x) }. Tables run over capacity 0 to W."},
+ {t:"Capital budgeting", b:"Stage = project, state = funds left, decision = allotment x &le; s. f<sub>n</sub>(s) = max{ R<sub>n</sub>(x) + f<sub>n+1</sub>(s &minus; x) }. Check the allotments sum to the budget."},
+ {t:"Reliability", b:"Series system, parallel copies. Component reliability 1 &minus; (1 &minus; r)<sup>k</sup>. The recursion <b>multiplies</b>; start the last stage from 1. Every component needs at least one copy."},
+ {t:"Employment smoothening", b:"Forward recursion. Workforce x<sub>i</sub> &ge; b<sub>i</sub>. f<sub>i</sub>(x) = excess cost + min{ hiring cost + f<sub>i&minus;1</sub>(x<sub>i&minus;1</sub>) }. Firing free unless stated. Start from the initial workforce."}
+];
+REVIEW.m6 = [
+ {t:"Model 1 in one block", b:"<span class='mono'>Q* = &radic;(2DC<sub>o</sub>/C<sub>h</sub>) &middot; N* = D/Q* &middot; T* = Q*/D &middot; TC<sub>min</sub> = &radic;(2DC<sub>o</sub>C<sub>h</sub>)</span>. At the EOQ, ordering cost = carrying cost. C<sub>h</sub> = C<sub>p</sub>I when carrying is a percentage."},
+ {t:"Which model?", b:"A production rate p &rarr; Model 2, factor (1 &minus; d/p). A shortage cost &rarr; Model 3, factor (C<sub>h</sub>+C<sub>s</sub>)/C<sub>s</sub>. A discount &rarr; Model 4. None of these &rarr; Model 1."},
+ {t:"Model 2 peaks below Q", b:"I<sub>max</sub> = Q(1 &minus; d/p), average stock half of that. Q* = &radic;(2DC<sub>o</sub> / (C<sub>h</sub>(1 &minus; d/p))). Convert hourly p and d to the annual D first."},
+ {t:"Model 3 symbols", b:"S* = units left after back orders (maximum stock); Q* &minus; S* = shortage per cycle. Q* has (C<sub>h</sub>+C<sub>s</sub>)/C<sub>s</sub>; S* has C<sub>s</sub>/(C<sub>h</sub>+C<sub>s</sub>)."},
+ {t:"Price breaks: compare total costs", b:"TC = Dc + (D/Q)C<sub>o</sub> + (Q/2)cI, <b>including</b> the purchase cost. EOQ outside its range &rarr; use the range's lower limit. Start at the lowest price."},
+ {t:"Reorder level", b:"ROL = safety stock + lead-time demand. Maximum = EOQ + safety stock; minimum = safety stock; average = EOQ/2 + safety stock."},
+ {t:"ABC, VED, FSN", b:"ABC by annual usage <b>value</b> (top 10% of items A, next 20% B, last 70% C). VED by criticality. FSN by movement. HML by unit price."},
+ {t:"Always say what the total includes", b:"&lsquo;Minimum inventory cost&rsquo; = ordering + carrying. &lsquo;Total annual cost&rsquo; with a price = D&middot;C<sub>p</sub> + ordering + carrying. Write which one you computed."}
+];
+
+CLUES.m3 = [
+ ["m3t1",  "'Define simulation', 'advantages and limitations'",       "Definition, then a two-column table"],
+ ["m3t2",  "'Monte Carlo', 'random number', 'steps'",                 "The seven steps as a numbered list"],
+ ["m3t3",  "A probability table and a list of random numbers",        "Cumulative column, then random-number intervals"],
+ ["m3t4",  "Appointments or arrivals with random service times",      "Columns: arrival | RN | service | start | wait | end | idle"]
+];
+CLUES.m4 = [
+ ["m4t1",  "'Characteristics', 'principle of optimality'",            "Stage, state, decision, return, recursion"],
+ ["m4t2",  "A network in columns, 'shortest route'",                  "Label stages by moves left; f(destination) = 0"],
+ ["m4t3",  "A capacity and items with weight and value",              "Maximise Σvx subject to Σwx ≤ W, then the recursion"],
+ ["m4t4",  "A budget and a return table for each project",           "f₃(s) = R₃(s), then work back"],
+ ["m4t5",  "Components in series, spare units, a budget",             "R(k) = 1 − (1 − r)^k for each component"],
+ ["m4t6",  "Workers needed each month, hiring and excess costs",      "List the allowed workforce for every month"]
+];
+CLUES.m6 = [
+ ["m6t1",  "'Define', types of inventory, costs",                     "Costs table with symbols"],
+ ["m6t2",  "'Classify', 'ABC', 'VED', 'selective control'",           "Usage × price, rank, cumulative percentage"],
+ ["m6t3",  "Demand, order cost, carrying cost, nothing else",         "D, Co, Ch with units, then Q*"],
+ ["m6t4",  "'Produced at the rate of', production rate",              "Convert to annual D; keep (1 − d/p) in the formula"],
+ ["m6t5",  "'Shortage cost', 'back orders'",                          "Three costs, same period as D"],
+ ["m6t6",  "'Discount', 'price break', 'advisable to accept'",        "EOQ at the lowest price, then range check"],
+ ["m6t7",  "'Re-order level', 'safety stock', 'procurement time'",    "EOQ, daily demand, then ROL"],
+ ["m6t8",  "Random demand, perishable item, 'service level'",         "Cu, Co and the critical ratio"]
+];
+
+FORMULAE.push(
+{g:"Simulation (Module 3)", items:[
+ {f:"interval for a value = (previous cumulative + 1) … (its cumulative)", m:"Assigns two-digit random numbers 00–99 to each value in proportion to its probability.", w:"Every Monte Carlo numerical, before the first random number is used."},
+ {f:"average = total of simulated values ÷ number of trials", m:"The simulated mean, an estimate of the true expected value.", w:"The final line of the numerical."},
+ {f:"start = max(arrival, server free)    wait = start − arrival", m:"When service begins and how long the customer waited.", w:"Queue and appointment simulations."}
+]},
+{g:"Dynamic programming (Module 4)", items:[
+ {f:"f_n(s) = opt over x of { r_n(s, x) + f_(n+1)(next state) }", m:"Best total from stage n onward, from state s.", w:"The general backward recursion; solve from the last stage."},
+ {f:"stagecoach: f(i) = min over j of { c_ij + f(j) },  f(destination) = 0", m:"Least cost from node i to the destination.", w:"Shortest-path tables."},
+ {f:"cargo: f_i(s) = max over x of { v_i x + f_(i+1)(s − w_i x) }", m:"Best value with capacity s using items i onward.", w:"Knapsack tables."},
+ {f:"budget: f_n(s) = max over x ≤ s of { R_n(x) + f_(n+1)(s − x) }", m:"Best return from projects n onward with funds s.", w:"Capital budgeting tables."},
+ {f:"reliability: f_i(s) = max over k of { [1 − (1 − r_i)^k] × f_(i+1)(s − k c_i) }", m:"Best system reliability from components i onward with budget s.", w:"Multiplicative, with f = 1 after the last component."},
+ {f:"employment: f_i(x) = C1(x − b_i) + min { C2(x − x') + f_(i−1)(x') }", m:"Least cost to month i ending at workforce x.", w:"Forward recursion with excess and hiring costs."}
+]},
+{g:"Inventory — Model 1 (basic EOQ)", items:[
+ {f:"TC = (D/Q) Co + (Q/2) Ch", m:"Yearly ordering plus carrying cost.", w:"Derivation, and checking an order size that is not the EOQ."},
+ {f:"Q* = √(2 D Co / Ch)     (Ch = Cp I if a %)", m:"Order quantity that makes total cost least.", w:"Any question with no production rate, no shortage and no discount."},
+ {f:"N* = D / Q*      T* = Q* / D", m:"Orders per year and time between orders.", w:"After Q*."},
+ {f:"TCmin = √(2 D Co Ch)   [+ D Cp with purchase]", m:"Least yearly cost of ordering and carrying.", w:"State whether the purchase cost is added."}
+]},
+{g:"Inventory — Model 2 (finite replenishment)", items:[
+ {f:"Q* = √( 2 D Co / ( Ch (1 − d/p) ) )", m:"Economic batch size when stock builds up at p − d.", w:"A production rate is given."},
+ {f:"Imax = Q (1 − d/p)      tp = Q / p", m:"Highest stock and the length of a production run.", w:"After Q*."},
+ {f:"TCmin = √( 2 D Co Ch (1 − d/p) )", m:"Least yearly set-up plus carrying cost.", w:"As asked."}
+]},
+{g:"Inventory — Model 3 (shortages permitted)", items:[
+ {f:"Q* = √( 2 D Co / Ch × (Ch + Cs) / Cs )", m:"Order quantity when back orders are allowed.", w:"A shortage cost is given."},
+ {f:"S* = √( 2 D Co / Ch × Cs / (Ch + Cs) )", m:"Units left after back orders are filled (maximum stock).", w:"After Q*; shortage = Q* − S*."},
+ {f:"TCmin = √( 2 D Co Ch × Cs / (Ch + Cs) )", m:"Least cost including shortage.", w:"As asked."},
+ {f:"Q* = √( 2 D Co / (Ch (1 − d/p)) × (Ch + Cs)/Cs )", m:"Models 2 and 3 combined.", w:"Both a production rate and a shortage cost."}
+]},
+{g:"Inventory — Model 4 (price breaks) and stock levels", items:[
+ {f:"TC(Q, c) = D c + (D/Q) Co + (Q/2) c I", m:"Total yearly cost including the purchase cost.", w:"Comparing candidates at different prices."},
+ {f:"EOQ at the lowest price feasible ⇒ order it", m:"If it lies in its range no comparison is needed.", w:"Start every price-break problem at the lowest price."},
+ {f:"ROL = safety stock + (D / working days) × lead time", m:"The stock level at which to order.", w:"Reorder-level questions."},
+ {f:"Max = EOQ + safety stock;  Min = safety stock;  Avg = (Max + Min)/2", m:"Levels on the stock diagram.", w:"After the EOQ."},
+ {f:"order Q with P(D ≤ Q) ≥ Cu / (Cu + Co)", m:"Single-period stock level; Cu = price − cost, Co = cost − salvage.", w:"Perishable item with random demand."},
+ {f:"ROL = mean lead-time demand + z σ", m:"Reorder level for a service level.", w:"Normal lead-time demand."}
+]});
+
+TREES.push(
+{
+  title:"Which inventory model?",
+  rows:[
+   ["Demand, order cost, carrying cost only", "Model 1: Q* = √(2DCo/Ch)", "m6t3"],
+   ["A production rate (produced and used at the same time)", "Model 2: add the factor (1 − d/p)", "m6t4"],
+   ["A shortage cost, back orders allowed", "Model 3: add the factor (Ch+Cs)/Cs", "m6t5"],
+   ["A discount or several price ranges", "Model 4: compare total costs", "m6t6"],
+   ["Lead time, safety stock, 'when to order'", "Reorder level and stock levels", "m6t7"],
+   ["Random demand, perishable item or service level", "Critical ratio / safety stock", "m6t8"],
+   ["A list of items to classify by usage value", "ABC (and VED, FSN)", "m6t2"]
+  ]
+},
+{
+  title:"Simulation or dynamic programming?",
+  rows:[
+   ["Probability table plus a list of random numbers", "Monte Carlo simulation: intervals, trials, average", "m3t3"],
+   ["Random service times, 'average waiting time and idle time'", "Queue simulation table", "m3t4"],
+   ["A network drawn in stages, 'shortest route'", "Stagecoach by backward recursion", "m4t2"],
+   ["A capacity and items to load", "Cargo loading (knapsack)", "m4t3"],
+   ["A budget to share among projects", "Capital budgeting", "m4t4"],
+   ["Components in series, spares, a budget", "Reliability", "m4t5"],
+   ["Workers needed each month, hiring cost", "Employment smoothening", "m4t6"]
+  ]
+});
+
+
 /* ===== 14 · quiz bank ===== */
 var QUIZ = [
 {t:"m1t1", stage:"concept", q:"Which definition of OR is attributed to H. A. Taha?",
@@ -4201,6 +5501,77 @@ var QUIZ4 = [
  e:"Both failures are real. Rounding up can violate a constraint the fractional solution satisfied; rounding down can land inside the region but at a worse objective than some other integer point. With many variables there are too many rounding candidates to check, which is precisely why cutting plane and branch and bound exist."}
 ];
 QUIZ = QUIZ.concat(QUIZ4);
+/* ===== 14b · quiz bank for Modules 3, 4 and 6 ===== */
+var QUIZ5 = [
+{t:"m3t1", stage:"concept", q:"Which statement about simulation is true?",
+ o:["It is an optimisation process that gives the best answer","It evaluates the alternatives you give it but does not generate the solution technique","It can only be applied to problems with certainty","It always needs less time than an analytical model"], a:1,
+ e:"The deck lists 'not an optimisation process' and 'evaluates solutions but does not generate the solution technique' among its disadvantages. It is used where uncertainty exists."},
+{t:"m3t1", stage:"recognise", q:"Simulation is most appropriate when:",
+ o:["a simple formula gives the exact answer","the mathematics describing the system is too complex for an analytical solution","there is only one decision variable","the data contain no uncertainty"], a:1,
+ e:"Simulation substitutes for a mathematical model when the system is too complex to solve analytically."},
+{t:"m3t2", stage:"concept", q:"In the Monte Carlo method, each random number is treated as:",
+ o:["a probability of the event","a decimal value of the cumulative probability distribution","the demand itself","a trial count"], a:1,
+ e:"Step 5 of the method: consider each random number as a decimal value of the cumulative probability distribution, then read off the variable."},
+{t:"m3t2", stage:"solve", q:"Probabilities 0.30, 0.45, 0.20, 0.05 for values 0, 1, 2, 3. The random number 78 gives the value:",
+ o:["0","1","2","3"], a:2,
+ e:"Cumulative 0.30, 0.75, 0.95, 1.00 gives intervals 00–29, 30–74, 75–94, 95–99. The number 78 is in 75–94, so the value is 2."},
+{t:"m3t2", stage:"concept", q:"The last random-number interval in a two-decimal distribution must end at:",
+ o:["100","50","99","0.99 with a remainder"], a:2,
+ e:"The cumulative probability reaches 1.00, which with two-digit numbers is the interval ending at 99. If it does not, the cumulative column has an error."},
+{t:"m3t3", stage:"solve", q:"A bakery makes 30 cakes. Simulated demands are 30, 10, 30. Total unsold cakes over the three days:",
+ o:["0","20","40","60"], a:1,
+ e:"Unsold = max(30 − demand, 0) each day: 0, 20, 0, total 20."},
+{t:"m3t3", stage:"solve", q:"Ten simulated daily demands total 220. The average daily demand is:",
+ o:["10","22","220","25.8"], a:1,
+ e:"Average over the 10 trials = 220 ÷ 10 = 22. 25.8 is the theoretical expected demand, not the simulated average."},
+{t:"m3t4", stage:"solve", q:"A patient arrives at 9:00; the doctor is busy until 9:15. Service takes 45 minutes. The patient's waiting time and end of service are:",
+ o:["0 minutes and 9:45","15 minutes and 10:00","45 minutes and 10:00","15 minutes and 9:45"], a:1,
+ e:"Service starts at the later of arrival (9:00) and free time (9:15): 9:15. Wait = 15 minutes. End = 9:15 + 45 = 10:00."},
+{t:"m4t1", stage:"concept", q:"Bellman's principle of optimality says that after the first decision:",
+ o:["the cheapest next arc must be taken","the remaining decisions must be optimal for the resulting state","all later stages can be ignored","the stages must be solved forward only"], a:1,
+ e:"Whatever the initial state and decision, the remaining decisions must form an optimal policy for the state that results. Choosing the cheapest next arc is a greedy rule, which DP does not use."},
+{t:"m4t1", stage:"concept", q:"In a capital-budgeting dynamic programming problem the state is usually:",
+ o:["the project number","the money still available to allot","the return of the project","the number of projects"], a:1,
+ e:"The project is the stage; the state is the funds left, which decides how much can be allotted to the remaining projects."},
+{t:"m4t2", stage:"solve", q:"From node X the arcs are to Y (cost 4, f(Y) = 6) and to Z (cost 7, f(Z) = 2). The value f(X) is:",
+ o:["9","10","11","4"], a:0,
+ e:"f(X) = min{4 + 6, 7 + 2} = min{10, 9} = 9, going to Z."},
+{t:"m4t5", stage:"concept", q:"In the reliability problem, system reliability for components in series is found by:",
+ o:["adding component reliabilities","multiplying component reliabilities","taking the largest","taking the smallest"], a:1,
+ e:"A series system works only if every component works, so reliabilities multiply. The DP recursion is therefore multiplicative and starts from 1."},
+{t:"m4t3", stage:"concept", q:"In cargo-loading DP, the decision at a stage is:",
+ o:["the capacity of the ship","the number of units of that item to load","the value of the item","the weight of the cargo already loaded"], a:1,
+ e:"Stage = item type, state = capacity left, decision = number of units x of that item."},
+{t:"m6t1", stage:"concept", q:"Inventory control answers which two questions?",
+ o:["Who to buy from and at what price","When to order and how much to order","How many items to sell and where","How long to store and how to insure"], a:1,
+ e:"The deck says inventory control deals with order level (when to order) and order quantity (how much to order)."},
+{t:"m6t3", stage:"solve", q:"D = 4800 units a year, Co = Rs 75 per order, Ch = Rs 2 per unit per year. The EOQ is:",
+ o:["300","600","1200","2400"], a:1,
+ e:"Q* = √(2 × 4800 × 75 / 2) = √360,000 = 600."},
+{t:"m6t3", stage:"concept", q:"At the economic order quantity in the basic model:",
+ o:["ordering cost is twice carrying cost","ordering cost equals carrying cost","carrying cost is zero","total cost is zero"], a:1,
+ e:"Setting dTC/dQ = 0 gives (D/Q)C<sub>o</sub> = (Q/2)C<sub>h</sub>: the two costs are equal at the EOQ."},
+{t:"m6t3", stage:"solve", q:"Annual demand 10,000, price Rs 2, order cost Rs 36, carrying cost 9% of the item's value. Minimum annual ordering plus carrying cost:",
+ o:["Rs 180","Rs 360","Rs 720","Rs 20,360"], a:1,
+ e:"C<sub>h</sub> = 2 × 0.09 = 0.18; TC<sub>min</sub> = √(2 × 10,000 × 36 × 0.18) = Rs 360. The Rs 20,360 would include the Rs 20,000 purchase cost."},
+{t:"m6t4", stage:"select", q:"The item is produced at a finite rate p and used at rate d. Which factor appears under the root in the EOQ formula?",
+ o:["(1 − d/p)  in the denominator","(Ch + Cs)/Cs","(1 + d/p)","p/d in the numerator"], a:0,
+ e:"Model 2: Q* = √(2DC<sub>o</sub> / (C<sub>h</sub>(1 − d/p))). (C<sub>h</sub>+C<sub>s</sub>)/C<sub>s</sub> belongs to Model 3."},
+{t:"m6t5", stage:"select", q:"Allowing shortages (a finite shortage cost) makes the optimal order quantity:",
+ o:["smaller than the basic EOQ","the same as the basic EOQ","larger than the basic EOQ","zero"], a:2,
+ e:"Q* is the basic EOQ multiplied by √((C<sub>h</sub>+C<sub>s</sub>)/C<sub>s</sub>), which is greater than 1."},
+{t:"m6t6", stage:"concept", q:"When comparing an ordinary price with a discount price, the decision is made on:",
+ o:["the EOQ values only","total annual cost including the purchase cost","carrying cost only","ordering cost only"], a:1,
+ e:"The cheaper price lowers the purchase cost but a larger lot raises carrying cost. Compare D·c + (D/Q)C<sub>o</sub> + (Q/2)cI for each candidate."},
+{t:"m6t7", stage:"solve", q:"Annual demand 50,000 over 250 working days, procurement time 10 days, safety stock 500. The reorder level is:",
+ o:["2,000","2,500","5,500","500"], a:1,
+ e:"Lead-time demand = (50,000/250) × 10 = 2,000. ROL = 2,000 + 500 = 2,500."},
+{t:"m6t8", stage:"solve", q:"Cu = 4 and Co = 4 for a perishable item. The critical ratio is:",
+ o:["0.25","0.5","0.75","1"], a:1,
+ e:"C<sub>u</sub>/(C<sub>u</sub> + C<sub>o</sub>) = 4/8 = 0.5. Order the smallest quantity whose cumulative demand probability reaches 0.5."}
+];
+QUIZ = QUIZ.concat(QUIZ5);
+
 /* ===== 15 · progress model ===== */
 var KEY = "or_mse_study_v1";
 var THEME_KEY = "sem7.theme";
@@ -4409,7 +5780,7 @@ function moduleTitle(m){
 }
 function topicCard(t){
   var p = topicProgress(t);
-  return SEM7.ui.topicCard({title:esc(t.title), summary:esc(t.summary), high:t.priority === "high", pill:prioPill(t.priority),
+  return SEM7.ui.topicCard({linkTitle:true, title:esc(t.title), summary:esc(t.summary), high:t.priority === "high", pill:prioPill(t.priority),
     state:topicStatus(t.id), done:p.done, total:p.total, attrs:'data-go="topic" data-id="'+esc(t.id)+'"'});
 }
 function topicSequence(){
@@ -4485,13 +5856,15 @@ function viewTopic(id){
   var nb = SEM7.ui.neighbours(topicSequence(), t.id, moduleName);
   function side(x){ return x && {title:esc(x.t.title), note:x.note, attrs:'data-go="topic" data-id="'+esc(x.t.id)+'"'}; }
   var ea = t.examAnswer || {}, rc = t.recognition || {};
+  /* the first diagram sits above the concept text, outside the text reshaper */
+  var fig = "", cc = (t.whatIs + t.concept).replace(/<figure class='dgm'>[\s\S]*?<\/figure>/, function(m){ fig = m; return ""; });
   app.innerHTML = SEM7.ui.topic({
     head:{
       crumb:[{label:esc(moduleName(t.m))+' &middot; '+esc(moduleTitle(t.m)), attrs:modLink},
              trk ? {label:esc(trk.label), attrs:modLink+' data-sub="'+esc(trk.id)+'"'} : null],
       title:esc(t.title), meta:meta,
       progress:{done:p.done, total:p.total, unit:"questions worked"}},
-    concept:t.whatIs+t.concept, can:(t.needToKnow || []).map(esc),
+    diagram:fig, concept:cc, can:(t.needToKnow || []).map(esc),
     answer:[{label:"Short &middot; 2&ndash;3 marks", marks:3, body:ea.short},
             {label:"Medium &middot; 5 marks", marks:5, body:ea.medium},
             {label:"Long &middot; 10 marks", marks:10, body:ea.long}],
@@ -4525,7 +5898,7 @@ function viewRecog(){
     h += '</table></div>';
   });
 
-  ["m1","m5"].forEach(function(m){
+  ["m1","m3","m4","m5","m6"].forEach(function(m){
     h += '<h2>'+esc(moduleName(m))+' &mdash; clue to topic</h2><div class="tw"><table>'+
       '<tr><th>Topic</th><th>Strongest clue</th><th>First move</th><th></th></tr>';
     (CLUES[m] || []).forEach(function(c){
@@ -5273,6 +6646,16 @@ var LAST30 = [
   ["m1", "Feasible = satisfies all constraints. Optimal = feasible <i>and</i> best objective value. Always give a one-line example."],
   ["m1", "Answer in the question's own words — a production plan, a schedule, a strategy per player — not a bare number."]
 ];
+LAST30.push(
+  ["m3", "Monte Carlo: <b>cumulative</b> column &rarr; random-number intervals (00&ndash;99, last one ends at 99) &rarr; one random number per trial in the order given &rarr; average = total &divide; trials."],
+  ["m3", "Simulation is <b>not an optimisation</b>; it evaluates alternatives. Advantages: complex systems, risk assessment. Disadvantages: expensive, no optimum, a sample estimate."],
+  ["m4", "DP: stages &rarr; states &rarr; decision &rarr; return. f<sub>n</sub>(s) = best{ r + f<sub>n+1</sub> }, solved from the last stage back. Principle of optimality in one sentence."],
+  ["m4", "Stagecoach: arc + f(next), minimum, node chosen; trace forward; list all tied routes. Reliability multiplies; budget allotments must sum to the budget."],
+  ["m6", "EOQ = &radic;(2DC<sub>o</sub>/C<sub>h</sub>); C<sub>h</sub> = C<sub>p</sub>I; N* = D/Q*; TC<sub>min</sub> = &radic;(2DC<sub>o</sub>C<sub>h</sub>). Ordering cost = carrying cost at the EOQ."],
+  ["m6", "Production rate &rarr; &times;(1 &minus; d/p) inside the root. Shortages &rarr; &times;(C<sub>h</sub>+C<sub>s</sub>)/C<sub>s</sub>. Discount &rarr; compare <b>total cost including D&middot;C<sub>p</sub></b>, from the lowest price."],
+  ["m6", "ROL = safety stock + lead-time demand; max = EOQ + safety; min = safety; average = EOQ/2 + safety."]
+);
+
 
 function viewPlan(){
   var h = '<h1>Exam Plan</h1>'+
@@ -5364,7 +6747,7 @@ function viewPlan(){
 
   h += '<h2>Last 30 minutes — the whole checklist</h2>'+
     '<p class="small muted">Nothing new here. If you cannot reproduce a line from memory, open its topic; otherwise move on.</p>';
-  ["m2","m5","m1"].forEach(function(m){
+  ["m2","m5","m1","m3","m4","m6"].forEach(function(m){
     h += '<h3>'+esc(moduleName(m))+'</h3><ul class="small">';
     LAST30.filter(function(r){ return r[0] === m; }).forEach(function(r){ h += '<li>'+r[1]+'</li>'; });
     h += '</ul>';

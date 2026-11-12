@@ -53,7 +53,7 @@ programming). Low-priority material is marked as such rather than omitted.
 ## Tab map
 
 ```
-Dashboard | Plan | Module 1 | Module 2 | Module 5 | Recognition | Quiz | Formulae | Exam Mode
+Dashboard | Plan | Module 1 | Module 2 | Module 3 | Module 4 | Module 5 | Module 6 | Recognition | Quiz | Formulae | Exam Mode
                                                      [ search · theme · settings ]
 ```
 
@@ -63,10 +63,13 @@ Dashboard | Plan | Module 1 | Module 2 | Module 5 | Recognition | Quiz | Formula
 | **Plan** | The exam-prep dashboard: evidence, module priority, LO table, 5-hour schedule, last-30 checklist. |
 | **Module 1** | Introduction to OR & Linear Programming. Sub-tabs: Numericals · Theory · Quick Review. |
 | **Module 2** | Queuing Models — 5 topics, 19 markable questions, 23 quiz questions. |
+| **Module 3** | Simulation — Monte Carlo, random-number intervals, queue simulation. 4 topics. Sub-tabs: Numericals · Theory · Quick Review. |
+| **Module 4** | Dynamic Programming — characteristics, stagecoach, cargo loading, capital budgeting, reliability, employment smoothening. 6 topics. **No lecture material exists for this module**: written from the standard textbook method and flagged on every topic. |
 | **Module 5** | Game Theory. Sub-tabs: Numericals · Theory · Quick Review. |
+| **Module 6** | Inventory Models — costs and terminology, ABC/VED/FSN, Models 1–4 (EOQ, finite replenishment, shortages, price breaks), reorder level, probabilistic models. 8 topics. Built from the 6.01 deck and the handwritten problems 6.02–6.10; the probabilistic topic is textbook-only. |
 | **Recognition** | The read → classify → first move habit, four decision trees, and a clue → topic lookup per module. The index, not the content. |
-| **Quiz** | 158 MCQs in 8 sets of 20. A set is answered in full, submitted once, and scored out of 20. Reset button clears all quiz data. |
-| **Formulae** | 43 entries in 10 groups: the formula, what it means in words, and when you use it. |
+| **Quiz** | 180 MCQs in 9 sets of 20. A set is answered in full, submitted once, and scored out of 20. Reset button clears all quiz data. |
+| **Formulae** | 101 entries in 21 groups: the formula, what it means in words, and when you use it. |
 | **Exam Mode** | Time budget, running order, and the last-thirty-minutes discipline list. No formulas, no examples. |
 
 There is no separate Practice, Solved Examples, Flashcards, Important Questions, Revision or
@@ -84,21 +87,21 @@ cannot yet do.
 
 | Item | Count |
 |---|---|
-| Topics | **44** (Module 1: 27 · Module 2: 6 · Module 5: 11) |
-| — high priority | 18 |
-| — medium priority | 9 |
-| — low priority | 3 |
-| Numericals track | 16 topics |
-| Theory track | 14 topics |
-| Worked examples | **51** |
-| Practice questions | **83** |
-| **Total markable questions** | **160** |
-| Likely exam questions | 59 (50 from source material, 9 predicted — 15%) |
-| Quiz MCQs | **158**, in 8 sets of 20 |
-| Formula entries | 43, in 10 groups |
-| Quick review cards | 18 (Module 1: 10 · Module 5: 8) |
+| Topics | **62** (Module 1: 27 · 2: 6 · 3: 4 · 4: 6 · 5: 11 · 6: 8) |
+| — high priority | 37 |
+| — medium priority | 8 |
+| — low priority | 17 |
+| Numericals track | 39 topics |
+| Theory track | 23 topics |
+| Worked examples | **82** |
+| Practice questions | **127** |
+| **Total markable questions** | **209** |
+| Likely exam questions | 133 |
+| Quiz MCQs | **180**, in 9 sets of 20 |
+| Formula entries | 101, in 21 groups |
+| Quick review cards | 49 (one set per module) |
 | Learning outcomes covered | 5 of 8 (LO1, LO3, LO6, LO7, LO8) |
-| File size | 568 KB, zero external requests |
+| File size | 715 KB, zero external requests |
 
 Every worked example has its solution hidden behind a button, so the usable question bank
 is all 112 items, not just the 69 practice questions.
