@@ -47,7 +47,7 @@
 /* One accent per subject (the same colours the hub uses), lifted for dark mode. */
 html[data-subject="ai"]{--accent:#4a48c4}
 html[data-subject="nlp"]{--accent:#2c5f8a}
-html[data-subject="ads"]{--accent:#1f5f8b}
+html[data-subject="ads"]{--accent:#c2410c}
 html[data-subject="or"]{--accent:#2f5bd0}
 html[data-subject="dl"]{--accent:#8a5a2b}
 :root, html[data-subject]{

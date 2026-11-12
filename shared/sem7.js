@@ -43,7 +43,7 @@
     { code:"nlp", short:"NLP", name:"Natural Language Processing",  course:"CEPEC7032", date:"2026-11-21",
       accent:"#2c5f8a", keys:["nlpExamPrepProgress_v3", "nlpExamPrepProgress_v2"] },
     { code:"ads", short:"ADS", name:"Applied Data Science",         course:"CEPEC7041", date:"2026-11-25",
-      accent:"#1f5f8b", keys:["ads_study_guide_cepec7041_v2"] },
+      accent:"#c2410c", keys:["ads_study_guide_cepec7041_v2"] },
     { code:"or",  short:"OR",  name:"Operations Research",          course:"OEC7015",  date:"2026-11-27",
       accent:"#2f5bd0", keys:["or_mse_study_v1"] },
     { code:"dl",  short:"DL",  name:"Deep Learning",                course:"HMCAL703", date:"2026-11-30",
@@ -1005,6 +1005,10 @@
   /* OPEN is keyed by the sanitised id; keep the lookups in render consistent */
   function isOpen(key){ return !!OPEN[pid(key)]; }
 
+  /* "Analyse the result": what to write after a numerical answer (exam marks interpretation) */
+  function analysisBox(a){
+    return '<div class="box exam s7-analysis"><h5>Analyse the result</h5>' + (/^\s*</.test(a) ? a : "<p>" + a + "</p>") + "</div>";
+  }
   function exampleCard(e, mark){
     var k = "ex-" + e.id, pre = (e.boxes || []).map(function(x){
       return '<div class="s7-mini"><h5>' + x.h + "</h5><div>" + x.b + "</div></div>";
@@ -1019,6 +1023,7 @@
       panel(k, (pre ? '<div class="s7-minis">' + pre + "</div>" : "") +
         (e.body || "") + steps +
         (e.answer ? '<div class="box tip"><h5>Answer</h5>' + (/^\s*</.test(e.answer) ? e.answer : "<p>" + e.answer + "</p>") + "</div>" : "") +
+        (e.analysis ? analysisBox(e.analysis) : "") +
         (e.why ? '<div class="box neutral"><h5>Why it works</h5><p>' + e.why + "</p></div>" : "") +
         (e.trap ? '<div class="box mistake"><h5>Watch out</h5><p>' + e.trap + "</p></div>" : "")) +
       "</article>";
@@ -1032,7 +1037,7 @@
       '<div class="s7-q">' + p.q + "</div>" +
       '<div class="btnrow">' + toggleBtn(k, "Show solution", true) + (p.hint ? toggleBtn(kh, "Hint") : "") + markBtn(mark) + "</div>" +
       (p.hint ? panel(kh, '<p class="s7-hint">' + icon("zap") + "<span>" + p.hint + "</span></p>") : "") +
-      panel(k, /^\s*</.test(p.a || "") ? p.a : rich(p.a)) + "</article>";
+      panel(k, (/^\s*</.test(p.a || "") ? p.a : rich(p.a)) + (p.analysis ? analysisBox(p.analysis) : "")) + "</article>";
   }
 
   /* o: {head (for UI.head), key:{t, b}, concept, can:[...], extra, answer:[{label, marks, body}],
