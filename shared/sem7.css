@@ -523,6 +523,9 @@ h2.s7-h2 > .s7-core{margin-left:auto}
 .s7-tcard-f .bar{flex:1 1 auto; height:5px}
 .s7-tcard-f .s7-count{font-size:.8rem; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
 .s7-tcard-f .btn{min-height:30px; padding:0 14px; flex:none}
+.s7-tlink{display:block; width:100%; text-align:left; background:none; border:0; padding:0; margin:0; font:inherit; color:inherit; cursor:pointer}
+.s7-tlink:hover{color:var(--accent-ui); text-decoration:underline}
+.s7-tlink:focus-visible{outline:2px solid var(--accent-ui); outline-offset:2px; border-radius:3px}
 
 /* ---------- 6b · topic page: the six-section study method (SEM7.ui.topic) ---------- */
 .s7-topic{--line:var(--border)}

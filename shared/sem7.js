@@ -823,11 +823,11 @@
     var st = o.state || stateOf(o.done || 0, o.total || 0);
     return '<div class="s7-tcard' + (st === "done" ? " is-done" : (o.high ? " is-high" : "")) + '">' +
       '<div class="s7-tcard-h"><span class="s7-dot' + (st === "none" ? "" : " is-" + st) + '" role="img" aria-label="' + STATUS_LABEL[st] + '"></span>' +
-      "<h3>" + o.title + "</h3>" + (o.pill || "") + "</div>" +
+      "<h3>" + (o.linkTitle ? '<button type="button" class="s7-tlink" ' + o.attrs + ">" + o.title + "</button>" : o.title) + "</h3>" + (o.pill || "") + "</div>" +
       (o.summary ? "<p>" + o.summary + "</p>" : "") +
       '<div class="s7-tcard-f"><span class="bar" aria-hidden="true"><i style="width:' + pct + '%"' + (pct >= 100 ? ' class="s7-full"' : "") + "></i></span>" +
       '<span class="s7-count">' + (o.total ? o.done + " / " + o.total + " " + (o.unit || "questions") : STATUS_LABEL[st]) + "</span>" +
-      '<button type="button" class="btn" ' + o.attrs + ">Open</button></div></div>";
+      (o.linkTitle ? "" : '<button type="button" class="btn" ' + o.attrs + ">Open</button>") + "</div></div>";
   };
 
   /* ---------- topic page: the six-section study method ----------
@@ -1069,7 +1069,6 @@
         /* a rung can also carry its question, a hidden model answer and a mark button */
         return '<div class="s7-rung"' + (x.id ? ' id="' + esc(x.id) + '"' : "") + '><div class="s7-rung-h"><b>' + x.label + "</b>" +
           (n != null ? '<span class="s7-min">' + minutes(n) + "</span>" : "") + "</div>" +
-          (n != null ? '<span class="s7-rung-bar" aria-hidden="true"><i style="width:' + Math.round(n / top * 100) + '%"></i></span>' : "") +
           (x.q ? '<div class="s7-q">' + x.q + "</div>" : "") +
           '<div class="s7-rung-b">' + visualize(x.body) + "</div>" +
           (x.more || x.mark ? '<div class="btnrow">' + (x.more ? toggleBtn(x.more.key, "Model answer") : "") + markBtn(x.mark) + "</div>" +
@@ -1122,8 +1121,7 @@
       sec("questions", "Likely exam questions", '<div class="s7-qs">' + qs.map(function(q){
         var n = marksOf(q.marks);
         return '<div class="s7-qrow"><div class="s7-qt">' + q.q + "</div>" +
-          '<div class="s7-qm">' + (n != null ? '<span class="s7-qbar" aria-hidden="true"><i style="width:' + Math.round(n / qtop * 100) + '%"></i></span>' +
-            "<b>" + esc(q.marks) + " marks</b><span>" + minutes(n) + "</span>" : "") +
+          '<div class="s7-qm">' + (n != null ? "<b>" + esc(q.marks) + " marks</b><span>" + minutes(n) + "</span>" : "") +
           (q.source ? '<span class="pill' + (q.source === "source" ? "" : " s7-pred") + '">' +
             (q.source === "source" ? "From source" : "Likely pattern") + "</span>" : "") + "</div></div>";
       }).join("") + "</div>", qs.length);
