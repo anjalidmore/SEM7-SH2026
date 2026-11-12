@@ -57,6 +57,7 @@
   var DIFF_K = { 1:0.22, 2:0.28, 3:0.34, 4:0.40, 5:0.46 };   /* study hours per lecture hour: a fast learner */
   var REFRESH = 0.4;                                 /* an MSE module is a refresh */
   var SPLIT = { core:0.55, deepen:0.20, revise:0.25 };
+  var ONLY_FROM = { dl:"2026-11-28" };               /* a subject studied only from this day (DL: the two days before it) */
   var LEND_CAP = 0.20;                               /* most of a subject's own days it can lend */
 
   /* ---------- the evidence ----------
@@ -293,7 +294,7 @@
     units.forEach(function(u){ if(u.last) u.owner = u.slot.only; });
     function freeUnits(code){
       var dl = byCode[code].examDate;
-      return units.filter(function(u){ return !u.owner && !u.recall && !u.slot.only && u.at.getTime() + UNIT * 36e5 <= dl.getTime(); });
+      return units.filter(function(u){ return !u.owner && !u.recall && !u.slot.only && u.at.getTime() + UNIT * 36e5 <= dl.getTime() && (!ONLY_FROM[code] || u.slot.ymd >= ONLY_FROM[code]); });
     }
     /* A subject's own days start after the previous paper. Time before that is borrowed:
        it is taken from the evening first, then the afternoon, and the morning last,

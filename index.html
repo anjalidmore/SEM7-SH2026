@@ -273,24 +273,6 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
           <h2 id="tt-h"></h2>
           <ol class="list tt" id="tt"></ol>
         </section>
-        <section aria-labelledby="bud-h">
-          <h2 id="bud-h"></h2>
-          <ol class="list bud" id="budget"></ol>
-        </section>
-        <section aria-labelledby="wt-h">
-          <h2 id="wt-h"></h2>
-          <ol class="list wt" id="weights"></ol>
-        </section>
-        <details class="how">
-          <summary>How the timetable is made</summary>
-          <ul>
-            <li><b>Weight.</b> Hours plus learning outcomes. The three MSE modules count for 10 of 50 marks together; the rest carry 40. A CIA, a past internal paper or a lecturer hint lifts a module 10&ndash;15%.</li>
-            <li><b>Order.</b> Heaviest first. A module that unlocks a heavy one comes before it.</li>
-            <li><b>Load.</b> Each day pairs a hard module with an easy one: the weightiest in the morning, the lightest in the evening. The last half hour is a recall quiz.</li>
-            <li><b>Unequal days.</b> Hours go where a marginal hour earns most marks. A short window borrows up to 20% of an earlier subject's days; the rest of a subject's modules get a Core pass first, then a deeper one, then revision.</li>
-            <li><b>Estimates.</b> No paper pattern exists yet, so marks are estimated. Edit <code>shared/studyplan.js</code> and the timetable redraws.</li>
-          </ul>
-        </details>
       </div>
     </div>
 
@@ -445,28 +427,6 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
         return '<div class="sl"><div class="tm"><b>' + esc(sl.label) + '</b>' + sl.from + '&ndash;' + sl.to + '</div><ul class="its">' + sl.items.map(itemHTML).join("") + '</ul></div>';
       }).join("") + '</div></details>';
   }
-  function budgetHTML(r){
-    var s = S.byCode(r.code), pct = Math.min(100, Math.round(r.have / r.need * 100)), core = Math.min(100, Math.round(r.needCore / r.need * 100));
-    var notes = [];
-    if(r.borrowed > 0) notes.push('borrows ' + hrs(r.borrowed) + ' from earlier days');
-    if(r.left.length) notes.push('not scheduled: ' + r.left.map(function(m){ return 'M' + m.n; }).join(", ") + ' (lowest value)');
-    return '<li class="acc"' + accStyle(s) + '><div class="r1"><span class="nm">' + esc(r.short) + '</span>' +
-      '<div class="bar" role="progressbar" aria-label="' + esc(r.short) + ' hours against need" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i>' +
-      '<span class="core-mark" style="left:' + core + '%" title="Core pass only needs ' + hrs(r.needCore) + '"></span></div>' +
-      '<span class="n">' + hrs(r.have) + ' of ' + hrs(r.need) + '</span></div>' +
-      (notes.length ? '<div class="nt">' + esc(notes.join(" \u00b7 ")) + '</div>' : '') + '</li>';
-  }
-  function topModules(PL){
-    return Object.keys(PL.mods).map(function(k){ return PL.mods[k]; }).sort(function(a, b){ return b.marks - a.marks; }).slice(0, 8);
-  }
-  function weightHTML(m){
-    var s = S.byCode(m.code), w = Math.round(m.marks / 18 * 100);
-    var why = m.why.length ? m.why.join("; ") : "Hours and learning outcomes";
-    return '<li class="acc"' + accStyle(s) + ' title="' + esc(why) + '">' + mchip(m.code, m.n) +
-      '<div class="t">' + esc(m.title) + '<span>' + esc(why) + '</span></div>' +
-      '<div class="bar" role="img" aria-label="about ' + Math.round(m.marks) + ' marks"><i style="width:' + w + '%"></i></div>' +
-      '<span class="mk">' + Math.round(m.marks) + '</span></li>';
-  }
   document.getElementById("plan-all").addEventListener("click", function(){
     var all = document.querySelectorAll("#plan .dc"), anyShut = Array.prototype.some.call(all, function(d){ return !d.open; });
     Array.prototype.forEach.call(all, function(d){ d.open = anyShut; });
@@ -525,15 +485,11 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
     var startsIn = S.dayDiff(now, S.studyStart());
     document.getElementById("plan-h").innerHTML = I("clock") + "Study timetable" +
       (startsIn > 0 ? '<span class="note">starts in ' + plural(startsIn, "day") + '</span>' : '');
-    document.getElementById("bud-h").innerHTML = I("layers") + "Time vs need";
-    document.getElementById("wt-h").innerHTML = I("target") + "Most weighted modules";
     if(PL){
       var openNow = {}, kept = document.querySelectorAll("#plan .dc");
       Array.prototype.forEach.call(kept, function(d){ openNow[d.getAttribute("data-d")] = d.open; });
       var hadState = kept.length > 0;
       document.getElementById("plan").innerHTML = PL.days.map(function(d){ return dayHTML(d, now, hadState ? openNow : null); }).join("");
-      document.getElementById("budget").innerHTML = PL.summary.map(budgetHTML).join("");
-      document.getElementById("weights").innerHTML = topModules(PL).map(weightHTML).join("");
     }
 
     /* timetable */
