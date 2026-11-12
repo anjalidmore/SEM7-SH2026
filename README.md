@@ -24,7 +24,8 @@ shared/sem7.js        timetable + subject list (single source), the strip, the p
 shared/syllabus.js    all six modules per subject; which have material (built) and, for those that
                       do not, the syllabus topics and LOs shown on their "Material pending" page
 subjects/<code>/      one study site per subject (content + its own progress logic + the few styles
-                      only it needs); index.html covers all modules
+                      only it needs); index.html covers all modules. Every subject folder holds the same
+                      four files: index.html, README.md, _ORGANISATION.md, _LO-MAP.md
 scripts/bridge.sh     checks each subject is wired to shared/ and adds the attach line if missing
 docs/PLAN.md          the End Sem plan (user-facing)
 docs/IMPLEMENTATION.md  the build manual and workstreams for Claude sessions working on this repo

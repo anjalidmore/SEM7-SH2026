@@ -1,5 +1,9 @@
 # ADS MSE Study Guide — CEPEC7041 Applied Data Science
 
+> **Folder layout (same in every subject):** `index.html` the site · `README.md` this file ·
+> `_ORGANISATION.md` how the resources are filed and what is missing · `_LO-MAP.md` learning outcomes and
+> files per module. Resources: `_resources/ads/<division>/<module>/` (local only, gitignored).
+
 Mid-semester exam preparation for **CEPEC7041 Applied Data Science**, built for **COMP B**.
 Scope: Module 1 and Module 2, all topics · 30 marks · 1.5 hours.
 

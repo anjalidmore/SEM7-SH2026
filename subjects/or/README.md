@@ -1,5 +1,9 @@
 # OR MSE Study Guide
 
+> **Folder layout (same in every subject):** `index.html` the site · `README.md` this file ·
+> `_ORGANISATION.md` how the resources are filed and what is missing · `_LO-MAP.md` learning outcomes and
+> files per module. Resources: `_resources/or/<division>/<module>/` (local only, gitignored).
+
 A single self-contained `index.html` that trains you to recognise an Operations Research
 exam question, choose the right method, and execute it under time pressure.
 

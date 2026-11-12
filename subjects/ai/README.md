@@ -1,17 +1,21 @@
 # AI Study Site — CEPCC712 Artificial Intelligence
 
-Two self-contained, offline-capable study sites for **CEPCC712 Artificial Intelligence**
+> **Folder layout (same in every subject):** `index.html` the site · `README.md` this file ·
+> `_ORGANISATION.md` how the resources are filed and what is missing · `_LO-MAP.md` learning outcomes and
+> files per module. Resources: `_resources/ai/<division>/<module>/` (local only, gitignored).
+
+A self-contained, offline-capable study site for **CEPCC712 Artificial Intelligence**
 (B.Tech Computer Engineering, Curriculum N-2024).
 
 | File | Scope | Use it for |
 |---|---|---|
-| **`mse.html`** | **Modules 1–3 only · 30 marks · 1.5 hrs** | Mid-Semester Exam prep. Built around the learning outcomes and the handwritten class notes. |
 | `index.html` | All six modules | The full course reference, for the ESE and general study. |
+| `_archive/mse.html` | Modules 1–3 only · 30 marks · 1.5 hrs | The retired Mid-Semester site, kept for reference. Moved out of the folder root on 12 Nov 2026 so every subject has one entry page. |
 
-Both are single files. No build step, no server, no dependencies.
+No build step, no server, no dependencies.
 Open in a browser, or host the folder on GitHub Pages.
 
-## The MSE site (`mse.html`)
+## The MSE site (`_archive/mse.html`)
 
 Scope confirmed from the class notes: the MSE covers **Modules 1–3**, and the paper is
 **Q1 → Module 1, Q2 → Module 2, Q3 → Module 3**. The notes open with **"NO DIRECT QUESTIONS"**,
@@ -31,9 +35,9 @@ Quiz mistakes automatically flag the tested topic as shaky.
 
 ## Using it
 
-- **Local:** double-click `mse.html` (or `index.html`).
+- **Local:** double-click `index.html`.
 - **GitHub Pages:** push this folder, then Settings → Pages → deploy from branch (root).
-  Both sites are static, so they work as-is at `/mse.html` and `/index.html`.
+  The sites are static, so they work as-is (`/index.html`, and `/_archive/mse.html` for the old MSE site).
 
 ## Your progress
 

@@ -1,5 +1,9 @@
 # Deep Learning MSE: Study Site
 
+> **Folder layout (same in every subject):** `index.html` the site · `README.md` this file ·
+> `_ORGANISATION.md` how the resources are filed and what is missing · `_LO-MAP.md` learning outcomes and
+> files per module. Resources: `_resources/dl/<division>/<module>/` (local only, gitignored).
+
 A single self-contained `index.html` for **HMCAL703 Deep Learning**, Mid-Semester Examination.
 No backend, no build step, no dependencies, no network requests. Open it from disk or publish it to GitHub Pages.
 

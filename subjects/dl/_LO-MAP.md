@@ -1,6 +1,8 @@
 # `_LO-MAP.md` — Resource ↔ Learning-Outcome map
 **HMCAL703 Deep Learning · MSE scope: Modules 1, 2, 3**
 
+> Since 12 Nov 2026 the files below live at `_resources/dl/Comp B/<Module folder>/` (file names unchanged).
+
 ---
 
 ## 1 · The learning outcomes, verbatim from the syllabus
