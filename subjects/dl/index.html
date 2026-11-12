@@ -47,7 +47,7 @@
 var KEY="hmcal703_dl_study_v1", TKEY="sem7.theme";
 var COURSE={
   code:"HMCAL703", name:"Deep Learning", exam:"Mid-Semester Examination (MSE)",
-  marks:30, durationMin:90, scope:"Modules 1, 2 and 3",
+  marks:30, durationMin:90, scope:"Modules 1 to 6 (the Mid Sem covered 1, 2 and 3)",
   studyTime:"3 hours", target:"27 / 30",
   files:[
     "_Syllabus/0.01 [all LOs] HMCAL703 Deep Learning - official syllabus, LOs, exam scheme.pdf (7 pages)",
@@ -59,7 +59,12 @@ var COURSE={
 var MODULES=[
   {id:"m1", n:1, title:"Fundamentals of Neural Network", marks:8,  fmt:"2 questions of 4 marks", ans:4, choice:false},
   {id:"m2", n:2, title:"Training, Optimization and Regularization of DNN", marks:12, fmt:"3 questions of 4 marks", ans:4, choice:false},
-  {id:"m3", n:3, title:"Convolutional Neural Networks (CNN)", marks:10, fmt:"2 of 3 questions, 5 marks each", ans:5, choice:true}
+  {id:"m3", n:3, title:"Convolutional Neural Networks (CNN)", marks:10, fmt:"2 of 3 questions, 5 marks each", ans:5, choice:true},
+  /* Modules 4 to 6 are End Sem material. The ESE paper pattern is not known, so ans:5 is a provisional answer size
+     and mpm is the End Sem pace (120 min / 50 marks). Replace both when the pattern arrives. */
+  {id:"m4", n:4, title:"Autoencoders: Unsupervised Learning", ans:5, mpm:2.4, provisional:true},
+  {id:"m5", n:5, title:"Recurrent Neural Networks (RNN)", ans:5, mpm:2.4, provisional:true},
+  {id:"m6", n:6, title:"Emerging Trends", ans:5, mpm:2.4, provisional:true}
 ];
 
 /* The paper structure, stated by the lecturer. This is the top authority for priority. */
@@ -103,7 +108,20 @@ var LOS={
  "3.1":{m:"m3",t:"Apply fundamental knowledge of mathematics to compute convolution, padding and stride operations in CNNs.",pi:"1.1.1"},
  "3.2":{m:"m3",t:"Apply theory and principles of supervised learning to determine the relationship between input, output, and filter size in CNNs.",pi:"1.3.1"},
  "3.3":{m:"m3",t:"Design a variety of potential CNN architecture design solutions suited for specified image data to meet functional requirements.",pi:"3.2.2"},
- "3.4":{m:"m3",t:"Explore classical architectural designs for basic image-classification problems.",pi:"3.2.1"}
+ "3.4":{m:"m3",t:"Explore classical architectural designs for basic image-classification problems.",pi:"3.2.1"},
+ "4.1":{m:"m4",t:"Apply fundamental knowledge of neural networks to interpret the working principles of autoencoder."},
+ "4.2":{m:"m4",t:"Apply foundational and specialized engineering concepts to categorize major autoencoder models."},
+ "4.3":{m:"m4",t:"Explore and design suitable autoencoder variants for image compression or denoising pipelines by evaluating multiple architectural alternatives."},
+ "4.4":{m:"m4",t:"Able to verify the functionalities influencing representation capacity and reconstruction quality for different datasets and validate design of auto-encoders."},
+ "5.1":{m:"m5",t:"Apply fundamentals of engineering to solve sequencing learning problems."},
+ "5.2":{m:"m5",t:"Apply computer engineering principles to construe with working principles of Recurrent Neural Networks."},
+ "5.3":{m:"m5",t:"Analyze and interpret the effect of vanishing and exploding gradient problems on learning performance in sequence modeling tasks."},
+ "5.4":{m:"m5",t:"Analyze sequence-learning problems to identify and conform suitable RNN variants and assess the strengths and limitations of relevant tools for their implementation."},
+ "5.5":{m:"m5",t:"Interpret legislation and regulations relevant for the protection of the public and understand the relationship between the technical, socio-economic and environmental dimensions of sustainability while deploying RNN-based systems."},
+ "6.1":{m:"m6",t:"Apply engineering fundamentals to interpret GAN architecture and training dynamics."},
+ "6.2":{m:"m6",t:"Apply theory and principles of computer science and engineering to generate synthetic images with GAN architecture."},
+ "6.3":{m:"m6",t:"Recognize ethical, legal and societal implications and understand the environmental dimensions of sustainability for image generation using Deep Fake technique."},
+ "6.4":{m:"m6",t:"Demonstrate continuous professional learning by tracking developments in generative models, including diffusion-based image generation techniques, and analyzing sourced technical information for feasibility and sustainability to propose diverse applications."}
 };
 
 /* Evidence the priority ranking is built from: all counts are real, taken from the folder. */
@@ -2512,7 +2530,712 @@ M3 = M3.concat([
   {q:"Trace the evolution from LeNet to AlexNet and state what fundamentally changed.",marks:5,d:"moderate",priority:"medium",source:"source"}]}
 ]);
 
-var TOPICS = M1.concat(M2).concat(M3);
+/* ============================ MODULE 4 TOPICS: AUTOENCODERS ============================ */
+/* Source note: the Module 4 deck is a case-study deck (Smart Medical Imaging, 8-step pipeline). It has no
+   slides that define the encoder, the variants or the bottleneck, so those topics follow the syllabus
+   and the standard treatment (Goodfellow, Bengio, Courville, Deep Learning, ch. 14). Flagged on each page. */
+var FIG_AE="<div class='dia'><svg viewBox='0 0 560 160' role='img' aria-label='Autoencoder: input, encoder, narrow code, decoder, reconstruction' style='width:100%;max-width:560px;height:auto'>"+
+ "<g fill='var(--surface-2)' stroke='var(--border-2)' stroke-width='1.5'>"+
+ "<rect x='24' y='30' width='34' height='90' rx='5'/><rect x='128' y='46' width='34' height='58' rx='5'/>"+
+ "<rect x='263' y='62' width='34' height='26' rx='5' fill='var(--accent-soft)' stroke='var(--accent-ui)'/>"+
+ "<rect x='398' y='46' width='34' height='58' rx='5'/><rect x='502' y='30' width='34' height='90' rx='5'/></g>"+
+ "<g fill='none' stroke='var(--text-2)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'>"+
+ "<path d='M62 75h62M118 70l6 5-6 5'/><path d='M166 75h93M253 70l6 5-6 5'/><path d='M301 75h93M388 70l6 5-6 5'/><path d='M436 75h62M492 70l6 5-6 5'/></g>"+
+ "<g font-family='sans-serif' font-size='12' fill='var(--text-2)' text-anchor='middle'>"+
+ "<text x='41' y='140'>input x</text><text x='145' y='125'>hidden</text><text x='280' y='108' fill='var(--accent-ui)' font-weight='700'>code h</text>"+
+ "<text x='415' y='125'>hidden</text><text x='519' y='140'>output x̂</text>"+
+ "<text x='145' y='22'>Encoder  h = f(x)</text><text x='415' y='22'>Decoder  x̂ = g(h)</text>"+
+ "<text x='280' y='40' fill='var(--accent-ui)'>bottleneck</text></g></svg>"+
+ "<p class='small muted'>The hourglass shape is the idea: the target is the input itself, and the narrow middle forces a compressed representation.</p></div>";
+
+var M4=[
+{id:"m4t1",m:"m4",title:"Unsupervised Learning and the Autoencoder Idea",type:"theory",priority:"high",los:["4.1"],
+ src:"Syllabus Module 4 and Goodfellow et al. ch. 14. The Module 4 deck has no definition slides, only the case study (see 4.6).",
+ summary:"Learning without labels, and a network that learns by reproducing its own input through a narrow middle.",
+ whatIs:"<p><b>Unsupervised learning</b> finds structure in data that has no labels. An <b>autoencoder</b> does it with a neural network trained to copy its input to its output through a narrow middle layer, so the target is the input itself and no labelling is needed.</p>",
+ concept:FIG_AE+
+  "<h4>Supervised against unsupervised</h4><div class='scroll'><table><tr><th></th><th>Supervised (Module 3 CNN)</th><th>Unsupervised (autoencoder)</th></tr>"+
+  "<tr><td>Data</td><td>Inputs <b>and</b> labels (x, y)</td><td>Inputs only (x)</td></tr>"+
+  "<tr><td>Target</td><td>The label y</td><td>The input x itself</td></tr>"+
+  "<tr><td>Goal</td><td>Predict y for new x</td><td>Learn a compact, useful representation of x</td></tr>"+
+  "<tr><td>Loss</td><td>Cross-entropy or MSE against y</td><td>Reconstruction error between x and x̂</td></tr></table></div>"+
+  "<h4>The autoencoder in one chain</h4>"+
+  "<p>x → encoder f → code h = f(x) → decoder g → x̂ = g(h) → loss L(x, x̂)</p>"+
+  "<ul><li><b>Encoder:</b> maps the input to the code. It does the compression.</li>"+
+  "<li><b>Code (latent, bottleneck):</b> the compressed representation h. This is what the network 'understood' about x.</li>"+
+  "<li><b>Decoder:</b> rebuilds x̂ from h alone. It cannot see x, so h must carry what matters.</li></ul>"+
+  "<div class='box tip'><h5>Why it does not just copy</h5><p>If the middle is as wide as the input and nothing else constrains it, the network can learn the identity function and the loss reaches zero without learning anything. Everything in this module (a narrow bottleneck, noise, sparsity, a contractive penalty) exists to prevent that.</p></div>",
+ needToKnow:["Define unsupervised learning and say why an autoencoder needs no labels","Write h = f(x), x̂ = g(h) and the loss L(x, x̂)","Name the encoder, the code (bottleneck) and the decoder and state each job","Say that the target is the input itself","Explain why an unconstrained autoencoder learns the identity and how a bottleneck stops it"],
+ recognition:{clues:["'Unsupervised', 'no labels', 'reconstruct the input'","An hourglass or encoder-decoder diagram","The words 'latent', 'code' or 'bottleneck'"],
+  wording:["Explain the working principle of an autoencoder with a neat diagram.","Distinguish between supervised and unsupervised learning. How does an autoencoder learn without labels?"],
+  firstMove:"Draw the hourglass first (input, encoder, code, decoder, output) and write h = f(x), x̂ = g(h) beside it before any prose.",
+  trap:"Writing 'the autoencoder predicts a label'. It reconstructs its own input; there is no label anywhere."},
+ mistakes:["Drawing the diagram without labelling encoder, code and decoder","Saying the decoder sees the input: it sees only the code h","Forgetting the loss: an autoencoder is defined by minimising reconstruction error","Calling it supervised because it has a target: the target is the input, not a human label"],
+ practice:[
+  {id:"m4t1p1",d:"easy",q:"Define an autoencoder and name its three parts.",hint:"Think of the hourglass, left to right.",a:"<p>An <b>autoencoder</b> is a neural network trained to reproduce its input at its output through a narrow middle layer. Its parts: the <b>encoder</b> h = f(x) that compresses the input, the <b>code</b> (latent or bottleneck) h that holds the compressed representation, and the <b>decoder</b> x̂ = g(h) that rebuilds the input from the code. Training minimises the reconstruction loss L(x, x̂).</p>"},
+  {id:"m4t1p2",d:"moderate",q:"An autoencoder is trained on a million unlabeled X-ray images. Where does its training signal come from?",hint:"What is the target for each image?",a:"<p>From the images themselves. For each image x the target is x. The loss L(x, x̂) measures how well the decoder rebuilt it from the code, and backpropagation (Module 2) adjusts the weights to reduce it. No radiologist labelling is needed, which is why it is unsupervised.</p>"},
+  {id:"m4t1p3",d:"moderate",q:"A student builds an autoencoder whose code layer has the same width as the input, trains it, and gets zero reconstruction error. Is it a good model? Why?",hint:"Ask what the cheapest way to get zero error is.",a:"<p>Not necessarily. With a code as wide as the input the network can learn the <b>identity function</b>: pass every value straight through. Zero error then says nothing about whether it learned useful structure. The fix is a constraint: make the code narrower (undercomplete), or keep it wide and add a regulariser (sparse, denoising or contractive, topic 4.4).</p>"}],
+ questions:[
+  {q:"Explain the working principle of an autoencoder with a neat diagram.",marks:5,d:"easy",priority:"high",source:"syllabus LO 4.1"},
+  {q:"Why would an autoencoder with no constraint learn nothing useful? State two ways to prevent it.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 4.1"}]},
+
+{id:"m4t2",m:"m4",title:"Autoencoder Numericals: Sizes, Parameters and Reconstruction Loss",type:"problem-solving",priority:"high",los:["4.1","4.4"],
+ src:"Standard fully connected autoencoder arithmetic (Module 2 parameter counting applied to an encoder-decoder). Not in the Module 4 deck.",
+ summary:"Counting parameters, compression ratio and reconstruction error for an encoder-decoder.",
+ whatIs:"<p>Three calculations come up: how many parameters the autoencoder has, how much it compresses, and how large the reconstruction error is for a given input and output.</p>",
+ concept:"<h4>The three formulas</h4><div class='eqb'>Dense layer with n_in inputs, n_out outputs:  params = n_in × n_out + n_out\nCompression ratio = input size ÷ code size\nReconstruction loss (MSE) = (1/d) Σ (xᵢ − x̂ᵢ)²      (sum of squares if d is not divided)</div>"+
+  "<p>The decoder is usually a mirror of the encoder, so a network 784 → 128 → 32 → 128 → 784 has four dense layers and <b>two halves with nearly equal cost</b>.</p>"+
+  "<div class='box tip'><h5>Method</h5><p>List the layer sizes in a row, count each layer as n_in × n_out + n_out, add them, then split the total into encoder and decoder at the code layer.</p></div>",
+ core:{t:"The core idea: every layer is the same arithmetic, the code layer is just the narrow one",
+  b:"<p>There is nothing new to compute. A dense layer costs n_in × n_out + n_out whether it sits in the encoder or the decoder. The only autoencoder-specific numbers are the <b>compression ratio</b> (input ÷ code) and the <b>reconstruction error</b> (how far x̂ is from x).</p>"},
+ needToKnow:["Count dense-layer parameters as n_in × n_out + n_out","Add the layers and split the total into encoder and decoder at the code","Compute the compression ratio as input size ÷ code size","Compute reconstruction MSE and state that lower is better","Remember that the decoder never sees x, only the code"],
+ recognition:{clues:["Layer sizes written as a chain: 784 → 128 → 32 → 128 → 784","'How many parameters', 'compression ratio', 'reconstruction error'","An input vector and a reconstructed vector side by side"],
+  wording:["Find the number of trainable parameters in the autoencoder 784-128-32-128-784.","Compute the reconstruction error for the given x and x̂."],
+  firstMove:"Write the layer sizes in one row, then one line per layer: n_in × n_out + n_out.",
+  trap:"Forgetting the biases (+ n_out per layer) or counting only the encoder."},
+ mistakes:["Dropping the + n_out bias term in a layer","Counting only the encoder, or counting the code layer twice","Computing the compression ratio as code ÷ input (it is input ÷ code, so a ratio above 1)","Forgetting to square the errors, or to divide by d when the question asks for the mean"],
+ examples:[
+  {id:"m4t2e1",title:"Parameters and compression ratio of 784-128-32-128-784",q:"A fully connected autoencoder has layer sizes 784 → 128 → 32 → 128 → 784. Find the total number of parameters, the parameters in the encoder and in the decoder, and the compression ratio.",
+   steps:["<b>Layer 1</b> (784 → 128): 784 × 128 + 128 = 100,352 + 128 = <b>100,480</b>.","<b>Layer 2</b> (128 → 32, the code): 128 × 32 + 32 = 4,096 + 32 = <b>4,128</b>.","<b>Layer 3</b> (32 → 128): 32 × 128 + 128 = 4,096 + 128 = <b>4,224</b>.","<b>Layer 4</b> (128 → 784): 128 × 784 + 784 = 100,352 + 784 = <b>101,136</b>.","Encoder = layers 1 and 2 = 100,480 + 4,128 = <b>104,608</b>. Decoder = layers 3 and 4 = 4,224 + 101,136 = <b>105,360</b>.","Total = 104,608 + 105,360 = <b>209,968</b>.","Compression ratio = 784 ÷ 32 = <b>24.5 : 1</b>."],
+   answer:"Total <b>209,968</b> parameters (encoder 104,608, decoder 105,360). The 32-unit code compresses the 784-value input by <b>24.5 : 1</b>.",
+   trap:"The two big layers (784 ↔ 128) hold almost all the parameters. The narrow code layer is cheap; it is narrow in <i>information</i>, not in cost."},
+  {id:"m4t2e2",title:"Reconstruction error for one example",q:"An input x = (1, 0, 1, 1) is reconstructed as x̂ = (0.8, 0.2, 0.9, 0.5). Find the sum of squared errors and the MSE.",
+   steps:["Errors xᵢ − x̂ᵢ: 0.2, −0.2, 0.1, 0.5.","Squares: 0.04, 0.04, 0.01, 0.25.","Sum of squared errors = 0.04 + 0.04 + 0.01 + 0.25 = <b>0.34</b>.","MSE = 0.34 ÷ 4 = <b>0.085</b>."],
+   answer:"Sum of squared errors <b>0.34</b>; MSE <b>0.085</b>. The last component (0.5 against 1) contributes 0.25 of the 0.34, so it is the one the network rebuilt worst.",
+   trap:"A negative error squares to a positive number. Averaging the raw errors would cancel 0.2 against −0.2 and hide the mistake."}],
+ practice:[
+  {id:"m4t2p1",d:"easy",q:"Find the parameters of an autoencoder 100 → 20 → 100 and its compression ratio.",hint:"Two dense layers. Do not forget the biases.",a:"<p>Layer 1 (100 → 20): 100 × 20 + 20 = 2,020. Layer 2 (20 → 100): 20 × 100 + 100 = 2,100. Total = <b>4,120</b>. Compression ratio = 100 ÷ 20 = <b>5 : 1</b>.</p>"},
+  {id:"m4t2p2",d:"moderate",q:"A 64 × 64 greyscale image is flattened and compressed to a 256-value code. State the compression ratio and the encoder parameters if the encoder is a single dense layer.",hint:"Flatten first: 64 × 64.",a:"<p>Input size = 64 × 64 = 4,096. Ratio = 4,096 ÷ 256 = <b>16 : 1</b>. Encoder parameters = 4,096 × 256 + 256 = 1,048,576 + 256 = <b>1,048,832</b>.</p>"},
+  {id:"m4t2p3",d:"moderate",q:"Two autoencoders reconstruct the same input with MSE 0.02 and 0.11. Which has the better code, and is MSE alone enough to say so?",hint:"What does reconstruction error not measure?",a:"<p>The first reconstructs better. But MSE alone is not enough: a wide, unconstrained code can reach a very low MSE by copying (topic 4.1) while learning nothing useful. A fair comparison also states the code size, because a 0.02 error from a 32-value code is far more impressive than from a code as wide as the input.</p>"}],
+ questions:[
+  {q:"Find the number of trainable parameters of the autoencoder 784-128-32-128-784 and its compression ratio.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 4.1"},
+  {q:"An input (1, 0, 1, 1) is reconstructed as (0.8, 0.2, 0.9, 0.5). Compute the reconstruction MSE.",marks:5,d:"easy",priority:"medium",source:"syllabus LO 4.4"}]},
+
+{id:"m4t3",m:"m4",title:"Linear, Undercomplete and Overcomplete Autoencoders",type:"theory",priority:"high",los:["4.2"],
+ src:"Syllabus Module 4 and Goodfellow et al. ch. 14.1 to 14.2. Not covered by the Module 4 deck.",
+ summary:"Classify an autoencoder by code size (under or over) and by whether its layers are linear.",
+ whatIs:"<p>Two independent labels describe an autoencoder. <b>Code size</b> against input size decides <i>undercomplete</i> or <i>overcomplete</i>. <b>Activation</b> decides <i>linear</i> or non-linear. A linear undercomplete autoencoder is the simplest case and behaves like PCA.</p>",
+ concept:"<h4>By code size</h4><div class='scroll'><table><tr><th></th><th>Undercomplete</th><th>Overcomplete</th></tr>"+
+  "<tr><td>Code size k against input d</td><td><b>k &lt; d</b></td><td><b>k ≥ d</b></td></tr>"+
+  "<tr><td>What stops copying</td><td>The narrow code itself</td><td>Nothing, unless a regulariser is added</td></tr>"+
+  "<tr><td>Risk</td><td>Information loss if k is too small</td><td>Learns the identity function</td></tr>"+
+  "<tr><td>Typical use</td><td>Compression, dimensionality reduction</td><td>Sparse, denoising, contractive variants</td></tr></table></div>"+
+  "<h4>By activation</h4><ul>"+
+  "<li><b>Linear autoencoder:</b> linear encoder and decoder with MSE loss. It learns the same <i>subspace</i> as principal component analysis (PCA), the top-k directions of variance. It does not need to find the principal axes themselves.</li>"+
+  "<li><b>Non-linear (deep) autoencoder:</b> non-linear activations such as ReLU and several layers. It can follow a curved manifold that PCA, being linear, cannot.</li></ul>"+
+  "<div class='box tip'><h5>Why a deep one beats PCA</h5><p>Data on a curve (a spiral, a face rotating) is not captured by a flat subspace. Non-linear layers let the code bend with the data. That is the reason to use a non-linear autoencoder instead of PCA.</p></div>",
+ needToKnow:["Define undercomplete (k &lt; d) and overcomplete (k ≥ d)","State which one risks learning the identity and why","Say a linear autoencoder with MSE learns the PCA subspace","Say why a non-linear autoencoder can beat PCA","Name the regularisers that make an overcomplete code usable"],
+ recognition:{clues:["'Undercomplete', 'overcomplete', 'linear autoencoder'","Code size compared to input size","'Relation to PCA'"],
+  wording:["Differentiate undercomplete and overcomplete autoencoders.","Show how a linear autoencoder is related to PCA."],
+  firstMove:"Write k against d. If k &lt; d the code is the constraint; if k ≥ d something else must be.",
+  trap:"Calling an overcomplete autoencoder useless. It is useful once sparsity, noise or a contractive penalty is added."},
+ mistakes:["Reversing the definitions: undercomplete is the <i>narrow</i> code","Saying a linear autoencoder 'is' PCA; it learns the same subspace, not necessarily the same axes","Forgetting that overcomplete needs a regulariser","Claiming a deeper network always wins: with k too small it still loses information"],
+ practice:[
+  {id:"m4t3p1",d:"easy",q:"Classify: (a) input 784, code 64. (b) input 784, code 1000. State the risk of each.",hint:"Compare k with d.",a:"<p>(a) k = 64 &lt; d = 784: <b>undercomplete</b>. The risk is information loss if 64 is too small. (b) k = 1000 ≥ d = 784: <b>overcomplete</b>. The risk is learning the identity function unless a regulariser (sparse, denoising or contractive) is added.</p>"},
+  {id:"m4t3p2",d:"moderate",q:"Why can a non-linear undercomplete autoencoder compress some data better than PCA with the same code size?",hint:"Think about the shape of the data, not its size.",a:"<p>PCA is linear: it projects onto a flat subspace. If the data lies on a <b>curved manifold</b>, a flat subspace of dimension k cannot follow it, so more information is lost. A non-linear autoencoder bends the encoder and decoder with the data, so the same k values can describe it more faithfully.</p>"},
+  {id:"m4t3p3",d:"moderate",q:"A linear autoencoder with MSE loss is trained with code size 2. What does the code span, and what does it not guarantee?",hint:"Subspace against axes.",a:"<p>It learns the <b>same 2-dimensional subspace</b> as the top two principal components of the data. It does not guarantee that the two code units line up with the principal axes or that they are orthogonal: any invertible mix of them spans the same subspace.</p>"}],
+ questions:[
+  {q:"Differentiate undercomplete and overcomplete autoencoders and state the risk of each.",marks:5,d:"easy",priority:"high",source:"syllabus LO 4.2"},
+  {q:"Explain how a linear autoencoder relates to PCA and why a non-linear one can do better.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 4.2"}]},
+
+{id:"m4t4",m:"m4",title:"Denoising, Sparse and Contractive Autoencoders",type:"theory",priority:"high",los:["4.2","4.3"],
+ src:"Syllabus Module 4 and Goodfellow et al. ch. 14.5 to 14.7. The deck uses the denoising idea only in the case study (4.6).",
+ summary:"Three regularised autoencoders: corrupt the input, penalise active units, or penalise sensitivity.",
+ whatIs:"<p>Each variant keeps the encoder-decoder structure and adds one trick that stops it copying. <b>Denoising</b> corrupts the input, <b>sparse</b> penalises active code units, <b>contractive</b> penalises how fast the code changes with the input.</p>",
+ concept:"<div class='scroll'><table><tr><th>Variant</th><th>The trick</th><th>Loss</th><th>What the code learns</th></tr>"+
+  "<tr><td><b>Denoising (DAE)</b></td><td>Corrupt x into x̃ (Gaussian noise, or masking a fraction of pixels); reconstruct the <b>clean</b> x</td><td>L(x, g(f(x̃)))</td><td>Structure that survives noise</td></tr>"+
+  "<tr><td><b>Sparse</b></td><td>Few code units may be active for any one input</td><td>L(x, x̂) + λ Σⱼ |hⱼ|  (or a KL penalty towards a target activation ρ)</td><td>Specialised units; allows an overcomplete code</td></tr>"+
+  "<tr><td><b>Contractive (CAE)</b></td><td>Penalise the encoder's sensitivity: the Jacobian ∂h/∂x</td><td>L(x, x̂) + λ ‖∂h/∂x‖²<sub>F</sub></td><td>A code that barely moves for small input changes</td></tr></table></div>"+
+  "<h4>One sentence each</h4><ul>"+
+  "<li><b>Denoising:</b> the input is damaged but the target is clean, so the network cannot copy and must learn what clean data looks like.</li>"+
+  "<li><b>Sparse:</b> an overcomplete code is allowed, but only a few units fire per input, like a dictionary of features.</li>"+
+  "<li><b>Contractive:</b> robustness is built into the encoder: nearby inputs get nearby codes.</li></ul>"+
+  "<div class='box tip'><h5>How to choose</h5><p>Noisy images to clean → denoising. Interpretable or selective features with a wide code → sparse. Stable features that ignore tiny changes → contractive. Plain compression → undercomplete is enough.</p></div>",
+ needToKnow:["State the trick of each variant in one line","Write the loss of each: L(x, g(f(x̃))), L + λΣ|h|, L + λ‖J‖²","Say that the denoising target is the CLEAN input","Say sparse and contractive both allow an overcomplete code","Pick a variant for a described situation and justify it"],
+ recognition:{clues:["'Noisy images', 'corrupted', 'masking' → denoising","'Few units active', 'sparsity penalty', L1 or KL → sparse","'Jacobian', 'robust to small changes' → contractive"],
+  wording:["Explain denoising, sparse and contractive autoencoders with their loss functions.","Which autoencoder would you use to remove noise from scanned images? Justify."],
+  firstMove:"Write the three loss functions in one table, then name what each extra term controls.",
+  trap:"Using the noisy image as the denoising target. The target is the clean image; the noisy one is only the input."},
+ mistakes:["Training a denoising autoencoder to reproduce the noisy input (it then learns to keep the noise)","Mixing up the penalties: sparse acts on the <i>code values</i>, contractive on the <i>derivative</i> of the code","Saying the sparse penalty reduces the number of units: units remain, fewer fire","Forgetting λ, the weight that sets the strength of the extra term"],
+ examples:[
+  {id:"m4t4e1",title:"What the denoising training pair looks like",q:"A clean image row is x = (0.9, 0.1, 0.8, 0.2). Noise gives x̃ = (0.7, 0.4, 0.8, 0.0). State the network input, the target and the error if the output is (0.85, 0.15, 0.75, 0.25).",
+   steps:["<b>Input to the encoder:</b> the noisy x̃ = (0.7, 0.4, 0.8, 0.0).","<b>Target:</b> the clean x = (0.9, 0.1, 0.8, 0.2).","Errors against the target: 0.05, −0.05, 0.05, −0.05.","Squares: 0.0025 each; sum = 0.01; MSE = 0.01 ÷ 4 = <b>0.0025</b>."],
+   answer:"Input <b>x̃</b> (noisy), target <b>x</b> (clean), MSE <b>0.0025</b> against the clean image.",
+   trap:"Measuring the error against x̃ instead of x. Against x̃ the output (0.85, 0.15, 0.75, 0.25) looks poor, which is exactly the point: a good denoiser should <i>not</i> match the noisy input."}],
+ practice:[
+  {id:"m4t4p1",d:"easy",q:"Write the loss of a sparse autoencoder and say what each part does.",hint:"Reconstruction plus a penalty on the code.",a:"<p>Loss = L(x, x̂) + λ Σⱼ |hⱼ|. The first term makes the output match the input. The second, weighted by λ, penalises large code values, so most units stay near zero and only a few fire for any one input. A KL-divergence penalty towards a small target activation ρ is the other common form.</p>"},
+  {id:"m4t4p2",d:"moderate",q:"Why does a denoising autoencoder not learn the identity function even if its code is as wide as the input?",hint:"What does it receive and what must it output?",a:"<p>Because its <b>input is damaged and its target is clean</b>. Copying the input would reproduce the noise and give a high loss. To score well it must learn the structure of clean data (which pixels go together) and use it to repair the input, so the identity is no longer the cheapest solution.</p>"},
+  {id:"m4t4p3",d:"moderate",q:"Compare sparse and contractive autoencoders: what is penalised, and what behaviour results?",hint:"Code values against code derivative.",a:"<p><b>Sparse:</b> penalises the <i>size of the code values</i> (λΣ|h|), so few units are active per input. <b>Contractive:</b> penalises the <i>derivative of the code with respect to the input</i> (λ‖∂h/∂x‖²<sub>F</sub>), so small input changes barely move the code. Sparse gives selective features; contractive gives stable, robust ones. Both allow an overcomplete code.</p>"},
+  {id:"m4t4p4",d:"application",app:true,q:"A rural clinic's scanner leaves random speckle on every image. The central hospital wants clean images before a radiologist sees them. Choose an autoencoder variant, state its training pairs and justify the choice against one alternative.",hint:"What are the input and the target?",a:"<p><b>Choice: denoising autoencoder.</b> Training pairs: input = a speckled image x̃, target = the clean image x (clean images are corrupted artificially with similar speckle to build pairs). The network learns what clean anatomy looks like and removes what does not fit. <b>Against a plain undercomplete autoencoder:</b> it would compress and rebuild the speckle along with everything else, because it is trained to reproduce its input faithfully, noise included.</p>"}],
+ questions:[
+  {q:"Explain denoising, sparse and contractive autoencoders with their loss functions.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 4.2"},
+  {q:"A scanner adds noise to images. Select a suitable autoencoder, state its input and target, and justify the choice.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 4.3"}]},
+
+{id:"m4t5",m:"m4",title:"The Bottleneck and Its Impact on Representation and Reconstruction",type:"theory",priority:"high",los:["4.4"],
+ src:"Syllabus Module 4 (LO 4.4) and Goodfellow et al. ch. 14. Deck: the bottleneck as 'compact representation' (case study, steps 6 to 7).",
+ summary:"How code size trades reconstruction quality against compression and useful features.",
+ whatIs:"<p>The <b>bottleneck</b> is the narrowest layer, the code. Its size k is the main design choice: it sets how much information survives, so it sets both the reconstruction quality and the usefulness of the representation.</p>",
+ concept:"<div class='scroll'><table><tr><th>Bottleneck</th><th>Reconstruction</th><th>Compression</th><th>Representation</th></tr>"+
+  "<tr><td><b>Too small</b></td><td>Blurry, detail lost (high error)</td><td>Very high</td><td>Misses useful information (underfitting)</td></tr>"+
+  "<tr><td><b>About right</b></td><td>Good; keeps what matters</td><td>Useful</td><td>Compact, generalises</td></tr>"+
+  "<tr><td><b>Too large</b></td><td>Near perfect, by copying</td><td>Little or none</td><td>Little learned; no denoising benefit</td></tr></table></div>"+
+  "<h4>What else sets representation capacity</h4><ul>"+
+  "<li><b>Depth and width of the encoder and decoder:</b> a more powerful pair can use the same code more efficiently, but too powerful a decoder can memorise the training set.</li>"+
+  "<li><b>Regularisation:</b> sparsity, noise or a contractive term lets a wide code stay useful.</li>"+
+  "<li><b>The data:</b> highly redundant data (smooth images) compresses to a smaller code than detailed data.</li></ul>"+
+  "<div class='box tip'><h5>How to choose k in practice</h5><p>Train with several code sizes and plot validation reconstruction error against k. It falls steeply, then flattens. Pick the smallest k near the flat part: beyond it, extra code size buys almost nothing.</p></div>",
+ needToKnow:["Define the bottleneck and say its size k is the key design choice","State the effect of a too-small and a too-large bottleneck on reconstruction","Name two other factors that set capacity (depth and width, regularisation)","Say reconstruction error falls as k grows and flattens","Give the practical rule: smallest k where validation error flattens"],
+ recognition:{clues:["'Effect of the bottleneck / code size'","'Reconstruction quality', 'representation capacity'","'Verify the functionalities influencing…' (LO 4.4)"],
+  wording:["Discuss the impact of the bottleneck size on reconstruction quality.","How would you decide the code size of an autoencoder for a given dataset?"],
+  firstMove:"Draw error against code size k: steep fall, then a plateau. Label 'too small', 'about right', 'too large' on it.",
+  trap:"Saying a bigger code is always better. A wider code lowers training error but can stop the model learning anything."},
+ mistakes:["Saying the larger bottleneck gives the better representation","Judging the bottleneck by training error alone (use validation error)","Forgetting the other levers on capacity: depth, width and regularisation","Not tying the answer to the dataset: redundant images need a smaller code"],
+ practice:[
+  {id:"m4t5p1",d:"easy",q:"State what happens to a reconstruction if the bottleneck is too small, and what happens if it is too large.",hint:"One loses information, the other copies.",a:"<p><b>Too small:</b> not enough room to store the detail, so the reconstruction is blurry and the error is high (information loss, underfitting). <b>Too large:</b> the network can pass the input through almost unchanged, so the error is very low but the code has learned little and gives no compression.</p>"},
+  {id:"m4t5p2",d:"moderate",q:"Reconstruction MSE on validation images for code sizes 4, 16, 64 and 256 is 0.090, 0.030, 0.021 and 0.020. Which size would you choose and why?",hint:"Look for where the gain stops.",a:"<p>Choose <b>64</b>. Going from 4 to 16 cuts the error by 0.060 and 16 to 64 by 0.009, but 64 to 256 gains only 0.001 while multiplying the code size by four. The curve has flattened by 64, so the extra width buys almost nothing and costs compression.</p>"},
+  {id:"m4t5p3",d:"moderate",q:"Besides the code size, name two things that determine what an autoencoder can represent, and say how each acts.",hint:"Capacity of the networks, and constraints.",a:"<p>(1) <b>Depth and width of encoder and decoder:</b> more layers and units let the same code carry more structure, but an over-powerful decoder can memorise the training set. (2) <b>Regularisation</b> (sparsity, input noise, a contractive penalty): lets the code be wide while still forcing it to learn structure rather than copy.</p>"}],
+ questions:[
+  {q:"Discuss how the size of the bottleneck affects reconstruction quality and the learned representation.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 4.4"},
+  {q:"Given validation errors for several code sizes, select the code size and justify it.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 4.4"}]},
+
+{id:"m4t6",m:"m4",title:"Applications and the Case-Study Method: Compression, Denoising, Dimensionality Reduction",type:"problem-solving",priority:"high",los:["4.3"],
+ src:"Module 4 deck: Smart Medical Imaging case study, the 8-step pipeline, the three applications and the architecture table. Convolutional autoencoder row is standard background.",
+ summary:"Turn a scenario into the right autoencoder: read the clues, name the task, justify it and place it in the workflow.",
+ whatIs:"<p>The deck teaches one method for application questions: an <b>8-step pipeline</b> that takes a client scenario to a specific autoencoder task. Every real question of this kind is worked the same way.</p>",
+ concept:"<h4>The 8 steps</h4>"+
+  "<p>1 Understand the context → 2 Break the case into situations → 3 Extract the keyword clues → 4 Diagnose each problem → 5 State the requirement → 6 Map to an autoencoder task → 7 Justify with the evidence → 8 Place it in the workflow</p>"+
+  "<h4>The three applications, side by side</h4><div class='scroll'><table><tr><th>Application</th><th>Clue words</th><th>Requirement</th><th>Loss compares</th><th>Component deployed</th></tr>"+
+  "<tr><td><b>Image compression</b></td><td>Large images, bandwidth, storage, transfer time</td><td>Smaller payload, little loss</td><td>Input vs output scan</td><td>Encoder at the source + decoder at the hub</td></tr>"+
+  "<tr><td><b>Denoising</b></td><td>Old devices, noise, visual disturbance, unwanted variation</td><td>Clean, clear image</td><td>Corrupted input vs <b>clean</b> ground truth</td><td>Full autoencoder as a pre-processor</td></tr>"+
+  "<tr><td><b>Dimensionality reduction</b></td><td>Huge pixel counts, heavy computation, downstream AI</td><td>Compact feature vector</td><td>Feature-preservation constraint</td><td><b>Encoder only</b>, decoder discarded</td></tr></table></div>"+
+  "<h4>Workflow placement (step 8)</h4><p>Acquisition and preparation: denoising at the rural centre → Transmission and storage: compression encoder before the network, decoder at the hub → Analysis and modelling: dimensionality-reduction encoder feeding the AI diagnostic model</p>"+
+  "<div class='box tip'><h5>Design alternatives (LO 4.3)</h5><p>For images, a <b>convolutional autoencoder</b> (Conv-ReLU-Pool in the encoder, upsampling or transposed convolution in the decoder) is usually better than a fully connected one: it keeps spatial structure and uses far fewer parameters through weight sharing (Module 3). Say which you chose and why.</p></div>",
+ core:{t:"The core idea: the same architecture, three jobs, three different loss set-ups",
+  b:"<p>The deck's case study has three problems in one hospital network. Large files → compression. Noisy old scanners → denoising. Too many pixels for AI models → dimensionality reduction. They are <b>one</b> idea (encode, then decode) configured three ways: what the loss compares, and which half of the network is deployed.</p>"},
+ needToKnow:["Recite the 8 steps in order","Match clue words to compression, denoising or dimensionality reduction","State for each task what the loss compares","State for each task which component is deployed (encoder only for dimensionality reduction)","Place the three tasks in the acquisition, transmission and analysis workflow"],
+ recognition:{clues:["A long scenario paragraph about an organisation with several problems","'Select a suitable model', 'justify your choice', 'map the workflow'","Clue words: bandwidth, storage → compression; noise, old devices → denoising; high dimension, computation → reduction"],
+  wording:["For the given scenario, identify the autoencoder-based solution for each situation and justify it.","Map the autoencoder tasks to the stages of the workflow."],
+  firstMove:"Underline the clue words, split the scenario into situations, and write a three-column table: situation | task | evidence quoted from the case.",
+  trap:"Naming the task without quoting the evidence. Step 7 (justify with a clue from the text) carries the marks."},
+ mistakes:["Choosing denoising for a storage problem or compression for a noise problem: read the clue words first","Saying dimensionality reduction keeps the decoder: after training, only the encoder is used","Giving the task name with no quoted evidence from the scenario","Putting all three tasks at the same stage instead of mapping each to its workflow stage"],
+ examples:[
+  {id:"m4t6e1",title:"Applying the 8 steps to a new scenario",q:"A city runs 500 traffic cameras. Night footage is grainy, uploading all footage to the control room saturates the network, and analysts want a short numeric summary of each frame to cluster similar traffic patterns. Identify the autoencoder task for each problem.",
+   steps:["<b>Context:</b> traffic-monitoring network, image data, many sites feeding a central room.","<b>Situations:</b> (1) grainy night footage, (2) upload saturates the network, (3) analysts need a compact summary per frame.","<b>Clues:</b> 'grainy' → noise; 'saturates the network' → payload too large; 'short numeric summary' → low-dimensional vector.","<b>Task map:</b> (1) denoising autoencoder, (2) compression autoencoder, (3) dimensionality-reduction (encoder only).","<b>Justify:</b> grain is corruption of the true scene, so train on grainy → clean; encoding at the camera cuts the bytes sent, the decoder rebuilds at the control room; the code vector is the 'short summary' and feeds clustering.","<b>Workflow:</b> denoise at capture → encode before upload, decode on arrival → encode to a vector for analysis."],
+   answer:"Grain → <b>denoising</b> (pre-processing at the camera). Network load → <b>compression</b> (encoder at the camera, decoder at the control room). Frame summary for clustering → <b>dimensionality reduction</b> (encoder only).",
+   trap:"The third task needs no decoder. Once trained, keep the encoder and throw the decoder away: the code <i>is</i> the output."}],
+ practice:[
+  {id:"m4t6p1",d:"easy",q:"For each task state what the loss compares and which part of the autoencoder is deployed: compression, denoising, dimensionality reduction.",hint:"The deck's architecture table.",a:"<div class='scroll'><table><tr><th>Task</th><th>Loss compares</th><th>Deployed</th></tr><tr><td>Compression</td><td>Input against output scan</td><td>Encoder at the source, decoder at the hub</td></tr><tr><td>Denoising</td><td>Corrupted input against clean ground truth</td><td>Full autoencoder as a pre-processor</td></tr><tr><td>Dimensionality reduction</td><td>A feature-preservation constraint on the code</td><td>Encoder only</td></tr></table></div>"},
+  {id:"m4t6p2",d:"moderate",q:"Why is a convolutional autoencoder usually preferred to a fully connected one for images?",hint:"Module 3: weight sharing.",a:"<p>A convolutional autoencoder keeps the <b>spatial structure</b> of the image (nearby pixels are related) and uses <b>weight sharing</b>, so the same small filters scan the whole image. That means far fewer parameters, less overfitting, and features that do not depend on position. A fully connected autoencoder flattens the image, discards the layout and needs millions of parameters (compare topic 4.2: 784 → 128 alone is 100,480).</p>"},
+  {id:"m4t6p3",d:"application",app:true,q:"A wildlife park has 200 remote camera traps on a thin satellite link. Daytime images are fine; night images are noisy. Researchers also want to group similar animals automatically. Using the 8-step method, state the autoencoder task for each situation with evidence and place each in the workflow.",hint:"Three situations: link, noise, grouping.",a:"<p><b>Situations and clues:</b> (1) 'thin satellite link' → payload too large; (2) 'night images are noisy' → corruption; (3) 'group similar animals' → needs compact features.</p><p><b>Tasks:</b> (1) <b>compression</b>: encode on the camera, decode at the base. (2) <b>denoising</b>: train noisy → clean, run at capture. (3) <b>dimensionality reduction</b>: keep the encoder, cluster the code vectors.</p><p><b>Workflow:</b> denoise at capture → compress for transmission → reduce to vectors at the research centre for clustering.</p>"}],
+ questions:[
+  {q:"For the given scenario, identify the autoencoder task for each situation, justify it with evidence from the text and map it to the workflow.",marks:5,d:"moderate",priority:"high",source:"deck, Smart Medical Imaging case study"},
+  {q:"Design an autoencoder-based pipeline for compressing and denoising images, comparing at least two architectural alternatives.",marks:5,d:"hard",priority:"high",source:"syllabus LO 4.3"}]}
+];
+
+/* ============================ MODULE 5 TOPICS: RECURRENT NEURAL NETWORKS ============================ */
+/* Source note: the Module 5 deck (Dr Rahate) explains RNN, BRNN, BPTT, LSTM and GRU in words and pictures; its
+   text has no equations. The equations below are the standard definitions (Goodfellow et al. ch. 10),
+   written out so numericals can be answered. Slide numbers are the numbers printed on the slides. */
+var FIG_RNN="<div class='dia'><svg viewBox='0 0 560 190' role='img' aria-label='An RNN unrolled over three time steps with shared weights' style='width:100%;max-width:560px;height:auto'>"+
+ "<g fill='var(--surface-2)' stroke='var(--accent-ui)' stroke-width='1.6'>"+
+ "<rect x='60' y='70' width='80' height='46' rx='9'/><rect x='240' y='70' width='80' height='46' rx='9'/><rect x='420' y='70' width='80' height='46' rx='9'/></g>"+
+ "<g fill='none' stroke='var(--text-2)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'>"+
+ "<path d='M8 93h48M50 88l6 5-6 5'/><path d='M140 93h96M230 88l6 5-6 5'/><path d='M320 93h96M410 88l6 5-6 5'/><path d='M500 93h50M544 88l6 5-6 5'/>"+
+ "<path d='M100 168v-48M95 126l5-6 5 6'/><path d='M280 168v-48M275 126l5-6 5 6'/><path d='M460 168v-48M455 126l5-6 5 6'/>"+
+ "<path d='M100 70V36M95 42l5-6 5 6'/><path d='M280 70V36M275 42l5-6 5 6'/><path d='M460 70V36M455 42l5-6 5 6'/></g>"+
+ "<g font-family='sans-serif' font-size='12' fill='var(--text-2)' text-anchor='middle'>"+
+ "<text x='100' y='98' fill='var(--text)' font-weight='700'>h(t−1)</text><text x='280' y='98' fill='var(--text)' font-weight='700'>h(t)</text><text x='460' y='98' fill='var(--text)' font-weight='700'>h(t+1)</text>"+
+ "<text x='188' y='84'>W<tspan font-size='9' dy='3'>hh</tspan></text><text x='368' y='84'>W<tspan font-size='9' dy='3'>hh</tspan></text>"+
+ "<text x='100' y='184'>x(t−1)</text><text x='280' y='184'>x(t)</text><text x='460' y='184'>x(t+1)</text>"+
+ "<text x='100' y='28'>y(t−1)</text><text x='280' y='28'>y(t)</text><text x='460' y='28'>y(t+1)</text>"+
+ "<text x='116' y='150' text-anchor='start'>W<tspan font-size='9' dy='3'>xh</tspan></text><text x='116' y='56' text-anchor='start'>W<tspan font-size='9' dy='3'>hy</tspan></text></g></svg>"+
+ "<p class='small muted'>One cell drawn three times. The same W<sub>xh</sub>, W<sub>hh</sub> and W<sub>hy</sub> are used at every step; only the hidden state h carries information forward.</p></div>";
+
+var M5=[
+{id:"m5t1",m:"m5",title:"The Sequence Learning Problem",type:"theory",priority:"high",los:["5.1"],
+ src:"Module 5 deck, slides 3 to 13 (apple/ball, gym schedule, vectors) and 14. Types of sequence tasks are standard background.",
+ summary:"Why a feed-forward network cannot handle ordered data, and what a sequence model needs.",
+ whatIs:"<p>In a <b>sequence learning problem</b> the order of the inputs matters and the output at one step depends on earlier steps. The deck contrasts an apple/ball image (independent features, any order) with a gym schedule (what you do today depends on what you did yesterday).</p>",
+ concept:"<h4>The deck's gym example</h4>"+
+  "<p>Predict today's exercise from the day, the month and health status → poor: the answer depends on yesterday's workout, which is not in the input → give the previous exercise as input (shoulder yesterday, so biceps today) → still fragile if a day is missed, so the model should use the <b>most recent attended day</b>, i.e. it needs memory of the past → encode each exercise as a one-hot vector (shoulder = 1, rest = 0).</p>"+
+  "<h4>Why a feed-forward network fails</h4><ul>"+
+  "<li><b>Fixed input size:</b> sentences and signals vary in length.</li>"+
+  "<li><b>No memory:</b> each input is treated independently, so earlier steps cannot influence later ones.</li>"+
+  "<li><b>No sharing across time:</b> a pattern learned at position 3 is not recognised at position 7.</li></ul>"+
+  "<h4>Kinds of sequence task</h4><div class='scroll'><table><tr><th>Pattern</th><th>Example</th></tr>"+
+  "<tr><td>Many → one</td><td>Sentiment of a review, activity class from sensor readings</td></tr>"+
+  "<tr><td>One → many</td><td>Image → caption</td></tr>"+
+  "<tr><td>Many → many, aligned</td><td>Tagging every word, labelling every video frame</td></tr>"+
+  "<tr><td>Many → many, different lengths</td><td>Machine translation</td></tr></table></div>"+
+  "<p>Data types the deck names: text, genomes, handwriting, speech, sensor time series and stock markets.</p>",
+ needToKnow:["Define a sequence problem: order matters and outputs depend on the past","Use the gym example: today depends on yesterday","Give three reasons a feed-forward network fails (fixed size, no memory, no sharing over time)","Name the four task patterns with one example each","Say what a sequence model needs: variable length, memory and shared weights"],
+ recognition:{clues:["Time series, text, speech, 'previous step'","'Order of inputs matters'","'Why not use a feed-forward network?'"],
+  wording:["What is a sequence learning problem? Why can a feed-forward network not solve it? Use an example.","Classify the following tasks as many-to-one, one-to-many or many-to-many."],
+  firstMove:"State the defining property first: output depends on earlier inputs. Then the gym example, then the three reasons a feed-forward network fails.",
+  trap:"Saying a feed-forward network 'cannot learn sequences' without giving the reasons. Fixed size, no memory and no sharing across time are the marks."},
+ mistakes:["Defining it only as 'time series': text and handwriting are sequences too","Skipping the example: the deck's gym schedule is expected","Saying a feed-forward network has no weights shared: it has weights, but none shared across <i>positions in time</i>","Mixing one-to-many (caption) with many-to-one (sentiment)"],
+ practice:[
+  {id:"m5t1p1",d:"easy",q:"What is a sequence learning problem? Give the deck's example.",hint:"Think of yesterday's workout.",a:"<p>A problem in which the <b>order of the inputs matters</b> and the output at a step depends on earlier steps. In the deck's gym schedule, today's exercise depends on yesterday's: if shoulders were trained yesterday, biceps are today. The day, the month and health status are not enough on their own, so the model needs the previous exercise, and if a day is missed it should use the last attended one.</p>"},
+  {id:"m5t1p2",d:"moderate",q:"Give three reasons a plain feed-forward network is unsuitable for sentences.",hint:"Length, memory, position.",a:"<p>(1) <b>Fixed input size:</b> sentences have different lengths and a feed-forward network needs a fixed number of inputs. (2) <b>No memory:</b> each input is processed independently, so a word cannot be interpreted using the words before it. (3) <b>No sharing across positions:</b> a phrase learned at the start of a sentence would have to be relearned at every other position, with separate weights.</p>"},
+  {id:"m5t1p3",d:"moderate",q:"Classify as many-to-one, one-to-many or many-to-many: (a) sentiment of a review, (b) caption for a photo, (c) part-of-speech tag for each word, (d) English to Hindi translation.",hint:"Count inputs and outputs.",a:"<p>(a) <b>many-to-one</b>: a whole review gives one label. (b) <b>one-to-many</b>: one image gives a sequence of words. (c) <b>many-to-many, aligned</b>: one tag per input word. (d) <b>many-to-many, different lengths</b>: the output sentence need not match the input length.</p>"}],
+ questions:[
+  {q:"What is a sequence learning problem? Why can a feed-forward network not solve it?",marks:5,d:"easy",priority:"high",source:"syllabus LO 5.1"},
+  {q:"Classify the given tasks as many-to-one, one-to-many or many-to-many and justify.",marks:5,d:"easy",priority:"medium",source:"syllabus LO 5.1"}]},
+
+{id:"m5t2",m:"m5",title:"Unfolding the Computational Graph and the RNN Cell",type:"theory",priority:"medium",los:["5.2"],
+ src:"Module 5 deck, slides 14 to 32 (loop, unrolling, computational graph, the phone-repair robot, the cell).",
+ summary:"From a loop on the hidden layer to the unrolled chain, and the one equation inside the cell.",
+ whatIs:"<p>A <b>recurrent neural network</b> feeds its hidden layer back into itself. <b>Unfolding</b> (unrolling) draws that loop as a chain, one copy of the cell per time step, all sharing the same weights.</p>",
+ concept:FIG_RNN+
+  "<h4>The deck's build-up</h4>"+
+  "<p>An ordinary network → squash it and look from underneath → merge many arrows into two → rotate to vertical → add a <b>loop</b> on the hidden layer (the 'temporal loop') → unroll the loop into a chain, each circle now a whole layer of neurons</p>"+
+  "<h4>Computational graph</h4><p>A directed graph whose nodes are operations. p = x + y and g = (x + y) × z are small examples. Unrolling an RNN gives a graph with the <b>same node repeated per step</b>, which is what makes backpropagation through it possible (topic 5.5).</p>"+
+  "<h4>The cell</h4><div class='eqb'>h(t) = tanh( W<sub>xh</sub> x(t) + W<sub>hh</sub> h(t−1) + b<sub>h</sub> )\ny(t) = W<sub>hy</sub> h(t) + b<sub>y</sub>   (softmax on top for a classification output)</div>"+
+  "<ul><li><b>h(t), the hidden state</b> is the network's memory: a summary of everything seen up to step t.</li>"+
+  "<li><b>Same weights at every step.</b> This is parameter sharing across time, so the model handles any length and the parameter count does not grow with the sequence.</li></ul>"+
+  "<div class='box tip'><h5>The deck's robot</h5><p>A robot repairs a phone using a box of parts and returns the phone <i>and an updated box</i>. The box is the hidden state: passed to the next job. The two 'Parts' boxes in the two-step picture are the <b>same</b> box.</p></div>",
+ needToKnow:["Describe the loop and how unrolling turns it into a chain","State that the same weights are used at every time step","Write h(t) = tanh(W_xh x(t) + W_hh h(t−1) + b) and y(t) = W_hy h(t) + b_y","Say the hidden state is the memory","Define a computational graph and say what unrolling does to it"],
+ recognition:{clues:["'Unfold', 'unroll', 'temporal loop'","h(t) written in terms of h(t−1)","'Computational graph'"],
+  wording:["Explain unfolding of a computational graph with reference to an RNN.","Draw and explain the structure of an RNN cell."],
+  firstMove:"Draw the loop, then the unrolled chain beneath it, and write h(t) = f(h(t−1), x(t)) between them.",
+  trap:"Drawing three different sets of weights in the unrolled chain. It is one set, reused."},
+ mistakes:["Labelling different weights at each step of the unrolled diagram","Forgetting the hidden-to-hidden weight W_hh: it is the recurrence","Saying the RNN has 'more parameters for longer sequences': the count is fixed","Describing the loop without drawing the unrolled form"],
+ practice:[
+  {id:"m5t2p1",d:"easy",q:"Write the equations of a simple RNN cell and name each term.",hint:"One for the hidden state, one for the output.",a:"<div class='eqb'>h(t) = tanh( W<sub>xh</sub> x(t) + W<sub>hh</sub> h(t−1) + b<sub>h</sub> )\ny(t) = W<sub>hy</sub> h(t) + b<sub>y</sub></div><p>W<sub>xh</sub> maps the current input in, W<sub>hh</sub> carries the previous hidden state (the recurrence), W<sub>hy</sub> maps the state to the output, b are biases. h(t) is the memory.</p>"},
+  {id:"m5t2p2",d:"moderate",q:"What does unfolding mean and why is weight sharing across the unfolded steps important?",hint:"Length of the sequence.",a:"<p><b>Unfolding</b> redraws the recurrent loop as a chain with one copy of the cell per time step. Because every copy uses the <b>same weights</b>, (1) the parameter count does not grow with sequence length, (2) the network can process sequences of any length, and (3) a pattern learned at one position is recognised at every other.</p>"},
+  {id:"m5t2p3",d:"moderate",q:"In the deck's robot analogy, what corresponds to the hidden state, the input and the weights?",hint:"What does the robot pass on to the next phone?",a:"<p>The <b>box of parts</b> is the hidden state: it is updated by each job and handed to the next. The <b>broken phone</b> is the input x(t) and the <b>repaired phone</b> the output y(t). The robot's repair skill, which does not change from job to job, corresponds to the <b>shared weights</b>.</p>"}],
+ questions:[
+  {q:"Explain the unfolding of an RNN's computational graph with a diagram and write the cell equations.",marks:5,d:"moderate",priority:"high",source:"deck slides 14 to 32"},
+  {q:"State why parameters are shared across time steps in an RNN.",marks:5,d:"easy",priority:"medium",source:"syllabus LO 5.2"}]},
+
+{id:"m5t3",m:"m5",title:"RNN Forward Pass and Parameter Count",type:"problem-solving",priority:"high",los:["5.2"],
+ src:"Standard RNN arithmetic using the cell equations of 5.2. Not worked in the Module 5 deck.",
+ summary:"Compute hidden states step by step and count the parameters.",
+ whatIs:"<p>Given weights and an input sequence, compute h(1), h(2), … in order, each using the one before it. Count parameters from the matrix shapes.</p>",
+ concept:"<div class='eqb'>h(t) = tanh( w<sub>x</sub> x(t) + w<sub>h</sub> h(t−1) + b )      with h(0) = 0 unless told\nparams = n·d (W<sub>xh</sub>) + n·n (W<sub>hh</sub>) + n (b<sub>h</sub>) + m·n (W<sub>hy</sub>) + m (b<sub>y</sub>)\n(d inputs, n hidden units, m outputs)</div>"+
+  "<div class='box tip'><h5>Method</h5><p>Make a table with columns t | x(t) | pre-activation | h(t). Fill it left to right: the h(t−1) you need is the one you just computed. Keep four decimals.</p></div>",
+ core:{t:"The core idea: each step's answer is the next step's input",
+  b:"<p>You cannot compute h(3) without h(2) or h(2) without h(1). That chain <i>is</i> the memory. In a numerical, the whole difficulty is carrying the previous h forward correctly.</p>"},
+ needToKnow:["Start from h(0) = 0 unless the question gives another","Compute pre-activation w_x·x(t) + w_h·h(t−1) + b, then apply tanh","Carry h(t) forward into the next step","Count parameters as n·d + n·n + n + m·n + m","Say the count does not depend on sequence length"],
+ recognition:{clues:["Weights w_x, w_h given with an input sequence x(1), x(2), x(3)","'Find the hidden state at t = 3'","Dimensions d, n, m given with 'how many parameters'"],
+  wording:["Compute the hidden states of the RNN for the input sequence below.","Find the number of trainable parameters of an RNN with input size 3, 4 hidden units and 2 outputs."],
+  firstMove:"Draw the t | x | pre-activation | h table and write h(0) = 0 in the first row.",
+  trap:"Using h(0) in every step instead of the previous step's h."},
+ mistakes:["Using h(0) at every step instead of h(t−1)","Forgetting tanh, or applying it to the term w_x·x only","Omitting W_hh in the parameter count","Making the parameter count depend on sequence length"],
+ examples:[
+  {id:"m5t3e1",title:"Three steps of a scalar RNN",q:"An RNN has w<sub>x</sub> = 0.5, w<sub>h</sub> = 0.8, b = 0, h(0) = 0 and tanh activation. Input x = (1, 0.5, −1). Find h(1), h(2) and h(3).",
+   steps:["<b>t = 1:</b> 0.5(1) + 0.8(0) = 0.5 → h(1) = tanh(0.5) = <b>0.4621</b>.","<b>t = 2:</b> 0.5(0.5) + 0.8(0.4621) = 0.25 + 0.3697 = 0.6197 → h(2) = tanh(0.6197) = <b>0.5509</b>.","<b>t = 3:</b> 0.5(−1) + 0.8(0.5509) = −0.5 + 0.4407 = −0.0593 → h(3) = tanh(−0.0593) = <b>−0.0592</b>."],
+   answer:"h(1) = <b>0.4621</b>, h(2) = <b>0.5509</b>, h(3) = <b>−0.0592</b>.",
+   trap:"The final input −1 almost cancels the memory of the first two steps (0.4407 against −0.5). The state at step 3 is near zero because of the interaction, not because the input is zero."},
+  {id:"m5t3e2",title:"Parameter count",q:"An RNN reads 3-dimensional inputs, has 4 hidden units and produces a 2-dimensional output. Count the parameters, and again for a sequence ten times longer.",
+   steps:["W<sub>xh</sub>: 4 × 3 = <b>12</b>.","W<sub>hh</sub>: 4 × 4 = <b>16</b>.","b<sub>h</sub>: <b>4</b>.","W<sub>hy</sub>: 2 × 4 = <b>8</b>.","b<sub>y</sub>: <b>2</b>.","Total = 12 + 16 + 4 + 8 + 2 = <b>42</b>. For a sequence ten times longer the weights are shared, so it is still <b>42</b>."],
+   answer:"<b>42</b> parameters, whatever the sequence length.",
+   trap:"If the question says the input is a one-hot vector over a vocabulary of V words, then d = V. With V = 10 and n = 5, m = 10 the count is 50 + 25 + 5 + 50 + 10 = 140."}],
+ practice:[
+  {id:"m5t3p1",d:"easy",q:"Count the parameters of an RNN with 5 inputs, 6 hidden units and 3 outputs.",hint:"Five matrices and vectors.",a:"<p>W<sub>xh</sub>: 6 × 5 = 30. W<sub>hh</sub>: 6 × 6 = 36. b<sub>h</sub>: 6. W<sub>hy</sub>: 3 × 6 = 18. b<sub>y</sub>: 3. Total = 30 + 36 + 6 + 18 + 3 = <b>93</b>.</p>"},
+  {id:"m5t3p2",d:"moderate",q:"With w<sub>x</sub> = 1, w<sub>h</sub> = 0.5, b = 0, h(0) = 0 and tanh, find h(1) and h(2) for x = (0.5, 0.5).",hint:"Carry h(1) into step 2.",a:"<p>t = 1: 1(0.5) + 0.5(0) = 0.5 → h(1) = tanh(0.5) = <b>0.4621</b>. t = 2: 1(0.5) + 0.5(0.4621) = 0.5 + 0.2311 = 0.7311 → h(2) = tanh(0.7311) = <b>0.6237</b>. The same input gives a different state at step 2 because the memory of step 1 is added.</p>"},
+  {id:"m5t3p3",d:"moderate",q:"A one-hot word input (vocabulary 10,000), 128 hidden units and a 10,000-way output: which matrix has the most parameters, and roughly how many does the model have?",hint:"Two matrices involve the vocabulary.",a:"<p>W<sub>xh</sub>: 128 × 10,000 = 1,280,000. W<sub>hy</sub>: 10,000 × 128 = 1,280,000. W<sub>hh</sub>: 128 × 128 = 16,384. Biases: 128 + 10,000. Total ≈ <b>2.59 million</b>. The two vocabulary matrices dominate; the recurrence W<sub>hh</sub> is tiny by comparison.</p>"}],
+ questions:[
+  {q:"Compute the hidden states of the given scalar RNN for the input sequence and state the output at the final step.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 5.2"},
+  {q:"Find the number of trainable parameters of an RNN with the given input, hidden and output sizes.",marks:5,d:"easy",priority:"medium",source:"syllabus LO 5.2"}]},
+
+{id:"m5t4",m:"m5",title:"Bidirectional RNN",type:"theory",priority:"medium",los:["5.2","5.4"],
+ src:"Module 5 deck, slides 43 to 46 (pronoun example, two RNNs, combination options, deep BRNN).",
+ summary:"Two RNNs read the sequence in opposite directions so each position sees the past and the future.",
+ whatIs:"<p>A <b>bidirectional RNN (BRNN)</b> is two RNNs running together: one reads the sequence first to last, the other last to first. Each position then has context from both sides.</p>",
+ concept:"<h4>Why it is needed</h4><p>The deck's pronoun examples: 'Charles said he needs a vacation' and 'Saying, \"I need a vacation\", Charles sat down'. To know who 'I' refers to, the words <b>after</b> it help. Reading right to left supplies them.</p>"+
+  "<h4>How it works</h4><p>Forward RNN reads x(1) → x(T) → backward RNN reads x(T) → x(1) → at each step the two outputs are <b>combined</b> (sum, average, multiply or concatenate) → combined value is the output or the input to the next layer</p>"+
+  "<p>The two values at a position are produced at different times, so the first one waits for the second.</p>"+
+  "<div class='scroll'><table><tr><th>Use it when</th><th>Do not use it when</th></tr>"+
+  "<tr><td>The <b>whole sequence is available</b>: tagging, classification, offline speech recognition</td><td>The future is not known yet: real-time prediction, live generation of the next word</td></tr></table></div>"+
+  "<h4>Deep BRNN</h4><p><b>Deep</b> because several such layers are stacked, each feeding the next; <b>bidirectional</b> because every layer has both a forward and a backward unit.</p>",
+ needToKnow:["Define a BRNN as two RNNs, one in each direction","Give the pronoun example for why future context helps","Name the combination options: add, average, multiply, concatenate","State the limitation: the full sequence must be available","Explain 'deep' and 'bidirectional' in a deep BRNN"],
+ recognition:{clues:["'Bidirectional', 'both directions', 'past and future context'","A pronoun or word whose meaning depends on later words"],
+  wording:["Explain a bidirectional RNN with a diagram. When can it not be used?"],
+  firstMove:"Draw two rows of cells with arrows in opposite directions, and a combine box at each position.",
+  trap:"Suggesting a BRNN for live next-word prediction. It needs the future, which does not exist yet."},
+ mistakes:["Drawing one chain with arrows both ways: there are two separate RNNs","Forgetting the combine step and what the options are","Missing the limitation (full sequence needed)","Saying it doubles the sequence: it doubles the compute and parameters, not the length"],
+ practice:[
+  {id:"m5t4p1",d:"easy",q:"What is a bidirectional RNN and why does the deck use pronoun sentences to motivate it?",hint:"Which words help to resolve 'I'?",a:"<p>A BRNN is <b>two RNNs</b>: one reads the sequence in order, the other in reverse, and their outputs are combined at each position. The pronoun sentences show that what a word means can depend on words <b>after</b> it ('Saying, \"I need a vacation\", Charles sat down': the 'I' is only resolved by what follows). Reading backwards supplies that context.</p>"},
+  {id:"m5t4p2",d:"moderate",q:"Name two ways to combine the forward and backward outputs and one situation in which a BRNN cannot be used.",hint:"Think of what the future requires.",a:"<p>Combine by <b>concatenating</b> the two vectors (output size doubles) or by <b>adding</b> / averaging them (size unchanged); multiplying is also possible. A BRNN cannot be used where the future is not available, e.g. <b>real-time next-word prediction</b> or live speech generation, because the backward pass needs the end of the sequence.</p>"},
+  {id:"m5t4p3",d:"application",app:true,q:"Choose between a forward-only RNN and a BRNN for: (a) tagging each word of a stored document with its part of speech, (b) predicting tomorrow's electricity demand from the readings so far today. Justify each.",hint:"Is the future available?",a:"<p>(a) <b>BRNN.</b> The whole document is stored, so both left and right context are available and both help (a word's tag depends on its neighbours on both sides). (b) <b>Forward-only RNN.</b> Only the readings so far exist; a backward pass would need readings that have not happened yet.</p>"}],
+ questions:[
+  {q:"Explain the bidirectional RNN with a diagram and state a situation where it cannot be used.",marks:5,d:"moderate",priority:"medium",source:"deck slides 43 to 46"},
+  {q:"Choose between an RNN and a BRNN for the given task and justify the choice.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 5.4"}]},
+
+{id:"m5t5",m:"m5",title:"Backpropagation Through Time and Truncated BPTT",type:"theory",priority:"high",los:["5.3"],
+ src:"Module 5 deck, slides 47 to 49 (training an RNN, unrolling, BPTT) and 64. Truncated BPTT and the gradient product are standard background.",
+ summary:"Training an RNN by unrolling it and backpropagating through every step, with shared weights.",
+ whatIs:"<p><b>Backpropagation through time (BPTT)</b> is ordinary backpropagation (Module 2) applied to the unrolled RNN. The one difference is that every step uses the <b>same weights</b>, so each weight's gradient is the <b>sum</b> of its gradients from all time steps.</p>",
+ concept:"<h4>The recipe (deck slides 47 to 49)</h4>"+
+  "<p>Fix the number of time steps → unroll the RNN → forward pass computes h(1)…h(T) and the loss → push error gradients backwards through the unrolled graph → add up the gradient for each shared weight over all steps → update the weights once</p>"+
+  "<div class='eqb'>∂E/∂W<sub>hh</sub> = Σ<sub>t</sub> ∂E<sub>t</sub>/∂W<sub>hh</sub>\n∂E<sub>t</sub>/∂h(k) = ∂E<sub>t</sub>/∂h(t) · Π<sub>j=k+1..t</sub> ( ∂h(j)/∂h(j−1) )      (a product of t−k Jacobians)</div>"+
+  "<p>That long product is the source of the two problems in 5.6: multiply many numbers below 1 and the gradient vanishes; many above 1 and it explodes.</p>"+
+  "<h4>Truncated BPTT</h4><p>Backpropagating through a very long sequence is slow and memory-hungry. <b>Truncated BPTT</b> cuts the sequence into chunks of k steps: forward pass runs on, hidden state is carried across chunks, but gradients flow back only <b>k steps</b>. Cost per update becomes fixed; the price is that dependencies longer than k are not learned by gradient.</p>"+
+  "<div class='box tip'><h5>Backprop against BPTT in one line</h5><p>Same algorithm. BPTT runs it on the unrolled graph and sums the gradient of each shared weight over all time steps.</p></div>",
+ needToKnow:["Describe BPTT as backpropagation on the unrolled network","Say each shared weight's gradient is the sum over all time steps","Write the product of Jacobians ∂h(j)/∂h(j−1) behind long-range gradients","Define truncated BPTT: gradients flow back only k steps","State its trade-off: cheaper updates but no learning of dependencies longer than k"],
+ recognition:{clues:["'BPTT', 'training an RNN', 'unrolled'","'Truncated', 'k steps', 'long sequence, limited memory'"],
+  wording:["Explain backpropagation through time. How does it differ from ordinary backpropagation?","What is truncated BPTT and why is it used?"],
+  firstMove:"Draw the unrolled chain with the loss at the end and arrows running backwards; write 'same W at every step, so gradients add'.",
+  trap:"Saying BPTT is a different algorithm. It is backpropagation on the unrolled graph with summed shared-weight gradients."},
+ mistakes:["Treating each time step's weights as separate parameters: they are shared, so the gradients are summed","Forgetting to say the sequence must be unrolled to a fixed number of steps first","Saying truncated BPTT also truncates the forward pass or resets the hidden state: only the gradient is cut","Missing the trade-off: it cannot learn dependencies longer than k"],
+ practice:[
+  {id:"m5t5p1",d:"easy",q:"Explain BPTT and how it differs from ordinary backpropagation.",hint:"Unrolling and shared weights.",a:"<p>BPTT <b>unrolls</b> the RNN over its T time steps, runs the forward pass to get the states and the loss, then backpropagates the error through the unrolled graph as in Module 2. The only difference is that every step uses the <b>same weights</b>, so the gradient of each weight is the <b>sum</b> of its contributions from all steps. The weights are then updated once.</p>"},
+  {id:"m5t5p2",d:"moderate",q:"A sequence has 1,000 steps. Describe truncated BPTT with k = 50: how many chunks, what is passed between them, and what is lost?",hint:"Forward continues, backward stops.",a:"<p>1,000 ÷ 50 = <b>20 chunks</b>. The <b>hidden state</b> is carried forward from one chunk to the next, so the forward pass sees the whole sequence, but the <b>gradient</b> flows back only 50 steps within a chunk. Each update is cheap and uses bounded memory. What is lost: the gradient cannot connect cause and effect more than 50 steps apart, so such long dependencies are not learned.</p>"},
+  {id:"m5t5p3",d:"moderate",q:"Why is the gradient with respect to W<sub>hh</sub> a sum over time steps?",hint:"How many times is W<sub>hh</sub> used?",a:"<p>Because the one matrix W<sub>hh</sub> is used at <b>every</b> step of the unrolled network. A small change to it changes every step's state, so the total effect on the loss is the sum of the effects at each step: ∂E/∂W<sub>hh</sub> = Σ<sub>t</sub> ∂E<sub>t</sub>/∂W<sub>hh</sub>.</p>"}],
+ questions:[
+  {q:"Explain backpropagation through time and truncated BPTT.",marks:5,d:"moderate",priority:"high",source:"deck slides 47 to 49"},
+  {q:"State why gradients of shared weights are summed over time in an RNN.",marks:5,d:"easy",priority:"medium",source:"syllabus LO 5.3"}]},
+
+{id:"m5t6",m:"m5",title:"Vanishing and Exploding Gradients: Effect and Remedies",type:"problem-solving",priority:"high",los:["5.3"],
+ src:"Module 5 deck, slides 49 and 64 (issues with BPTT, long-term dependency). Numerical examples and clipping are standard background.",
+ summary:"A product of many factors below or above 1, and what to do about each.",
+ whatIs:"<p>BPTT multiplies one factor per time step. If the typical factor is below 1 the gradient <b>vanishes</b> (early steps stop learning); above 1 it <b>explodes</b> (weights jump, loss becomes NaN).</p>",
+ concept:"<div class='eqb'>∂h(T)/∂h(k) ≈ (w · f′)^(T−k)       for a scalar RNN, f′ = derivative of the activation\nfactor &lt; 1  →  vanishing         factor &gt; 1  →  exploding</div>"+
+  "<div class='scroll'><table><tr><th></th><th>Vanishing</th><th>Exploding</th></tr>"+
+  "<tr><td>Cause</td><td>Factors &lt; 1 (tanh′ ≤ 1, sigmoid′ ≤ 0.25, small W)</td><td>Factors &gt; 1 (large W)</td></tr>"+
+  "<tr><td>Symptom</td><td>Loss stalls; model forgets early inputs</td><td>Loss jumps, NaN, weights huge</td></tr>"+
+  "<tr><td>Effect on learning</td><td>Cannot learn <b>long-term dependencies</b></td><td>Unstable training</td></tr>"+
+  "<tr><td>Remedies</td><td>LSTM or GRU (5.7, 5.8), ReLU with careful initialisation, skip connections, shorter sequences</td><td><b>Gradient clipping</b>, smaller learning rate, regularisation</td></tr></table></div>"+
+  "<div class='eqb'>Gradient clipping:  if ‖g‖ &gt; τ  then  g ← τ · g / ‖g‖      (keeps the direction, shrinks the length)</div>"+
+  "<p>The deck names the consequence: the <b>long-term dependency problem</b>. In its example, 'Bob said he was hungry…' and many words later '…they were still there, watching him', the network must remember the subject across a long gap, which a vanishing gradient prevents. Its fix: RNNs with 'fancy internals' (LSTM, GRU).</p>",
+ core:{t:"The core idea: 0.5 multiplied twenty times is a millionth",
+  b:"<p>A gradient sent back 20 steps with a factor of 0.5 per step is multiplied by 0.5<sup>20</sup> ≈ 0.000001. The early steps get almost no learning signal. With a factor of 1.5 it grows to 3,325. Same mechanism, opposite ends of 1.</p>"},
+ needToKnow:["State the cause: a product of one factor per time step","Compute (factor)^(steps) to show vanishing or exploding","Say vanishing blocks long-term dependencies and exploding makes training unstable","Name gradient clipping for exploding and LSTM/GRU for vanishing","Write the clipping rule g ← τ g / ‖g‖ when ‖g‖ &gt; τ"],
+ recognition:{clues:["'Vanishing', 'exploding', 'long-term dependency'","A factor per step and a number of steps: 0.9, 50 steps","A gradient vector and a threshold τ"],
+  wording:["Explain the vanishing and exploding gradient problems in RNNs. How can they be overcome?","Apply gradient clipping with threshold 5 to the gradient (30, 40)."],
+  firstMove:"Write gradient = (per-step factor)^(number of steps), then substitute.",
+  trap:"Proposing gradient clipping for vanishing gradients. Clipping only shrinks large gradients; it cannot restore a vanished one."},
+ mistakes:["Using clipping to fix vanishing gradients, or LSTM only to fix exploding ones","Forgetting that the number of multiplications is T − k, not T","Saying the loss 'explodes' for a vanishing gradient: it stalls","Clipping each component separately and calling it norm clipping"],
+ examples:[
+  {id:"m5t6e1",title:"How fast a gradient vanishes or explodes",q:"A scalar RNN has an effective per-step factor of 0.9 in one run and 1.1 in another. Find the gradient factor after 50 steps and after 20 steps for the 0.9 case. Then do the same for the 0.5 and 1.5 factors over 20 steps.",
+   steps:["0.9<sup>50</sup> = <b>0.0052</b> (about 1/194).","1.1<sup>50</sup> = <b>117.4</b>.","0.9<sup>20</sup> = <b>0.1216</b>.","0.5<sup>20</sup> = <b>9.5 × 10<sup>−7</sup></b>.","1.5<sup>20</sup> = <b>3,325</b>."],
+   answer:"Factor 0.9: 0.0052 after 50 steps. Factor 1.1: 117 after 50 steps. Over 20 steps: 0.5 → <b>9.5 × 10<sup>−7</sup></b> (vanishes), 1.5 → <b>3,325</b> (explodes).",
+   trap:"A factor only 10% away from 1 is already a 200-fold change in 50 steps. The problem is not exotic weights; it is simply repeated multiplication."},
+  {id:"m5t6e2",title:"Gradient clipping by norm",q:"A gradient is g = (30, 40) and the clipping threshold is τ = 5. Apply norm clipping.",
+   steps:["‖g‖ = √(30² + 40²) = √(900 + 1600) = √2500 = <b>50</b>.","50 &gt; 5, so clip: g ← τ · g / ‖g‖ = 5 × (30, 40) / 50.","= (3, 4)."],
+   answer:"Clipped gradient <b>(3, 4)</b>, norm 5. The direction (3:4) is unchanged; only the length is cut.",
+   trap:"Clipping each component to 5 would give (5, 5), which changes the direction. Norm clipping keeps it."}],
+ practice:[
+  {id:"m5t6p1",d:"easy",q:"Explain the vanishing gradient problem in an RNN and its effect on learning.",hint:"Product of many small numbers.",a:"<p>During BPTT the gradient reaching an early step is a <b>product of one Jacobian per step in between</b>. If those factors are below 1 (tanh′ ≤ 1, sigmoid′ ≤ 0.25, small weights) the product shrinks exponentially and the early steps receive almost no learning signal. The effect: the network cannot learn <b>long-term dependencies</b>, as in the deck's example where the subject at the start of a long passage must be remembered at the end.</p>"},
+  {id:"m5t6p2",d:"moderate",q:"A gradient is (6, 8) with threshold τ = 2. Apply norm clipping, and say what would happen if τ = 20.",hint:"Find the norm first.",a:"<p>‖g‖ = √(36 + 64) = 10 &gt; 2, so g ← 2 × (6, 8)/10 = <b>(1.2, 1.6)</b>, norm 2. With τ = 20, ‖g‖ = 10 is below the threshold, so the gradient is <b>left unchanged</b>.</p>"},
+  {id:"m5t6p3",d:"application",app:true,q:"A team trains a plain RNN on 500-step sensor logs. Training loss stays flat and the model only reacts to the last few readings. A second team's model shows loss suddenly becoming NaN. Diagnose each and propose one fix each.",hint:"Flat against NaN.",a:"<p><b>First team: vanishing gradients.</b> The loss is flat and only recent readings matter, so earlier steps get no signal. Fix: switch to an <b>LSTM or GRU</b>, whose additive memory path keeps gradients alive (also shorter sequences or truncated BPTT with a meaningful k).</p><p><b>Second team: exploding gradients.</b> A sudden NaN means a huge update. Fix: <b>gradient clipping</b> by norm, plus a smaller learning rate.</p>"}],
+ questions:[
+  {q:"Explain vanishing and exploding gradients in RNNs and state how each is overcome.",marks:5,d:"moderate",priority:"high",source:"deck slides 49 and 64"},
+  {q:"Apply gradient clipping to the given gradient and threshold; state the effect on direction and length.",marks:5,d:"easy",priority:"medium",source:"syllabus LO 5.3"}]},
+
+{id:"m5t7",m:"m5",title:"LSTM: Forget, Input and Output Gates",type:"problem-solving",priority:"high",los:["5.4"],
+ src:"Module 5 deck, slides 65 to 76 (persistent short-term memory, gates, forgetting, remembering, selecting). Equations are standard (Hochreiter and Schmidhuber).",
+ summary:"A cell state with three gates that decide what to forget, what to write and what to read.",
+ whatIs:"<p>An <b>LSTM</b> adds a <b>cell state</b> c(t), a long-term memory, to the hidden state h(t), the short-term output. Three <b>gates</b>, numbers between 0 and 1 that multiply values, control it. The deck calls it 'persistent short-term memory': it gives fleeting values a longer life.</p>",
+ concept:"<h4>Gates (deck slides 67 to 69)</h4><p>A gate is a value in [0, 1] multiplied onto something: 0 blocks it, 1 passes it, between scales it, like a tap on a pipe. An LSTM uses gates for three jobs.</p>"+
+  "<div class='scroll'><table><tr><th>Gate</th><th>Deck word</th><th>Job</th><th>Equation</th></tr>"+
+  "<tr><td><b>Forget</b> f</td><td>Forgetting</td><td>Push old memory towards 0</td><td>f = σ(W<sub>f</sub>[h(t−1), x(t)] + b<sub>f</sub>)</td></tr>"+
+  "<tr><td><b>Input</b> i</td><td>Remembering</td><td>How much of the new candidate to write</td><td>i = σ(W<sub>i</sub>[h(t−1), x(t)] + b<sub>i</sub>)</td></tr>"+
+  "<tr><td><b>Output</b> o</td><td>Selecting</td><td>How much memory to read out</td><td>o = σ(W<sub>o</sub>[h(t−1), x(t)] + b<sub>o</sub>)</td></tr></table></div>"+
+  "<div class='eqb'>c̃(t) = tanh( W<sub>c</sub>[h(t−1), x(t)] + b<sub>c</sub> )          (the candidate new memory)\nc(t) = f ⊙ c(t−1) + i ⊙ c̃(t)               (forget some old, add some new)\nh(t) = o ⊙ tanh( c(t) )                      (select what to expose)</div>"+
+  "<p>The line <b>c(t) = f ⊙ c(t−1) + i ⊙ c̃</b> is the whole trick. Memory is updated by <b>adding</b>, not by repeatedly squashing through a weight matrix, so with f near 1 the gradient flows back along c almost unchanged. That is how the LSTM beats vanishing gradients.</p>"+
+  "<p><b>Parameters:</b> four blocks (f, i, o, candidate) each of size n(n + d) + n, so <b>4n(n + d + 1)</b> for hidden size n and input size d (one bias per block; frameworks may add a second).</p>",
+ core:{t:"The core idea: three gated numbers decide what is kept, written and shown",
+  b:"<p>Forget gate: how much of yesterday's memory survives. Input gate: how much of today's news is written. Output gate: how much of the memory is shown. Everything else is arithmetic on those three numbers: c = f·c<sub>old</sub> + i·c̃ and h = o·tanh(c).</p>"},
+ needToKnow:["Name the three gates and the job of each","Write c(t) = f ⊙ c(t−1) + i ⊙ c̃(t) and h(t) = o ⊙ tanh(c(t))","Say gate values lie in [0, 1] because they are sigmoids","Explain why the additive cell update fights vanishing gradients","Count parameters as 4n(n + d + 1)"],
+ recognition:{clues:["'Forget gate', 'cell state', 'input gate', 'output gate'","Given f, i, c̃, o and c(t−1), asked for c(t) and h(t)","'Long short-term memory'"],
+  wording:["Explain the LSTM architecture and the role of each gate.","For the given gate values compute the new cell state and hidden state."],
+  firstMove:"Write c(t) = f·c(t−1) + i·c̃ first, substitute, then h(t) = o·tanh(c(t)).",
+  trap:"Applying tanh to c(t) when computing c(t) itself. tanh is applied to c only to get h(t)."},
+ mistakes:["Applying tanh when computing c(t); tanh appears only in the candidate and in h(t) = o·tanh(c)","Calling the output gate the 'forget' gate or the reverse","Forgetting that the cell state is separate from the hidden state","Saying the LSTM has no vanishing gradients at all: it greatly reduces them"],
+ examples:[
+  {id:"m5t7e1",title:"One LSTM step from gate values",q:"At a step c(t−1) = 2.0 and the gates are f = 0.9, i = 0.3, o = 0.8, with candidate c̃ = 0.5. Find c(t) and h(t).",
+   steps:["c(t) = f·c(t−1) + i·c̃ = 0.9(2.0) + 0.3(0.5) = 1.8 + 0.15 = <b>1.95</b>.","tanh(1.95) = 0.9603.","h(t) = o · tanh(c(t)) = 0.8 × 0.9603 = <b>0.7683</b>."],
+   answer:"c(t) = <b>1.95</b>, h(t) = <b>0.768</b>. The forget gate kept 90% of the old memory (1.8 of 2.0) and the input gate added a small amount (0.15).",
+   trap:"The cell state (1.95) is not squashed; the hidden state (0.768) is. The memory can exceed 1, the output cannot."},
+  {id:"m5t7e2",title:"One step from pre-activations",q:"Pre-activations at a step: forget 2.0, input −1.0, candidate 1.0, output 0.0, with c(t−1) = 1.0. Find c(t) and h(t).",
+   steps:["f = σ(2.0) = 0.8808; i = σ(−1.0) = 0.2689; c̃ = tanh(1.0) = 0.7616; o = σ(0.0) = 0.5.","c(t) = 0.8808(1.0) + 0.2689(0.7616) = 0.8808 + 0.2048 = <b>1.0856</b>.","tanh(1.0856) = 0.7954.","h(t) = 0.5 × 0.7954 = <b>0.3977</b>."],
+   answer:"c(t) = <b>1.0856</b>, h(t) = <b>0.398</b>.",
+   trap:"Gates use sigmoid (0 to 1) but the candidate uses tanh (−1 to 1). Mixing them up gives a negative 'gate', which is meaningless."}],
+ practice:[
+  {id:"m5t7p1",d:"easy",q:"Name the three LSTM gates and state what each controls, using the deck's words.",hint:"Forgetting, remembering, selecting.",a:"<p><b>Forget gate (forgetting):</b> multiplies the old cell state, pushing values towards 0 to discard them. <b>Input gate (remembering):</b> decides how much of the new candidate is added to memory. <b>Output gate (selecting):</b> decides how much of the memory is used to form the output h(t). The deck calls the remember and select gates the input and output gates.</p>"},
+  {id:"m5t7p2",d:"moderate",q:"Find c(t) and h(t) when c(t−1) = 1.0, f = 0.5, i = 1.0, c̃ = −0.4, o = 1.0.",hint:"Cell state first.",a:"<p>c(t) = 0.5(1.0) + 1.0(−0.4) = 0.5 − 0.4 = <b>0.1</b>. h(t) = 1.0 × tanh(0.1) = <b>0.0997</b>. The new information partly cancels the retained memory.</p>"},
+  {id:"m5t7p3",d:"moderate",q:"Explain why the LSTM cell update helps against vanishing gradients, referring to the equation.",hint:"Addition against repeated multiplication by W.",a:"<p>c(t) = f ⊙ c(t−1) + i ⊙ c̃(t) updates memory by <b>addition</b>. The derivative of c(t) with respect to c(t−1) is just f. When the network sets f close to 1, the gradient passes back along the cell state almost unchanged instead of being multiplied by a weight matrix and a squashing derivative at every step. So the signal survives many steps.</p>"},
+  {id:"m5t7p4",d:"moderate",q:"Count the parameters of an LSTM layer with 4 hidden units and 3 inputs.",hint:"Four blocks.",a:"<p>4n(n + d + 1) = 4 × 4 × (4 + 3 + 1) = 4 × 4 × 8 = <b>128</b>. Check by block: each block has 4 × (4 + 3) + 4 = 32, and 4 blocks give 128. A plain RNN hidden layer of the same size has 32.</p>"}],
+ questions:[
+  {q:"Explain the LSTM architecture, the role of each gate and why it mitigates vanishing gradients.",marks:5,d:"moderate",priority:"high",source:"deck slides 65 to 76"},
+  {q:"Given the gate values, compute the cell state and hidden state of an LSTM at a step.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 5.4"}]},
+
+{id:"m5t8",m:"m5",title:"GRU and Choosing the Right Recurrent Model",type:"theory",priority:"high",los:["5.4"],
+ src:"Module 5 deck, slides 77 to 79 (GRU, RNN vs LSTM vs GRU, RNN structures). GRU equations are standard (Cho et al.); conventions for z differ between books.",
+ summary:"A lighter gated cell, and how to pick between RNN, LSTM, GRU and BRNN for a task.",
+ whatIs:"<p>The <b>gated recurrent unit (GRU)</b> is an LSTM with simplifications: the forget and input gates are merged into a single <b>update gate</b>, and there is no separate cell state. It is a bit faster and usually gives similar results.</p>",
+ concept:"<div class='eqb'>z = σ(W<sub>z</sub>[h(t−1), x(t)])                   update gate\nr = σ(W<sub>r</sub>[h(t−1), x(t)])                   reset gate\nh̃ = tanh(W[ r ⊙ h(t−1), x(t) ])                 candidate\nh(t) = (1 − z) ⊙ h(t−1) + z ⊙ h̃                  blend old and new</div>"+
+  "<p>z decides how much to replace; <b>one number does both forgetting and writing</b> (keep 1 − z of the old, take z of the new). r decides how much of the past is used to build the candidate. Parameters: three blocks, <b>3n(n + d + 1)</b>.</p>"+
+  "<h4>RNN, LSTM, GRU compared</h4><div class='scroll'><table><tr><th></th><th>Simple RNN</th><th>LSTM</th><th>GRU</th></tr>"+
+  "<tr><td>Memory</td><td>h only</td><td>h and cell state c</td><td>h only</td></tr>"+
+  "<tr><td>Gates</td><td>0</td><td>3 (forget, input, output)</td><td>2 (update, reset)</td></tr>"+
+  "<tr><td>Parameters (n = 4, d = 3)</td><td>32</td><td>128</td><td>96</td></tr>"+
+  "<tr><td>Long-term dependencies</td><td>Poor</td><td>Good</td><td>Good</td></tr>"+
+  "<tr><td>Speed</td><td>Fastest</td><td>Slowest</td><td>Between</td></tr></table></div>"+
+  "<h4>Choosing a model (LO 5.4)</h4><ul>"+
+  "<li><b>Short dependencies, tiny model needed:</b> simple RNN.</li>"+
+  "<li><b>Long dependencies, plenty of data and compute:</b> LSTM. <b>Similar accuracy, less compute:</b> GRU. The deck's advice: try both and keep the better.</li>"+
+  "<li><b>Whole sequence available:</b> make it bidirectional. <b>Real-time:</b> forward only.</li>"+
+  "<li><b>Common limitation of all of them:</b> steps are computed one after another, so training cannot be parallelised across time. Very long-range tasks are now often handled by attention-based models (Transformers); that comparison is outside this deck.</li></ul>",
+ needToKnow:["State the GRU's simplification: forget and input merged into one update gate, no cell state","Write the GRU blend h(t) = (1 − z) ⊙ h(t−1) + z ⊙ h̃","Compare parameters: RNN 1×, GRU 3×, LSTM 4× the block size","Choose a model for a given task and justify it","State the shared limitation: sequential computation"],
+ recognition:{clues:["'GRU', 'update gate', 'reset gate'","'Compare RNN, LSTM and GRU'","'Select a suitable model for…' a sequence task"],
+  wording:["Explain the GRU and compare it with the LSTM.","Select a recurrent model for the described application and justify your choice."],
+  firstMove:"Draw the three-column comparison table (memory, gates, parameters, long-term ability, speed) before writing prose.",
+  trap:"Saying the GRU 'has no gates'. It has two: update and reset."},
+ mistakes:["Saying the GRU has a separate cell state: it does not","Counting three gates in a GRU: it has two (update, reset)","Claiming the GRU is always better or always worse: the deck says to try both","Choosing a BRNN for a real-time task"],
+ practice:[
+  {id:"m5t8p1",d:"easy",q:"How does a GRU differ from an LSTM?",hint:"Gates and state.",a:"<p>The GRU <b>combines the forget and input gates into a single update gate</b> and has <b>no separate cell state</b> (only the hidden state h). It has two gates (update, reset) against the LSTM's three, so fewer parameters (3 blocks against 4) and slightly faster training, usually with similar accuracy.</p>"},
+  {id:"m5t8p2",d:"moderate",q:"Compute the GRU's h(t) when h(t−1) = 0.6, candidate h̃ = −0.2 and update gate z = 0.25.",hint:"Blend: keep (1 − z) of the old.",a:"<p>h(t) = (1 − z) h(t−1) + z h̃ = 0.75(0.6) + 0.25(−0.2) = 0.45 − 0.05 = <b>0.40</b>. A small z means the state changes only a little.</p>"},
+  {id:"m5t8p3",d:"application",app:true,q:"Choose and justify a recurrent model for each: (a) a smartwatch that must flag a fall within a second using a small chip, (b) labelling every word in stored customer-support transcripts by speaker emotion, (c) summarising a 2,000-word document into one sentiment label with long-range cues.",hint:"Think real-time, whole sequence, long range.",a:"<p>(a) <b>Forward-only GRU</b> (or a small RNN): real-time, so no future is available; a GRU gives gating at low cost for a small chip. (b) <b>Bidirectional LSTM/GRU</b>: transcripts are stored, so the whole sequence is available, and each word's emotion depends on words both sides (many-to-many aligned). (c) <b>LSTM</b> (possibly bidirectional): the many-to-one task has long-range cues, and the LSTM's separate cell state is the safest choice; try a GRU if compute is tight.</p>"}],
+ questions:[
+  {q:"Explain the GRU and compare it with the LSTM and the simple RNN.",marks:5,d:"moderate",priority:"high",source:"deck slides 77 to 79"},
+  {q:"For the described application, select a suitable RNN variant and justify, noting one limitation of recurrent models.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 5.4"}]},
+
+{id:"m5t9",m:"m5",title:"Deploying RNN Systems: Privacy, Regulation and Sustainability",type:"theory",priority:"low",los:["5.5"],
+ src:"Syllabus LO 5.5 only. There are no slides on this in the Module 5 deck; written from general knowledge. Verify any law you cite before the exam.",
+ summary:"The legal, social and environmental questions a sequence-model deployment must answer.",
+ whatIs:"<p>LO 5.5 asks you to relate technical choices to <b>regulation, public protection and sustainability</b> when an RNN-based system is deployed. Sequence data (speech, text, health signals, location traces) is personal, so these questions are real, not decorative.</p>",
+ concept:"<div class='scroll'><table><tr><th>Dimension</th><th>The issue</th><th>What a responsible deployment does</th></tr>"+
+  "<tr><td><b>Privacy and data protection</b></td><td>Speech, chat text and sensor logs identify people; a model can memorise and leak training sequences</td><td>Consent and purpose limits; minimise and anonymise data; follow data-protection law (e.g. India's DPDP Act 2023, the EU GDPR)</td></tr>"+
+  "<tr><td><b>Fairness and safety</b></td><td>Models trained on unrepresentative text or speech (accents, dialects) fail unevenly; errors in health or driving contexts hurt people</td><td>Test across groups; keep a human in the loop for high-stakes decisions; log and audit</td></tr>"+
+  "<tr><td><b>Environmental</b></td><td>Long sequences train step by step and take many epochs; repeated retraining uses energy</td><td>Prefer a GRU or small model if accuracy allows; truncate sequences; reuse pre-trained models; measure energy</td></tr>"+
+  "<tr><td><b>Socio-economic</b></td><td>Automation of transcription, support or forecasting work; access gaps for languages with little data</td><td>Assess who gains and loses; support low-resource languages where relevant</td></tr></table></div>",
+ needToKnow:["Name the dimensions: privacy, fairness and safety, environment, socio-economic","Give one concrete privacy risk of sequence data (memorised training sequences)","Name a data-protection law and its principle (consent, purpose, minimisation)","Give one way to cut the energy cost of a recurrent model","State that high-stakes use needs human oversight"],
+ recognition:{clues:["'Legislation', 'regulations', 'sustainability', 'ethical'","An RNN system handling speech, medical or location data"],
+  wording:["Discuss the legal, social and environmental aspects of deploying an RNN-based speech system."],
+  firstMove:"Make a four-row table: privacy | fairness and safety | environment | socio-economic, one issue and one action each.",
+  trap:"Writing a general essay on AI ethics with no tie to sequence data. Name what is specific: speech, text and sensor sequences."},
+ mistakes:["Quoting a law's section number from memory: name the law and the principle only","Discussing only privacy and ignoring the environmental and socio-economic dimensions","Not linking the issue to an actual RNN property (memorisation, sequential training cost)","Giving issues without actions"],
+ practice:[
+  {id:"m5t9p1",d:"easy",q:"Give two privacy risks and two actions for an RNN trained on customer-call recordings.",hint:"What can a sequence model leak, and what can you remove?",a:"<p><b>Risks:</b> (1) recordings identify speakers and contain personal details; (2) a trained model can memorise and reproduce rare sequences. <b>Actions:</b> (1) obtain consent and limit use to the stated purpose, following the applicable data-protection law; (2) anonymise or minimise the data and test the model for memorised content before release.</p>"},
+  {id:"m5t9p2",d:"application",app:true,q:"A hospital plans an LSTM to predict patient deterioration from vital-sign sequences. List one issue in each of: legal, safety, environmental, and give an action for each.",hint:"One row per dimension.",a:"<p><b>Legal:</b> health data is sensitive personal data → lawful basis and consent, de-identify, restrict access. <b>Safety:</b> a missed deterioration or a false alarm harms patients → validate on local data across patient groups, keep clinicians in the decision loop, monitor after launch. <b>Environmental:</b> repeated retraining on growing logs consumes energy → retrain on a schedule not continuously, use a GRU or smaller model if accuracy is equal, and record the energy used.</p>"}],
+ questions:[
+  {q:"Discuss the legal, ethical and environmental considerations in deploying an RNN-based system on speech or health data.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 5.5"}]}
+];
+
+/* ============================ MODULE 6 TOPICS: EMERGING TRENDS (GAN, DEEPFAKE, DIFFUSION) ============================ */
+/* Source note: the Module 6 deck covers GANs (forger and detective metaphor, generator, discriminator, the
+   synthetic road-scene use case, limitations, GANs and deepfake forensics). It does NOT cover diffusion models:
+   topics 6.5 and 6.6 follow the syllabus (LO 6.4) and the standard DDPM treatment (Ho et al. 2020). The deck gives
+   no equations; the GAN objective below is the standard one (Goodfellow et al. 2014). */
+var FIG_GAN="<div class='dia'><svg viewBox='0 0 560 190' role='img' aria-label='GAN: noise to generator to fake sample, discriminator compares fake with real, feedback to both' style='width:100%;max-width:560px;height:auto'>"+
+ "<g fill='var(--surface-2)' stroke='var(--border-2)' stroke-width='1.5'>"+
+ "<rect x='10' y='38' width='62' height='40' rx='8'/><rect x='140' y='38' width='80' height='40' rx='8' fill='var(--accent-soft)' stroke='var(--accent-ui)'/>"+
+ "<rect x='10' y='118' width='62' height='40' rx='8'/><rect x='290' y='76' width='112' height='48' rx='8' fill='var(--accent-soft)' stroke='var(--accent-ui)'/>"+
+ "<rect x='460' y='78' width='90' height='44' rx='8'/></g>"+
+ "<g fill='none' stroke='var(--text-2)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'>"+
+ "<path d='M72 58h64M130 53l6 5-6 5'/><path d='M220 58h42v32h22M278 85l6 5-6 5'/>"+
+ "<path d='M72 138h190v-28h22M278 105l6 5-6 5'/><path d='M402 100h54M450 95l6 5-6 5'/></g>"+
+  "<g font-family='sans-serif' font-size='12' fill='var(--text-2)' text-anchor='middle'>"+
+ "<text x='41' y='62'>noise z</text><text x='180' y='62' fill='var(--accent-ui)' font-weight='700'>Generator G</text><text x='180' y='94'>fake G(z)</text>"+
+ "<text x='41' y='142'>real x</text><text x='346' y='104' fill='var(--accent-ui)' font-weight='700'>Discriminator D</text>"+
+ "<text x='505' y='96'>real or fake?</text><text x='505' y='112'>D(·) in [0, 1]</text>"+
+ "<text x='345' y='176' fill='var(--bad)'>error feeds back: D learns to detect, G learns to fool</text></g></svg>"+
+ "<p class='small muted'>Two networks, one loop. D is a binary classifier; G never sees real data directly, it learns only from how D reacts to its fakes.</p></div>";
+
+var M6=[
+{id:"m6t1",m:"m6",title:"GAN Architecture: Generator and Discriminator",type:"theory",priority:"high",los:["6.1"],
+ src:"Module 6 deck, slides 1 to 11 (forger and detective metaphor, generator, discriminator, methodology) and the 'why both networks' slide.",
+ summary:"Two networks in competition: one forges, one detects, and each forces the other to improve.",
+ whatIs:"<p>A <b>generative adversarial network (GAN)</b> pairs two networks. The <b>generator G</b> turns random noise into a fake sample. The <b>discriminator D</b> is a binary classifier that says whether a sample is real or fake. They train against each other.</p>",
+ concept:FIG_GAN+
+  "<h4>The deck's metaphor</h4><p>Glenn (G) forges money; Dawn (D) tells real bills from forgeries → she catches his fakes, so he improves → his better fakes force her to improve → both become as good as possible by forcing each other on</p>"+
+  "<div class='scroll'><table><tr><th></th><th>Generator G</th><th>Discriminator D</th></tr>"+
+  "<tr><td>Input</td><td>A random noise vector z</td><td>A real sample or a fake from G</td></tr>"+
+  "<tr><td>Output</td><td>A synthetic sample G(z)</td><td>Probability the input is real, D(·)</td></tr>"+
+  "<tr><td>Goal</td><td>Make D call its fakes real</td><td>Call real samples real and fakes fake</td></tr>"+
+  "<tr><td>Type of network</td><td>Generative (decoder-like)</td><td>Binary classifier</td></tr></table></div>"+
+  "<h4>Why both networks are needed (deck)</h4><ul>"+
+  "<li><b>Generator alone:</b> can output samples but has no feedback telling it how realistic they are.</li>"+
+  "<li><b>Discriminator alone:</b> can classify but cannot create samples.</li>"+
+  "<li><b>Together:</b> their competing objectives give the learning signal that improves the samples.</li></ul>"+
+  "<div class='box tip'><h5>The deck's caveat on the analogy</h5><p>It is a student (G) and an evaluator (D), but D gives no verbal corrections: both networks learn from data and gradients.</p></div>",
+ needToKnow:["Describe G: noise in, fake sample out; and D: sample in, real/fake probability out","State each network's goal and that they are opposed","Explain why neither network is enough alone","Draw the loop: z → G → fake → D ← real, with feedback","Use the forger and detective metaphor"],
+ recognition:{clues:["'Generative adversarial', 'generator', 'discriminator'","'Generate synthetic images' from noise","'Explain with a block diagram'"],
+  wording:["Explain the architecture of a GAN with a neat diagram.","Why are two networks needed in a GAN?"],
+  firstMove:"Draw the loop first (noise → G → fake → D, real → D) and label the feedback arrow, then add one line per network.",
+  trap:"Describing the discriminator as the thing that produces images. It only classifies; the generator produces."},
+ mistakes:["Swapping the roles: G generates, D discriminates","Drawing the real data going into G: G never sees real samples directly","Omitting the feedback loop, which is what makes it adversarial","Saying D gives G instructions in words: only gradients flow"],
+ practice:[
+  {id:"m6t1p1",d:"easy",q:"State the input, output and goal of the generator and the discriminator.",hint:"One table row each.",a:"<p><b>Generator:</b> input a random noise vector z; output a synthetic sample G(z); goal: make D classify its fakes as real. <b>Discriminator:</b> input a real or a fake sample; output the probability that it is real; goal: classify real as real and fake as fake.</p>"},
+  {id:"m6t1p2",d:"moderate",q:"Why does a GAN need both networks? What would a generator trained alone lack?",hint:"Where does the learning signal come from?",a:"<p>A generator alone has <b>no feedback</b> on how realistic its output is, so it has nothing to improve against. A discriminator alone can classify but cannot create samples. Together, their <b>competing objectives</b> supply the signal: D's judgement of G's fakes is the gradient G learns from, and G's improving fakes make D's task harder.</p>"},
+  {id:"m6t1p3",d:"moderate",q:"Map the deck's forging-money story onto a GAN: who is G, who is D, what are the real bills and the fakes, and what does each learn?",hint:"Glenn and Dawn.",a:"<p>Glenn is the <b>generator</b>, forging new bills (fakes from noise). Dawn is the <b>discriminator</b>, deciding for each bill whether it is genuine. The real bills are the training data. Dawn learns to spot forgeries; Glenn learns what makes a bill look genuine to Dawn. Each improvement forces the other to improve.</p>"}],
+ questions:[
+  {q:"Explain the architecture of a GAN with a neat diagram and describe the role of both networks.",marks:5,d:"easy",priority:"high",source:"deck slides 1 to 11"},
+  {q:"Why are both a generator and a discriminator required in a GAN?",marks:5,d:"easy",priority:"medium",source:"deck, core intuition slide"}]},
+
+{id:"m6t2",m:"m6",title:"GAN Training Dynamics and the Minimax Objective",type:"problem-solving",priority:"high",los:["6.1"],
+ src:"Module 6 deck, slides 6 and 'limitations' slide (alternating training, instability, mode collapse). Objective and numerics: Goodfellow et al. 2014 (not in the deck).",
+ summary:"The value function, the two losses, the equilibrium and what goes wrong.",
+ whatIs:"<p>GAN training is a two-player <b>minimax game</b>: D tries to maximise how well it separates real from fake, G tries to minimise it. The deck describes the cycle in words; the equations make it computable.</p>",
+ concept:"<div class='eqb'>min<sub>G</sub> max<sub>D</sub>  V(D, G) = E<sub>x∼data</sub>[ log D(x) ] + E<sub>z∼noise</sub>[ log(1 − D(G(z))) ]</div>"+
+  "<ul><li><b>D wants V large:</b> D(x) → 1 on real, D(G(z)) → 0 on fake.</li>"+
+  "<li><b>G wants V small:</b> D(G(z)) → 1, i.e. fakes judged real.</li></ul>"+
+  "<h4>Training loop (deck, slide 6)</h4><p>Take real samples → G makes fakes from noise → D scores both → update D to classify better → update G so D is fooled → repeat until D can no longer tell them apart (D ≈ 0.5)</p>"+
+  "<div class='scroll'><table><tr><th>Quantity</th><th>Formula</th></tr>"+
+  "<tr><td>D loss (minimise)</td><td>−[ log D(x) + log(1 − D(G(z))) ]</td></tr>"+
+  "<tr><td>G loss, original</td><td>log(1 − D(G(z)))  (weak gradient early, when D(G(z)) ≈ 0)</td></tr>"+
+  "<tr><td>G loss, non-saturating (used in practice)</td><td>−log D(G(z))</td></tr>"+
+  "<tr><td>Optimal discriminator</td><td>D*(x) = p<sub>data</sub>(x) / (p<sub>data</sub>(x) + p<sub>g</sub>(x))</td></tr>"+
+  "<tr><td>At equilibrium</td><td>p<sub>g</sub> = p<sub>data</sub>, D* = ½ everywhere, V = −log 4 ≈ −1.386</td></tr></table></div>"+
+  "<h4>What goes wrong (deck: critical evaluation)</h4><ul>"+
+  "<li><b>Training instability:</b> G and D may become unbalanced; learning oscillates or fails to converge.</li>"+
+  "<li><b>Mode collapse:</b> G produces a limited variety of samples rather than the full diversity of the data.</li>"+
+  "<li><b>Data and safety risks:</b> bias, privacy leakage, wrong labels or unrealistic edge cases can be reproduced.</li></ul>",
+ core:{t:"The core idea: D's mistakes are G's lesson, and a perfect D leaves G nothing to learn",
+  b:"<p>At the ideal end D outputs ½ for everything because it cannot tell real from fake, and that is when G is done. If D becomes too strong early, D(G(z)) ≈ 0 everywhere and the original G loss gives almost no gradient. That is why instability and the non-saturating loss are exam favourites.</p>"},
+ needToKnow:["Write V(D, G) = E[log D(x)] + E[log(1 − D(G(z)))] and say D maximises, G minimises","Compute D's loss and the non-saturating G loss from given D outputs","State D* = p_data / (p_data + p_g) and that equilibrium gives D = ½","Say what mode collapse and training instability are","Say training alternates between updating D and updating G"],
+ recognition:{clues:["'Minimax', 'value function', 'adversarial loss'","D(x) and D(G(z)) values given, loss asked","'Mode collapse', 'unstable training'"],
+  wording:["Write the GAN objective and explain how the two networks are trained.","For the given discriminator outputs compute the discriminator and generator losses.","What is mode collapse? How can it be detected?"],
+  firstMove:"Write V(D, G) with its two terms, then substitute the given D(x) and D(G(z)).",
+  trap:"Using log D(G(z)) with a plus sign for the generator loss. The non-saturating loss is −log D(G(z)); the loss is positive."},
+ mistakes:["Reversing who maximises: D maximises V, G minimises it","Forgetting the minus sign when turning V into a loss","Using the same step for G and D: update one while holding the other fixed","Saying equilibrium means D = 1: it is D = ½"],
+ examples:[
+  {id:"m6t2e1",title:"The value function for one real and one fake sample",q:"For one real sample D(x) = 0.9 and for one fake D(G(z)) = 0.2. Find V, the discriminator loss and the non-saturating generator loss.",
+   steps:["V = log D(x) + log(1 − D(G(z))) = ln 0.9 + ln 0.8 = −0.1054 − 0.2231 = <b>−0.3285</b>.","D loss = −V = <b>0.3285</b> (small: D is doing well).","Generator loss (non-saturating) = −ln D(G(z)) = −ln 0.2 = <b>1.609</b> (large: G is being caught)."],
+   answer:"V = <b>−0.329</b>; D loss <b>0.329</b>; G loss <b>1.609</b>. D is winning, so G's loss is high and it will be pushed to improve.",
+   trap:"D's loss and G's loss move in opposite directions: when one is low the other is high. That opposition is the game."},
+  {id:"m6t2e2",title:"A mini-batch of three",q:"D outputs on three real samples are 0.9, 0.8, 0.7 and on three fakes 0.3, 0.2, 0.1. Find the discriminator loss and the generator loss (non-saturating), each averaged over the batch.",
+   steps:["Real term: −(1/3)(ln 0.9 + ln 0.8 + ln 0.7) = (0.1054 + 0.2231 + 0.3567)/3 = <b>0.2284</b>.","Fake term: −(1/3)(ln 0.7 + ln 0.8 + ln 0.9), using 1 − D = 0.7, 0.8, 0.9 = <b>0.2284</b>.","D loss = 0.2284 + 0.2284 = <b>0.4568</b>.","G loss = −(1/3)(ln 0.3 + ln 0.2 + ln 0.1) = (1.2040 + 1.6094 + 2.3026)/3 = <b>1.7053</b>."],
+   answer:"D loss <b>0.457</b>; G loss <b>1.705</b>.",
+   trap:"The fake term uses 1 − D(G(z)), not D(G(z)). The generator loss uses D(G(z)) itself."},
+  {id:"m6t2e3",title:"Optimal discriminator at a point",q:"At one point p<sub>data</sub>(x) = 0.6 and p<sub>g</sub>(x) = 0.2. Find D*(x). What is D* when the generator is perfect?",
+   steps:["D*(x) = 0.6 / (0.6 + 0.2) = <b>0.75</b>: D leans 'real' because real data is three times likelier here.","Perfect generator: p<sub>g</sub> = p<sub>data</sub>, so D* = p/(p + p) = <b>0.5</b> everywhere."],
+   answer:"D*(x) = <b>0.75</b>; with a perfect generator D* = <b>0.5</b> for every x.",
+   trap:"D* = 0.5 is not failure. It means D can no longer tell the two apart, which is the training goal."}],
+ practice:[
+  {id:"m6t2p1",d:"easy",q:"Write the GAN value function and say which network maximises and which minimises it.",hint:"Two log terms.",a:"<div class='eqb'>min<sub>G</sub> max<sub>D</sub> V(D, G) = E<sub>x</sub>[log D(x)] + E<sub>z</sub>[log(1 − D(G(z)))]</div><p><b>D maximises</b> V: it wants D(x) near 1 and D(G(z)) near 0. <b>G minimises</b> V: it wants D(G(z)) near 1.</p>"},
+  {id:"m6t2p2",d:"moderate",q:"Define mode collapse and training instability and give one practical sign of each.",hint:"Diversity against convergence.",a:"<p><b>Mode collapse:</b> G produces only a few kinds of sample instead of the full variety of the data. Sign: generated images look very similar to each other. <b>Training instability:</b> G and D become unbalanced and learning oscillates or fails to converge. Sign: losses swing wildly, or D's loss goes to 0 while G's stays high and the samples stop improving.</p>"},
+  {id:"m6t2p3",d:"moderate",q:"D(x) = 0.6 on a real sample and D(G(z)) = 0.4 on a fake. Compute V and say whether training is near equilibrium.",hint:"Two logs; compare with −1.386.",a:"<p>V = ln 0.6 + ln(1 − 0.4) = ln 0.6 + ln 0.6 = −0.5108 − 0.5108 = <b>−1.0217</b>. At equilibrium V = −log 4 = −1.386 (D = ½ on everything). V = −1.02 is higher, so D is still doing better than chance: <b>not yet at equilibrium</b>, though close.</p>"},
+  {id:"m6t2p4",d:"application",app:true,q:"During GAN training the discriminator's loss falls to nearly 0 within a few epochs while the generator's loss stays high and its images do not improve. Diagnose and suggest two remedies.",hint:"Who is winning?",a:"<p><b>Diagnosis:</b> D has become too strong too early, so D(G(z)) ≈ 0 for every fake; with the original loss log(1 − D(G(z))) the gradient to G is nearly flat, so G cannot learn (an unbalanced, unstable game). <b>Remedies:</b> (1) use the <b>non-saturating</b> generator loss −log D(G(z)), which has a strong gradient in exactly this case; (2) rebalance training: update G more often, weaken D (smaller network or lower learning rate) or add noise to D's inputs.</p>"}],
+ questions:[
+  {q:"Write the GAN objective and explain how a GAN is trained, including mode collapse and instability.",marks:5,d:"moderate",priority:"high",source:"deck slide 6 and limitations slide"},
+  {q:"For the given D outputs, compute the discriminator loss and the generator loss.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 6.1"}]},
+
+{id:"m6t3",m:"m6",title:"Synthetic Image Generation with GANs: the Road-Scene Use Case",type:"theory",priority:"high",los:["6.2"],
+ src:"Module 6 deck, 'Why generate synthetic road data?', 'Running scenario: autonomous vehicle', applications and critical-evaluation slides.",
+ summary:"Using a GAN to add training data, and keeping the GAN separate from the model that uses the data.",
+ whatIs:"<p>The deck's running case is an <b>autonomous vehicle</b> that must detect pedestrians, vehicles, signs and road edges in changing conditions. Real data is costly and rare events (heavy rain, odd lighting) are under-represented, so a GAN is trained to <b>generate extra synthetic road scenes</b>.</p>",
+ concept:"<h4>The three-stage pipeline</h4>"+
+  "<p>1 Real dataset: curated camera images (roads, cars, pedestrians, day, night, weather) → 2 GAN training: G creates candidate scenes, D learns to tell them from real → 3 Downstream model: validated real + synthetic examples may train a <b>separate</b> object detector, tested on held-out <b>real</b> data</p>"+
+  "<div class='box warn'><h5>The point the deck stresses</h5><p>GAN training is <b>not</b> training the car to recognise pedestrians. The GAN generates data; a separate model learns detection. Synthetic data is a means to the application goal, not the goal.</p></div>"+
+  "<h4>What good synthetic data needs</h4><ul>"+
+  "<li><b>Relevant:</b> covers the cases the real set misses (rain, night, unusual pedestrian positions).</li>"+
+  "<li><b>Diverse:</b> avoids mode collapse; many kinds of scene.</li>"+
+  "<li><b>Correctly labelled</b> where the downstream task needs labels.</li>"+
+  "<li><b>Independently tested:</b> realistic appearance alone does not prove it improves the detector; evaluate on real held-out data.</li></ul>"+
+  "<h4>Other uses and limits</h4><div class='scroll'><table><tr><th>Where it helps</th><th>Caution</th></tr>"+
+  "<tr><td>Healthcare research: supplement scarce examples</td><td>Privacy safeguards and expert validation</td></tr>"+
+  "<tr><td>Robotics and simulation: risky or costly scenarios</td><td>Check rare and high-risk scenarios explicitly</td></tr>"+
+  "<tr><td>Computer vision: image variations for testing</td><td>Audit diversity and label correctness; check outputs do not reveal training examples</td></tr></table></div>"+
+  "<p>Photorealism is not always required: for some tasks diversity, coverage of rare events, valid labels or controllability matter more. Choose the generation method for the task.</p>",
+ needToKnow:["State why synthetic road data is wanted: costly collection, rare events","Give the three stages: real dataset, GAN training, downstream model","Say the GAN is separate from the detector and evaluation uses real held-out data","List what good synthetic data needs: relevant, diverse, correctly labelled, tested","Name two limitations: mode collapse and bias or privacy leakage"],
+ recognition:{clues:["'Generate synthetic data', 'augment the dataset', 'rare events'","An autonomous vehicle, medical imaging or robotics scenario","'Evaluate whether synthetic data improves the model'"],
+  wording:["Describe how a GAN can be used to generate synthetic road-scene images and how its usefulness would be evaluated.","Design a GAN-based pipeline for the described application."],
+  firstMove:"Draw the three stages left to right and write 'tested on real held-out data' under the last one.",
+  trap:"Saying the GAN trains the car to detect pedestrians. A separate detector does that; the GAN only supplies data."},
+ mistakes:["Merging GAN training and detector training into one step","Judging success by how realistic the images look instead of by detector performance on real data","Ignoring labels: unlabelled synthetic scenes cannot train a supervised detector","Forgetting limitations: mode collapse, bias, privacy leakage"],
+ practice:[
+  {id:"m6t3p1",d:"easy",q:"Why would an autonomous-vehicle team generate synthetic road scenes, and what must they do before trusting them?",hint:"Rare events; real held-out data.",a:"<p>Real road data is <b>costly and slow to collect</b> and rare conditions (heavy rain, unusual lighting or pedestrian positions) are under-represented. A GAN can add controlled variation. Before trusting it the team must check the images are relevant, diverse and correctly labelled, and then <b>test the detector trained on real + synthetic data on independent held-out real data</b>.</p>"},
+  {id:"m6t3p2",d:"moderate",q:"Explain why 'the GAN produces very realistic images' does not prove the project has succeeded.",hint:"Means against goal.",a:"<p>Synthetic data is a means to the application goal. Realistic appearance does not guarantee that it improves the detector: the images may lack diversity (mode collapse), carry wrong or missing labels, or miss the rare cases that matter. Success is shown only by better performance of the downstream model on <b>independent real data</b>.</p>"},
+  {id:"m6t3p3",d:"application",app:true,q:"A hospital has only 300 labelled scans of a rare tumour. Propose a GAN-based plan to support a classifier and list three safeguards.",hint:"Three stages and the cautions in the table.",a:"<p><b>Plan:</b> (1) train the GAN on the 300 real scans (plus unlabelled ones, if any) to generate extra tumour images; (2) have experts validate a sample and fix labels; (3) train the classifier on real + validated synthetic scans and <b>test on held-out real scans</b>. <b>Safeguards:</b> privacy (make sure generated images do not reveal an individual patient's scan), expert validation of realism and labels, and a diversity check against mode collapse. Do not assume synthetic data improves safety without independent testing.</p>"}],
+ questions:[
+  {q:"Describe a GAN-based pipeline for generating synthetic images for the given application and explain how its success is evaluated.",marks:5,d:"moderate",priority:"high",source:"deck, road-scene use case"},
+  {q:"State the limitations and safeguards when using GAN-generated data.",marks:5,d:"easy",priority:"medium",source:"deck, critical evaluation slide"}]},
+
+{id:"m6t4",m:"m6",title:"Deepfakes: Ethical, Legal, Societal and Environmental Implications",type:"theory",priority:"high",los:["6.3"],
+ src:"Module 6 deck, 'GANs, deepfakes and forensic investigation' slide. Legal and environmental points are general background: verify any law before you cite it.",
+ summary:"What a deepfake is, who is harmed, how detection and investigation really work, and what it costs.",
+ whatIs:"<p>A <b>deepfake</b> is synthetic media, a face, voice or video, made with generative models (originally GANs) to look or sound like a real person or event. LO 6.3 asks for the <b>ethical, legal, societal and environmental</b> implications.</p>",
+ concept:"<h4>Generation, detection, investigation (deck)</h4><div class='scroll'><table><tr><th>Stage</th><th>What happens</th><th>Caution</th></tr>"+
+  "<tr><td><b>Generation</b></td><td>A GAN or other model produces synthetic faces or frames; other models produce voice or video</td><td>Realistic media is cheap and fast to produce</td></tr>"+
+  "<tr><td><b>Detection</b></td><td>A <b>separate</b> detector or forensic workflow examines suspicious media</td><td>A GAN's own discriminator is <b>not automatically</b> a deepfake detector</td></tr>"+
+  "<tr><td><b>Investigation</b></td><td>Investigators preserve context and evidence; experts assess integrity and limitations</td><td>A detector score alone does not prove a video is fake, who made it, or that an offence occurred</td></tr></table></div>"+
+  "<p>A technical conclusion needs <b>multiple evidence sources, documented methods and proper chain of custody</b>.</p>"+
+  "<h4>Implications</h4><div class='scroll'><table><tr><th>Dimension</th><th>Examples</th></tr>"+
+  "<tr><td><b>Ethical</b></td><td>Consent: using someone's likeness without permission; deception; harm to dignity (non-consensual explicit imagery); erosion of trust in genuine media</td></tr>"+
+  "<tr><td><b>Legal</b></td><td>Impersonation and fraud, defamation, privacy and data-protection breaches, election and cyber-crime offences; laws vary by country and are still developing</td></tr>"+
+  "<tr><td><b>Societal</b></td><td>Misinformation, political manipulation, harassment, the 'liar's dividend' (real evidence dismissed as fake)</td></tr>"+
+  "<tr><td><b>Environmental</b></td><td>Training and serving large generative models uses significant electricity and hardware; weigh benefit against energy cost</td></tr></table></div>"+
+  "<h4>Responsible response</h4><p>Consent and disclosure for synthetic media → watermarking or provenance metadata → detection tools used as one input among several → clear legal remedies and platform policies → public media-literacy → energy-aware training choices</p>",
+ needToKnow:["Define a deepfake and its link to GANs","Distinguish generation, detection and investigation","State that a discriminator is not automatically a detector, and a detector score is not proof","Give an ethical, a legal, a societal and an environmental implication","Name measures: consent, provenance or watermarking, multi-source evidence, awareness"],
+ recognition:{clues:["'Deepfake', 'synthetic media', 'face swap', 'cloned voice'","'Ethical, legal, societal' implications","A forensic or cyber-crime scenario"],
+  wording:["Discuss the ethical, legal and societal implications of deepfake technology.","A detector scores a video 92% fake. Can this be presented as proof? Explain."],
+  firstMove:"Make a four-row table: ethical | legal | societal | environmental, then add one measure per row.",
+  trap:"Treating a detector score as proof. The deck states it cannot show who made the video or that an offence occurred."},
+ mistakes:["Saying the GAN's discriminator is the deepfake detector","Treating one detector score as conclusive evidence","Discussing only misuse and omitting the environmental dimension the LO names","Quoting specific legal section numbers from memory"],
+ practice:[
+  {id:"m6t4p1",d:"easy",q:"Distinguish deepfake generation, detection and investigation.",hint:"The deck's three columns.",a:"<p><b>Generation:</b> a GAN or other model synthesises faces, frames, voice or video. <b>Detection:</b> a <i>separate</i> detector or forensic workflow examines suspicious media (a GAN's discriminator is not automatically one). <b>Investigation:</b> investigators preserve context and evidence and forensic experts assess integrity and limitations; a detector score alone does not prove a video is fake, who made it, or that an offence occurred.</p>"},
+  {id:"m6t4p2",d:"moderate",q:"Discuss two ethical and two societal implications of deepfakes, with one measure for each pair.",hint:"Consent, trust, misinformation, harassment.",a:"<p><b>Ethical:</b> (1) using a person's face or voice without consent; (2) deception that damages reputation or dignity. <b>Measure:</b> require consent and clear disclosure for synthetic media. <b>Societal:</b> (1) misinformation and political manipulation; (2) loss of trust in genuine media (real evidence can be dismissed as fake). <b>Measure:</b> provenance metadata or watermarking, platform policies and public media-literacy.</p>"},
+  {id:"m6t4p3",d:"application",app:true,q:"A viral video appears to show a company CEO announcing a fraudulent merger. An automated tool returns '88% likely fake'. Outline how the company and a cyber-crime unit should proceed, and what they must not conclude from the score.",hint:"Evidence, custody, multiple sources.",a:"<p><b>Proceed:</b> preserve the original file and its context (source, upload time, copies) with a documented chain of custody; run more than one detection method and have forensic experts assess the media and their methods' limitations; check provenance and ask the CEO and corroborating sources; report to the platform and the authorities. <b>Must not conclude:</b> that the video is proven fake, who created it, or that an offence occurred, from the single score. A score is one input; the conclusion needs multiple evidence sources and documented methods.</p>"}],
+ questions:[
+  {q:"Discuss the ethical, legal, societal and environmental implications of deepfake technology.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 6.3"},
+  {q:"Explain why a detector score alone cannot establish that a video is a deepfake or who made it.",marks:5,d:"moderate",priority:"high",source:"deck, societal connection slide"}]},
+
+{id:"m6t5",m:"m6",title:"Diffusion Models for Image Generation",type:"theory",priority:"high",los:["6.4"],
+ src:"Syllabus LO 6.4. The Module 6 deck has no diffusion slides. Written from the standard treatment (Ho, Jain, Abbeel 2020; Rombach et al. 2022).",
+ summary:"Generate an image by learning to remove noise, one small step at a time.",
+ whatIs:"<p>A <b>diffusion model</b> learns to <b>reverse a gradual noising process</b>. Training: take a real image, add noise in many small steps until it is pure noise, and teach a network to undo one step. Generation: start from pure noise and apply the network repeatedly to arrive at an image.</p>",
+ concept:"<h4>Two processes</h4>"+
+  "<p><b>Forward (fixed, no learning):</b> clean image x₀ → add a little noise → x₁ → … → x<sub>T</sub> ≈ pure Gaussian noise</p>"+
+  "<p><b>Reverse (learned):</b> pure noise x<sub>T</sub> → network removes a little noise → x<sub>T−1</sub> → … → x₀, a new image</p>"+
+  "<ul><li>The network (usually a <b>U-Net</b>) takes the noisy image x<sub>t</sub> and the step t and <b>predicts the noise</b> that was added.</li>"+
+  "<li>Training loss: mean squared error between the true noise ε and the predicted noise ε<sub>θ</sub>(x<sub>t</sub>, t).</li>"+
+  "<li>Text-to-image systems add a <b>text condition</b> so the denoising is steered by the prompt.</li></ul>"+
+  "<h4>GAN against diffusion</h4><div class='scroll'><table><tr><th></th><th>GAN</th><th>Diffusion model</th></tr>"+
+  "<tr><td>Generation</td><td>One forward pass of G</td><td>Many denoising steps (tens to hundreds)</td></tr>"+
+  "<tr><td>Training</td><td>Adversarial: can be unstable</td><td>Plain regression on noise: stable</td></tr>"+
+  "<tr><td>Diversity</td><td>Mode collapse is a risk</td><td>Covers the data well</td></tr>"+
+  "<tr><td>Speed to sample</td><td>Fast</td><td>Slow (the main cost)</td></tr>"+
+  "<tr><td>Quality</td><td>High, but can be uneven</td><td>State of the art in many image tasks</td></tr></table></div>"+
+  "<div class='box tip'><h5>Link back to Module 4</h5><p><b>Latent diffusion</b> (the idea behind Stable Diffusion) runs the diffusion in the small latent space of an autoencoder instead of on pixels. That makes each step much cheaper: an autoencoder's bottleneck used to cut the cost of generation.</p></div>"+
+  "<h4>Feasibility and sustainability (LO 6.4)</h4><p>Many sampling steps and very large models make diffusion costly in compute and energy; faster samplers, fewer steps, latent diffusion and distillation reduce it. Cost, data licensing and misuse (deepfakes, topic 6.4) belong in any feasibility assessment.</p>",
+ needToKnow:["Describe the forward (noising) and reverse (denoising) processes","Say what the network predicts (the added noise) and the loss (MSE on noise)","Say generation starts from pure noise and takes many steps","Compare GAN and diffusion on training stability, diversity and speed","Name latent diffusion and say why it is cheaper"],
+ recognition:{clues:["'Diffusion', 'denoising', 'start from noise'","'Compare GAN and diffusion'","'Latent', 'Stable Diffusion', 'text-to-image'"],
+  wording:["Explain how a diffusion model generates images. How does it differ from a GAN?","Discuss the feasibility and sustainability of diffusion-based image generation."],
+  firstMove:"Draw two arrows: forward (x₀ → … → x_T, add noise) and reverse (x_T → … → x₀, learned denoising), then say what the network predicts.",
+  trap:"Saying the diffusion model starts from a real image when generating. It starts from pure noise; real images are used only in training."},
+ mistakes:["Starting generation from a real image","Saying the forward process is learned: it is fixed","Saying it generates in one pass like a GAN","Omitting the cost: many steps make sampling slow and energy-hungry"],
+ practice:[
+  {id:"m6t5p1",d:"easy",q:"Explain how a diffusion model is trained and how it generates an image.",hint:"Forward noising, reverse denoising.",a:"<p><b>Training:</b> take a real image, add noise in many small steps (the fixed forward process), and train a network (a U-Net) to predict the noise added at a randomly chosen step; the loss is the mean squared error between true and predicted noise. <b>Generation:</b> start from pure Gaussian noise and apply the network repeatedly, each time removing a little predicted noise, until a clean image emerges.</p>"},
+  {id:"m6t5p2",d:"moderate",q:"Compare GANs and diffusion models on training stability, diversity and sampling speed.",hint:"Three rows.",a:"<p><b>Stability:</b> GAN training is adversarial and can be unstable; diffusion training is plain noise regression and is stable. <b>Diversity:</b> GANs risk mode collapse; diffusion models cover the data distribution well. <b>Speed:</b> a GAN samples in one pass; diffusion needs many denoising steps, which is its main drawback.</p>"},
+  {id:"m6t5p3",d:"application",app:true,q:"A start-up wants to offer an image-generation service on a limited budget and an environmental target. It is choosing between a GAN and a diffusion model. Recommend one, with two ways to reduce cost if you choose diffusion.",hint:"Quality and diversity against speed and energy.",a:"<p>It depends on the product, which is the point to state. If users need many varied, high-quality, prompt-controlled images and training stability matters, choose <b>diffusion</b>; if the need is fast, narrow-domain generation at low cost, a <b>GAN</b> is cheaper to run. For diffusion, cut cost with <b>latent diffusion</b> (denoise a small autoencoder latent instead of pixels) and <b>fewer sampling steps</b> via a faster sampler or distillation; also reuse a pre-trained model rather than training from scratch to save energy.</p>"}],
+ questions:[
+  {q:"Explain the working of a diffusion model for image generation and compare it with a GAN.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 6.4"},
+  {q:"Discuss the feasibility and sustainability of using diffusion models for a given application.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 6.4"}]},
+
+{id:"m6t6",m:"m6",title:"Diffusion Numericals: Noising an Image in One Step",type:"problem-solving",priority:"medium",los:["6.4"],
+ src:"Standard DDPM closed form (Ho et al. 2020). Not in the Module 6 deck; expect numericals in this topic to be less likely than the theory in 6.5.",
+ summary:"Compute the noisy value x_t directly from x₀ using the cumulative noise schedule.",
+ whatIs:"<p>Because each noising step is Gaussian, any step t can be reached <b>directly</b> from the clean image without running all earlier steps. It uses the noise schedule β<sub>t</sub>.</p>",
+ concept:"<div class='eqb'>α<sub>t</sub> = 1 − β<sub>t</sub>          ᾱ<sub>t</sub> = α₁ · α₂ · … · α<sub>t</sub>\nx<sub>t</sub> = √ᾱ<sub>t</sub> · x₀ + √(1 − ᾱ<sub>t</sub>) · ε          with ε ∼ N(0, 1)</div>"+
+  "<ul><li>√ᾱ<sub>t</sub> is the share of the <b>signal</b> still left; √(1 − ᾱ<sub>t</sub>) is the share of <b>noise</b>.</li>"+
+  "<li>ᾱ<sub>t</sub> falls from near 1 (almost clean) to near 0 (pure noise) as t grows.</li></ul>"+
+  "<div class='box tip'><h5>Method</h5><p>List β, convert to α = 1 − β, take the running product for ᾱ, then substitute x₀ and the given ε.</p></div>",
+ core:{t:"The core idea: signal fades, noise grows, and you can jump straight to any step",
+  b:"<p>ᾱ<sub>t</sub> is a shrinking budget. At t = 1 it is close to 1, so x<sub>1</sub> is nearly x₀. By the last step it is close to 0, so x<sub>T</sub> is almost all noise. The generator's job is to walk that path backwards.</p>"},
+ needToKnow:["Compute α_t = 1 − β_t and the running product ᾱ_t","Write x_t = √ᾱ_t x₀ + √(1 − ᾱ_t) ε","Interpret √ᾱ_t as signal share and √(1 − ᾱ_t) as noise share","State that ᾱ_t decreases with t","State the training loss as MSE between ε and ε_θ(x_t, t)"],
+ recognition:{clues:["A list of β values (a 'noise schedule')","'Find x_t given x₀ and ε'","ᾱ or 'cumulative product'"],
+  wording:["For the given noise schedule compute ᾱ at each step and the noisy value x₃."],
+  firstMove:"Write α = 1 − β for each step, then ᾱ as the running product, in a three-row table.",
+  trap:"Using β directly in the formula, or summing α instead of multiplying them."},
+ mistakes:["Adding the α values instead of multiplying","Using β_t where α_t is needed","Forgetting the square roots","Taking ᾱ_t as the product of β"],
+ examples:[
+  {id:"m6t6e1",title:"Noising one value to step 3",q:"A noise schedule is β = (0.1, 0.2, 0.3). A pixel has x₀ = 2.0 and the noise sample is ε = −1.0. Find ᾱ₁, ᾱ₂, ᾱ₃ and x₃.",
+   steps:["α = (0.9, 0.8, 0.7).","ᾱ₁ = 0.9; ᾱ₂ = 0.9 × 0.8 = 0.72; ᾱ₃ = 0.72 × 0.7 = <b>0.504</b>.","√ᾱ₃ = 0.7099; √(1 − ᾱ₃) = √0.496 = 0.7043.","x₃ = 0.7099(2.0) + 0.7043(−1.0) = 1.4199 − 0.7043 = <b>0.7156</b>."],
+   answer:"ᾱ = <b>0.9, 0.72, 0.504</b>; x₃ = <b>0.716</b>. About half the original signal power (0.504) remains at step 3.",
+   trap:"ᾱ₃ is the <i>product</i> of all three α, not 0.7. Each step erodes the signal further."}],
+ practice:[
+  {id:"m6t6p1",d:"easy",q:"For β = (0.2, 0.2) find ᾱ₂ and the signal and noise shares.",hint:"α = 0.8 each.",a:"<p>α = 0.8 each, so ᾱ₂ = 0.8 × 0.8 = <b>0.64</b>. Signal share √0.64 = <b>0.8</b>; noise share √(1 − 0.64) = √0.36 = <b>0.6</b>.</p>"},
+  {id:"m6t6p2",d:"moderate",q:"With ᾱ₂ = 0.64, x₀ = 1.0 and ε = 0.5, find x₂.",hint:"Use the shares from the previous question.",a:"<p>x₂ = √0.64(1.0) + √0.36(0.5) = 0.8 + 0.6 × 0.5 = 0.8 + 0.3 = <b>1.1</b>.</p>"},
+  {id:"m6t6p3",d:"moderate",q:"State the diffusion training loss and what is being predicted. Why can training pick any step t at random?",hint:"The closed form.",a:"<p>The network ε<sub>θ</sub>(x<sub>t</sub>, t) predicts the noise ε that was added; the loss is the mean squared error ‖ε − ε<sub>θ</sub>(x<sub>t</sub>, t)‖². Any step t can be chosen at random because the closed form x<sub>t</sub> = √ᾱ<sub>t</sub> x₀ + √(1 − ᾱ<sub>t</sub>) ε produces the noisy image for that step directly, without running the earlier steps.</p>"}],
+ questions:[
+  {q:"For the given noise schedule compute ᾱ at each step and the noisy value at step 3 for the given x₀ and ε.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 6.4"}]}
+];
+
+var TOPICS = M1.concat(M2).concat(M3).concat(M4).concat(M5).concat(M6);
 /* ===================== QUICK REVIEW (per module, night-before cards) ===================== */
 var QUICK={
 m1:[
@@ -2900,6 +3623,175 @@ QUIZ = QUIZ.concat([
 {t:"m3t15",stage:"recognise",q:"An architecture question mentions a 32×32 grayscale input, 5×5 filters and 10 outputs. Which architecture is it?",o:["AlexNet","LeNet","VGG","A generic CNN"],a:1,e:"Small grayscale input, 5×5 filters throughout and 10 digit classes identify LeNet. Write the chain 32→28→14→10→5→1 first, and remember there is no padding."},
 {t:"m3t16",stage:"recognise",q:"An architecture question mentions 11×11 filters with stride 4 and 1000 output classes. Which architecture is it?",o:["LeNet","AlexNet","A convolutional autoencoder","An MLP"],a:1,e:"The aggressive 11×11 stride-4 first layer and 1000 ImageNet classes identify AlexNet. The input must be 227, since (224 − 11)/4 + 1 is not an integer."}
 ]);
+/* ===================== MODULES 4 TO 6: QUICK REVIEW, FORMULAS, RECOGNITION, CLUES ===================== */
+QUICK.m4=[
+ {t:"The autoencoder in one line",b:"x → encoder f → code h → decoder g → x̂ ; loss L(x, x̂). The target is the <b>input itself</b>, so no labels are needed. Unconstrained and as wide as the input, it learns the <b>identity</b>."},
+ {t:"Undercomplete against overcomplete",b:"Undercomplete: code k &lt; input d, the narrow code is the constraint. Overcomplete: k ≥ d, <b>needs a regulariser</b> (sparse, denoising or contractive) or it copies. Linear AE + MSE learns the <b>PCA subspace</b>."},
+ {t:"Three variants, three tricks",b:"<b>Denoising:</b> input noisy x̃, target <b>clean</b> x. <b>Sparse:</b> L + λΣ|h|, few units fire. <b>Contractive:</b> L + λ‖∂h/∂x‖²<sub>F</sub>, code barely moves for small input changes."},
+ {t:"Parameter count, the term people drop",b:"Dense layer = n_in × n_out <b>+ n_out</b>. 784-128-32-128-784 → 100,480 + 4,128 + 4,224 + 101,136 = <b>209,968</b>. Compression ratio = input ÷ code = 784 ÷ 32 = <b>24.5 : 1</b>."},
+ {t:"Bottleneck size, in one picture",b:"Too small → blurry, information lost. Too large → near-perfect error by <b>copying</b>, nothing learned. Choose the <b>smallest k where validation error flattens</b>."},
+ {t:"Three applications and what they deploy",b:"Compression: input vs output, encoder at source + decoder at hub. Denoising: noisy input vs <b>clean</b> target, full AE as pre-processor. Dimensionality reduction: feature code, <b>encoder only</b>."},
+ {t:"The 8 steps for a case study",b:"Context → situations → clues → diagnose → requirement → map to AE task → justify with evidence → place in workflow. <b>Quote the clue words</b>: step 7 carries the marks."}
+];
+QUICK.m5=[
+ {t:"Why a feed-forward network fails on sequences",b:"Fixed input size · no memory of earlier steps · no weight sharing across time. A sequence model needs <b>variable length, memory, shared weights</b>."},
+ {t:"The RNN cell",b:"h(t) = tanh(W<sub>xh</sub>x(t) + W<sub>hh</sub>h(t−1) + b) · y(t) = W<sub>hy</sub>h(t) + b<sub>y</sub>. The <b>same weights at every step</b>; h is the memory. Start from h(0) = 0."},
+ {t:"RNN parameter count",b:"n·d + n·n + n + m·n + m. d = 3, n = 4, m = 2 → 12 + 16 + 4 + 8 + 2 = <b>42</b>, independent of sequence length."},
+ {t:"BRNN",b:"Two RNNs, one each way; combine by add, average, multiply or concatenate. Needs the <b>whole sequence</b>: not for real-time prediction."},
+ {t:"BPTT in two sentences",b:"Unroll, then backpropagate through every step. A shared weight's gradient is the <b>sum</b> over all steps: ∂E/∂W = Σ<sub>t</sub> ∂E<sub>t</sub>/∂W. Truncated BPTT: gradients back only <b>k steps</b>, state carried forward."},
+ {t:"Vanishing and exploding, with numbers",b:"Gradient ≈ (factor)<sup>steps</sup>. 0.5<sup>20</sup> = 9.5×10⁻⁷ (vanishes) · 1.5<sup>20</sup> = 3,325 (explodes). Exploding → <b>clip</b>: g ← τg/‖g‖. Vanishing → <b>LSTM / GRU</b>."},
+ {t:"Clipping, worked",b:"g = (30, 40), τ = 5: ‖g‖ = 50 → g ← 5(30, 40)/50 = <b>(3, 4)</b>. Direction kept, length cut."},
+ {t:"LSTM equations",b:"c(t) = f⊙c(t−1) + i⊙c̃ · h(t) = o⊙tanh(c(t)). Gates are <b>sigmoids</b> (0 to 1), candidate is tanh. tanh is applied to c only to get h. Parameters <b>4n(n+d+1)</b>."},
+ {t:"LSTM one-step check",b:"c<sub>old</sub> = 2, f = 0.9, i = 0.3, c̃ = 0.5, o = 0.8 → c = 1.8 + 0.15 = <b>1.95</b>; h = 0.8·tanh(1.95) = <b>0.768</b>."},
+ {t:"GRU against LSTM",b:"GRU: update gate z merges forget + input, reset gate r, <b>no cell state</b>. h = (1−z)⊙h<sub>old</sub> + z⊙h̃. Parameters <b>3n(n+d+1)</b>. n = 4, d = 3: RNN 32 · GRU 96 · LSTM 128."}
+];
+QUICK.m6=[
+ {t:"GAN in one picture",b:"noise z → <b>G</b> → fake → <b>D</b> ← real x. D outputs P(real). D wants to detect, G wants to fool. G never sees real data directly; D's judgement is its only signal."},
+ {t:"The objective",b:"min<sub>G</sub> max<sub>D</sub> E[log D(x)] + E[log(1 − D(G(z)))]. D maximises, G minimises. Practical G loss: <b>−log D(G(z))</b> (non-saturating)."},
+ {t:"Equilibrium",b:"D*(x) = p<sub>data</sub>/(p<sub>data</sub> + p<sub>g</sub>). At p<sub>g</sub> = p<sub>data</sub>: D = <b>½</b> everywhere, V = −log 4 = −1.386."},
+ {t:"GAN numbers worth knowing",b:"D(x) = 0.9, D(G(z)) = 0.2 → V = ln 0.9 + ln 0.8 = <b>−0.329</b>; G loss = −ln 0.2 = <b>1.609</b>. Batch (0.9, 0.8, 0.7) / (0.3, 0.2, 0.1): D loss <b>0.457</b>, G loss <b>1.705</b>."},
+ {t:"What goes wrong",b:"<b>Instability:</b> G and D unbalanced, learning oscillates. <b>Mode collapse:</b> G makes a few kinds of sample. <b>Safety:</b> bias, privacy leakage, wrong labels. D too strong early → weak gradient to G."},
+ {t:"Synthetic data pipeline",b:"Real dataset → GAN training → <b>separate</b> downstream model, tested on <b>real held-out data</b>. The GAN does not train the detector. Realism alone proves nothing."},
+ {t:"Deepfake: generation, detection, investigation",b:"A GAN's discriminator is <b>not automatically a detector</b>. A detector score does not prove a video is fake, who made it, or that an offence occurred. Needs multiple evidence sources, documented methods, chain of custody."},
+ {t:"Diffusion in two arrows",b:"Forward (fixed): x₀ → noise over T steps. Reverse (learned): noise → image, a U-Net <b>predicts the added noise</b>. Loss = MSE(ε, ε<sub>θ</sub>). Generation starts from <b>pure noise</b>, takes many steps."},
+ {t:"Diffusion closed form",b:"ᾱ<sub>t</sub> = Πα, α = 1 − β. x<sub>t</sub> = √ᾱ<sub>t</sub> x₀ + √(1−ᾱ<sub>t</sub>) ε. β = (0.1, 0.2, 0.3): ᾱ = 0.9, 0.72, <b>0.504</b>."},
+ {t:"GAN against diffusion",b:"GAN: one pass, fast, unstable training, mode collapse. Diffusion: many steps, slow, stable training, good coverage. <b>Latent diffusion</b> denoises an autoencoder's latent: much cheaper."}
+];
+
+FORMULAS.push(
+{g:"Module 4: Autoencoders", i:[
+ {f:"h = f(x) ;  x̂ = g(h) ;  loss L(x, x̂)", m:"Encoder, code, decoder, reconstruction loss", w:"Any 'explain the autoencoder' question"},
+ {f:"params of a dense layer = n_in × n_out + n_out", m:"Weights plus one bias per output unit", w:"'How many parameters' in an encoder-decoder"},
+ {f:"compression ratio = input size ÷ code size", m:"784 ÷ 32 = 24.5 : 1", w:"'How much does it compress?'"},
+ {f:"MSE = (1/d) Σ (xᵢ − x̂ᵢ)²", m:"Reconstruction error", w:"Given x and x̂"},
+ {f:"Denoising: L(x, g(f(x̃)))", m:"Noisy input x̃, clean target x", w:"Noise removal"},
+ {f:"Sparse: L + λΣ|hⱼ| ;  Contractive: L + λ‖∂h/∂x‖²_F", m:"Penalise active units / penalise sensitivity of the code", w:"Overcomplete codes, robust features"}
+]},
+{g:"Module 5: Recurrent networks", i:[
+ {f:"h(t) = tanh(W_xh x(t) + W_hh h(t−1) + b_h) ;  y(t) = W_hy h(t) + b_y", m:"RNN cell with shared weights", w:"Forward pass numericals"},
+ {f:"params = n·d + n·n + n + m·n + m", m:"d inputs, n hidden, m outputs; independent of length", w:"'Count the parameters of the RNN'"},
+ {f:"∂E/∂W = Σₜ ∂Eₜ/∂W ;  ∂h(T)/∂h(k) = Π ∂h(j)/∂h(j−1)", m:"BPTT: shared-weight gradients add; a product of Jacobians", w:"BPTT and vanishing/exploding gradients"},
+ {f:"gradient ≈ (factor)^(steps)", m:"&lt; 1 vanishes, &gt; 1 explodes", w:"'Show numerically why gradients vanish'"},
+ {f:"if ‖g‖ > τ :  g ← τ · g / ‖g‖", m:"Gradient clipping by norm", w:"Exploding gradients"},
+ {f:"f, i, o = σ(W[h(t−1), x(t)] + b) ;  c̃ = tanh(…)", m:"LSTM gates and candidate", w:"LSTM questions"},
+ {f:"c(t) = f ⊙ c(t−1) + i ⊙ c̃ ;  h(t) = o ⊙ tanh(c(t))", m:"LSTM cell and hidden state", w:"Compute one LSTM step"},
+ {f:"z, r = σ(…) ;  h̃ = tanh(W[r ⊙ h(t−1), x(t)]) ;  h(t) = (1−z) ⊙ h(t−1) + z ⊙ h̃", m:"GRU", w:"GRU questions"},
+ {f:"RNN n(n+d+1) · GRU 3n(n+d+1) · LSTM 4n(n+d+1)", m:"Hidden-layer parameters (one bias per block)", w:"Comparing model size"}
+]},
+{g:"Module 6: Emerging trends", i:[
+ {f:"min_G max_D E[log D(x)] + E[log(1 − D(G(z)))]", m:"GAN minimax objective", w:"'Write the GAN objective'"},
+ {f:"D loss = −[log D(x) + log(1 − D(G(z)))] ;  G loss = −log D(G(z))", m:"Discriminator and non-saturating generator losses", w:"Given D outputs, compute the losses"},
+ {f:"D*(x) = p_data / (p_data + p_g) ;  equilibrium D = ½, V = −log 4", m:"Optimal discriminator and where training ends", w:"'What does D output at convergence?'"},
+ {f:"α_t = 1 − β_t ;  ᾱ_t = α₁α₂…α_t", m:"Diffusion noise schedule and cumulative signal budget", w:"A list of β values"},
+ {f:"x_t = √ᾱ_t · x₀ + √(1 − ᾱ_t) · ε", m:"Noise x₀ to step t in one move", w:"'Find the noisy value at step t'"},
+ {f:"loss = ‖ε − ε_θ(x_t, t)‖²", m:"Diffusion training: predict the added noise", w:"'How is a diffusion model trained?'"}
+]});
+
+RECOG_TREES.push(
+{title:"Module 4: which autoencoder is this question about?",
+ rows:[
+  ["Code narrower than the input","<b>Undercomplete</b>","The narrow code is the constraint. State k &lt; d."],
+  ["Code as wide as or wider than the input, with a penalty on h","<b>Sparse</b>","L + λΣ|h|. Few units fire per input."],
+  ["Noisy or corrupted input, clean target","<b>Denoising</b>","Input x̃, target x. Never train to the noisy image."],
+  ["'Robust to small changes', Jacobian","<b>Contractive</b>","L + λ‖∂h/∂x‖²_F."],
+  ["Layer sizes like 784-128-32-128-784","<b>Parameter and compression numerical</b>","n_in × n_out + n_out per layer; ratio = input ÷ code."],
+  ["A long scenario with several problems","<b>Case-study application</b>","8 steps: clues → task → evidence → workflow."]]},
+{title:"Module 5: which recurrent topic is this question about?",
+ rows:[
+  ["Weights w_x, w_h and an input sequence","<b>RNN forward pass</b>","Table t | x | pre-activation | h; start from h(0) = 0."],
+  ["Input, hidden, output sizes and 'parameters'","<b>RNN parameter count</b>","n·d + n·n + n + m·n + m."],
+  ["A factor per step and a number of steps","<b>Vanishing or exploding gradient</b>","(factor)^steps; &lt; 1 vanishes, &gt; 1 explodes."],
+  ["A gradient vector and a threshold τ","<b>Gradient clipping</b>","Find ‖g‖; if above τ, g ← τg/‖g‖."],
+  ["f, i, o and c(t−1) given","<b>LSTM step</b>","c = f·c<sub>old</sub> + i·c̃ first; then h = o·tanh(c)."],
+  ["Update gate z, reset gate r","<b>GRU</b>","h = (1−z)h<sub>old</sub> + z·h̃. No cell state."],
+  ["'Whole sequence available' or 'real-time'","<b>BRNN against forward RNN</b>","BRNN only when the future exists."]]},
+{title:"Module 6: which generative topic is this question about?",
+ rows:[
+  ["D(x) and D(G(z)) values, loss asked","<b>GAN losses</b>","D loss −[log D(x) + log(1−D(G(z)))]; G loss −log D(G(z))."],
+  ["'Loss stays flat', 'images all look alike'","<b>Instability / mode collapse</b>","Name it, say the sign, give a remedy."],
+  ["Scarce data, rare events, autonomous vehicle","<b>Synthetic data with a GAN</b>","Three stages; test on real held-out data."],
+  ["A video, a score, 'is it fake?'","<b>Deepfake forensics</b>","Score ≠ proof; multiple sources, chain of custody."],
+  ["'Start from noise', 'denoise step by step'","<b>Diffusion</b>","Forward (fixed) and reverse (learned); predict the noise."],
+  ["A list of β values","<b>Diffusion closed form</b>","α = 1−β, ᾱ = product, then x_t."]]}
+);
+
+CLUES.m4=[
+ ["m4t1","'Unsupervised', 'no labels', 'reconstruct the input'","Draw the hourglass and write h = f(x), x̂ = g(h)"],
+ ["m4t2","Layer sizes in a chain, 'parameters', 'compression ratio'","One line per layer: n_in × n_out + n_out"],
+ ["m4t3","'Undercomplete', 'overcomplete', 'linear', 'PCA'","Write k against d"],
+ ["m4t4","'Noisy', 'sparse', 'Jacobian'","Write the three losses in a table"],
+ ["m4t5","'Code size', 'bottleneck', 'reconstruction quality'","Sketch error against k with three zones"],
+ ["m4t6","A scenario paragraph with several problems","Underline clues, then situation | task | evidence"]
+];
+CLUES.m5=[
+ ["m5t1","'Sequence', 'order matters', 'why not feed-forward'","State the defining property, then three reasons"],
+ ["m5t2","'Unfold', 'computational graph', 'RNN cell'","Draw the loop and the unrolled chain"],
+ ["m5t3","Weights with an input sequence, or sizes with 'parameters'","Table t | x | pre-activation | h, from h(0) = 0"],
+ ["m5t4","'Bidirectional', 'both directions'","Two opposite chains and a combine box"],
+ ["m5t5","'BPTT', 'truncated', 'unrolled'","Sketch the unrolled chain with backward arrows"],
+ ["m5t6","'Vanishing', 'exploding', factor^steps, clipping","Write gradient = (factor)^steps"],
+ ["m5t7","'Forget gate', 'cell state', gate values given","c = f·c<sub>old</sub> + i·c̃ first"],
+ ["m5t8","'GRU', 'compare LSTM', 'select a model'","Draw the three-column comparison table"],
+ ["m5t9","'Legislation', 'sustainability', RNN system","Four-row table: privacy, fairness, environment, socio-economic"]
+];
+CLUES.m6=[
+ ["m6t1","'Generator', 'discriminator', 'adversarial'","Draw noise → G → fake → D ← real, with feedback"],
+ ["m6t2","'Minimax', D(x) and D(G(z)) values, 'mode collapse'","Write V(D, G), then substitute"],
+ ["m6t3","'Synthetic data', 'rare events', autonomous vehicle","Draw three stages; add 'tested on real held-out data'"],
+ ["m6t4","'Deepfake', 'ethical, legal, societal', a detector score","Four-row table; score is not proof"],
+ ["m6t5","'Diffusion', 'denoising', 'compare with GAN'","Draw forward and reverse arrows; say what is predicted"],
+ ["m6t6","A list of β values, 'noisy value at step t'","α = 1 − β, ᾱ = running product, then x_t"]
+];
+
+/* ===================== QUIZ BANK FOR MODULES 4 TO 6 (kept apart so Modules 1 to 3 sets never change) ===================== */
+var QUIZ_ESE=[
+/* ---- Module 4 ---- */
+{t:"m4t1",stage:"concept",q:"What is the training target of an autoencoder?",o:["A class label","The input itself","A noisy copy of the input","The code vector"],a:1,e:"The network is trained to reproduce its own input, so no labels are needed. That is why it counts as unsupervised."},
+{t:"m4t1",stage:"concept",q:"An autoencoder has a code as wide as its input and nothing else constrains it. What is most likely to happen?",o:["It learns the identity function","It always compresses well","It cannot be trained","It learns labels"],a:0,e:"With no bottleneck and no regulariser, passing the input straight through gives zero error, so useful structure is never forced."},
+{t:"m4t2",stage:"solve",q:"How many parameters does a dense layer from 100 inputs to 20 outputs have, including biases?",o:["2,000","2,020","2,100","120"],a:1,e:"100 × 20 weights + 20 biases = 2,020. Dropping the biases (2,000) is the usual slip."},
+{t:"m4t2",stage:"solve",q:"A 64 × 64 image is encoded to a 256-value code. What is the compression ratio?",o:["4 : 1","16 : 1","64 : 1","256 : 1"],a:1,e:"Input = 64 × 64 = 4,096 values; 4,096 ÷ 256 = 16. Ratio is input ÷ code."},
+{t:"m4t3",stage:"recognise",q:"An autoencoder has input size 784 and code size 1000. It is:",o:["Undercomplete","Overcomplete","Linear","Sparse by definition"],a:1,e:"Code size k ≥ input size d is overcomplete. It needs a regulariser such as sparsity, noise or a contractive penalty to avoid copying."},
+{t:"m4t3",stage:"concept",q:"A linear autoencoder trained with MSE learns:",o:["The same subspace as PCA","A non-linear manifold","Class boundaries","Nothing useful"],a:0,e:"It spans the same top-k principal subspace as PCA, though its code units need not line up with the principal axes."},
+{t:"m4t4",stage:"recognise",q:"A scanner adds speckle noise to images and you want clean images out. Which variant fits?",o:["Sparse","Contractive","Denoising","Overcomplete with no penalty"],a:2,e:"Noisy input, clean target: that is the denoising autoencoder. A plain autoencoder would reproduce the noise."},
+{t:"m4t4",stage:"concept",q:"In a denoising autoencoder the reconstruction is compared with:",o:["The noisy input","The clean input","The code","A class label"],a:1,e:"The target is the clean image. Comparing with the noisy one would train the network to keep the noise."},
+{t:"m4t4",stage:"concept",q:"The term λ‖∂h/∂x‖²_F belongs to which autoencoder?",o:["Sparse","Contractive","Denoising","Linear"],a:1,e:"The Frobenius norm of the encoder's Jacobian penalises sensitivity of the code to the input: the contractive autoencoder."},
+{t:"m4t5",stage:"concept",q:"What does a bottleneck that is far too large usually give?",o:["Blurry reconstructions","Near-perfect reconstruction by copying, little learned","Very high compression","Faster training of the decoder only"],a:1,e:"A very wide code lets the network pass the input through almost unchanged: low error, no compression and little useful learning."},
+{t:"m4t6",stage:"recognise",q:"A case study says 'thousands of high-resolution images saturate the network'. The matching autoencoder task is:",o:["Denoising","Compression","Dimensionality reduction","Classification"],a:1,e:"Bandwidth and storage clues point to compression: encode before transfer, decode at the hub."},
+{t:"m4t6",stage:"concept",q:"After training for dimensionality reduction, which part is deployed?",o:["Encoder only","Decoder only","Both, unchanged","Neither"],a:0,e:"The code is the output, so the decoder is discarded and the encoder is kept as the feature extractor."},
+/* ---- Module 5 ---- */
+{t:"m5t1",stage:"concept",q:"Which is NOT a reason a plain feed-forward network struggles with sequences?",o:["Fixed input size","No memory of earlier steps","No sharing of weights across time","It cannot use backpropagation"],a:3,e:"Feed-forward networks train with backpropagation perfectly well. The problems are fixed size, no memory and no sharing across time."},
+{t:"m5t1",stage:"recognise",q:"Assigning a part-of-speech tag to every word of a sentence is:",o:["Many-to-one","One-to-many","Many-to-many, aligned","One-to-one"],a:2,e:"One output per input word, so the pattern is many-to-many and aligned."},
+{t:"m5t2",stage:"concept",q:"In an unrolled RNN the weights at different time steps are:",o:["All different","The same","Different for the first step only","Random"],a:1,e:"One set of weights is reused at every step. That keeps the parameter count independent of the sequence length."},
+{t:"m5t3",stage:"solve",q:"How many parameters has an RNN with d = 3 inputs, n = 4 hidden units and m = 2 outputs (one bias per layer)?",o:["32","42","56","24"],a:1,e:"12 (W_xh) + 16 (W_hh) + 4 (b_h) + 8 (W_hy) + 2 (b_y) = 42."},
+{t:"m5t3",stage:"solve",q:"w_x = 0.5, w_h = 0.8, b = 0, h(0) = 0, x(1) = 1. What is h(1)?",o:["0.5","0.4621","0.8","0.6"],a:1,e:"Pre-activation = 0.5 × 1 + 0.8 × 0 = 0.5, and tanh(0.5) = 0.4621. Forgetting tanh gives 0.5."},
+{t:"m5t4",stage:"recognise",q:"A BRNN is unsuitable for:",o:["Tagging a stored document","Offline speech transcription","Live next-word prediction","Classifying a stored review"],a:2,e:"A BRNN needs the end of the sequence, which does not exist yet in real-time prediction."},
+{t:"m5t5",stage:"concept",q:"In BPTT the gradient of a shared weight is:",o:["The gradient at the last step only","The sum of its gradients over all time steps","The average over layers","Zero for earlier steps"],a:1,e:"The same weight is used at every step, so its total effect on the loss is the sum of the per-step effects."},
+{t:"m5t5",stage:"concept",q:"Truncated BPTT with k = 20 means:",o:["The forward pass stops after 20 steps","Gradients flow back at most 20 steps","The sequence is cut to 20 steps and the rest discarded","The hidden state is reset every step"],a:1,e:"The hidden state still carries forward; only the gradient is cut after k steps. The cost is that longer dependencies are not learned."},
+{t:"m5t6",stage:"solve",q:"A per-step gradient factor of 0.5 over 20 steps gives about:",o:["0.5","0.025","9.5 × 10⁻⁷","1,000,000"],a:2,e:"0.5²⁰ ≈ 9.5 × 10⁻⁷: the gradient vanishes. A factor of 1.5 would explode to about 3,325."},
+{t:"m5t6",stage:"recognise",q:"Training loss suddenly becomes NaN. The most likely cause and fix:",o:["Vanishing gradient, use an LSTM","Exploding gradient, clip the gradient norm","Overfitting, add data","Too little memory, shorten the batch"],a:1,e:"A sudden NaN comes from a huge update. Gradient clipping bounds the update size."},
+{t:"m5t6",stage:"solve",q:"Clip g = (30, 40) to norm threshold τ = 5.",o:["(5, 5)","(3, 4)","(30, 40)","(1.5, 2)"],a:1,e:"‖g‖ = 50, so g ← 5 × (30, 40)/50 = (3, 4). Clipping each component would give (5, 5) and change the direction."},
+{t:"m5t7",stage:"concept",q:"Which LSTM gate decides how much of the old cell state is kept?",o:["Input gate","Output gate","Forget gate","Reset gate"],a:2,e:"The forget gate multiplies the old cell state: near 1 keeps it, near 0 erases it."},
+{t:"m5t7",stage:"solve",q:"c(t−1) = 2.0, f = 0.9, i = 0.3, c̃ = 0.5. What is c(t)?",o:["1.95","2.15","1.8","0.95"],a:0,e:"c(t) = f·c(t−1) + i·c̃ = 1.8 + 0.15 = 1.95. No tanh is applied to the cell state itself."},
+{t:"m5t7",stage:"solve",q:"Parameters of an LSTM layer with n = 4 hidden units and d = 3 inputs (one bias per block)?",o:["32","96","128","42"],a:2,e:"4n(n + d + 1) = 4 × 4 × 8 = 128."},
+{t:"m5t8",stage:"concept",q:"A GRU differs from an LSTM in that it:",o:["Has three gates and a cell state","Merges forget and input into an update gate and has no cell state","Has no gates","Is bidirectional by default"],a:1,e:"The GRU has an update and a reset gate and only a hidden state. It is simpler and a bit faster."},
+{t:"m5t8",stage:"recognise",q:"A smartwatch must detect a fall within a second on a tiny chip. The best fit among these is:",o:["Bidirectional LSTM","Forward-only GRU","Transformer with long context","Deep BRNN of five layers"],a:1,e:"Real-time means no future context, so forward only; a GRU gives gating cheaply."},
+{t:"m5t9",stage:"concept",q:"Which is a privacy risk specific to sequence models trained on speech or text?",o:["They always run slowly","A model may memorise and reproduce rare training sequences","They cannot be anonymised","They need more labels"],a:1,e:"Memorisation can leak personal sequences, so data minimisation and testing for memorised content matter."},
+/* ---- Module 6 ---- */
+{t:"m6t1",stage:"concept",q:"In a GAN, the discriminator is trained to:",o:["Generate images from noise","Classify samples as real or fake","Compress images","Predict the next word"],a:1,e:"D is a binary classifier. The generator is the network that produces samples."},
+{t:"m6t1",stage:"concept",q:"What does a generator alone lack, according to the deck?",o:["Enough parameters","The adversarial feedback that tells it how realistic its samples are","A loss function","A decoder"],a:1,e:"Without the discriminator's judgement the generator has no learning signal about realism."},
+{t:"m6t2",stage:"solve",q:"D(x) = 0.9 on a real sample and D(G(z)) = 0.2 on a fake. The non-saturating generator loss −ln D(G(z)) is about:",o:["0.22","0.69","1.61","0.10"],a:2,e:"−ln 0.2 = 1.609. The value is large because D is catching the fake."},
+{t:"m6t2",stage:"concept",q:"At the ideal equilibrium of a GAN the discriminator outputs:",o:["1 for every sample","0 for every sample","0.5 for every sample","1 for real, 0 for fake"],a:2,e:"When p_g = p_data the optimal discriminator is p/(p + p) = 1/2 everywhere: it cannot tell them apart."},
+{t:"m6t2",stage:"recognise",q:"A trained GAN's samples all look nearly identical. This is:",o:["Mode collapse","Vanishing gradient","Overfitting of D","Exploding loss"],a:0,e:"The generator produces a limited variety of samples instead of the full diversity of the data."},
+{t:"m6t3",stage:"concept",q:"In the road-scene use case, who learns to detect pedestrians?",o:["The generator","The discriminator","A separate downstream detector","The GAN as a whole"],a:2,e:"GAN training is not training the car to detect pedestrians. The GAN supplies data; a separate model learns the task."},
+{t:"m6t3",stage:"concept",q:"The best evidence that synthetic images helped is:",o:["They look photorealistic","D could not tell them from real","The detector improves on independent real held-out data","The GAN loss is low"],a:2,e:"Realism does not guarantee usefulness. Success is performance of the downstream model on independent real data."},
+{t:"m6t4",stage:"concept",q:"A detector scores a video '90% fake'. What may be concluded?",o:["It is proven fake","Who made it is identified","An offence occurred","None of these on the score alone"],a:3,e:"A score alone does not prove the video is fake, identify the creator or show an offence. Multiple evidence sources and chain of custody are needed."},
+{t:"m6t5",stage:"concept",q:"A diffusion model generates a new image by starting from:",o:["A real training image","Pure Gaussian noise","A blank image","The discriminator's output"],a:1,e:"Generation starts from noise and removes it step by step. Real images are used only in training."},
+{t:"m6t5",stage:"recognise",q:"Which statement about diffusion models against GANs is correct?",o:["Diffusion samples faster","Diffusion training is typically more stable but sampling is slower","GANs need many denoising steps","Diffusion needs a discriminator"],a:1,e:"Diffusion is trained by plain noise regression (stable) but needs many steps to sample; GANs sample in one pass but can be unstable."},
+{t:"m6t6",stage:"solve",q:"β = (0.1, 0.2, 0.3). What is ᾱ₃?",o:["0.504","0.6","0.7","0.72"],a:0,e:"α = (0.9, 0.8, 0.7) and ᾱ₃ = 0.9 × 0.8 × 0.7 = 0.504. It is the product of all three, not the last α."}
+];
+var QUIZ_MSE_N=QUIZ.length;
+QUIZ=QUIZ.concat(QUIZ_ESE);
+
 /* ===================== RAPID REVISION CHECKLIST (Exam Mode) ===================== */
 var PLAN_LAST30=[
  "Output and loss pair up: linear with MSE, sigmoid with binary cross entropy, softmax with categorical cross entropy.",
@@ -3878,11 +4770,16 @@ function touchVisit(){
 
 /* --- quiz sets --- */
 var QUIZ_SET_SIZE = 20;
-function quizSetCount(){ return Math.floor(QUIZ.length / QUIZ_SET_SIZE); }
+/* Sets 1 to 8 are the Modules 1 to 3 bank exactly as before (saved results stay valid); the Modules 4 to 6 bank adds sets after them. */
+function quizSetCount(){ return Math.floor(QUIZ_MSE_N / QUIZ_SET_SIZE) + Math.floor((QUIZ.length - QUIZ_MSE_N) / QUIZ_SET_SIZE); }
+function quizSetOf(k){
+  var n1 = Math.floor(QUIZ_MSE_N / QUIZ_SET_SIZE), n2 = Math.floor((QUIZ.length - QUIZ_MSE_N) / QUIZ_SET_SIZE);
+  return k < QUIZ_MSE_N ? k % n1 : n1 + (n2 ? (k - QUIZ_MSE_N) % n2 : 0);
+}
 function quizSet(i){
-  /* stable round-robin so every set mixes modules; bank order never changes */
-  var n = quizSetCount(), out=[];
-  for(var k=0;k<QUIZ.length;k++){ if(k % n === i) out.push({q:QUIZ[k], gi:k}); }
+  /* stable round-robin inside each bank; bank order never changes */
+  var out=[];
+  for(var k=0;k<QUIZ.length;k++){ if(quizSetOf(k) === i) out.push({q:QUIZ[k], gi:k}); }
   return out.slice(0, QUIZ_SET_SIZE);
 }
 function submitQuizSet(i, answers){
@@ -3944,7 +4841,7 @@ function statCard(n, label, sub, pct){
 }
 function topicCard(t){
   var pr = topicProgress(t);
-  return SEM7.ui.topicCard({title:esc(t.title), summary:esc(t.summary), high:t.priority==="high", pill:pill(t.priority, t.priority+" priority"),
+  return SEM7.ui.topicCard({linkTitle:true, title:esc(t.title), summary:esc(t.summary), high:t.priority==="high", pill:pill(t.priority, t.priority+" priority"),
     state:topicStatus(t.id), done:pr.done, total:pr.total, attrs:'data-go="topic" data-id="'+esc(t.id)+'"'});
 }
 function toast(msg){
@@ -3968,13 +4865,13 @@ function loPills(los){ return (los||[]).map(function(l){ return pill("", "LO "+l
 (function(){
   var MIN_PER_MARK = COURSE.durationMin / COURSE.marks;   /* 90 / 30 = 3 */
 
-  function skeleton(t, marks){
+  function skeleton(t, marks, mpm){
     var pts = (t.needToKnow || []).slice(0, marks);
     while(pts.length < marks && t.recognition){
       if(pts.length === marks - 1 && t.recognition.firstMove){ pts.push(t.recognition.firstMove); break; }
       break;
     }
-    var mins = Math.round(marks * MIN_PER_MARK);
+    var mins = Math.round(marks * (mpm || MIN_PER_MARK));
     return "<p class='small'>About " + mins + " minutes. " + marks + " things to cover:</p>" +
       "<ol>" + pts.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ol>" +
       (t.recognition && t.recognition.firstMove
@@ -4000,7 +4897,7 @@ function loPills(los){ return (los||[]).map(function(l){ return pill("", "LO "+l
     }
 
     /* 4. answer skeletons re-sized to the marks this paper actually uses */
-    t.examAnswer = [{ marks: marks, body: skeleton(t, marks) }];
+    t.examAnswer = [{ marks: marks, body: skeleton(t, marks, mod.mpm) }];
 
     /* 5. likely exam questions carry the real mark value */
     (t.questions || []).forEach(function(q){ q.marks = marks; });
@@ -4137,7 +5034,7 @@ function viewQuiz(){
       '<p class="lead">'+n+' sets of exactly '+QUIZ_SET_SIZE+' questions, drawn from '+QUIZ.length+' in the bank. '+
       'Answer as many as you like, then submit the whole set at once.</p>';
     if(acc.pct!==null) h += '<p class="small">Overall quiz accuracy so far: <b>'+acc.pct+'%</b> over '+acc.n+' answered questions.</p>';
-    h += '<div class="box tip"><h5>How to use these</h5><p>Every set mixes all three modules, so no set is a single-module test. '+
+    h += '<div class="box tip"><h5>How to use these</h5><p>Sets 1 to 8 mix Modules 1 to 3; the later sets mix Modules 4 to 6. '+
       'Set membership never changes, which means retaking a set measures you and not a different sample. '+
       'Read the explanation on questions you got right as well: several of them name the distractor that catches people. '+
       'Your per topic accuracy feeds the weak topic table in Settings.</p></div>';
@@ -4194,8 +5091,8 @@ function viewQuiz(){
 
 function viewFormulae(){
   var h = '<h1>Formula sheet</h1>'+
-    '<p class="lead">Every formula the three modules use, with what it means and when it applies. '+
-    'Nothing here is derived from outside the folder.</p>';
+    '<p class="lead">Every formula Modules 1 to 6 use, with what it means and when it applies. '+
+    'Modules 1 to 3 come from the folder; Modules 4 to 6 use the standard definitions where the decks show equations only as pictures or not at all.</p>';
   FORMULAS.forEach(function(g){
     h += '<h2>'+esc(g.g)+'</h2><div class="scroll"><table><tr><th>Formula</th><th>Meaning</th><th>When you use it</th></tr>'+
       g.i.map(function(x){
@@ -4401,7 +5298,7 @@ function buildIndex(){
   });
   QUIZ.forEach(function(q, i){
     ix.push({kind:"Quiz question", title:q.q, body:q.q+" "+q.o.join(" ")+" "+q.e,
-      crumb:"Quiz set "+((i % quizSetCount())+1), go:{v:"quiz", set: i % quizSetCount()}});
+      crumb:"Quiz set "+(quizSetOf(i)+1), go:{v:"quiz", set: quizSetOf(i)}});
   });
   SEARCH_INDEX = ix;
   return ix;
