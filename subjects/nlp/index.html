@@ -54,6 +54,7 @@
 .hit .hit-t{font-size:.9rem}
 .searchsec{font-size:.84rem; font-weight:650; color:var(--text-2); margin:18px 0 8px}
 .pattern-box .pq{font-weight:650; white-space:pre-wrap; margin-bottom:6px}
+.pill.asked{border-color:var(--accent); background:var(--accent); color:#fff; font-weight:700}
 .sylrow{display:flex; align-items:flex-start; gap:10px; padding:7px 0; border-bottom:1px solid var(--border)}
 .sylrow:last-child{border-bottom:0}
 .sylrow .st{flex:1; font-size:.86rem; line-height:1.45}
@@ -5869,7 +5870,7 @@ function renderDashboard(){
   Object.keys(MODULE_TITLES).forEach(m=>{ const l = moduleItems(m).filter(inCore); built[m] = {pct:pct(done(l), l.length)}; });
   /* study next: the first Core topic page with work left, started ones first */
   const open = allTopicGroups().filter(g=>coreGroup(g) && g.done < g.total);
-  const nx = open.find(g=>g.done > 0) || open[0];
+  const nx = open.find(g=>g.asked && g.done > 0) || open.find(g=>g.asked) || open.find(g=>g.done > 0) || open[0];
   wrap.innerHTML = SEM7.ui.dashboard({code:"nlp", overall:{done:done(all), total:all.length},
     numericals:{done:done(nums), total:nums.length}, theory:{done:done(th), total:th.length},
     next:nx && {kicker:"Study next &middot; "+esc(MODULE_TITLES[nx.m].split("—")[0].trim()), title:esc(groupTitle(nx)), attrs:'data-ntopic="'+esc(nx.key)+'"'},
@@ -5914,7 +5915,7 @@ function renderModule(m){
   else if(sub==="flashcards") wrap.appendChild(renderFlashcards(m));
   else if(String(sub).indexOf("quiz")===0) wrap.appendChild(renderQuizPicker(m));
   else {
-    const list = el("div",{}), shown = groups.filter(g=>g.track===sub);
+    const list = el("div",{}), shown = groups.filter(g=>g.track===sub).sort((a,b)=>(b.asked?1:0)-(a.asked?1:0));
     list.innerHTML = shown.length ? shown.map(topicCard).join("")
       : '<div class="empty">'+(SEM7.coreOnly() ? "No Core topics in this track." : "No topics in this track.")+'</div>';
     wrap.appendChild(list);
@@ -5963,6 +5964,30 @@ function SRC_BY_ID(){
   })));
   return SRC_CACHE;
 }
+/* Questions the class was told to expect in the End Sem (13 Nov 2026). Top priority:
+   each id is forced to high priority and Core, and its topic is listed first. */
+const EXAM_ASKED = {
+  m2t6:"Type-token ratio, 2 marks", m2n1:"Type-token ratio, 2 marks",
+  m2t33:"Count vectorization: build the unique vector in alphabetical order", m1n2:"Count vectorization: build the unique vector in alphabetical order",
+  m2t13:"Inflectional morpheme, with detailed grammatical explanation",
+  m3t16:"PCFG", m3t17:"PCFG", m3n4:"PCFG",
+  m3t5:"HMM training: diagram given, emission probabilities given", m3t6:"HMM training", m3t7:"HMM / Viterbi", m3n1:"HMM training: diagram given, emission probabilities given", m3n2:"HMM / Viterbi",
+  m4t7:"Lesk: a sentence is given, write every definition of the ambiguous word", m4t9:"Lesk algorithm: pseudocode and problem", m4n4:"Lesk algorithm: pseudocode and problem",
+  m4t13:"One-hot vector sum", m4n1:"One-hot vector sum and count vectorization",
+  m4t3:"Semantic relations: paragraph given, explain every possible word with justification", m4t4:"Semantic relations: paragraph given, justify each word",
+  m4t16:"Cosine similarity and cosine distance", m4n3:"Cosine similarity and cosine distance",
+  m5t4:"Reference identification", m5t5:"Reference identification; anaphora with justification", m5t6:"Anaphora with justification",
+  m5t7:"Hobbs algorithm: explanation and problem", m5n1:"Hobbs algorithm: explanation and problem",
+  m5t8:"Centering algorithm problem", m5n2:"Centering algorithm problem",
+  m5t16:"Precision, recall and F1 sum", m5n5:"Precision, recall and F1 sum",
+  m6t3:"Text summarization: explain the steps, 10 marks", m6t4:"Text summarization: explain the steps, 10 marks",
+  m6t13:"RAG: the 5 stages; application given, find the faulty stage and suggest improvements", m6n3:"RAG: the 5 stages and where an application goes wrong",
+  m6t14:"Application given: identify sources of error and suggest improvements, 10 marks"
+};
+Object.keys(EXAM_ASKED).forEach(id=>{
+  const q = SRC_BY_ID()[id];
+  if(q){ q.asked = EXAM_ASKED[id]; q.core = true; if("priority" in q || q.q) q.priority = "high"; }
+});
 function coreGroup(g){ return !SEM7.coreOnly() || g.items.some(inCore); }
 function topicGroups(m){
   const g = {}, add = key => g[key] || (g[key] = {key, m, theory:[], nums:[], solved:[]});
@@ -5976,6 +6001,7 @@ function topicGroups(m){
     x.track = x.items.some(i=>studyKindOf(i)==="numerical") ? "numerical" : "theory";
     x.total = x.items.length; x.done = x.items.filter(i=>effectiveStatus(i)==="done").length;
     x.high = x.theory.some(q=>q.priority==="high");
+    x.asked = x.theory.concat(x.nums, x.solved).some(q=>q.asked);
     return x;
   });
 }
@@ -5984,7 +6010,7 @@ function groupByKey(key){ return allTopicGroups().find(g=>g.key===key) || null; 
 function topicCard(g){
   const n = (k, w) => k ? k+" "+w+(k===1?"":"s") : "";
   const sum = [n(g.theory.length,"theory question"), n(g.nums.length+g.solved.length,"worked set")].filter(Boolean).join(" · ");
-  return SEM7.ui.topicCard({linkTitle:true, title:esc(groupTitle(g)), summary:sum, high:g.high, pill:g.high ? '<span class="pill high">High priority</span>' : "",
+  return SEM7.ui.topicCard({linkTitle:true, title:esc(groupTitle(g)), summary:sum, high:g.high||g.asked, pill:g.asked ? '<span class="pill asked">Asked in exam</span>' : g.high ? '<span class="pill high">High priority</span>' : "",
     done:g.done, total:g.total, unit:"items", attrs:'data-ntopic="'+esc(g.key)+'"'});
 }
 function nlpMark(id){ return {done:statusOf(id)==="done", attrs:'data-nlpmark="'+esc(id)+'"'}; }
@@ -6022,10 +6048,10 @@ function renderTopicPage(key){
   return SEM7.ui.topic({
     head:{crumb:[{label:esc(num)+" &middot; "+esc(mtitle), attrs:modLink},
                  {label:g.track==="numerical" ? "Numericals" : "Theory", attrs:modLink+' data-nsub="'+g.track+'"'}],
-      title:esc(groupTitle(g)), meta:g.high ? '<span class="pill high">High priority</span>' : "",
+      title:esc(groupTitle(g)), meta:g.asked ? '<span class="pill asked">Asked in exam</span>' : g.high ? '<span class="pill high">High priority</span>' : "",
       progress:{done:g.done, total:g.total, unit:"items done"}},
     concept,
-    answer:theory.map(q=>({id:"item_"+q.id, label:q.marks+" marks", marks:q.marks, q:esc(q.q),
+    answer:theory.map(q=>({id:"item_"+q.id, label:(q.asked ? "Asked in exam · " : "")+q.marks+" marks", marks:q.marks, q:esc(q.q),
       body:esc(q.examAnswer||""), more:{key:"ans-"+q.id, html:SEM7.ui.rich(q.a)}, mark:nlpMark(q.id)})),
     mistakes:theory.filter(q=>q.mistakes).map(q=>esc(q.mistakes)),
     examples:examples.map(e=>Object.assign(e, {})),
@@ -7010,7 +7036,11 @@ function renderFullMarks(){
   wrap.appendChild(el("h1",{},["Full-Marks Preparation Guide"]));
   wrap.appendChild(el("p",{class:"small-muted"},["Cross-module view: what to absolutely not skip before the exam. Compiled from what the professor emphasized, syllabus weightage, and question patterns typical for this paper."]));
   const G = DATA.fullMarksGuide || {};
+  const asked = [], seen = {};
+  Object.keys(EXAM_ASKED).forEach(id=>{ const n = EXAM_ASKED[id]; if(!seen[n]){ seen[n] = 1; asked.push(n); } });
+  G.askedInExam = asked;
   const sections = [
+    ["askedInExam","🎯 Asked in the exam — top priority, do these first"],
     ["highPriority","⭐ High-Priority Topics — do not leave these"],
     ["frequentlyTestable","🔁 Frequently Testable Concepts"],
     ["mustKnowDefs","📖 Must-Know Definitions (reproduce accurately)"],

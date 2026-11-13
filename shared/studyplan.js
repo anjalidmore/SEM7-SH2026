@@ -95,19 +95,19 @@
         first:["Ambiguity types","NLP stages","Type-token ratio"] },
       { n:2, hrs:[10,12], los:6, d:3, pre:true,  needs:[],
         sig:[[1.10,"Past internal tests ask perplexity, Porter stemmer and regex"]],
-        first:["Perplexity and n-gram probabilities","Smoothing (Laplace, Good-Turing)","Porter stemmer","TF-IDF"] },
+        first:["Asked: type-token ratio, count vectorization, inflectional morphemes","Perplexity and n-gram probabilities","Smoothing (Laplace, Good-Turing)","Porter stemmer","TF-IDF"] },
       { n:3, hrs:[9,11],  los:6, d:4, pre:true,  needs:[2],
         sig:[[1.10,"Past internal tests ask HMM, CKY and PCFG every time"]],
-        first:["HMM matrices and Viterbi","CKY table","PCFG parse probability","Leftmost derivation and parse tree"] },
+        first:["Asked: HMM training and emission probabilities","Asked: PCFG parse probability","Viterbi","CKY table","Leftmost derivation and parse tree"] },
       { n:4, hrs:[7,9],   los:8, d:4, pre:false, needs:[2],
         sig:[[1.15,"CIA 4 is a report on word senses, embeddings and BERT"]],
-        first:["Lesk algorithm worked","Word sense disambiguation: three approaches compared","Word2Vec, GloVe, one-hot and cosine similarity","Semantic relations (synonymy to meronymy)","FastText and BERT in outline"] },
+        first:["Asked: Lesk pseudocode and worked problem","Asked: one-hot sum, cosine similarity and distance","Asked: semantic relations from a paragraph","Word sense disambiguation: three approaches compared","FastText and BERT in outline"] },
       { n:5, hrs:[5,7],   los:6, d:3, pre:false, needs:[3],
         sig:[],
-        first:["Hobbs algorithm on a parse tree","Centering theory","BLEU, ROUGE and F1 worked","Discourse coherence and relations"] },
+        first:["Asked: Hobbs algorithm on a parse tree","Asked: Centering problem","Asked: reference, anaphora, precision, recall and F1","BLEU and ROUGE worked","Discourse coherence and relations"] },
       { n:6, hrs:[4,6],   los:8, d:2, pre:false, needs:[4,5],   /* 10 LOs, two are teamwork and not examinable */
         sig:[],
-        first:["Machine translation: rule, statistical, neural","Extractive vs abstractive summarisation","NER and RAG for question answering","Bias, privacy, hallucination","Indian-language challenges"] }
+        first:["Asked: summarization steps (10 marks)","Asked: RAG five stages and finding the faulty stage","Asked: application error sources and fixes (10 marks)","Machine translation: rule, statistical, neural","Indian-language challenges"] }
     ],
     ads: [
       { n:1, hrs:[4,4],   los:4, d:1, pre:true,  needs:[],
