@@ -3526,6 +3526,23 @@ function dgStagecoach(){
   return s + "</svg>";
 }
 
+/* A staged network: N = {node:[x,y]}, arcs = [from, to, distance, label position 0..1], best = {"a-b":1}, f = least distance to the end */
+function dgNet(N, arcs, best, f, h, label){
+  var s = svgOpen(620, h, label);
+  arcs.forEach(function(a){
+    var p = N[a[0]], q = N[a[1]], on = best[a[0]+"-"+a[1]], t = a[3] || 0.5;
+    var x = p[0]+(q[0]-p[0])*t, y = p[1]+(q[1]-p[1])*t;
+    s += "<path d='M"+p[0]+" "+p[1]+" L"+q[0]+" "+q[1]+"' class='"+(on ? "dg-ln" : "dg-ds")+"'/>";
+    s += "<rect x='"+(x-9)+"' y='"+(y-8)+"' width='18' height='15' rx='3' fill='var(--surface)'/>";
+    s += sTxt(x, y+4, a[2], on ? "dg-tb" : "dg-t", "middle");
+  });
+  Object.keys(N).forEach(function(k){
+    s += "<circle cx='"+N[k][0]+"' cy='"+N[k][1]+"' r='14' class='dg-bx hl'/>" + sTxt(N[k][0], N[k][1]+4, k, "dg-tb", "middle");
+    s += sTxt(N[k][0], N[k][1]+29, "f = "+f[k], "dg-t", "middle");
+  });
+  return s + "</svg>";
+}
+
 /* The DP building block: state → decision → return and next state, stage after stage */
 function dgStages(){
   var s = svgOpen(620, 130, "Each stage takes a state and a decision, earns a return, and hands a new state to the next stage");
@@ -3761,16 +3778,18 @@ var M3_TOPICS = [
 ];
 
 /* ===== 05 · Module 4 — Dynamic Programming =====
-   The folder holds no teaching material for this module. Everything below follows the standard textbook method
-   (Hillier & Lieberman; Taha) and the six headings of the syllabus. Check it against your teacher's slides if they arrive. */
-var M4_NOTE = bx("warning","No lecture material for this module","<p>The folder has nothing on Dynamic Programming. This topic is written from the standard textbook method and the syllabus headings. Treat the <b>method</b> as reliable; check the <b>wording and the question style</b> against your teacher's slides.</p>");
+   Source: 4.01 Dynamic Programming deck (filed 14 Nov 2026). It covers the characteristics, terminology and notation,
+   the shortest-route problem (three worked networks and two past exam questions), cargo loading and a crate-allocation
+   problem. Reliability and employment smoothening are NOT in the deck: those two topics follow the standard textbook method. */
+var M4_SRC = bx("tip","From your lecture deck (4.01)","<p>This page follows the Dynamic Programming deck: its wording, its worked problems and its table layout.</p>");
+var M4_NOTE = bx("warning","Not in the lecture deck","<p>The Dynamic Programming deck (4.01) has no slide on this problem type. This page is written from the standard textbook method and the syllabus heading. The <b>method</b> is reliable, but do shortest route, cargo loading and allocation first: those are the ones the deck works in full.</p>");
 var M4_TOPICS = [
 {
   id:"m4t1", m:"m4", type:"theory", priority:"high", los:[],
   title:"Characteristics of dynamic programming",
   summary:"Stages, states, decisions, the principle of optimality and the recursion. The vocabulary every DP answer is written in.",
   whatIs:"<p>Dynamic programming solves a problem that can be cut into a sequence of <b>stages</b> by solving one stage at a time, so that a decision at every stage is chosen with the future in mind. It does not have one formula; it has one <i>idea</i>.</p>",
-  concept:M4_NOTE+dgm(dgStages(), "The building block of every dynamic programming problem.")+
+  concept:M4_SRC+dgm(dgStages(), "The building block of every dynamic programming problem.")+
     "<h4>The five characteristics</h4>"+tbl(["Characteristic","Meaning"],[
       ["<b>Stages</b>","The problem splits into steps; a decision is made at each (cities, months, projects, items)."],
       ["<b>States</b>","What you must know at a stage to decide it: money left, capacity left, node reached. Defined so the past does not matter."],
@@ -3778,6 +3797,20 @@ var M4_TOPICS = [
       ["<b>Return function</b>","The cost or profit of a stage as a function of state and decision."],
       ["<b>Recursion</b>","f<sub>n</sub>(s) = best over x of { r<sub>n</sub>(s, x) + f<sub>n+1</sub>(next state) }, solved from the last stage back to the first."]])+
     "<div class='box tip'><h5>Principle of optimality (Bellman)</h5><p><b>An optimal policy has the property that, whatever the initial state and decision, the remaining decisions must form an optimal policy for the state that results.</b> This is why you may solve the last stage first and never revisit it.</p></div>"+
+    "<h4>The six terms as the deck words them</h4>"+tbl(["Term","Deck definition","In the shortest-route problem"],[
+      ["<b>Stage</b>","A period or a logical subproblem.","One column of arcs"],
+      ["<b>State variables</b>","Possible beginning situations or conditions of a stage (the input variables).","The entering nodes"],
+      ["<b>Decision variables</b>","Alternatives or possible decisions that exist at each stage.","The arcs out of a node"],
+      ["<b>Decision criterion</b>","A statement concerning the objective of the problem.","Minimise total distance"],
+      ["<b>Optimal policy</b>","A set of decision rules, developed from the decision criterion, that gives optimal decisions for any entering condition at any stage.","The best arc for every entering node"],
+      ["<b>Transformation</b>","Normally an algebraic statement that reveals the relationship between stages.","Which node an arc leads to"]])+
+    "<h4>Notation</h4>"+mono("s_n = input to stage n            d_n = decision at stage n\nr_n = return at stage n           s_(n−1) = output from stage n\nt_n = transformation function:    s_(n−1) = t_n(s_n, d_n)\nf_n = total return at stage n")+
+    "<p>The input to one stage is the output from another stage.</p>"+
+    "<h4>The four steps of solving by dynamic programming</h4><ol><li>Divide the original problem into subproblems called <b>stages</b>.</li><li>Solve the <b>last stage</b> of the problem for all possible conditions or states.</li><li>Working <b>backward</b> from the last stage, solve each intermediate stage, by determining optimal policies from that stage to the end of the problem.</li><li>Obtain the optimal solution for the original problem by solving all stages sequentially.</li></ol>"+
+    "<h4>How dynamic programming differs from linear programming</h4>"+tbl(["","Linear programming","Dynamic programming"],[
+      ["<b>Algorithm</b>","One algorithm (the simplex method) can be programmed to solve all problems.","No single algorithm. It is a technique that breaks a difficult problem into a sequence of easier subproblems, evaluated by stages."],
+      ["<b>Time horizon</b>","Gives single-stage (one time period) solutions.","Multistage: a one-year problem is broken into 12 one-month problems and each is solved optimally."]])+
+    "<p><b>Where it is used</b>: multiperiod business problems such as smoothing production employment, allocating capital funds, allocating salespeople to marketing areas and evaluating investment opportunities.</p>"+
     "<h4>Backward and forward recursion</h4><p><b>Backward</b>: start from the last stage, ending at the first (stagecoach, capital budgeting, cargo). <b>Forward</b>: start at the first stage (employment smoothing). Both give the same optimum; the exam question usually fixes which is convenient.</p>"+
     "<h4>Why it beats listing every route</h4><p>The stagecoach network of the next topic has 18 routes. DP evaluates each arc once. The saving grows enormously with the number of stages.</p>"+
     "<h4>The six problems on your syllabus</h4>"+tbl(["Problem","Stage","State","Decision"],[
@@ -3790,7 +3823,9 @@ var M4_TOPICS = [
     "Define stage, state, decision and return function.",
     "State the principle of optimality.",
     "Write the general backward recursion.",
-    "Identify stage, state and decision in each of the syllabus problems."
+    "Identify stage, state and decision in each of the syllabus problems.",
+    "Write the deck's six terms, the notation s, d, r, t, f and the four solution steps.",
+    "Give the two differences between dynamic programming and linear programming."
   ],
   recognition:{
     clues:["&lsquo;Characteristics&rsquo;, &lsquo;principle of optimality&rsquo;, &lsquo;features of DP&rsquo;.","No data given, 4–5 marks.","&lsquo;Explain with an example&rsquo;."],
@@ -3806,7 +3841,8 @@ var M4_TOPICS = [
   mistakes:[
     "Stating the principle of optimality as &lsquo;always take the cheapest next step&rsquo;. That is a greedy rule, and DP exists because greedy fails.",
     "Writing a recursion without naming the stage and state it is a function of.",
-    "Calling the first stage of a backward solution &lsquo;stage 1&rsquo; and the last &lsquo;stage n&rsquo; inconsistently inside one answer."
+    "Calling the first stage of a backward solution &lsquo;stage 1&rsquo; and the last &lsquo;stage n&rsquo; inconsistently inside one answer. The deck numbers stages from the end: <b>stage 1 is the last part of the network</b>.",
+    "Mixing up state and decision variables: in the shortest-route problem the states are the entering <i>nodes</i> and the decisions are the <i>arcs</i>."
   ],
   examples:[],
   practice:[
@@ -3815,30 +3851,41 @@ var M4_TOPICS = [
      a:"<p><b>Principle.</b> An optimal policy has the property that, whatever the initial state and initial decision, the remaining decisions must constitute an optimal policy with regard to the state resulting from the first decision.</p><p><b>Why backward works.</b> The best way to finish from a state does not depend on how you arrived there. So you can compute and store the best value from every state of the last stage, then use those values to decide the stage before, and so on back to the start, never recomputing a later stage.</p>"},
     {id:"m4t1p2", d:"moderate", marks:5, q:"For a capital-budgeting problem with 4 projects and a budget of 10 lakh, name the stage, state, decision and the recursion.",
      hint:"A project is a stage; money left is the state.",
-     a:"<p><b>Stage</b>: a project (4 stages). <b>State</b> s: money still unallotted when this project is reached (0 to 10). <b>Decision</b> x: money allotted to this project (0 ≤ x ≤ s). <b>Return</b> R<sub>n</sub>(x): profit of project n for an allotment x.</p><p><b>Recursion</b>: f<sub>n</sub>(s) = max over x of { R<sub>n</sub>(x) + f<sub>n+1</sub>(s − x) }, with f<sub>5</sub>(s) = 0. The answer is f<sub>1</sub>(10).</p>"}
+     a:"<p><b>Stage</b>: a project (4 stages). <b>State</b> s: money still unallotted when this project is reached (0 to 10). <b>Decision</b> x: money allotted to this project (0 ≤ x ≤ s). <b>Return</b> R<sub>n</sub>(x): profit of project n for an allotment x.</p><p><b>Recursion</b>: f<sub>n</sub>(s) = max over x of { R<sub>n</sub>(x) + f<sub>n+1</sub>(s − x) }, with f<sub>5</sub>(s) = 0. The answer is f<sub>1</sub>(10).</p>"},
+    {id:"m4t1p3", d:"easy", marks:5, q:"How does dynamic programming differ from linear programming? State the four steps of solving a problem by dynamic programming.",
+     hint:"Two differences: algorithm and time horizon. The steps go stage, last stage, backward, all stages.",
+     a:"<p><b>Differences.</b> (1) Linear programming has one algorithm, the simplex method, that solves every problem. Dynamic programming has no such algorithm; it is a technique for breaking a difficult problem into a sequence of easier subproblems that are evaluated by stages. (2) Linear programming gives a single-stage (one time period) solution. Dynamic programming is multistage: it can find the optimum over a one-year horizon by solving 12 one-month problems.</p><p><b>Steps.</b> 1. Divide the problem into stages. 2. Solve the last stage for all possible states. 3. Working backward, solve each intermediate stage by finding the optimal policy from that stage to the end. 4. Obtain the optimal solution of the original problem by solving all stages sequentially.</p>"},
+    {id:"m4t1p4", d:"easy", marks:4, q:"In the George Yates shortest-route problem (Rice, node 1, to Dixieville, node 7), name the state variables, decision variables, decision criterion and optimal policy for stage 2.",
+     hint:"Stage 2 is the middle column of arcs, entered at nodes 2, 3 and 4.",
+     a:"<p><b>State variables</b>: the entering nodes 2, 3 and 4. <b>Decision variables</b>: the arcs of the stage, 4–5, 3–5, 3–6, 2–5 and 2–6. <b>Decision criterion</b>: minimise the total distance to node 7. <b>Optimal policy</b>: for any entering node, the arc that minimises the total distance to the destination: from 4 take 4–5 (24), from 3 take 3–6 (8), from 2 take 2–6 (12).</p>"}
   ],
   questions:[
     {q:"Explain the characteristics of a dynamic programming problem and state the principle of optimality.", marks:5, d:"moderate", priority:"high", source:"predicted"},
-    {q:"Define stage, state, decision variable and return function with an example.", marks:4, d:"easy", priority:"high", source:"predicted"}
+    {q:"Define stage, state, decision variable and return function with an example.", marks:4, d:"easy", priority:"high", source:"predicted"},
+    {q:"Explain the terminology of dynamic programming: stage, state variables, decision variables, decision criterion, optimal policy and transformation.", marks:5, d:"easy", priority:"high", source:"source"},
+    {q:"How does dynamic programming differ from linear programming? State the steps of solving a problem by dynamic programming.", marks:5, d:"easy", priority:"high", source:"source"}
   ]
 },
 {
   id:"m4t2", m:"m4", type:"problem-solving", priority:"high", los:[],
   title:"Stagecoach problem — shortest path by dynamic programming",
-  summary:"A network in stages, solved from the destination backward with one table per stage. Cost 11 by three equally good routes.",
+  summary:"A network in stages, solved from the destination backward with one table per stage. Two past papers ask an 11-node network for 10 marks.",
   whatIs:"<p>A traveller goes from A to J in four moves. Each arc has a cost (or distance). The shortest route is found by working back from J and recording, for every node, the least cost to finish and the node to go to next.</p>",
-  concept:M4_NOTE+dgm(dgStagecoach(), "The network, the least cost to J from each node (f), and the optimal routes in bold.")+
+  concept:M4_SRC+dgm(dgStagecoach(), "The network, the least cost to J from each node (f), and the optimal routes in bold.")+
     "<h4>The recursion</h4>"+mono("f(node) = min over next nodes of { arc cost + f(next node) },   f(J) = 0\nStage k = how many moves are still left.")+
-    "<div class='box tip'><h5>Layout that scores</h5><p>One table per stage: rows are the nodes of the stage, columns are the possible next nodes, each cell is <b>arc + f(next)</b>, then the minimum and the node chosen.</p></div>",
+    "<div class='box tip'><h5>Layout that scores</h5><p>One table per stage: rows are the nodes of the stage, columns are the possible next nodes, each cell is <b>arc + f(next)</b>, then the minimum and the node chosen.</p></div>"+
+    "<div class='box warning'><h5>Asked in past papers</h5><p>The deck opens with two exam questions of the same kind: <b>a distance network of eleven nodes, find the shortest path from node 1 to node 11 using dynamic programming, 10 marks</b>. One gives the arcs as a table, the other as a figure. Both are solved in full below.</p></div>"+
+    "<h4>Two ways of numbering the stages</h4><p>The deck's first example (George Yates) calls the <b>last</b> part of the network stage 1 and numbers backward. Its A to J solution calls the decision at A stage 1 and sets f<sub>5</sub>(J) = 0. Either is accepted. Say which you use and keep to it.</p>",
   needToKnow:[
     "Set up stages from the destination backward.",
     "Fill a table of arc + f(next) for every node.",
     "Trace the optimal route(s) forward from the start, using the recorded choices.",
-    "Spot ties and report every optimal route."
+    "Spot ties and report every optimal route.",
+    "Draw the network in columns when the question gives only a table of arcs and distances."
   ],
   recognition:{
     clues:["A network drawn left to right in columns of nodes.","&lsquo;Shortest path&rsquo;, &lsquo;minimum cost route&rsquo;, &lsquo;stage-coach&rsquo;.","The method named: dynamic programming."],
-    wording:["Find the shortest route from A to J by dynamic programming.","A salesman travels from city 1 to city 10; find the minimum cost route."],
+    wording:["A distance network consists of eleven nodes. Find the shortest path from node 1 to node 11 using dynamic programming. (10 marks, past paper)","Find the shortest route from A to J by dynamic programming.","A salesman travels from city 1 to city 10; find the minimum cost route."],
     firstMove:"Label stages by moves remaining, write f(J) = 0, and make a table for the stage just before the destination.",
     trap:"Working forward and choosing the cheapest first arc (a greedy route). In this network that gives A–B–F–I–J = 13, not the optimum 11."
   },
@@ -3862,7 +3909,46 @@ var M4_TOPICS = [
        "Trace from A: <b>A→C→E→H→J</b>, <b>A→D→E→H→J</b> and <b>A→D→F→I→J</b>, each of cost 11."],
      answer:"<b>Minimum cost = 11</b>, by three routes: A–C–E–H–J, A–D–E–H–J, A–D–F–I–J.",
      why:"The greedy route A–B–F–I–J costs 2 + 4 + 3 + 4 = 13. The cheapest first arc (A→B, cost 2) leads into the most expensive part of the network.",
-     trap:"B has a tie (E or F), but B is not on any optimal route, so the tie does not matter for the answer."}
+     trap:"B has a tie (E or F), but B is not on any optimal route, so the tie does not matter for the answer. The deck slide prints f(F) = 9 at this stage; the smaller of 9 and 7 is 7, and the deck itself uses 7 in the next stage."},
+    {id:"m4t2e2", title:"Deck example — George Yates, Rice (1) to Dixieville (7)",
+     q:"Distances in miles: 1–4 4, 1–3 5, 1–2 2 · 4–5 10, 3–5 12, 3–6 6, 2–5 4, 2–6 10 · 5–7 14, 6–7 2. Find the shortest route from node 1 to node 7 by dynamic programming.",
+     steps:["<b>Step 1, divide into stages.</b> Stage 1 = arcs 5–7, 6–7 (the last part). Stage 2 = arcs 4–5, 3–5, 3–6, 2–5, 2–6. Stage 3 = arcs 1–4, 1–3, 1–2.",
+       "<b>Step 2, solve stage 1.</b>"+tbl(["Beginning node","Shortest distance to node 7","Arcs along this path"],[["5","14","5–7"],["6","2","6–7"]]),
+       "<b>Step 3, stage 2</b> (arc + the stage 1 value):"+tbl(["Beginning node","Options","Shortest distance to node 7","Arcs along this path"],[["4","10 + 14 = 24","<b>24</b>","4–5, 5–7"],["3","12 + 14 = 26, 6 + 2 = 8","<b>8</b>","3–6, 6–7"],["2","4 + 14 = 18, 10 + 2 = 12","<b>12</b>","2–6, 6–7"]]),
+       "<b>Stage 3.</b>"+tbl(["Beginning node","Options","Shortest distance to node 7","Arcs along this path"],[["1","4 + 24 = 28, 5 + 8 = 13, 2 + 12 = 14","<b>13</b>","1–3, 3–6, 6–7"]]),
+       "<b>Step 4.</b> At any stage you need only the arcs to the next stage and the optimal values already found there."],
+     answer:"<b>Shortest route 1–3–6–7 (Rice, Brown, Georgetown, Dixieville), 13 miles.</b>",
+     why:"The shortest first arc is 1–2 (2 miles), but from node 2 the best finish costs 12, giving 14.",
+     trap:"The deck writes the minimum distance in a box beside each node on the network. In the exam draw the network once and box the value at every node; it shows the method even without the tables."},
+    {id:"m4t2e3", title:"Past paper — eleven nodes, arcs given as a table (10 marks)",
+     q:"A distance network consists of eleven nodes distributed as in the table. Find the shortest path from node 1 to node 11 using dynamic programming. Arc distances: 1–2 8, 1–3 7, 1–4 1 · 2–5 5, 3–5 9, 3–6 2, 3–7 8, 4–7 10 · 5–8 12, 5–9 7, 6–9 9, 7–9 6, 7–10 13 · 8–11 4, 9–11 2, 10–11 15.",
+     steps:["<b>Draw the network in columns</b>: 1 | 2, 3, 4 | 5, 6, 7 | 8, 9, 10 | 11. Every arc goes one column to the right, so there are four stages."+
+         dgm(dgNet({1:[40,120],2:[170,40],3:[170,120],4:[170,200],5:[310,40],6:[310,120],7:[310,200],8:[450,40],9:[450,120],10:[450,200],11:[580,120]},
+           [[1,2,8],[1,3,7],[1,4,1],[2,5,5],[3,5,9],[3,6,2],[3,7,8],[4,7,10],[5,8,12],[5,9,7],[6,9,9],[7,9,6],[7,10,13],[8,11,4],[9,11,2],[10,11,15]],
+           {"1-4":1,"4-7":1,"7-9":1,"9-11":1}, {1:19,2:14,3:13,4:18,5:9,6:11,7:8,8:4,9:2,10:15,11:0}, 245,
+           "Eleven-node network with the least distance to node 11 written under each node"), "f = least distance from the node to node 11. The shortest path is in bold."),
+       "<b>Stage 1</b> (one arc left): f(8) = 4, f(9) = 2, f(10) = 15, each straight to 11.",
+       "<b>Stage 2</b>:"+tbl(["Node","Options (arc + f)","f","Go to"],[["5","12 + 4 = 16, 7 + 2 = 9","<b>9</b>","9"],["6","9 + 2 = 11","<b>11</b>","9"],["7","6 + 2 = 8, 13 + 15 = 28","<b>8</b>","9"]]),
+       "<b>Stage 3</b>:"+tbl(["Node","Options (arc + f)","f","Go to"],[["2","5 + 9 = 14","<b>14</b>","5"],["3","9 + 9 = 18, 2 + 11 = 13, 8 + 8 = 16","<b>13</b>","6"],["4","10 + 8 = 18","<b>18</b>","7"]]),
+       "<b>Stage 4</b>:"+tbl(["Node","Options (arc + f)","f","Go to"],[["1","8 + 14 = 22, 7 + 13 = 20, 1 + 18 = 19","<b>19</b>","4"]]),
+       "Trace forward: 1 → 4 → 7 → 9 → 11. Check: 1 + 10 + 6 + 2 = 19."],
+     answer:"<b>Shortest path 1–4–7–9–11, distance 19.</b>",
+     why:"The deck gives the question and the drawn network but no worked answer; this solution uses the same backward method as its other examples.",
+     trap:"Arc 1–4 costs only 1 and is on the optimal path here, but that is luck, not the method. Still compute arc + f for every option."},
+    {id:"m4t2e4", title:"Past paper — eleven nodes, network given as a figure (10 marks)",
+     q:"A distance network consists of eleven nodes as shown. Find the shortest path from node 1 to node 11 and the corresponding distances. Distances as marked on the lecture slide: 1–2 5, 1–3 7, 1–4 4, 1–5 2 · 2–6 4, 3–6 5, 3–7 4, 4–7 5, 5–7 8, 5–8 1 · 6–9 3, 6–10 5, 7–9 5, 7–10 1, 8–10 5 · 9–11 5, 10–11 5.",
+     steps:[dgm(dgNet({1:[40,130],2:[170,30],3:[170,95],4:[170,165],5:[170,230],6:[310,50],7:[310,130],8:[310,215],9:[450,80],10:[450,180],11:[580,130]},
+           [[1,2,5],[1,3,7],[1,4,4],[1,5,2],[2,6,4],[3,6,5],[3,7,4],[4,7,5],[5,7,8],[5,8,1],[6,9,3],[6,10,5,0.28],[7,9,5,0.72],[7,10,1,0.3],[8,10,5],[9,11,5],[10,11,5]],
+           {"1-5":1,"5-8":1,"8-10":1,"10-11":1}, {1:13,2:12,3:10,4:11,5:11,6:8,7:6,8:10,9:5,10:5,11:0}, 275,
+           "Eleven-node network of the second past paper with the least distance to node 11 under each node"), "Columns: 1 | 2, 3, 4, 5 | 6, 7, 8 | 9, 10 | 11. The shortest path is in bold."),
+       "<b>Stage 1</b>: f(9) = 5, f(10) = 5.",
+       "<b>Stage 2</b>:"+tbl(["Node","Options (arc + f)","f","Go to"],[["6","3 + 5 = 8, 5 + 5 = 10","<b>8</b>","9"],["7","5 + 5 = 10, 1 + 5 = 6","<b>6</b>","10"],["8","5 + 5 = 10","<b>10</b>","10"]]),
+       "<b>Stage 3</b>:"+tbl(["Node","Options (arc + f)","f","Go to"],[["2","4 + 8 = 12","<b>12</b>","6"],["3","5 + 8 = 13, 4 + 6 = 10","<b>10</b>","7"],["4","5 + 6 = 11","<b>11</b>","7"],["5","8 + 6 = 14, 1 + 10 = 11","<b>11</b>","8"]]),
+       "<b>Stage 4</b>:"+tbl(["Node","Options (arc + f)","f","Go to"],[["1","5 + 12 = 17, 7 + 10 = 17, 4 + 11 = 15, 2 + 11 = 13","<b>13</b>","5"]]),
+       "Trace forward: 1 → 5 → 8 → 10 → 11. Check: 2 + 1 + 5 + 5 = 13."],
+     answer:"<b>Shortest path 1–5–8–10–11, distance 13.</b>",
+     why:"The deck gives the question and a redrawn network with the distances written by hand, but no worked answer.",
+     trap:"The scanned figure is blurred. Arcs 1–2, 3–6 and 4–7 could also be read as 8, 8 and 6. The answer is the same either way (path 1–5–8–10–11, distance 13), but confirm the numbers with your class notes."}
   ],
   practice:[
     {id:"m4t2p1", d:"easy", marks:5, q:"Arcs: O→A 3, O→B 5 · A→C 4, A→D 6 · B→C 2, B→D 3 · C→T 5 · D→T 2. Find the shortest route from O to T by dynamic programming.",
@@ -3870,18 +3956,24 @@ var M4_TOPICS = [
      a:tbl(["Node","Options (arc + f)","f","Go to"],[["C","5 + 0","5","T"],["D","2 + 0","2","T"],["A","4 + 5 = 9, 6 + 2 = 8","8","D"],["B","2 + 5 = 7, 3 + 2 = 5","5","D"],["O","3 + 8 = 11, 5 + 5 = 10","<b>10</b>","B"]])+"<p>Route <b>O→B→D→T</b>, cost <b>10</b>.</p>"},
     {id:"m4t2p2", d:"moderate", marks:3, q:"In the A–J network, a driver always takes the cheapest arc out of the node he is at. What route and cost does he get, and why is it not optimal?",
      hint:"Follow the smallest arc from each node.",
-     a:"<p>A→B (2), B→F (4), F→I (3), I→J (4): cost <b>13</b>. The optimum is 11.</p><p>Cheapest-next-arc looks only one step ahead. The principle of optimality needs the <i>cost to finish</i> from the next node as well as the arc cost, which is what f(next) supplies.</p>"}
+     a:"<p>A→B (2), B→F (4), F→I (3), I→J (4): cost <b>13</b>. The optimum is 11.</p><p>Cheapest-next-arc looks only one step ahead. The principle of optimality needs the <i>cost to finish</i> from the next node as well as the arc cost, which is what f(next) supplies.</p>"},
+    {id:"m4t2p3", d:"moderate", marks:6, q:"Deck problem (Lindsey Cortizan): find the route from the university (node 1) to her home (node 7) that minimises total distance. Arcs: 1–4 20, 1–3 18, 1–2 22 · 4–6 39, 3–6 28, 2–6 36, 2–5 18 · 6–7 13, 5–7 10.",
+     hint:"Stage 1: nodes 6 and 5. Stage 2: nodes 4, 3, 2. Stage 3: node 1.",
+     a:tbl(["Node","Options (arc + f)","f","Go to"],[["6","13","13","7"],["5","10","10","7"],["4","39 + 13 = 52","52","6"],["3","28 + 13 = 41","41","6"],["2","36 + 13 = 49, 18 + 10 = 28","28","5"],["1","20 + 52 = 72, 18 + 41 = 59, 22 + 28 = 50","<b>50</b>","2"]])+"<p>Route <b>1–2–5–7</b>, distance <b>50</b>. This matches the boxed values 52, 41, 28 and 50 on the deck's solution figure.</p>"}
   ],
   questions:[
+    {q:"A distance network consists of eleven nodes which are distributed as shown in the table. Find the shortest path from node 1 to node 11 using dynamic programming. (Past paper; solved above.)", marks:10, d:"moderate", priority:"high", source:"source"},
+    {q:"A distance network consists of eleven nodes distributed as shown in the figure. Find the shortest path from node 1 to node 11 and the corresponding distances. (Past paper Q.5(A); solved above.)", marks:10, d:"moderate", priority:"high", source:"source"},
     {q:"Find the shortest route in the given network from the origin to the destination using dynamic programming.", marks:8, d:"moderate", priority:"high", source:"predicted"}
   ]
 },
 {
-  id:"m4t3", m:"m4", type:"problem-solving", priority:"medium", los:[],
+  id:"m4t3", m:"m4", type:"problem-solving", priority:"high", los:[],
   title:"Cargo loading (knapsack) by dynamic programming",
   summary:"Stage = item type, state = capacity left, decision = how many units. Maximise the value that fits.",
   whatIs:"<p>A vessel of capacity W can carry several item types with weight w<sub>i</sub> and value v<sub>i</sub>. Choose the number of units of each, x<sub>i</sub>, to maximise total value without exceeding the capacity.</p>",
-  concept:M4_NOTE+mono("Maximise   Σ v_i x_i      subject to   Σ w_i x_i ≤ W,   x_i integer ≥ 0\nf_i(s) = max over x of { v_i x + f_(i+1)(s − w_i x) },   x = 0, 1, … , floor(s / w_i)")+
+  concept:M4_SRC+mono("Maximise   Σ v_i x_i      subject to   Σ w_i x_i ≤ W,   x_i integer ≥ 0\nf_j(s) = max over x_j of { v_j x_j + f_(j−1)(s − w_j x_j) },   x_j = 0, 1, … , floor(s / w_j),   f_0 = 0")+
+    "<p>The deck builds the tables <b>item by item</b>: stage 1 loads item 1 alone, stage 2 adds item 2 on top of the stage 1 results, and so on. s is the capacity available, and the largest number of units of item j that fits is W ÷ w<sub>j</sub>, rounded down.</p>"+
     "<p>For the version where each item is available <b>once only</b> (0–1 knapsack) restrict x to 0 or 1.</p>",
   needToKnow:[
     "State the recursion with stage, state and decision named.",
@@ -3906,15 +3998,17 @@ var M4_TOPICS = [
     "Forgetting the zero-load decision x = 0."
   ],
   examples:[
-    {id:"m4t3e1", title:"Three item types, capacity 5",
-     q:"Item 1: weight 2, value 65. Item 2: weight 3, value 80. Item 3: weight 1, value 30. Capacity 5. Load whole units to maximise value.",
-     steps:["Work item 3 first (last stage), then item 2, then item 1. Entry = best value for capacity s.",
-       tbl(["Capacity s","0","1","2","3","4","5"],[["f₃(s), item 3 only: x₃","0 (0)","30 (1)","60 (2)","90 (3)","120 (4)","150 (5)"],["f₂(s), items 3,2: x₂","0 (0)","30 (0)","60 (0)","90 (0)","120 (0)","150 (0)"],["f₁(s), items 3,2,1: x₁","0 (0)","30 (0)","65 (1)","95 (1)","130 (2)","<b>160</b> (2)"]]),
-       "Item 2 is never loaded: three tonnes of item 2 give 80, but three tonnes of item 3 give 90, and 2 + 1 tonnes of items 1 and 3 give 95.",
-       "At capacity 5: x₁ = 2 (value 130, 4 tonnes used), leaving capacity 1, which f₂(1) = 30 fills with one unit of item 3 (x₃ = 1).",
-       "Check: 2×65 + 0×80 + 1×30 = 160 and weight 2×2 + 1 = 5."],
-     answer:"<b>Load 2 units of item 1 and 1 unit of item 3: maximum value 160</b>, using exactly 5 tonnes.",
-     trap:"The table entry shows the decision in brackets. Read the decision at capacity 5 in the <i>last</i> row, subtract its weight, then read the row above."}
+    {id:"m4t3e1", title:"Deck problem — vessel of capacity 5, three items",
+     q:"A vessel is to be loaded with stocks of 3 items. The maximum cargo weight is 5. Item 1: weight 1, value 30. Item 2: weight 3, value 80. Item 3: weight 2, value 65. Develop the recursive equation and find the most valuable cargo load by dynamic programming.",
+     steps:["<b>Recursive equations</b> (three items, so three stages):"+mono("f1(s) = 30 x1\nf2(s) = 80 x2 + f1(s − 3 x2)\nf3(s) = 65 x3 + f2(s − 2 x3)"),
+       "<b>Stage 1, item 1 only.</b> Largest x₁ = 5 ÷ 1 = 5."+tbl(["s","x₁ = 0","1","2","3","4","5","f₁*(s)","x₁*"],[["0","0","","","","","","0","0"],["1","0","30","","","","","30","1"],["2","0","30","60","","","","60","2"],["3","0","30","60","90","","","90","3"],["4","0","30","60","90","120","","120","4"],["5","0","30","60","90","120","150","150","5"]]),
+       "<b>Stage 2, add item 2.</b> Largest x₂ = 5 ÷ 3 = 1. Cell = 80x₂ + f₁*(s − 3x₂)."+tbl(["s","x₂ = 0","x₂ = 1","f₂*(s)","x₂*"],[["0","0 + 0 = 0","","0","0"],["1","0 + 30 = 30","","30","0"],["2","0 + 60 = 60","","60","0"],["3","0 + 90 = 90","80 + 0 = 80","90","0"],["4","0 + 120 = 120","80 + 30 = 110","120","0"],["5","0 + 150 = 150","80 + 60 = 140","150","0"]])+"Every maximum comes from item 1, so item 2 is not loaded: x₂ = 0.",
+       "<b>Stage 3, add item 3.</b> Largest x₃ = 5 ÷ 2 = 2. Cell = 65x₃ + f₂*(s − 2x₃)."+tbl(["s","x₃ = 0","x₃ = 1","x₃ = 2","f₃*(s)","x₃*"],[["0","0 + 0 = 0","","","0","0"],["1","0 + 30 = 30","","","30","0"],["2","0 + 60 = 60","65 + 0 = 65","","65","1"],["3","0 + 90 = 90","65 + 30 = 95","","95","1"],["4","0 + 120 = 120","65 + 60 = 125","130 + 0 = 130","130","2"],["5","0 + 150 = 150","65 + 90 = 155","130 + 30 = 160","<b>160</b>","2"]]),
+       "<b>Trace back.</b> f₃*(5) = 160 at x₃ = 2, using 4 and leaving 1. x₂*(1) = 0. x₁*(1) = 1.",
+       "Check: 1×30 + 0×80 + 2×65 = 160, weight 1 + 0 + 4 = 5."],
+     answer:"<b>x₁ = 1, x₂ = 0, x₃ = 2; maximum value f₃* = 160.</b>",
+     why:"Item 2 has the lowest value per unit weight (26.7 against 30 and 32.5), so it never enters.",
+     trap:"The question says &lsquo;develop the recursive equation&rsquo;. Write the three equations before any table; they carry marks on their own."}
   ],
   practice:[
     {id:"m4t3p1", d:"moderate", marks:6, q:"Capacity 7. Item A: weight 2, value 20. Item B: weight 3, value 35. Item C: weight 4, value 50. Find the best whole-unit load.",
@@ -3922,6 +4016,7 @@ var M4_TOPICS = [
      a:"<p>Combinations that fit: C+B (weight 7, value <b>85</b>), C+A (6, 70), B+B+A (8: too heavy), A×3 (6, 60), B+A+A (7, 75). The best is <b>one unit of B and one of C, value 85</b>.</p><p>By tables: f(7) = 85 with x<sub>C</sub> = 1, remaining capacity 3 filled by one B.</p>"}
   ],
   questions:[
+    {q:"A vessel is to be loaded with stocks of 3 items; the maximum cargo weight is 5 and the items have weights 1, 3, 2 and values 30, 80, 65. Develop the recursive equation and find the most valuable cargo load by dynamic programming. (Deck problem; solved above.)", marks:8, d:"moderate", priority:"high", source:"source"},
     {q:"A vessel has capacity W. Determine the most valuable cargo using dynamic programming.", marks:8, d:"moderate", priority:"medium", source:"predicted"}
   ]
 },
@@ -3929,8 +4024,9 @@ var M4_TOPICS = [
   id:"m4t4", m:"m4", type:"problem-solving", priority:"medium", los:[],
   title:"Capital budgeting — allocating funds to projects",
   summary:"Stage = project, state = funds left, decision = amount allotted. Maximise total return from a fixed budget.",
-  whatIs:"<p>A budget has to be shared among several projects (or plants), each with a table of the return for every possible allotment. DP finds the split that maximises total return.</p>",
-  concept:M4_NOTE+mono("f_n(s) = max over x in 0..s of { R_n(x) + f_(n+1)(s − x) },   f_last+1 (s) = 0\nAnswer: f_1(total budget)"),
+  whatIs:"<p>A budget has to be shared among several projects (or plants), each with a table of the return for every possible allotment. DP finds the split that maximises total return. The deck's version shares <b>six crates among four stores</b>; it is the same problem with crates in place of money.</p>",
+  concept:M4_SRC+mono("f_n(s) = max over x in 0..s of { R_n(x) + f_(n+1)(s − x) },   f_last+1 (s) = 0\nAnswer: f_1(total budget)")+
+    "<h4>The deck's layout: combine two at a time</h4><p>Instead of one recursion table per project, the deck makes a <b>grid for two stores</b> (one along the top, one down the side), adds the two profits in every cell, and keeps the best total for each number of crates. It then does the same for the other pair and finally combines the two pairs. The result is the same as the recursion; the order of combining does not change the optimum.</p>",
   needToKnow:[
     "Set up stage, state and decision for a budget split.",
     "Build one table per project for every budget level.",
@@ -3962,7 +4058,17 @@ var M4_TOPICS = [
        "Project 1 needs only s = 5: f₁(5) = max{0 + 20, 5 + 16, 8 + 12, 9 + 9, 10 + 4, 10 + 0} = <b>21</b>, at x₁ = 1.",
        "Trace: x₁ = 1 leaves 4; x₂*(4) = 2 leaves 2; x₃ = 2."],
      answer:"<b>Allot 1, 2, 2 crore to projects 1, 2, 3 respectively: maximum return 21</b> (5 + 9 + 7).",
-     trap:"x₂*(5) = 2 as well, but you only need s = 4 for project 2 because project 1 took 1 crore. Read the table at the state you have left, not at the full budget."}
+     trap:"x₂*(5) = 2 as well, but you only need s = 4 for project 2 because project 1 took 1 crore. Read the table at the state you have left, not at the full budget."},
+    {id:"m4t4e2", title:"Deck problem — six crates of strawberries among four stores",
+     q:"The owner of four grocery stores has six crates of strawberries. Expected profit when a store gets 0 to 6 crates: Store 1: 0, 4, 6, 7, 7, 7, 7. Store 2: 0, 2, 4, 6, 8, 9, 10. Store 3: 0, 6, 8, 8, 8, 8, 8. Store 4: 0, 2, 3, 4, 4, 4, 4. Crates are not split; a store may get none. Find the allocation of maximum profit.",
+     steps:["<b>Formulation.</b> Four stores = four stages; x<sub>i</sub> = crates given to store i. Maximise Z = f₁(x₁) + f₂(x₂) + f₃(x₃) + f₄(x₄) subject to x₁ + x₂ + x₃ + x₄ = 6, all x<sub>i</sub> ≥ 0.",
+       "<b>Stores 3 and 4 together.</b> For each number of crates take the best split, for example 3 crates: 8 + 2 = 10 (two to store 3, one to store 4)."+tbl(["Crates","0","1","2","3","4","5","6"],[["Store 3, store 4","0, 0","1, 0","2, 0 or 1, 1","2, 1","2, 2","2, 3","3, 3 or 2, 4"],["Best profit","0","6","8","10","11","12","12"]]),
+       "<b>Stores 1 and 2 together.</b>"+tbl(["Crates","0","1","2","3","4","5","6"],[["Store 1, store 2","0, 0","1, 0","2, 0 or 1, 1","2, 1 or 1, 2","2, 2 or 1, 3","2, 3 or 1, 4","2, 4"],["Best profit","0","4","6","8","10","12","14"]]),
+       "<b>All four.</b> Give k crates to stores 1 and 2 and 6 − k to stores 3 and 4:"+tbl(["k for stores 1, 2","0","1","2","3","4","5","6"],[["Profit","0 + 12 = 12","4 + 12 = 16","6 + 11 = 17","8 + 10 = <b>18</b>","10 + 8 = <b>18</b>","12 + 6 = <b>18</b>","14 + 0 = 14"]]),
+       "Read the splits back: k = 4 gives stores 1, 2 = (2, 2) or (1, 3) with stores 3, 4 = (2, 0) or (1, 1). k = 3 gives (2, 1) or (1, 2) with (2, 1). k = 5 gives (2, 3) or (1, 4) with (1, 0)."],
+     answer:"<b>Maximum profit Rs 18.</b> The deck lists six allocations (stores 1, 2, 3, 4): 2, 2, 2, 0 · 1, 3, 2, 0 · 2, 1, 2, 1 · 1, 2, 2, 1 · 2, 3, 1, 0 · 1, 4, 1, 0. Two more also give 18: 2, 2, 1, 1 and 1, 3, 1, 1.",
+     why:"The deck's note: combining zones in another order (1 with 3, then 2 with 4; or 1 and 2, then 3, then 4) gives the same optimal outcome.",
+     trap:"The deck's table prints the profit of store 1 with 6 crates as 1; it is read here as 7, in line with the row above. It cannot change the answer, since store 1 never gets more than 2 crates in any optimal plan."}
   ],
   practice:[
     {id:"m4t4p1", d:"moderate", marks:6, q:"Budget 4 units. Returns for allotments 0 to 4: Project 1: 0, 6, 9, 11, 12. Project 2: 0, 5, 10, 12, 13. Project 3: 0, 4, 8, 12, 14. Find the best allocation.",
@@ -3970,6 +4076,7 @@ var M4_TOPICS = [
      a:tbl(["s","0","1","2","3","4"],[["f₃(s)","0","4","8","12","14"],["f₂(s)","0","5","10","14","18"],["x₂*","0","1","2","2","2"],["f₁(s)","0","6","11","16","<b>20</b>"],["x₁*","0","1","1","1","1"]])+"<p>Trace: x₁ = 1 (return 6), leaves 3; x₂*(3) = 2 (return 10), leaves 1; x₃ = 1 (return 4). <b>Allocation 1, 2, 1; maximum return 20.</b></p>"}
   ],
   questions:[
+    {q:"The owner of a chain of four grocery stores has purchased six crates of fresh strawberries; the expected profit at each store for each number of crates is tabulated. Find the allocation of crates that maximises total profit by dynamic programming. (Deck problem; solved above.)", marks:8, d:"moderate", priority:"medium", source:"source"},
     {q:"A company has Rs 5 crore to distribute among three plants. Find the allocation that maximises the total return using dynamic programming.", marks:8, d:"moderate", priority:"medium", source:"predicted"}
   ]
 },
@@ -4815,8 +4922,9 @@ REVIEW.m3 = [
 REVIEW.m4 = [
  {t:"The one idea", b:"Cut the problem into <b>stages</b>, define a <b>state</b> at each stage, choose a <b>decision</b>, and solve from the last stage back using f<sub>n</sub>(s) = best of { return + f<sub>n+1</sub>(next state) }."},
  {t:"Principle of optimality", b:"Whatever the initial state and decision, the remaining decisions must be optimal for the state that results. It is why you may solve the last stage first and never revisit it."},
- {t:"Stagecoach", b:"Table per stage: arc + f(next) for each possible next node; keep the minimum and the node. Trace forward from the start. <b>List every tied route.</b> Greedy cheapest-arc fails (13 against 11)."},
- {t:"Cargo loading", b:"Stage = item, state = capacity left, decision = units. f<sub>i</sub>(s) = max{ v<sub>i</sub>x + f<sub>i+1</sub>(s &minus; w<sub>i</sub>x) }. Tables run over capacity 0 to W."},
+ {t:"Stagecoach", b:"Table per stage: arc + f(next) for each possible next node; keep the minimum and the node. Trace forward from the start. <b>List every tied route.</b> Greedy cheapest-arc fails (13 against 11). <b>Past papers</b>: 11-node network, node 1 to node 11, 10 marks; answers on this site are 19 (path 1–4–7–9–11) and 13 (path 1–5–8–10–11)."},
+ {t:"Deck theory", b:"Six terms: stage, state variables, decision variables, decision criterion, optimal policy, transformation. Notation s<sub>n</sub>, d<sub>n</sub>, r<sub>n</sub>, s<sub>n&minus;1</sub> = t<sub>n</sub>(s<sub>n</sub>, d<sub>n</sub>), f<sub>n</sub>. Four steps: stages, solve the last stage, work backward, combine. DP against LP: no single algorithm; multistage, not single-stage."},
+ {t:"Cargo loading", b:"Stage = item, state = capacity left, decision = units. f<sub>j</sub>(s) = max{ v<sub>j</sub>x + f<sub>j&minus;1</sub>(s &minus; w<sub>j</sub>x) }. One table per item over capacity 0 to W. Deck problem: x = 1, 0, 2, value 160."},
  {t:"Capital budgeting", b:"Stage = project, state = funds left, decision = allotment x &le; s. f<sub>n</sub>(s) = max{ R<sub>n</sub>(x) + f<sub>n+1</sub>(s &minus; x) }. Check the allotments sum to the budget."},
  {t:"Reliability", b:"Series system, parallel copies. Component reliability 1 &minus; (1 &minus; r)<sup>k</sup>. The recursion <b>multiplies</b>; start the last stage from 1. Every component needs at least one copy."},
  {t:"Employment smoothening", b:"Forward recursion. Workforce x<sub>i</sub> &ge; b<sub>i</sub>. f<sub>i</sub>(x) = excess cost + min{ hiring cost + f<sub>i&minus;1</sub>(x<sub>i&minus;1</sub>) }. Firing free unless stated. Start from the initial workforce."}

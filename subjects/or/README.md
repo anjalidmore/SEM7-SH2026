@@ -64,7 +64,7 @@ Dashboard | Plan | Module 1 | Module 2 | Module 3 | Module 4 | Module 5 | Module
 | **Module 1** | Introduction to OR & Linear Programming. Sub-tabs: Numericals · Theory · Quick Review. |
 | **Module 2** | Queuing Models — 5 topics, 19 markable questions, 23 quiz questions. |
 | **Module 3** | Simulation — Monte Carlo, random-number intervals, queue simulation. 4 topics. Sub-tabs: Numericals · Theory · Quick Review. |
-| **Module 4** | Dynamic Programming — characteristics, stagecoach, cargo loading, capital budgeting, reliability, employment smoothening. 6 topics. **No lecture material exists for this module**: written from the standard textbook method and flagged on every topic. |
+| **Module 4** | Dynamic Programming — characteristics, stagecoach, cargo loading, capital budgeting, reliability, employment smoothening. 6 topics. Built from the deck `4.01` (filed 14 Nov 2026): terminology, shortest route with two past paper questions solved, cargo loading and crate allocation. Reliability and employment smoothening are not in the deck; those two pages follow the textbook method and say so. |
 | **Module 5** | Game Theory. Sub-tabs: Numericals · Theory · Quick Review. |
 | **Module 6** | Inventory Models — costs and terminology, ABC/VED/FSN, Models 1–4 (EOQ, finite replenishment, shortages, price breaks), reorder level, probabilistic models. 8 topics. Built from the 6.01 deck and the handwritten problems 6.02–6.10; the probabilistic topic is textbook-only. |
 | **Recognition** | The read → classify → first move habit, four decision trees, and a clue → topic lookup per module. The index, not the content. |

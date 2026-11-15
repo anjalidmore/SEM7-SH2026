@@ -12,8 +12,8 @@ Resources are filed as **subject → division → module**: `_resources/nlp/<Com
 | Module 1 - Introduction to NLP | 0 | 10 |
 | Module 2 - Text Processing & Word-Level Analysis | 0 | 3 |
 | Module 3 - Syntax Analysis & Sequence Modeling | 0 | 1 |
-| Module 4 - Semantic Analysis & Word Representations | 0 | 4 |
-| Module 5 - Discourse & Advanced NLP | 0 | 5 |
+| Module 4 - Semantic Analysis & Word Representations | 0 | 5 |
+| Module 5 - Discourse & Advanced NLP | 0 | 6 |
 | Module 6 - Applications & Ethical Perspectives | 0 | 2 |
 | `_Books` | 0 | 4 |
 | `_CIA` | 0 | 1 |

@@ -81,6 +81,7 @@ _No LO data in the site for this module yet._
 | Comp B | `4.02 Chapter 4 - practice problems.pdf` | module LOs — |
 | Comp B | `4.03 One-Hot vector problems.pdf` | module LOs — |
 | Comp B | `4.04 Semantic relation problem.pdf` | module LOs — |
+| Comp B | `4.05 Lesk algorithm - solved problem (light).docx` | LO 4.3 |
 
 ### Module 5 - Discourse & Advanced NLP
 | Division | File | LOs served |
@@ -90,6 +91,7 @@ _No LO data in the site for this module yet._
 | Comp B | `5.03 Hobbs algorithm - problems.pdf` | module LOs — |
 | Comp B | `5.04 Centering algorithm - problems.pdf` | module LOs — |
 | Comp B | `5.05 Chapter 5 - practice problems.pdf` | module LOs — |
+| Comp B | `5.06 Precision, Recall, F1 - solved problem (spam systems A and B).docx` | LO 5.1 |
 
 ### Module 6 - Applications & Ethical Perspectives
 | Division | File | LOs served |

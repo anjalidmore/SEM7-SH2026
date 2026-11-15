@@ -5,7 +5,7 @@ study order within each module.
 
 > Since 12 Nov 2026 the files live at `_resources/or/<Comp A|Comp B>/<Module folder>/`. Most decks are
 > Comp A; the handwritten notes (N1-N3) and the past IA paper (1.18) are Comp B. Modules 3 and 6 are now
-> numbered (3.01, 6.01-6.10). Module 4 (Dynamic Programming) has no material; see `_ORGANISATION.md`.
+> numbered (3.01, 6.01-6.10). Module 4 (Dynamic Programming) has one deck, `4.01` in Comp B (filed 14 Nov 2026); see `_ORGANISATION.md`.
 
 ## Learning outcomes
 

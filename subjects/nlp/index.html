@@ -1876,7 +1876,7 @@ const LOS = [
  {id:"LO 4.3", m:"m4", pi:"2.4.1", verb:"Implement",
   text:"Implement semantic and word-sense models using appropriate mathematical formulations.",
   form:"Run Lesk's overlap, Naive Bayes WSD or Skip-gram pair generation step by step.",
-  topics:["4.2"], ids:["m4n4","m4n5","m4n6"]},
+  topics:["4.2"], ids:["m4n4","s_m4_lesk","m4n5","m4n6"]},
  {id:"LO 4.4", m:"m4", pi:"2.4.3", verb:"Analyze limitations",
   text:"Analyze the limitations of semantic models used in NLP.",
   form:"Say what one-hot, Lesk, Naive Bayes and static embeddings cannot do.",
@@ -1900,7 +1900,7 @@ const LOS = [
  {id:"LO 5.1", m:"m5", pi:"1.1.1", verb:"Apply (maths/stats)",
   text:"Apply mathematical techniques to analyze and evaluate discourse and coreference resolution methods.",
   form:"Score a system with precision, recall, F1, BLEU or ROUGE, or evaluate a resolution.",
-  topics:["5.4"], ids:["m5n3","m5n4","m5n5"]},
+  topics:["5.4"], ids:["m5n3","m5n4","m5n5","s_m5_prf"]},
  {id:"LO 5.2", m:"m5", pi:"1.4.1", verb:"Apply (CS principles)",
   text:"Apply theoretical principles of computer science and linguistic knowledge to analyze discourse structure and coherence.",
   form:"Separate cohesion from coherence; classify an utterance as implicature, presupposition or speech act.",
@@ -3394,7 +3394,7 @@ DATA.quiz.m3_challenge = [
 /* =========================================================
    MODULE 4 — Semantic Analysis & Word Representations
    Sources: 4.01 Chapter 4 deck, 4.02 practice problems, 4.03 one-hot problems,
-   4.04 semantic-relation problem, syllabus CEPEC7032 (full). Lesk, Naive Bayes
+   4.04 semantic-relation problem, 4.05 Lesk solved problem ('light'), syllabus CEPEC7032 (full). Lesk, Naive Bayes
    and decision-list slides in the deck are images: the worked examples below are
    rebuilt from the algorithm, with the glosses stated in the question.
    ========================================================= */
@@ -3686,6 +3686,24 @@ DATA.solved.m4 = [
   {id:"sp_m4rel2", difficulty:"moderate", kind:"scenario", src:"4.04",
    q:"'The school hired more teachers' and 'Heavy snow caused the roof of the school to collapse.' What relation holds between the two senses of 'school', and which test would you cite?",
    answer:"Polysemy: organisation vs building, a systematic pattern that also holds for bank, university, supermarket. The senses are related, and a zeugma sentence mixing them sounds strained rather than punning."}
+ ]
+},
+{
+ id:"s_m4_lesk", title:"Lesk on a given sentence: write every sense, count the overlap", topic:"4.2", marks:5,
+ lo:["LO 4.3"], src:"4.05 Lesk algorithm - solved problem",
+ idea:"The exam gives one sentence and one ambiguous word. You supply the senses yourself: write a dictionary gloss and an example for each, list the context words, and count how many context words each sense shares.",
+ method:"Six steps, in the order of the model answer:\n  1. Name the ambiguous word and say how many senses it has.\n  2. For EACH sense write the dictionary gloss and one example sentence.\n  3. List the context words of the given sentence (drop stop words and the target word).\n  4. Draw the overlap table: Sense | Gloss words | Overlapping context words | Overlap.\n  5. Compare the overlaps; the highest wins.\n  6. Conclude in one sentence, naming the context words that decided it.",
+ classQs:[
+  {q:"Demonstrate how Word Sense Disambiguation is used to determine the correct meaning of the ambiguous word 'light' in the sentence 'The room was dark, so she switched on the light to read her book', by comparing dictionary definitions (glosses) with the surrounding context words.",
+   steps:[
+    "Step 1 — ambiguous word: light. It has two possible senses.",
+    "Step 2 — senses and glosses:\nSense 1, Light (illumination): 'The natural or artificial source of brightness that makes things visible.' Example: 'She turned on the light in the room.'\nSense 2, Light (not heavy): 'Having little weight; easy to lift or carry.' Example: 'This bag is very light.'",
+    "Step 3 — context words of the sentence: [she, room, dark, switched, read, book]",
+    "Step 4 — overlap table:\nSense                 | Gloss words                              | Overlapping context words | Overlap\nLight (illumination)  | brightness, visible, room, dark, source  | room, dark                | 2\nLight (not heavy)     | weight, carry, lift, heavy, easy         | none                      | 0",
+    "Step 5 — overlap for sense 1 = 2, for sense 2 = 0. Sense 1 has the highest overlap, so it is selected.",
+    "Step 6 — conclusion: 'light' here means illumination or brightness, because the context words 'room' and 'dark' belong with the illumination sense."],
+   answer:"The correct sense of 'light' is Light (illumination): overlap 2 against 0.",
+   watch:"In the model answer the gloss-word list for sense 1 contains 'room' and 'dark'. 'room' comes from the example sentence, and 'dark' is in neither the gloss nor the example as written. When you write your own gloss, put the words you intend to match into it or into the example (for instance 'brightness that lets you see in a dark room'), so the overlap you count can be seen on the page."}
  ]
 }
 ];
@@ -4101,6 +4119,25 @@ DATA.solved.m5 = [
   {id:"sp_m5prag3", difficulty:"moderate", kind:"scenario", src:"5.01",
    q:"'Did everyone pass?' — 'Some students passed.' What is implied and why is it not an entailment?",
    answer:"Implied: not everyone passed (quantity implicature). Not an entailment, because 'some' does not logically exclude 'all': the speaker can cancel it ('Some passed; in fact all did') without contradiction."}
+ ]
+},
+{
+ id:"s_m5_prf", title:"Compare two systems by precision, recall and F1", topic:"5.4", marks:5,
+ lo:["LO 5.1"], src:"5.06 Precision, Recall, F1 - solved problem",
+ idea:"Two systems, three counts each (TP, FP, FN). Work out precision, recall and F1 for one system, then the other, and let F1 decide which is better.",
+ method:"Layout of the model answer:\n  1. Copy the given counts into a table: metric | System A | System B.\n  2. System A: write the formula, substitute, box the percentage. Precision, then recall, then F1.\n  3. System B: the same three.\n  4. Conclusion: state both F1 scores, name the better system, and say in one line why (balance of precision and recall).",
+ classQs:[
+  {q:"An email spam detection system is evaluated using two models. System A: TP = 88, FP = 12, FN = 12. System B: TP = 84, FP = 8, FN = 16. Calculate the precision, recall and F1-score of both systems and identify the better-performing system based on the F1-score.",
+   steps:[
+    "System A — precision = TP ÷ (TP + FP) = 88 ÷ (88 + 12) = 88/100 = 88%",
+    "System A — recall = TP ÷ (TP + FN) = 88 ÷ (88 + 12) = 88/100 = 88%",
+    "System A — F1 = 2 × P × R ÷ (P + R) = 2 × (0.88 × 0.88) ÷ (0.88 + 0.88) = 88%",
+    "System B — precision = 84 ÷ (84 + 8) = 84/92 = 91.30%",
+    "System B — recall = 84 ÷ (84 + 16) = 84/100 = 84%",
+    "System B — F1 = 2 × (0.9130 × 0.84) ÷ (0.9130 + 0.84) = 1.5338 ÷ 1.7530 = 87.50%",
+    "Compare: F1 of A = 88%, F1 of B = 87.50%."],
+   answer:"System A is the better-performing system on F1 (88% against 87.50%). System B has the higher precision (91.30%), but System A has the higher recall (88% against 84%) and the better balance between precision and recall.",
+   watch:"The question says 'based on the F1-score', so do not pick B for its higher precision. Quick check with counts: F1 = 2TP ÷ (2TP + FP + FN) gives A = 176/200 = 0.88 and B = 168/192 = 0.875."}
  ]
 }
 ];
@@ -5423,8 +5460,8 @@ DATA.notes.m3 = [
     q:"For the training corpus:\n<s> Martin Justin can watch Will <E>\n<s> Spot will watch Martin <E>\n<s> Will Justin spot Martin <E>\n<s> Martin will Pat spot <E>\nCalculate the most probable tag sequence using the Viterbi algorithm and the path probability for the test sentence 'Justin will spot Will'. (N=Noun, M=modal verb, V=verb)",
     answer:"Step 1 — assign POS tags to the training corpus:\n  Martin/N Justin/N can/M watch/V Will/N\n  Spot/N   will/M   watch/V Martin/N\n  Will/M   Justin/N spot/V  Martin/N\n  Martin/N will/M   Pat/V   spot/N\nTag totals: N = 9, M = 4, V = 4\n\nStep 2 — EMISSION matrix P(word|tag):\n           N(9)   M(4)   V(4)\n  Martin   4/9     0      0\n  Justin   2/9     0      0\n  Will     1/9    3/4     0\n  Spot     2/9     0     1/4\n  can       0     1/4     0\n  watch     0      0     2/4\n  pat       0      0     1/4\n\nStep 3 — TRANSITION matrix P(tag|prev tag):\n         N     M     V    <E>\n  <s>   3/4   1/4    0     0\n  N     1/9   1/9   1/9   4/9\n  M     1/4    0    3/4    0\n  V      1     0     0     0\n\nStep 4 — state graph. Candidate tags per word:\n  <s>  Justin  will  spot  Will  <E>\n         N       N     V     N\n                 M     N     M\n  → 1 × 2 × 2 × 2 = 8 possible paths.\n\nAt each node compute (previous path prob × transition × emission) and keep only the greater-value incoming path — that pruning is what makes it Viterbi rather than enumerating all 8.\n\ne.g. start: P(N|<s>) × P(Justin|N) = 3/4 × 2/9 = 0.166\n\n∴ Best path: <s> Justin[N] will[M] spot[V] Will[N] <E>\n   Path probability = 0.000374\n\nThe MSE asks you to SHOW THE STATE GRAPH — draw the trellis and mark which arcs survive."},
    {id:"nb-m3-vit2", difficulty:"moderate",
-    q:"Given the HMM transitions <s>→JJ 0.7, JJ→NN 0.8, NN→JJ 0.95, JJ→NN 0.8, NN→</s> 0.4 and emissions JJ→hot 0.4, NN→lead 0.55, JJ→cold 0.45, NN→feet 0.42, write the path probability for the observation sequence 'hot lead cold feet'.",
-    answer:"Path: S →0.7 JJ →0.8 NN →0.95 JJ →0.8 NN →0.4 </s>\nTags: hot/JJ  lead/NN  cold/JJ  feet/NN\n\nThe probability alternates transition × emission along the path:\n\nP = 0.7 × 0.4 × 0.8 × 0.55 × 0.95 × 0.45 × 0.8 × 0.42 × 0.4\n  (transition to JJ × emit hot × transition to NN × emit lead\n   × transition to JJ × emit cold × transition to NN × emit feet\n   × transition to </s>)\n\n= 0.7 × 0.4 = 0.28\n× 0.8 = 0.224 ; × 0.55 = 0.1232\n× 0.95 = 0.11704 ; × 0.45 = 0.052668\n× 0.8 = 0.0421344 ; × 0.42 = 0.01769645\n× 0.4 ≈ 0.00708\n\nP ≈ 7.08 × 10⁻³\n\n(The notebook left this unevaluated — the marked point is the alternating transition × emission structure, so write the factors in that order.)"}
+    q:"Given the HMM transitions <s>→JJ 0.7, JJ→NN 0.8, NN→JJ 0.45, JJ→NN 0.8, NN→</s> 0.4 and emissions JJ→hot 0.4, NN→lead 0.55, JJ→cold 0.45, NN→feet 0.42, write the path probability for the observation sequence 'hot lead cold feet'.",
+    answer:"Path: S →0.7 JJ →0.8 NN →0.45 JJ →0.8 NN →0.4 </s>\nTags: hot/JJ  lead/NN  cold/JJ  feet/NN\n\nThe probability alternates transition × emission along the path:\n\nP = 0.7 × 0.4 × 0.8 × 0.55 × 0.45 × 0.45 × 0.8 × 0.42 × 0.4\n  (transition to JJ × emit hot × transition to NN × emit lead\n   × transition to JJ × emit cold × transition to NN × emit feet\n   × transition to </s>)\n\n= 0.7 × 0.4 = 0.28\n× 0.8 = 0.224 ; × 0.55 = 0.1232\n× 0.45 = 0.05544 ; × 0.45 = 0.024948\n× 0.8 = 0.0199584 ; × 0.42 = 0.00838253\n× 0.4 = 0.0033530\n\nP ≈ 3.353 × 10⁻³ (0.003353)\n\nCheck: NN's outgoing transitions are 0.45 (→JJ) + 0.15 (→NN) + 0.4 (→</s>) = 1.0.\n\n(The notebook left this unevaluated — the marked point is the alternating transition × emission structure, so write the factors in that order.)"}
   ]);
 
   addTo("m3","m3n4",[
@@ -5972,14 +6009,14 @@ const EXAM_ASKED = {
   m2t13:"Inflectional morpheme, with detailed grammatical explanation",
   m3t16:"PCFG", m3t17:"PCFG", m3n4:"PCFG",
   m3t5:"HMM training: diagram given, emission probabilities given", m3t6:"HMM training", m3t7:"HMM / Viterbi", m3n1:"HMM training: diagram given, emission probabilities given", m3n2:"HMM / Viterbi",
-  m4t7:"Lesk: a sentence is given, write every definition of the ambiguous word", m4t9:"Lesk algorithm: pseudocode and problem", m4n4:"Lesk algorithm: pseudocode and problem",
+  m4t7:"Lesk: a sentence is given, write every definition of the ambiguous word", m4t9:"Lesk algorithm: pseudocode and problem", m4n4:"Lesk algorithm: pseudocode and problem", s_m4_lesk:"Lesk algorithm: pseudocode and problem",
   m4t13:"One-hot vector sum", m4n1:"One-hot vector sum and count vectorization",
   m4t3:"Semantic relations: paragraph given, explain every possible word with justification", m4t4:"Semantic relations: paragraph given, justify each word",
   m4t16:"Cosine similarity and cosine distance", m4n3:"Cosine similarity and cosine distance",
   m5t4:"Reference identification", m5t5:"Reference identification; anaphora with justification", m5t6:"Anaphora with justification",
   m5t7:"Hobbs algorithm: explanation and problem", m5n1:"Hobbs algorithm: explanation and problem",
   m5t8:"Centering algorithm problem", m5n2:"Centering algorithm problem",
-  m5t16:"Precision, recall and F1 sum", m5n5:"Precision, recall and F1 sum",
+  m5t16:"Precision, recall and F1 sum", m5n5:"Precision, recall and F1 sum", s_m5_prf:"Precision, recall and F1 sum",
   m6t3:"Text summarization: explain the steps, 10 marks", m6t4:"Text summarization: explain the steps, 10 marks",
   m6t13:"RAG: the 5 stages; application given, find the faulty stage and suggest improvements", m6n3:"RAG: the 5 stages and where an application goes wrong",
   m6t14:"Application given: identify sources of error and suggest improvements, 10 marks"
