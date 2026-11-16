@@ -673,6 +673,7 @@ ol.s7-steps > li:not(:last-child)::after{content:""; position:absolute; left:13p
 .s7-qbar{display:inline-block; width:56px; height:6px; border-radius:999px; background:var(--track); overflow:hidden}
 .s7-qbar i{display:block; height:100%; background:var(--accent-ui)}
 .pill.s7-pred{border-style:dashed}
+.pill.asked{border-color:var(--accent); background:var(--accent); color:var(--on-accent); font-weight:700}
 
 /* ---------- 7 · responsive / print ---------- */
 @media (max-width:760px){

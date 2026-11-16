@@ -15,6 +15,15 @@ behaves identically opened from disk (`file://`) and published on GitHub Pages.
 
 ---
 
+## ESE important questions list (added 16 Nov 2026)
+
+`OR_Important questions.docx` lists 29 questions (25 distinct) for the End Sem, across all six
+modules. All 25 are solved on the site. Nine already were; sixteen were added. Each one carries an
+**Important** tag, sits first among its topic's worked examples or practice questions, and heads
+the topic's "Likely exam questions". Topic cards show how many listed questions they hold, and the
+**Plan tab opens with the whole list**, grouped by marks, each row linking to its solution.
+The data is in `index.html` section `10b` (`IMP_ADD` for the new items, `IMPQ` for the list).
+
 ## Read this first
 
 **Open `index.html` → the Plan tab.**

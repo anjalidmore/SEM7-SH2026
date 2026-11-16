@@ -1036,7 +1036,7 @@
   function practiceCard(p, mark){
     var k = "pr-" + p.id, kh = "hint-" + p.id;
     return '<article class="card s7-pr' + (p.app ? " hi" : "") + '" id="' + esc(p.anchor || p.id) + '">' +
-      '<div class="s7-ex-tags">' + (p.app ? '<span class="pill high">Application</span>' : "") +
+      '<div class="s7-ex-tags">' + (p.tags || "") + (p.app ? '<span class="pill high">Application</span>' : "") +
       (p.d ? '<span class="pill ' + esc(String(p.d).toLowerCase()) + '">' + esc(p.d) + "</span>" : "") +
       (p.marks ? '<span class="pill">' + esc(p.marks) + " marks</span><span class=\"s7-min\">" + minutes(p.marks) + "</span>" : "") + "</div>" +
       '<div class="s7-q">' + p.q + "</div>" +
@@ -1047,7 +1047,7 @@
 
   /* o: {head (for UI.head), key:{t, b}, concept, can:[...], extra, answer:[{label, marks, body}],
          mistakes:[...], examples:[...], practice:[...], recog:{clues, wording, first, method, trap},
-         questions:[{q, marks, source, d}], mark(kind, id) → {done, attrs}, foot, pager} */
+         questions:[{q, marks, source, d, imp}], mark(kind, id) → {done, attrs}, foot, pager} */
   UI.topic = function(o){
     var secs = [], h = "";
     function sec(id, title, body, n){
@@ -1132,6 +1132,7 @@
         var n = marksOf(q.marks);
         return '<div class="s7-qrow"><div class="s7-qt">' + q.q + "</div>" +
           '<div class="s7-qm">' + (n != null ? "<b>" + esc(q.marks) + " marks</b><span>" + minutes(n) + "</span>" : "") +
+          (q.imp ? '<span class="pill asked">Important</span>' : "") +
           (q.source ? '<span class="pill' + (q.source === "source" ? "" : " s7-pred") + '">' +
             (q.source === "source" ? "From source" : "Likely pattern") + "</span>" : "") + "</div></div>";
       }).join("") + "</div>", qs.length);

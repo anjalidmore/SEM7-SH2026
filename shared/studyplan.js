@@ -132,22 +132,22 @@
     or: [
       { n:1, hrs:[15,17], los:0, d:3, pre:true,  needs:[],
         sig:[[1.10,"Past internal paper and the important-questions list are on LP, transportation and games"]],
-        first:["Simplex and Big M","Duality","Transportation: initial solution and MODI","Assignment (Hungarian)","The 2-mark theory bank"] },
+        first:["Important list: advantages of OR, objective function vs constraint, feasible vs optimal (2 marks each)","Simplex and Big M","Duality","Transportation: initial solution and MODI","Assignment (Hungarian)","The 2-mark theory bank"] },
       { n:2, hrs:[4,6],   los:0, d:3, pre:true,  needs:[],
         sig:[[1.10,"Your notes ranked highest cover it"]],
-        first:["Single-server Ls, Lq, Ws, Wq","P(n) and design problems","Kendall's notation"] },
+        first:["Important list: idle time and jobs ahead (T.V. repairman, ATM); Ls, Lq, Ws, Wq (cashier)","Single-server Ls, Lq, Ws, Wq","P(n) and design problems","Kendall's notation"] },
       { n:3, hrs:[6,8],   los:0, d:2, pre:false, needs:[],
         sig:[],
-        first:["Monte Carlo simulation table","Simulation procedure and methodology","Advantages and limitations"] },
+        first:["Important list: demand simulation with stock situation (six listed problems, 5 and 10 marks)","Monte Carlo simulation table","Simulation procedure and methodology","Advantages and limitations"] },
       { n:4, hrs:[6,8],   los:0, d:4, pre:false, needs:[],
         sig:[[1.10,"The deck opens with two past paper questions on shortest path by dynamic programming, 10 marks each"]],
-        first:["Asked in past papers: shortest path, node 1 to node 11 (10 marks)","Cargo loading (deck problem)","Allocation / capital budgeting (deck problem)","Terminology, four steps, DP against LP","Reliability and employment smoothening (not in the deck)"] },
+        first:["Asked in past papers: shortest path, node 1 to node 11 (10 marks)","Important list: cargo loading, vessel of capacity 5 (10 marks)","Important list: six crates among four stores (10 marks)","Terminology, four steps, DP against LP","Reliability and employment smoothening (not in the deck)"] },
       { n:5, hrs:[4,6],   los:0, d:2, pre:true,  needs:[],
         sig:[[1.10,"Past internal paper asks saddle point and value of the game"]],
-        first:["Saddle point and value of the game","Dominance","2x2 mixed strategy"] },
+        first:["Important list: six 2-mark games (saddle point, dominance, 2x2, is the game fair)","Saddle point and value of the game","Dominance","2x2 mixed strategy"] },
       { n:6, hrs:[4,6],   los:0, d:3, pre:false, needs:[],
         sig:[],
-        first:["Classical EOQ","EOQ with shortages","EOQ with price breaks","Probabilistic EOQ"] }
+        first:["Important list: classical EOQ (three problems), reasons for carrying inventory, terminology","EOQ with shortages","EOQ with price breaks","Probabilistic EOQ"] }
     ],
     dl: [
       { n:1, hrs:[4,6],   los:3, d:2, pre:true,  needs:[],

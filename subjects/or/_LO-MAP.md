@@ -47,6 +47,23 @@ full probability set (Pb, P0, Pn, P(n≥k), P(n>k), P(queue non-empty)). N3 also
 | **1.18 Past IA paper with solutions** | **LO1, LO3 + LO7, LO8 — cross-module** |
 | **1.19 Important questions list** | **LO1, LO3 + LO7 — cross-module** |
 
+## ESE important questions list (all modules)
+
+`Comp B/_Important Questions/0.03`, filed 16 Nov 2026. Where each question is solved on the site:
+
+| Questions | Module | Topic page |
+|---|---|---|
+| Advantages of OR (listed 3 times), objective function vs constraint (2 times), feasible vs optimal | 1 | Question 1: the 2-mark question bank |
+| T.V. repairman, departmental store cashier, ATM | 2 | Single-server performance measures |
+| Sweet Delight, moped factory, Iyengar Bakery, dairy, Sweet Treats, Lajwaab Bakery | 3 | Monte Carlo simulation: worked procedure |
+| Cargo loading (vessel of capacity 5) | 4 | Cargo loading by dynamic programming |
+| Six crates of strawberries, four stores | 4 | Capital budgeting / allocation |
+| Two saddle-point games | 5 | Maximin-minimax and the saddle point |
+| 3x3 and 3x2 games by dominance | 5 | Reducing an m x n game and solving the 2x2 |
+| Two 2x2 games (one asks "is the game fair?") | 5 | Mixed strategy for 2x2 games |
+| EOQ: 8000 units (listed 2 times), ABC Corporation, 3600 units | 6 | Model 1: classical EOQ |
+| Reasons for carrying inventory, basic terminology | 6 | Inventory: types, costs and terminology |
+
 ## Module 2
 
 | File | LOs |
