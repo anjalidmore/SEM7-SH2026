@@ -1161,6 +1161,39 @@ topics:[
  "Forgetting to say h(G₂) = 0, which is why f(G₂) = g(G₂).",
  "Proving it for consistency instead of admissibility — the syllabus asks for the admissible version."]},
 
+{id:"m2t13", title:"Self-Learning: Bidirectional Search, RBFS and Uses of A*", type:"theory",
+ priority:"low", core:false, marks:[5], src:"Syllabus Module 02 self-learning topics; Russell & Norvig §3.4.6, §3.5.3 (not a lecture deck)",
+ tags:["bidirectional","rbfs","a*","self-learning","search"],
+ learn:`<div class="note warn"><b>Not from your lecture decks.</b> No uploaded deck covers this syllabus item. These notes are written from standard references so the item is not left blank. Prefer your teacher's wording if it is given later.</div>
+<h4>1. Bidirectional search</h4>
+<p>Run two searches at once: <b>forward from the start</b> and <b>backward from the goal</b>, and stop when the two frontiers meet.</p>
+<ul class="list"><li><b>Why:</b> two searches of depth d/2 cost b<sup>d/2</sup> + b<sup>d/2</sup>, far less than b<sup>d</sup>. With b = 10 and d = 6: 2,000 nodes instead of 1,000,000.</li>
+<li><b>Time and space:</b> O(b<sup>d/2</sup>). At least one frontier must be kept in memory to test for the meeting.</li>
+<li><b>Complete and optimal</b> when both directions use breadth-first search with equal step costs.</li>
+<li><b>Needs:</b> an explicitly known goal state and actions that can be reversed (predecessors can be computed).</li></ul>
+<h4>2. Recursive Best-First Search (RBFS)</h4>
+<p>RBFS gives best-first behaviour in <b>linear space</b>. It explores the best path like depth-first search, but remembers the f-value of the <b>best alternative path</b> (the f-limit).</p>
+<ol class="list"><li>Expand the best child while its f-value is within the f-limit.</li>
+<li>If the best child's f-value exceeds the limit, go back, and <b>replace the node's f-value with its best child's f-value</b> (the backed-up value), so the search knows whether to return later.</li>
+<li>Continue with the alternative path.</li></ol>
+<ul class="list"><li><b>Optimal</b> if h is admissible. <b>Space</b> O(bd).</li>
+<li><b>Weakness:</b> it forgets subtrees and may expand the same nodes again and again.</li></ul>
+<div class="scroll"><table class="t"><thead><tr><th></th><th>A*</th><th>RBFS</th></tr></thead><tbody>
+<tr><td><b>Memory</b></td><td>Keeps all generated nodes: exponential</td><td>Linear, O(bd)</td></tr>
+<tr><td><b>Re-expansion</b></td><td>None</td><td>Frequent</td></tr>
+<tr><td><b>Optimal with admissible h</b></td><td>Yes</td><td>Yes</td></tr></tbody></table></div>
+<h4>3. Real-world applications of A*</h4>
+<ul class="list"><li>Route planning in navigation systems (road graph, straight-line distance or travel time as h).</li>
+<li>Path-finding for characters in video games.</li>
+<li>Robot and warehouse-vehicle motion planning.</li>
+<li>Puzzle solving (8-puzzle with misplaced tiles or Manhattan distance).</li>
+<li>Network routing and parsing in language processing.</li></ul>`,
+ understand:`<p>Both methods answer the same weakness of the taught algorithms: memory. Bidirectional search halves the depth each side must reach; RBFS trades memory for repeated work.</p>`,
+ examples:[],
+ examAnswer:`<p><strong>5 marks — Explain bidirectional search and RBFS.</strong> <strong>(1)</strong> Bidirectional: search forward from the start and backward from the goal until the frontiers meet; time and space O(b^(d/2)); needs a known goal and reversible actions. <strong>(2)</strong> RBFS: best-first search in linear space; follows the best path until its f exceeds the f-limit (best alternative), then backs up the best child's f-value and switches path. <strong>(3)</strong> RBFS is optimal with an admissible heuristic and uses O(bd) space, but re-expands nodes. <strong>(4)</strong> One use of A*: route planning in navigation.</p>`,
+ mistakes:[`Writing the cost of bidirectional search as b^d / 2. It is 2 × b^(d/2).`,
+  `Saying RBFS is faster than A*. It saves memory, not time.`]},
+
 {id:"m2t8", title:"Local Search and Hill Climbing", type:"theory",
  priority:"high", core:true, marks:[5,10], src:"Chpt 2 informed slides 31–40; class notes 10/8",
  tags:["hill climbing","local search","local maxima","plateau","ridge","n-queens","optimization"],
@@ -2085,7 +2118,7 @@ WHERE {
 {
 id:"m4", num:4, title:"Planning and Uncertainty", hours:"6–8",
 coverage:"partial",
-coverageNote:"Both halves are written up from the Chpt 4 decks (‘CHPT 4 Uncertainity’, 30 slides; ‘Planning’, 86 slides). The uncertainty topics also draw on the end of the Chapter 3 Knowledge deck, which the Uncertainty deck repeats and extends. <strong>Partial:</strong> forward/backward state-space search and STRIPS vs ADL are only named on the slides (slide 21 is blank), so those answers draw on Russell &amp; Norvig and say so. Conditional planning and Prolog expert systems are taught in the decks although the syllabus contents do not list them. <strong>Not covered:</strong> the self-learning topic ‘Google Maps as a Multi-Agent Planning System’ is in no deck.",
+coverageNote:"Both halves are written up from the Chpt 4 decks (‘CHPT 4 Uncertainity’, 30 slides; ‘Planning’, 86 slides). The uncertainty topics also draw on the end of the Chapter 3 Knowledge deck, which the Uncertainty deck repeats and extends. <strong>Partial:</strong> forward/backward state-space search and STRIPS vs ADL are only named on the slides (slide 21 is blank), so those answers draw on Russell &amp; Norvig and say so. Conditional planning and Prolog expert systems are taught in the decks although the syllabus contents do not list them. <strong>No deck:</strong> the self-learning topic ‘Google Maps as a Multi-Agent Planning System’ has a page written from standard references.",
 objective:"To apply classical and advanced AI planning techniques, construct rule-based expert systems, and perform reasoning in uncertain domains using belief networks.",
 contents:"Uncertain Knowledge and Reasoning: Uncertainty in real-world systems, Bayesian Networks, Inference. Planning: State Space Planning, Hierarchical planning, Partial Order planning, Multiagent planning",
 selfLearning:"Google Maps as a Multi-Agent Planning System",
@@ -2712,6 +2745,24 @@ identify_animal :- write('Sorry, I could not identify the animal.'), nl.</div>
   `Putting the condition first, as in an if-statement. In Prolog it is head :- body, conclusion first.`,
   `Forgetting what the cut does. ! stops Prolog looking for further answers once the first one is found.`]},
 
+{id:"m4t19", title:"Self-Learning: Google Maps as a Multi-Agent Planning System", type:"theory",
+ priority:"low", core:false, marks:[5], src:"Syllabus Module 04 self-learning topic; an applied reading of the multi-agent planning slides, not a lecture deck",
+ tags:["google maps","multi-agent","planning","self-learning","routing"],
+ learn:`<div class="note warn"><b>Not from your lecture decks.</b> No uploaded deck covers this syllabus item. These notes are written from standard references so the item is not left blank. Prefer your teacher's wording if it is given later.</div>
+<p>A navigation service can be read as a multi-agent planning system: many agents with their own goals share one environment (the road network), and each agent's plan changes the conditions for the others.</p>
+<div class="scroll"><table class="t"><thead><tr><th>Multi-agent planning idea</th><th>In a navigation service</th></tr></thead><tbody>
+<tr><td><b>Agents</b></td><td>Every driver or phone (goal: reach a destination quickly); the traffic-estimation service; the route planner</td></tr>
+<tr><td><b>Environment</b></td><td>The road network: partially observable, dynamic, stochastic, multi-agent</td></tr>
+<tr><td><b>Perception / shared information</b></td><td>Phones report position and speed; incidents and closures are reported; together these give live traffic</td></tr>
+<tr><td><b>Planning</b></td><td>Shortest-time path search on the road graph (A*-style search with travel time as cost)</td></tr>
+<tr><td><b>Coordination</b></td><td>If every driver is sent down the same shortcut it becomes congested, so routes are spread across alternatives</td></tr>
+<tr><td><b>Replanning</b></td><td>When traffic changes, the route is recomputed: plan, execute, monitor, replan</td></tr></tbody></table></div>
+<p><b>Which type of planning?</b> Information is gathered and routes are computed centrally, but each driver decides whether to follow the route. It is best described as <b>distributed</b>: agents plan their own journeys while exchanging information through a shared service.</p>`,
+ understand:`<p>Use it as a ready example in any multi-agent planning answer: name the agents, what they share, how they coordinate, and how the plan is repaired when the world changes.</p>`,
+ examples:[],
+ examAnswer:`<p><strong>5 marks — Explain multi-agent planning with Google Maps as an example.</strong> <strong>(1)</strong> Multi-agent planning: several agents plan in a shared environment and must coordinate. <strong>(2)</strong> Agents: drivers, the traffic service, the route planner. <strong>(3)</strong> Shared information: positions and speeds give live traffic. <strong>(4)</strong> Planning: shortest-time search on the road graph for each driver. <strong>(5)</strong> Coordination and replanning: routes are spread to avoid creating congestion, and recomputed when conditions change.</p>`,
+ mistakes:[`Describing it as single-agent shortest-path search only. The multi-agent part is that each driver's choice changes the traffic for the others.`]},
+
 {id:"m4t16", title:"Applying STRIPS Actions and Validating a Plan", type:"numerical",
  priority:"high", core:true, marks:[5], src:"Chpt 4 Planning slides 16–24 (Fly, move operator, spare tire, blocks world); R&N Fig 10.3, §10.2.2",
  tags:["applying","strips","actions","validating","plan"],
@@ -2880,7 +2931,7 @@ temporal constraints and one truth constraint.</div>`,
 {
 id:"m5", num:5, title:"Generative AI, Explainable AI, Responsible AI & Ethics", hours:"7–9",
 coverage:"partial",
-coverageNote:"Written up from the two Chapter 5 decks (‘Chapter5’, 22 slides; ‘chpt 5 part 2’, 57 slides with speaker notes) and the ClarifAI presentation. <strong>Partial:</strong> SHAP and LIME are covered conceptually; the deck skips the Shapley formula, so numerical Shapley computation would need syllabus text book 4 (Molnar), which was not uploaded. <strong>Not covered:</strong> the self-learning topics (deepfake generation and detection, OpenAI's responsible-AI guidelines, the UNESCO Recommendation on AI Ethics).",
+coverageNote:"Written up from the two Chapter 5 decks (‘Chapter5’, 22 slides; ‘chpt 5 part 2’, 57 slides with speaker notes) and the ClarifAI presentation. <strong>Partial:</strong> SHAP and LIME are covered conceptually; the deck skips the Shapley formula, so numerical Shapley computation would need syllabus text book 4 (Molnar), which was not uploaded. <strong>No deck:</strong> the self-learning topics (deepfake generation and detection, OpenAI's responsible-AI guidelines, the UNESCO Recommendation on AI Ethics) have a page written from standard references.",
 objective:"To explore concepts of Generative AI, Large Language Models, Explainability techniques, and Responsible AI practices focusing on fairness, privacy, ethics, and AI regulations.",
 contents:"Generative AI, LLMs (ChatGPT, BERT Concept), Prompt Engineering, Explainable AI: SHAP, LIME, Responsible AI: Fairness, Bias, Privacy, AI Hallucinations, Ethical AI Practices, AI Regulations.",
 selfLearning:"Deepfake Generation and Detection, OpenAI Responsible AI Guidelines, UNESCO Recommendation on AI Ethics",
@@ -3292,6 +3343,34 @@ Act:        verify, challenge, improve or communicate the decision</div>
   `Quoting dates or penalty amounts from memory. They change, so cite the framework and the tiers instead.`,
   `Treating the EU tiers as a ranking of the AI technique. The tiers rank the use case and its possible harm.`]},
 
+{id:"m5t18", title:"Self-Learning: Deepfakes, OpenAI Guidelines and the UNESCO Recommendation", type:"theory",
+ priority:"low", core:false, marks:[5], src:"Syllabus Module 05 self-learning topics; standard references, not a lecture deck",
+ tags:["deepfake","unesco","openai","ethics","self-learning"],
+ learn:`<div class="note warn"><b>Not from your lecture decks.</b> No uploaded deck covers this syllabus item. These notes are written from standard references so the item is not left blank. Prefer your teacher's wording if it is given later.</div>
+<h4>1. Deepfake generation and detection</h4>
+<p>A <b>deepfake</b> is synthetic image, video or audio in which a real person appears to say or do something they did not.</p>
+<div class="scroll"><table class="t"><thead><tr><th>Generation</th><th>Detection</th></tr></thead><tbody>
+<tr><td>Autoencoder face swap: a shared encoder with one decoder per person</td><td>Visual artefacts: unnatural blinking, lighting, skin texture, blurred face edges</td></tr>
+<tr><td>GANs: a generator improves until the discriminator cannot tell fake from real</td><td>Lip movement that does not match the audio</td></tr>
+<tr><td>Diffusion models and voice cloning</td><td>Classifiers (CNNs) trained on real and fake media, including frequency-domain traces</td></tr>
+<tr><td></td><td>Provenance: watermarks and signed content credentials (C2PA)</td></tr></tbody></table></div>
+<p><b>Harms:</b> misinformation, fraud by voice cloning, non-consensual imagery, loss of trust in genuine evidence. Detection is an arms race, so labelling, provenance and law are needed as well.</p>
+<h4>2. OpenAI's responsible-AI practices</h4>
+<ul class="list"><li><b>Usage policies:</b> prohibited uses such as illegal activity, harassment, deception and election interference.</li>
+<li><b>Safety testing before release:</b> evaluations and red teaming of new models.</li>
+<li><b>Transparency:</b> published system cards describing capabilities, limits and risks.</li>
+<li><b>Safeguards in use:</b> content moderation, refusals of harmful requests, monitoring for misuse.</li>
+<li><b>Provenance:</b> content credentials on generated images.</li></ul>
+<h4>3. UNESCO Recommendation on the Ethics of AI (2021)</h4>
+<p>The first global standard on AI ethics, adopted by all 193 UNESCO member states in November 2021. It is a recommendation: not legally binding, but states are asked to apply it.</p>
+<p><b>Four values:</b> human rights and dignity; peaceful, just and interconnected societies; diversity and inclusiveness; a flourishing environment and ecosystem.</p>
+<p><b>Ten principles:</b> proportionality and do no harm · safety and security · fairness and non-discrimination · sustainability · privacy and data protection · human oversight and determination · transparency and explainability · responsibility and accountability · awareness and literacy · multi-stakeholder and adaptive governance.</p>`,
+ understand:`<p>These three link to the taught material: deepfakes are a misuse of generative models, and the OpenAI and UNESCO documents are examples of the 'ethical AI practices and regulatory frameworks' of LO 5.5, next to the EU AI Act and NIST AI RMF.</p>`,
+ examples:[],
+ examAnswer:`<p><strong>5 marks — What are deepfakes? How are they generated and detected?</strong> <strong>(1)</strong> Definition: synthetic media showing a real person saying or doing what they did not. <strong>(2)</strong> Generation: autoencoder face swap, GANs, diffusion models, voice cloning. <strong>(3)</strong> Detection: visual and audio artefacts, trained classifiers, provenance and watermarking. <strong>(4)</strong> Harms: misinformation, fraud, non-consensual content. <strong>(5)</strong> Response: labelling, detection tools, regulation, and frameworks such as the UNESCO Recommendation.</p>`,
+ mistakes:[`Saying the UNESCO Recommendation is a law. It is a non-binding global standard.`,
+  `Treating deepfake detection as solved. Generators keep improving, so provenance is needed too.`]},
+
 {id:"m5t15", title:"Prompt Makeover Drill", type:"numerical",
  priority:"high", core:true, marks:[5], src:"part 2 slides 31–37 (prompt recipe, infographics, classroom activity)",
  tags:["prompt","makeover","drill"],
@@ -3430,7 +3509,7 @@ Contributions for one applicant:
 {
 id:"m6", num:6, title:"AI in Real-World Domains and Future Directions", hours:"4–6",
 coverage:"partial",
-coverageNote:"Written up from the four Chapter 6 presentations: ‘BE1 Agentic Workflows’, ‘ClarifAI’, ‘Human-in-the-Loop’ and ‘Tool Calling’ (scanned, read from the page images). <strong>These are student presentations, not lecture slides</strong>, and are cited as such. <strong>Partial:</strong> AI agents in cybersecurity (one scenario), smart manufacturing and Industry 4.0/5.0 (IoT integration and human–AI collaboration are missing), healthcare monitoring (one human-in-the-loop example). <strong>Not covered:</strong> Edge AI, quantum AI, AI for the SDGs and cobots — listed as a gap topic below.",
+coverageNote:"Written up from the four Chapter 6 presentations: ‘BE1 Agentic Workflows’, ‘ClarifAI’, ‘Human-in-the-Loop’ and ‘Tool Calling’ (scanned, read from the page images). <strong>These are student presentations, not lecture slides</strong>, and are cited as such. <strong>Partial:</strong> AI agents in cybersecurity (one scenario), smart manufacturing and Industry 4.0/5.0 (IoT integration and human–AI collaboration are missing), healthcare monitoring (one human-in-the-loop example). <strong>No deck:</strong> Edge AI, quantum AI, AI for the SDGs and cobots have a page written from standard references.",
 objective:"To recognize the deployment of autonomous and agentic AI systems across real-world domains, assess their role in Industry 4.0 and Industry 5.0 ecosystems, and examine emerging trends including AI governance, safety, and sustainable development.",
 contents:"Autonomous AI Agents in industry and society, Multi-Agent Systems (MAS) in smart ecosystems, Tool-using AI agents (API calling, retrieval, workflow orchestration), Human-in-the-Loop vs Fully Autonomous Systems, AI Agents in Cybersecurity, Smart Manufacturing, Healthcare Monitoring, Autonomous Decision-Making Systems",
 selfLearning:"Cobots in Manufacturing, AI for SDGs (UNESCO), Quantum AI, Edge AI",
@@ -3696,7 +3775,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
 <h4>Industry 4.0 vs Industry 5.0</h4>
 <p><b>Industry 4.0 stresses automation; Industry 5.0 adds human-centricity, sustainability and resilience.</b> Safety, accountability, bias and reliability decide when a human must stay involved.</p>
 <p>Related Module 4 material: the warehouse-robot multi-agent planning case (task allocation, path coordination, collision avoidance, a shared database) is a smart-factory logistics system.</p>
-<div class="note warn"><b>Limited source material.</b> LO 6.2 also names <i>IoT integration</i> and <i>human–AI collaboration</i>, and the self-learning list names <i>cobots in manufacturing</i>. The uploaded decks cover only the autonomy table and the one-line Industry 4.0/5.0 contrast above. The Coverage tab flags this.</div>`,
+<div class="note warn"><b>Limited source material.</b> LO 6.2 also names <i>IoT integration</i> and <i>human–AI collaboration</i>, and the self-learning list names <i>cobots in manufacturing</i>. The uploaded decks cover only the autonomy table and the one-line Industry 4.0/5.0 contrast above. IoT integration, human–AI collaboration and cobots are on the Edge AI, Quantum AI, SDGs and Cobots page.</div>`,
  understand:`<p>The table is the whole argument: autonomy is not a property of the factory but of each decision in it.</p>`,
  examples:[],
  examAnswer:`<p><strong>5 marks — Assess the role of AI in smart manufacturing and contrast Industry 4.0 and 5.0.</strong> In smart manufacturing the level of autonomy is matched to the risk of each decision. When AI detects a defective product, it alerts an operator and the human decides. When it detects early signs of machine failure, it recommends maintenance and a human approves. When it detects a small process drift, it adjusts settings automatically, the system acts and a human monitors. The drift is low-impact and reversible, so the system acts; scrapping product or stopping a line costs more, so a human stays in the decision. Safety, accountability, bias and reliability decide when a human must stay involved. <strong>Industry 4.0</strong> stresses automation; <strong>Industry 5.0</strong> adds human-centricity, sustainability and resilience. Example: warehouse robots coordinated by multi-agent planning (task allocation, path coordination, collision avoidance, a shared database) form a smart-factory logistics system.</p>`,
@@ -3747,7 +3826,7 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
 <tr><td>Goal orientation</td><td>Planner/orchestrator decomposes a user goal and routes sub-tasks</td></tr></tbody></table></div>
 <h4>Multi-agent systems in smart ecosystems</h4>
 <p>From the Planning deck: coordinating multiple robots (warehouses), traffic-flow optimisation, supply-chain logistics, strategy agents in multiplayer games, and smart grids. From the Chpt 6 decks: specialist LLM agents (planner, analysts, verifier, critic) collaborating on one task. Benefits are efficiency, robustness, scalability and flexibility; costs are communication overhead, coordination complexity, and privacy and security.</p>
-<div class="note warn"><b>Limited source material.</b> LO 6.3 also names <b>Edge AI</b>, <b>quantum AI</b> and <b>AI for the SDGs</b>, and the Module 4 self-learning topic is <b>Google Maps as a multi-agent planning system</b>. None of these appear in the uploaded decks, so no notes have been written for them. See the Coverage tab.</div>`,
+<div class="note warn"><b>Limited source material.</b> LO 6.3 also names <b>Edge AI</b>, <b>quantum AI</b> and <b>AI for the SDGs</b>, and the Module 4 self-learning topic is <b>Google Maps as a multi-agent planning system</b>. None of these appear in the uploaded decks; each has its own page written from standard references.</div>`,
  understand:`<p>A multi-agent system of LLM agents and a multi-agent system of warehouse robots are the same idea: autonomous units, a shared environment, communication, and a collaboration strategy.</p>`,
  examples:[],
  examAnswer:`<p><strong>5 marks — Identify multi-agent systems as an emerging paradigm and show how agentic AI extends the Module 1 agent.</strong> Agentic AI differs from traditional AI on four axes, and Module 6 shows each in deployed systems: <em>autonomy</em> — human-in-the-loop versus autonomous decision-making, with autonomy matched to risk; <em>memory</em> — shared state, audit log and checkpoints; <em>tool usage</em> — API calls, retrieval and code tools through schemas, middleware and MCP; <em>goal orientation</em> — a planner or orchestrator splits a user goal and routes the sub-tasks. <strong>Multi-agent systems in smart ecosystems:</strong> coordinating multiple robots in warehouses, traffic-flow optimisation, supply-chain logistics, strategy agents in multiplayer games, smart grids, and specialist LLM agents (planner, analysts, verifier, critic) working together. Benefit: tasks are divided and verified independently. Challenge: coordination, communication and error passing between agents. A system of LLM agents and one of warehouse robots share the same idea: autonomous units, a shared environment, communication and a collaboration strategy.</p>`,
@@ -3756,13 +3835,84 @@ Model's tool call: {"name": "get_weather", "arguments": {"city": "Thane", "days"
   `Giving examples with no benefit or challenge. Add one of each to earn the full marks.`]},
 
 {id:"m6t13", title:"Edge AI, Quantum AI, AI for the SDGs and Cobots", type:"theory",
- priority:"medium", core:false, marks:[5], src:"Official syllabus Module 06 (LO 6.2, LO 6.3, self-learning)",
- tags:["edge ai","quantum ai","sdg","cobots","industry 4.0","iot"], notCovered:true,
- learn:`<div class="gap-banner"><strong>No lecture material uploaded for this topic.</strong> None of the four Chapter 6 presentations covers it. The syllabus scope is reproduced below; notes have not been invented.</div>
-<ul><li><strong>LO 6.2</strong> — IoT integration for Industry 4.0 and human–AI collaboration (the rest of LO 6.2 is covered in <em>AI in Smart Manufacturing</em>).</li>
-<li><strong>LO 6.3</strong> — Edge AI, quantum AI and AI for the Sustainable Development Goals (multi-agent systems, the other paradigm LO 6.3 names, is covered).</li>
-<li><strong>Self-learning</strong> — cobots in manufacturing, AI for SDGs (UNESCO), quantum AI, Edge AI.</li></ul>`,
- understand:"", examples:[], examAnswer:"", mistakes:[]},
+ priority:"medium", core:false, marks:[5], src:"Official syllabus Module 06 (LO 6.2, LO 6.3, self-learning); standard references, not a lecture deck",
+ tags:["edge ai","quantum ai","sdg","cobots","industry 4.0","iot","human-ai collaboration"],
+ learn:`<div class="note"><span class="note-t">Exam question</span>Identify emerging AI paradigms such as Edge AI, quantum AI and AI for the SDGs, and assess their future impact. (LO 6.3)</div>
+<div class="note warn"><b>Not from your lecture decks.</b> No uploaded deck covers this syllabus item. These notes are written from standard references so the item is not left blank. Prefer your teacher's wording if it is given later.</div>
+<h4>1. Edge AI</h4>
+<p><b>Edge AI runs the AI model on or near the device that collects the data</b> (phone, camera, sensor, vehicle, machine controller) instead of sending the data to a cloud server.</p>
+<div class="scroll"><table class="t"><thead><tr><th></th><th>Cloud AI</th><th>Edge AI</th></tr></thead><tbody>
+<tr><td><b>Where inference runs</b></td><td>Remote data centre</td><td>On the device or a local gateway</td></tr>
+<tr><td><b>Latency</b></td><td>Network round trip</td><td>Milliseconds, works in real time</td></tr>
+<tr><td><b>Privacy</b></td><td>Raw data leaves the device</td><td>Raw data stays local</td></tr>
+<tr><td><b>Connectivity</b></td><td>Needed</td><td>Works offline</td></tr>
+<tr><td><b>Limits</b></td><td>Cost and bandwidth</td><td>Small memory, power and compute, so models must be compressed</td></tr></tbody></table></div>
+<p>Examples: face unlock on a phone, a factory camera rejecting defective parts on the line, a car braking for a pedestrian, a wearable detecting an irregular heartbeat. Models are made small by quantisation, pruning and distillation (TinyML).</p>
+<h4>2. Quantum AI</h4>
+<p><b>Quantum AI uses quantum computers to run or speed up AI computations.</b> A qubit can be in a superposition of 0 and 1, and qubits can be entangled, so some problems can be explored in ways a classical computer cannot.</p>
+<ul class="list"><li><b>Promise:</b> faster optimisation and search, simulation of molecules and materials for drug discovery, quantum machine learning.</li>
+<li><b>Present state:</b> experimental. Today's machines have few, noisy qubits and need error correction, so there is no general practical advantage for AI yet.</li>
+<li><b>Risk:</b> large quantum computers could break current public-key encryption, which is why post-quantum cryptography is being adopted.</li></ul>
+<h4>3. AI for the Sustainable Development Goals (SDGs)</h4>
+<p>The UN's 17 SDGs (2015–2030) cover poverty, health, education, climate and more. AI is used as a tool to reach them.</p>
+<div class="scroll"><table class="t"><thead><tr><th>SDG</th><th>How AI helps</th></tr></thead><tbody>
+<tr><td>2 Zero hunger</td><td>Crop-disease detection from leaf photos, yield prediction, precision irrigation</td></tr>
+<tr><td>3 Good health</td><td>Diagnosis from scans, remote patient monitoring, outbreak prediction</td></tr>
+<tr><td>4 Quality education</td><td>Personalised tutoring, translation into local languages</td></tr>
+<tr><td>7 and 13 Energy, climate</td><td>Smart grids, energy forecasting, climate and flood modelling</td></tr>
+<tr><td>11 Sustainable cities</td><td>Traffic management, waste and water monitoring</td></tr></tbody></table></div>
+<p><b>The other side:</b> training large models uses much energy and water, biased systems can widen inequality, and countries without data or computing power can be left behind. UNESCO's Recommendation on the Ethics of AI asks for AI that supports the SDGs and is assessed for its environmental impact.</p>
+<h4>4. Cobots, IoT integration and human–AI collaboration (LO 6.2)</h4>
+<ul class="list"><li><b>Cobot (collaborative robot):</b> a robot built to work <b>beside</b> people in a shared space without a safety cage. It has force and proximity sensors, moves at limited speed and stops on contact. The person does the skilled, variable part; the cobot does the repetitive, heavy or precise part (assembly, screw-driving, palletising, machine tending).</li>
+<li><b>IoT integration:</b> sensors on machines send temperature, vibration and output data over the network; AI analyses the stream for <b>predictive maintenance</b>, quality inspection and energy use; the result goes back to the machines. A <b>digital twin</b> is a live virtual copy of the plant built from this data.</li>
+<li><b>Human–AI collaboration:</b> the AI recommends and handles routine cases; the human supervises, handles exceptions and stays accountable. This is the human-centric idea of <b>Industry 5.0</b>, of which cobots are the standard example.</li></ul>
+<div class="scroll"><table class="t"><thead><tr><th>Paradigm</th><th>Future impact</th><th>Main challenge</th></tr></thead><tbody>
+<tr><td>Edge AI</td><td>Real-time, private intelligence in every device</td><td>Limited hardware; updating many devices securely</td></tr>
+<tr><td>Quantum AI</td><td>Speed-ups for optimisation and simulation</td><td>Immature hardware; security of encryption</td></tr>
+<tr><td>AI for SDGs</td><td>Better health, food, education and climate action</td><td>Energy use, bias, unequal access</td></tr>
+<tr><td>Cobots</td><td>Safer, more flexible factories with people kept in the work</td><td>Safety certification, retraining of workers</td></tr></tbody></table></div>`,
+ understand:`<p>Three of the four move AI to a new place: onto the device (edge), onto new hardware (quantum), next to the worker (cobot). The fourth (SDGs) is about what AI is used for. For 'assess the impact', give one benefit and one challenge for each.</p>`,
+ examples:[{t:"One example each",b:"Edge AI: phone face unlock · Quantum AI: molecule simulation for drug discovery · AI for SDGs: crop-disease detection from a leaf photo · Cobot: a robot arm holding a part while the worker fastens it."}],
+ examAnswer:`<p><strong>5 marks — Identify emerging AI paradigms and assess their impact.</strong> <strong>(1) Multi-agent systems</strong> — several specialised agents cooperating (covered in its own topic). <strong>(2) Edge AI</strong> — inference on the device: low latency, privacy, offline use; limited by small hardware. <strong>(3) Quantum AI</strong> — quantum computers for optimisation, simulation and machine learning; still experimental, and a threat to present encryption. <strong>(4) AI for the SDGs</strong> — AI applied to health, food, education and climate goals; must be weighed against energy use, bias and unequal access. Close with one line: these paradigms extend where AI runs and what it is used for, and each needs governance to be beneficial.</p>`,
+ mistakes:[`Describing Edge AI as 'AI in the cloud'. It is the opposite: the model runs on the device.`,
+  `Claiming quantum AI is already in everyday use. It is experimental.`,
+  `Calling any industrial robot a cobot. A cobot is designed to share the workspace with people safely.`,
+  `Listing only benefits when the verb is 'assess'. Give a challenge for each paradigm.`]},
+
+{id:"m6t17", title:"AI Agents in Cybersecurity and Healthcare Monitoring", type:"theory",
+ priority:"medium", core:true, marks:[5], src:"Official syllabus Module 06 contents; HITL deck scenarios (suspicious device, patient alert); standard references for the rest",
+ tags:["cybersecurity","healthcare","monitoring","agents","intrusion","wearables"],
+ learn:`<div class="note"><span class="note-t">Exam question</span>Explain the role of AI agents in cybersecurity and in healthcare monitoring. What level of autonomy is suitable in each?</div>
+<div class="note warn"><b>Partly from your decks.</b> The Human-in-the-Loop presentation gives one scenario for each domain. The fuller description below is written from standard references.</div>
+<h4>AI agents in cybersecurity</h4>
+<p>A security agent follows the decision cycle of an autonomous system on network and system data.</p>
+<ol class="list"><li><b>Perceive</b> — read logs, network traffic, logins and emails.</li>
+<li><b>Analyse</b> — detect anomalies and known attack patterns (intrusion detection, malware and phishing classification, unusual user behaviour).</li>
+<li><b>Select</b> — rank the alert and choose a response from a playbook.</li>
+<li><b>Execute</b> — block an address, isolate a device, disable an account, or raise a ticket for an analyst.</li>
+<li><b>Observe</b> — check whether the threat stopped; learn from the analyst's verdict.</li></ol>
+<p><b>Why agents:</b> attacks happen in seconds and alerts arrive in thousands, more than human analysts can read. <b>Risks:</b> false positives that block genuine users, attackers who try to fool or poison the model, and attackers using AI themselves.</p>
+<p><b>Autonomy:</b> low-impact, reversible actions (quarantine one laptop) can be automatic with a human <b>on</b> the loop. High-impact actions (shutting a server, deleting data) need a human <b>in</b> the loop. This is the deck's 'suspicious device on the college network' scenario.</p>
+<h4>AI agents in healthcare monitoring</h4>
+<ol class="list"><li><b>Perceive</b> — wearables and bedside sensors stream heart rate, oxygen level, blood pressure, glucose and movement.</li>
+<li><b>Analyse</b> — compare with the patient's own baseline; detect deterioration, falls or irregular rhythm early.</li>
+<li><b>Select</b> — decide how urgent the change is.</li>
+<li><b>Execute</b> — alert the nurse or doctor with an explanation, remind the patient, or book a consultation.</li>
+<li><b>Observe</b> — follow the patient's response and the clinician's decision.</li></ol>
+<p><b>Benefits:</b> continuous monitoring at home, earlier warning, fewer hospital visits, care for remote areas. <b>Risks:</b> missed events and false alarms (alarm fatigue), privacy of health data, bias when the model was trained on other populations, and <b>over-trust</b> by the reviewer (automation bias).</p>
+<p><b>Autonomy:</b> <b>human-in-the-loop</b>. The agent monitors and recommends; a clinician decides on diagnosis and treatment, because errors are costly and hard to reverse.</p>
+<div class="scroll"><table class="t"><thead><tr><th></th><th>Cybersecurity</th><th>Healthcare monitoring</th></tr></thead><tbody>
+<tr><td><b>Data</b></td><td>Logs, traffic, logins</td><td>Vital signs from sensors</td></tr>
+<tr><td><b>Task</b></td><td>Detect and contain attacks</td><td>Detect deterioration early</td></tr>
+<tr><td><b>Typical action</b></td><td>Isolate a device, block traffic</td><td>Alert a clinician</td></tr>
+<tr><td><b>Suitable autonomy</b></td><td>Human-on-the-loop for reversible actions</td><td>Human-in-the-loop</td></tr>
+<tr><td><b>Main risk</b></td><td>False positives, adversarial attacks</td><td>Missed events, privacy, over-trust</td></tr></tbody></table></div>`,
+ understand:`<p>Both are the same five-step agent cycle on different sensors. The difference that earns marks is the autonomy level: speed matters most in security, so reversible actions are automated; safety matters most in healthcare, so the human decides.</p>`,
+ examples:[{t:"From the HITL deck",b:"Suspicious device on the college network: isolate it automatically, then a human reviews. Patient alert: the system flags the reading, the clinician decides."}],
+ examAnswer:`<p><strong>5 marks — AI agents in cybersecurity and healthcare monitoring.</strong> <strong>(1)</strong> Both follow perceive → analyse → select → execute → observe. <strong>(2) Cybersecurity:</strong> the agent reads logs and traffic, detects intrusions, malware and phishing, and responds by isolating a device or blocking traffic; reversible actions can be automatic with a human on the loop. <strong>(3) Healthcare monitoring:</strong> the agent reads vital signs from wearables, detects deterioration early and alerts a clinician with an explanation; the human stays in the loop. <strong>(4) Risks:</strong> false alarms, adversarial attacks, privacy of data and over-trust. <strong>(5)</strong> Autonomy is matched to the impact and reversibility of the action.</p>`,
+ mistakes:[`Giving the same autonomy level for both domains. Match it to risk and reversibility.`,
+  `Describing only detection. An agent also selects and executes a response.`,
+  `Forgetting privacy: both domains handle sensitive personal data.`]},
 
 {id:"m6t14", title:"Tool Schema and Tool-Call Trace", type:"numerical",
  priority:"high", core:true, marks:[5], src:"Tool Calling pp.3–4, 7–8; BE1 slides 6–7, 17",
@@ -3924,7 +4074,7 @@ const LOS = [
  topics:["m2t3"]},
 {id:"LO 2.3", m:"m2", co:"CO2", verb:"Apply", pi:["1.4.1"],
  text:"Apply heuristic-based Informed Search methods such as Greedy and A* to optimize solution paths.",
- topics:["m2t4","m2t5","m2t6","m2t7"]},
+ topics:["m2t4","m2t5","m2t6","m2t7","m2t13"]},
 {id:"LO 2.4", m:"m2", co:"CO2", verb:"Apply analytical reasoning", pi:["1.3.1"],
  text:"Apply analytical reasoning to Local Search and Optimization techniques including Hill Climbing, Simulated Annealing, and Genetic Algorithms.",
  topics:["m2t8","m2t9","m2t10"]},
@@ -3959,7 +4109,7 @@ const LOS = [
  topics:["m4t2","m4t3","m4t4","m4t15"]},
 {id:"LO 4.3", m:"m4", co:"CO3", verb:"Apply", pi:["1.4.1"],
  text:"Apply state space, hierarchical, partial-order, and multi-agent planning strategies for goal-driven problem solving.",
- topics:["m4t5","m4t7","m4t8","m4t9","m4t10","m4t11","m4t12","m4t13","m4t16","m4t17","m4t18"]},
+ topics:["m4t5","m4t7","m4t8","m4t9","m4t10","m4t11","m4t12","m4t13","m4t16","m4t17","m4t18","m4t19"]},
 
 {id:"LO 5.1", m:"m5", co:"CO5", verb:"Apply", pi:["1.4.1"],
  text:"Apply Generative AI concepts to analyze applications and large language models such as ChatGPT and BERT.",
@@ -3975,11 +4125,11 @@ const LOS = [
  topics:["m5t8","m5t3","m5t11","m5t12"]},
 {id:"LO 5.5", m:"m5", co:"CO5", verb:"Identify", pi:["6.1.1","7.2.2"],
  text:"Identify ethical AI practices and international AI regulatory frameworks.",
- topics:["m5t13","m5t14","m5t17"]},
+ topics:["m5t13","m5t14","m5t17","m5t18"]},
 
 {id:"LO 6.1", m:"m6", co:"CO5", verb:"Identify", pi:["6.1.1","9.1.1","9.3.1"],
  text:"Identify autonomous AI applications in industry and society.",
- topics:["m6t1","m6t2","m6t3","m6t4","m6t7","m6t8","m6t9","m6t11","m6t14","m6t15"]},
+ topics:["m6t1","m6t2","m6t3","m6t4","m6t7","m6t8","m6t9","m6t11","m6t14","m6t15","m6t17"]},
 {id:"LO 6.2", m:"m6", co:"CO5", verb:"Assess", pi:["6.2.1","9.1.1","9.3.1"],
  text:"Assess the role of AI in Industry 4.0 and smart manufacturing ecosystems, including automation, IoT integration, and human–AI collaboration.",
  topics:["m6t10","m6t13"]},
@@ -4775,10 +4925,70 @@ const IMPQ = [
  why:"The Human-in-the-Loop presentation (pp.2–8) sets up exactly this comparison and scenario. Choosing and justifying an autonomy level is the likeliest Module 6 task."},
 {id:"iq76", m:"m6", t:"m6t10", lo:"LO 6.2", marks:10, pri:"medium", core:true, type:"theory",
  q:"Assess the role of AI in Industry 4.0 and smart manufacturing ecosystems, including automation, IoT integration and human–AI collaboration.",
- why:"Worded from LO 6.2, whose verb is <em>Assess</em>. The HITL presentation covers matching autonomy to risk on a factory floor and Industry 4.0 vs 5.0; <strong>IoT integration and human–AI collaboration are not in the uploaded material.</strong>"},
-{id:"iq77", m:"m6", t:"m6t12", lo:"LO 6.3", marks:5, pri:"medium", core:false, type:"theory", nomat:true,
+ why:"Worded from LO 6.2, whose verb is <em>Assess</em>. The HITL presentation covers matching autonomy to risk on a factory floor and Industry 4.0 vs 5.0; IoT integration and human–AI collaboration are not in the uploaded decks; see the Edge AI, Quantum AI, SDGs and Cobots page."},
+{id:"iq77", m:"m6", t:"m6t12", lo:"LO 6.3", marks:5, pri:"medium", core:false, type:"theory",
  q:"Identify emerging AI paradigms — multi-agent systems, Edge AI, quantum AI and AI for the SDGs — and assess their future impact.",
- why:"Worded from LO 6.3. Multi-agent systems are covered (BE1 presentation and Chpt 4 Planning); <strong>Edge AI, quantum AI and AI for the SDGs are not in any uploaded material.</strong>"},
+ why:"Worded from LO 6.3. Multi-agent systems are covered (BE1 presentation and Chpt 4 Planning); Edge AI, quantum AI and AI for the SDGs are not in any uploaded deck; the topic page for them is written from standard references."},
+{id:"iq79", m:"m4", t:"m4t8", lo:"LO 4.3", marks:5, pri:"high", core:true, type:"theory",
+ q:"Explain state-space planning. Compare forward (progression) and backward (regression) search with an example.",
+ why:"'State space planning' is the first planning item in the syllabus contents and LO 4.3. The comparison is the natural 5-mark form."},
+{id:"iq80", m:"m4", t:"m4t12", lo:"LO 4.3", marks:5, pri:"medium", core:true, type:"theory",
+ q:"What is conditional planning? Write an IF–THEN–ELSE plan for a situation where an action may fail.",
+ why:"Lecture 31 is a whole lecture on conditional planning, and the placement-drive case asks for exactly this plan."},
+{id:"iq81", m:"m4", t:"m4t13", lo:"LO 4.3", marks:5, pri:"high", core:true, type:"theory",
+ q:"Explain multi-agent planning. Distinguish centralised, decentralised and distributed planning with an example of each.",
+ why:"Multi-agent planning is named in the syllabus contents and in LO 4.3, and the three types are a ready comparison table."},
+{id:"iq82", m:"m4", t:"m4t10", lo:"LO 4.3", marks:5, pri:"high", core:true, type:"theory",
+ q:"Explain hierarchical planning with a task-decomposition example. How does it differ from partial-order planning?",
+ why:"Both are named in LO 4.3; a compare question covers two syllabus items in one answer."},
+{id:"iq83", m:"m4", t:"m4t6", lo:"LO 4.1", marks:10, pri:"high", core:true, type:"numerical",
+ q:"For a given scenario, construct the Bayesian network, state the parents of each node and count the independent CPT values. Compare with the full joint distribution.",
+ why:"The deck contains three exam-style CPT-counting questions (smoking, machine monitoring, smart home). This is the most repeated question type in Chapter 4."},
+{id:"iq84", m:"m4", t:"m4t14", lo:"LO 4.3", marks:5, pri:"medium", core:false, type:"theory",
+ q:"What is a rule-based expert system? Explain its components and show how facts and rules are written in Prolog.",
+ why:"The module's learning objective names 'construct rule-based expert systems', and the decks include a Prolog example."},
+{id:"iq85", m:"m5", t:"m5t6", lo:"LO 5.1", marks:5, pri:"high", core:true, type:"theory",
+ q:"Explain the attention mechanism and the Transformer architecture. Why did Transformers replace RNNs and LSTMs?",
+ why:"The Transformer is the basis of both BERT and GPT, which LO 5.1 names. The deck gives the three RNN/LSTM difficulties it solves."},
+{id:"iq86", m:"m5", t:"m5t4", lo:"LO 5.1", marks:5, pri:"medium", core:true, type:"theory",
+ q:"Differentiate between discriminative and generative models with examples. Name the main families of generative models.",
+ why:"A standard opening question for the Generative AI part of the syllabus; the deck has the comparison and the families (GAN, VAE, diffusion, autoregressive)."},
+{id:"iq87", m:"m5", t:"m5t8", lo:"LO 5.4", marks:5, pri:"high", core:true, type:"theory",
+ q:"What are AI hallucinations? Explain their causes and how Retrieval-Augmented Generation reduces them.",
+ why:"'AI Hallucinations' is named in the syllabus contents and in LO 5.4."},
+{id:"iq88", m:"m5", t:"m5t11", lo:"LO 5.4", marks:5, pri:"high", core:true, type:"theory",
+ q:"Explain the types of bias in AI systems with examples. How can fairness be measured and improved?",
+ why:"Fairness and bias are named in the syllabus contents and LO 5.4; the deck lists the bias types."},
+{id:"iq89", m:"m5", t:"m5t12", lo:"LO 5.4", marks:5, pri:"medium", core:true, type:"theory",
+ q:"What privacy risks arise from generative AI, and how can they be reduced?",
+ why:"Privacy is the third Responsible AI item in the syllabus contents and LO 5.4."},
+{id:"iq90", m:"m5", t:"m5t10", lo:"LO 5.3", marks:5, pri:"medium", core:true, type:"theory",
+ q:"Distinguish interpretability from explainability. Why is Explainable AI needed in high-stakes decisions?",
+ why:"The usual lead-in to a SHAP/LIME question under LO 5.3."},
+{id:"iq91", m:"m5", t:"m5t13", lo:"LO 5.5", marks:10, pri:"high", core:true, type:"theory",
+ q:"A company uses an AI system to shortlist candidates. Identify the Responsible AI issues and propose ethical practices and safeguards for each stage of the lifecycle.",
+ why:"The deck's internship-shortlisting case study; the syllabus assessment is 'identify and suggest' style, so a case is likely."},
+{id:"iq92", m:"m6", t:"m6t5", lo:"LO 6.3", marks:5, pri:"high", core:true, type:"theory",
+ q:"Compare single-agent and multi-agent system design. When should one agent be split into several?",
+ why:"Multi-Agent Systems are named in the syllabus contents and LO 6.3; the BE1 presentation gives the comparison."},
+{id:"iq93", m:"m6", t:"m6t6", lo:"LO 6.3", marks:5, pri:"high", core:true, type:"theory",
+ q:"What is workflow orchestration in agentic AI? Explain the sequential, supervisor and network wiring patterns.",
+ why:"'Workflow orchestration' is named in the syllabus contents under tool-using agents."},
+{id:"iq94", m:"m6", t:"m6t9", lo:"LO 6.1", marks:5, pri:"high", core:true, type:"theory",
+ q:"How does an autonomous decision-making system decide? Explain the five-step cycle with an autonomous vehicle as the example.",
+ why:"'Autonomous Decision-Making Systems' is a syllabus content item; the HITL presentation gives the cycle and the Tesla case."},
+{id:"iq95", m:"m6", t:"m6t3", lo:"LO 6.1", marks:5, pri:"medium", core:true, type:"theory",
+ q:"Explain retrieval as a tool for an AI agent. How does it differ from an API-calling tool?",
+ why:"The syllabus lists 'API calling, retrieval, workflow orchestration' as the three kinds of tool use."},
+{id:"iq96", m:"m6", t:"m6t7", lo:"LO 6.1", marks:5, pri:"medium", core:true, type:"theory",
+ q:"What guardrails and checkpoints are needed in an agentic workflow? Explain with examples.",
+ why:"Safety of tool-using agents is the practical side of LO 6.1 and is covered in the BE1 presentation."},
+{id:"iq97", m:"m6", t:"m6t17", lo:"LO 6.1", marks:5, pri:"medium", core:true, type:"theory",
+ q:"Explain the role of AI agents in cybersecurity and in healthcare monitoring. What level of autonomy suits each?",
+ why:"Both are named in the syllabus contents. The decks give one scenario each."},
+{id:"iq98", m:"m6", t:"m6t10", lo:"LO 6.2", marks:5, pri:"medium", core:true, type:"theory",
+ q:"Differentiate Industry 4.0 and Industry 5.0. What is the role of cobots and human–AI collaboration?",
+ why:"The course objective names Industry 4.0 and 5.0, and cobots are a self-learning topic."},
 {id:"iq78", m:"m6", t:"m6t2", lo:"LO 6.1", marks:10, pri:"high", core:true, type:"theory",
  q:"Explain how tool calling works: the four-step loop, the tool schema and middleware. Trace one tool call end to end.",
  why:"The core of the Tool Calling presentation and BE1 slides 6–7. Tracing a call is the natural applied question for this module."}
@@ -6249,8 +6459,8 @@ function viewSettings(){
       lecture decks and the four Chapter 6 student presentations; Russell &amp; Norvig is used only where a slide is blank or a
       topic is only named, and each such answer says so.</p>
     <p style="font-size:.87rem;color:var(--text-2);margin-bottom:0">
-      Where the syllabus lists a topic for which no material was provided — Edge AI, quantum AI, AI for the SDGs and cobots —
-      the site says so plainly rather than filling the gap with generic textbook content. Those topics are marked
+      Where the syllabus lists a topic for which no material was provided — Edge AI, quantum AI, AI for the SDGs, cobots and the self-learning topics —
+      the page is written from standard references and says so at the top. Any topic still without notes is marked
       <span class="badge b-warn">No material uploaded</span> and are listed on the
       <button class="trow-t" style="display:inline;font-size:.87rem;font-weight:600" data-act="go" data-h="#/syllabus">syllabus coverage page</button>.</p>
   </div>`;

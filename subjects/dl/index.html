@@ -548,7 +548,28 @@ var M1=[
  questions:[
   {q:"Explain the multilayer perceptron with a neat diagram and describe the function of each layer.",marks:5,d:"easy",priority:"high",source:"source"},
   {q:"Why is a non-linear activation function essential in a multilayer network? Prove your answer.",marks:5,d:"moderate",priority:"high",source:"source"},
-  {q:"How does a multilayer perceptron overcome the limitations of a single perceptron?",marks:5,d:"moderate",priority:"high",source:"source"}]}
+  {q:"How does a multilayer perceptron overcome the limitations of a single perceptron?",marks:5,d:"moderate",priority:"high",source:"source"}]},
+{id:"m1t17",m:"m1",title:"Self-Learning: Transfer Learning",type:"theory",priority:"low",los:["1.3"],
+ src:"Syllabus self-learning topic. No slides in your decks; written from the standard treatment.",
+ summary:"Reuse a network trained on a large dataset as the starting point for a new, smaller task.",
+ whatIs:"<p><b>Transfer learning</b> takes a model already trained on a large dataset (the source task, for example ImageNet) and reuses its learned features for a different but related task (the target task) that has little data.</p>",
+ concept:"<p>It works because the early layers of a deep network learn general features (edges, textures) that are useful for most image tasks. Only the last layers are specific to the original classes.</p>"+
+  "<div class='scroll'><table><tr><th>Strategy</th><th>What is trained</th><th>Use when</th></tr>"+
+  "<tr><td><b>Feature extraction</b></td><td>Freeze the pre-trained base; train only a new output layer</td><td>Very little data; target task similar to the source</td></tr>"+
+  "<tr><td><b>Fine-tuning</b></td><td>Also unfreeze the top few layers of the base and train them with a small learning rate</td><td>More data; target task somewhat different</td></tr></table></div>"+
+  "<p><b>Steps:</b> load the pre-trained model → remove its output layer → add a new output layer for your classes → freeze the base → train the new layer → optionally unfreeze some layers and fine-tune.</p>"+
+  "<p><b>Benefits:</b> needs far less labelled data, trains faster, and usually gives better accuracy than training from scratch on a small dataset.</p>",
+ needToKnow:["Define transfer learning with source and target tasks","Distinguish feature extraction from fine-tuning","Say why early layers transfer and late layers do not","Give two benefits"],
+ recognition:{clues:["'Pre-trained model', 'ImageNet weights', 'small dataset'","'Freeze the layers', 'fine-tune'"],
+  wording:["What is transfer learning? Explain its two strategies."],
+  firstMove:"Define it in one line, then draw the two-row table: feature extraction and fine-tuning.",
+  trap:"Fine-tuning with a large learning rate. It destroys the pre-trained features; use a small one."},
+ mistakes:["Saying the whole network is retrained from random weights","Freezing the new output layer instead of the base","Using transfer learning when the source and target data are unrelated","Forgetting to replace the output layer when the number of classes changes"],
+ practice:[
+  {id:"m1t17p1",d:"easy",q:"A pre-trained base outputs 512 features and is frozen. A new dense output layer for 10 classes is added. How many parameters are trained?",hint:"Weights plus biases of the new layer only.",a:"<p>Only the new layer is trained: 512 × 10 + 10 = <b>5,130</b> parameters. The millions of parameters in the frozen base are not updated.</p>"},
+  {id:"m1t17p2",d:"application",app:true,q:"You have 400 labelled X-ray images and must build a classifier. Would you train a CNN from scratch or use transfer learning? Justify.",hint:"How much data does a deep CNN need?",a:"<p><b>Transfer learning.</b> 400 images are far too few to train millions of weights without overfitting. Take a CNN pre-trained on ImageNet, freeze its convolutional base, add a new output layer for the X-ray classes and train that. If accuracy is not enough, unfreeze the last block and fine-tune with a small learning rate, with data augmentation.</p>"}],
+ questions:[
+  {q:"What is transfer learning? Explain feature extraction and fine-tuning.",marks:5,d:"easy",priority:"low",source:"syllabus self-learning"}]}
 ];
 M1 = M1.concat([
 {id:"m1t11",m:"m1",title:"Perceptron Learning Rule",type:"problem-solving",priority:"high",los:["1.2"],
@@ -677,6 +698,7 @@ M1 = M1.concat([
   answer:"<b>No.</b> Every advantage of deep learning is inapplicable here and two drawbacks are decisive. A logistic regression or decision tree would be more accurate on 400 rows and is directly interpretable.",
   trap:"This is a genuinely common exam framing and students almost always answer 'yes, deep learning is more powerful'. The marks are for matching the method to the situation, and the honest answer is that depth is the wrong tool for small, structured, interpretability-critical problems."}],
  practice:[
+  {id:"m1t13p5",d:"easy",q:"Trace the history of deep learning in five milestones.",hint:"1943, 1958, 1986, 1998, 2012.",a:"<p><b>1943</b> McCulloch and Pitts: the first mathematical neuron. <b>1958</b> Rosenblatt: the perceptron and its learning rule. <b>1969</b> Minsky and Papert show a single perceptron cannot learn XOR; interest falls. <b>1986</b> Rumelhart, Hinton and Williams popularise backpropagation, making multilayer networks trainable. <b>1998</b> LeCun: LeNet-5 for handwritten digits. <b>2012</b> AlexNet wins ImageNet using ReLU, dropout and GPUs, which starts the modern deep-learning period. After that: GANs (2014) and Transformers (2017).</p>"},
   {id:"m1t13p1",d:"easy",q:"What makes a network 'deep', and what does depth give you?",hint:"Count layers, then say what each successive layer works with.",a:"<p>A network is <b>deep</b> when it has more than one hidden layer between input and output.</p><p>What depth gives is <b>hierarchical feature learning</b>. The first hidden layer computes simple features from the raw input; the second computes features of those features; and so on. In vision this produces a concrete progression: edges, then corners and textures, then object parts, then whole objects. The practical payoff is that features are discovered from data rather than hand-designed by an engineer, which is the defining difference between deep learning and classical machine learning.</p>"},
   {id:"m1t13p2",d:"moderate",q:"Give four advantages and four drawbacks of deep learning, each with one line of consequence.",hint:"Pair each advantage with the cost that comes with it.",a:"<p><b>Advantages.</b> (1) Automatic feature learning: removes the manual feature-engineering step that dominates classical pipelines. (2) Accuracy scales with data: where classical methods plateau, deep networks keep improving as the dataset grows. (3) Handles unstructured data directly: images, audio and text need no hand-built descriptors. (4) Architectural transfer: the same family of architectures works across many tasks and domains.</p><p><b>Drawbacks.</b> (1) Data hunger: needs very large labelled datasets, which are expensive and sometimes impossible to obtain. (2) Computational cost: GPU hardware and long training times, with real energy and money implications. (3) Black-box behaviour: the learned representation resists interpretation, which blocks use where decisions must be justified. (4) Hyperparameter sensitivity: learning rate, depth, width, regularization strength all interact, and poor choices produce poor results with no obvious diagnosis.</p>"}],
  questions:[
@@ -1577,6 +1599,7 @@ M2 = M2.concat([
   answer:"(a) high bias, (b) high variance, (c) well balanced.",
   trap:"Variance is measured <i>across retraining runs</i>, not across predictions within one run. Model (b) might be perfectly confident on any single input; the instability appears only when you retrain on a different sample and get a substantially different function. This is why the deck defines variance as sensitivity to minor changes in the training data."}],
  practice:[
+  {id:"m2t17p5",d:"easy",q:"The syllabus lists 'types of biases'. What are the types of error a model can have, and which regime does each produce?",hint:"Bias, variance, noise.",a:"<p><b>High bias</b>: the model is too rigid and misses the pattern; it is wrong on training and test data alike (<b>underfitting</b>). <b>High variance</b>: the model follows the training sample too closely and changes with every new sample; low training error, high test error (<b>overfitting</b>). <b>Irreducible error</b>: noise in the data that no model removes. Expected error = bias² + variance + irreducible error. Do not confuse this statistical bias with the bias term b of a neuron, or with social bias in data.</p>"},
   {id:"m2t17p1",d:"easy",q:"Define bias and variance and give the error decomposition.",hint:"One is about rigidity, one about sensitivity.",a:"<p><b>Bias</b>: systematic deviation caused by excessively rigid architectural assumptions. The model's form cannot represent the true pattern, so it makes the same kind of error consistently, regardless of the data it sees.</p><p><b>Variance</b>: how sensitive the learned model is to minor changes in the training data. A high-variance model retrained on a different sample of the same size produces a substantially different function.</p><div class='eqb'>Total error = Bias² + Variance + Irreducible noise</div><p>The irreducible term is noise inherent in the data and cannot be removed by any model.</p>"},
   {id:"m2t17p2",d:"moderate",q:"Why is there a tradeoff at all? Why can we not minimise both?",hint:"Both are controlled by the same knob.",a:"<p>Because both are governed by the same quantity, <b>model complexity</b>, and they respond to it in opposite directions.</p><p>Increasing complexity lowers bias. A more flexible model can represent a wider family of functions, so the rigid-assumption error falls. A degree-10 polynomial can capture curvature that a straight line cannot.</p><p>The same increase raises variance. That extra flexibility is not selective: a model able to fit genuine curvature is equally able to fit random noise. Since the noise differs between training samples, the fitted function differs too, and the model becomes unstable across retraining.</p><p>There is no setting of the complexity knob that reduces both, because they are opposite responses to one control. What you can do is find the complexity minimising <b>Bias² + Variance</b>, which is the bottom of the U-shaped total-error curve. That is why the target is a good fit rather than a minimum of either component, and why 'make the model as powerful as possible' is bad advice.</p>"},
   {id:"m2t17p3",d:"moderate",q:"How does regularization act on the tradeoff, and why does it raise training error?",hint:"Which of the two does it target?",a:"<p>Regularization is a deliberate trade: it accepts a small increase in bias to obtain a large reduction in variance.</p><p>It works by constraining the model: shrinking weights (L1/L2), removing units at random (dropout), halting training early, or perturbing the inputs (augmentation, noise). Each constraint narrows the family of functions the model can express, which is exactly what raising bias means.</p><p><b>Why training error rises.</b> The unconstrained model could reach a lower training loss by using its full flexibility, including the part that was fitting noise. Once constrained, that route is closed and the best achievable training loss is higher.</p><p>Why validation error falls anyway. The flexibility given up was mostly being spent on noise specific to the training set, which never transferred. Removing it costs a little genuine pattern-fitting ability, the bias increase, but removes a great deal of noise-fitting, which is the variance reduction. If the variance saved exceeds the bias added, total error falls.</p><p>This is why a rising training error alongside a falling validation error is the signature of regularization working correctly, and why judging a regularized model by its training score is a mistake.</p>"}],
@@ -2729,7 +2752,29 @@ var M4=[
   {id:"m4t6p3",d:"application",app:true,q:"A wildlife park has 200 remote camera traps on a thin satellite link. Daytime images are fine; night images are noisy. Researchers also want to group similar animals automatically. Using the 8-step method, state the autoencoder task for each situation with evidence and place each in the workflow.",hint:"Three situations: link, noise, grouping.",a:"<p><b>Situations and clues:</b> (1) 'thin satellite link' → payload too large; (2) 'night images are noisy' → corruption; (3) 'group similar animals' → needs compact features.</p><p><b>Tasks:</b> (1) <b>compression</b>: encode on the camera, decode at the base. (2) <b>denoising</b>: train noisy → clean, run at capture. (3) <b>dimensionality reduction</b>: keep the encoder, cluster the code vectors.</p><p><b>Workflow:</b> denoise at capture → compress for transmission → reduce to vectors at the research centre for clustering.</p>"}],
  questions:[
   {q:"For the given scenario, identify the autoencoder task for each situation, justify it with evidence from the text and map it to the workflow.",marks:5,d:"moderate",priority:"high",source:"deck, Smart Medical Imaging case study"},
-  {q:"Design an autoencoder-based pipeline for compressing and denoising images, comparing at least two architectural alternatives.",marks:5,d:"hard",priority:"high",source:"syllabus LO 4.3"}]}
+  {q:"Design an autoencoder-based pipeline for compressing and denoising images, comparing at least two architectural alternatives.",marks:5,d:"hard",priority:"high",source:"syllabus LO 4.3"}]},
+{id:"m4t7",m:"m4",title:"Self-Learning: Variational Autoencoders (VAE)",type:"theory",priority:"low",los:["4.2"],
+ src:"Syllabus self-learning topic. No slides in your decks; written from the standard treatment.",
+ summary:"An autoencoder whose code is a probability distribution, so new data can be generated by sampling.",
+ whatIs:"<p>A <b>variational autoencoder</b> encodes each input as a <b>distribution</b> (a mean μ and a standard deviation σ for every code unit) instead of a single point. A code is sampled from that distribution and decoded. Because the codes are pushed towards a standard normal distribution, new data can be generated by sampling z from N(0, 1) and decoding it.</p>",
+ concept:"<div class='eqb'>Encoder:   x  →  μ, σ\nSample:    z = μ + σ ⊙ ε,   ε ~ N(0, 1)        (the reparameterisation trick)\nDecoder:   z  →  x̂\nLoss = reconstruction error  +  KL( N(μ, σ²) || N(0, 1) )\nKL for one code unit = ½ ( μ² + σ² − ln σ² − 1 )</div>"+
+  "<p>The <b>reparameterisation trick</b> moves the randomness into ε, so gradients can pass through μ and σ during backpropagation. The <b>KL term</b> is a regulariser that keeps the code space smooth and continuous.</p>"+
+  "<div class='scroll'><table><tr><th></th><th>Autoencoder</th><th>Variational autoencoder</th></tr>"+
+  "<tr><td>Code</td><td>A fixed vector</td><td>A distribution (μ, σ)</td></tr>"+
+  "<tr><td>Loss</td><td>Reconstruction only</td><td>Reconstruction + KL divergence</td></tr>"+
+  "<tr><td>Generates new data</td><td>Not reliably</td><td>Yes: sample z and decode</td></tr>"+
+  "<tr><td>Typical use</td><td>Compression, denoising</td><td>Generation, smooth interpolation</td></tr></table></div>",
+ needToKnow:["Say what the encoder of a VAE outputs (μ and σ)","Write z = μ + σε and say why it is needed","Name the two terms of the loss","Give the difference from a plain autoencoder"],
+ recognition:{clues:["'Generative autoencoder', 'latent distribution', 'KL divergence'","'Reparameterisation trick'"],
+  wording:["Explain the variational autoencoder. How does it differ from an autoencoder?"],
+  firstMove:"Write the pipeline x → (μ, σ) → z → x̂ and the two-term loss.",
+  trap:"Describing the VAE as a denoising autoencoder. The noise in a VAE is in the code, not in the input."},
+ mistakes:["Leaving out the KL term","Sampling z directly without the reparameterisation trick","Saying a VAE has a discriminator (that is a GAN)","Treating σ as a fixed constant"],
+ practice:[
+  {id:"m4t7p1",d:"easy",q:"A code unit has μ = 0.5 and σ = 0.2, and the sampled ε is 1.5. Find z.",hint:"z = μ + σε.",a:"<p>z = 0.5 + 0.2 × 1.5 = <b>0.8</b>.</p>"},
+  {id:"m4t7p2",d:"moderate",q:"Compute the KL term for one code unit with (a) μ = 0, σ = 1 and (b) μ = 1, σ = 1.",hint:"½(μ² + σ² − ln σ² − 1).",a:"<p>(a) ½(0 + 1 − 0 − 1) = <b>0</b>: the code already matches N(0, 1). (b) ½(1 + 1 − 0 − 1) = <b>0.5</b>: the penalty grows as the mean moves away from 0.</p>"}],
+ questions:[
+  {q:"Explain variational autoencoders and compare them with standard autoencoders.",marks:5,d:"moderate",priority:"low",source:"syllabus self-learning"}]}
 ];
 
 /* ============================ MODULE 5 TOPICS: RECURRENT NEURAL NETWORKS ============================ */
@@ -2935,7 +2980,13 @@ var M5=[
   "<tr><td><b>Output</b> o</td><td>Selecting</td><td>How much memory to read out</td><td>o = σ(W<sub>o</sub>[h(t−1), x(t)] + b<sub>o</sub>)</td></tr></table></div>"+
   "<div class='eqb'>c̃(t) = tanh( W<sub>c</sub>[h(t−1), x(t)] + b<sub>c</sub> )          (the candidate new memory)\nc(t) = f ⊙ c(t−1) + i ⊙ c̃(t)               (forget some old, add some new)\nh(t) = o ⊙ tanh( c(t) )                      (select what to expose)</div>"+
   "<p>The line <b>c(t) = f ⊙ c(t−1) + i ⊙ c̃</b> is the whole trick. Memory is updated by <b>adding</b>, not by repeatedly squashing through a weight matrix, so with f near 1 the gradient flows back along c almost unchanged. That is how the LSTM beats vanishing gradients.</p>"+
-  "<p><b>Parameters:</b> four blocks (f, i, o, candidate) each of size n(n + d) + n, so <b>4n(n + d + 1)</b> for hidden size n and input size d (one bias per block; frameworks may add a second).</p>",
+  "<p><b>Parameters:</b> four blocks (f, i, o, candidate) each of size n(n + d) + n, so <b>4n(n + d + 1)</b> for hidden size n and input size d (one bias per block; frameworks may add a second).</p>"+
+  "<h4>The syllabus wording: selective read, selective write, selective forget</h4><p>The syllabus names the LSTM by three operations. They are the same three gates under other names (the naming used in the NPTEL course the syllabus lists).</p>"+
+  "<div class='scroll'><table><tr><th>Syllabus term</th><th>Gate</th><th>What it does</th><th>Equation</th></tr>"+
+  "<tr><td><b>Selective write</b></td><td>Output gate o</td><td>Writes only part of the cell state out to the hidden state</td><td>h(t) = o ⊙ tanh(c(t))</td></tr>"+
+  "<tr><td><b>Selective read</b></td><td>Input gate i</td><td>Reads only part of the new candidate into the cell state</td><td>i ⊙ c̃(t)</td></tr>"+
+  "<tr><td><b>Selective forget</b></td><td>Forget gate f</td><td>Keeps only part of the old cell state</td><td>f ⊙ c(t−1)</td></tr></table></div>"+
+  "<p>Put together: c(t) = (selective forget) + (selective read), and h(t) = selective write of c(t). If a question says 'explain selective read, write and forget', answer with the three gates and these equations.</p>",
  core:{t:"The core idea: three gated numbers decide what is kept, written and shown",
   b:"<p>Forget gate: how much of yesterday's memory survives. Input gate: how much of today's news is written. Output gate: how much of the memory is shown. Everything else is arithmetic on those three numbers: c = f·c<sub>old</sub> + i·c̃ and h = o·tanh(c).</p>"},
  needToKnow:["Name the three gates and the job of each","Write c(t) = f ⊙ c(t−1) + i ⊙ c̃(t) and h(t) = o ⊙ tanh(c(t))","Say gate values lie in [0, 1] because they are sigmoids","Explain why the additive cell update fights vanishing gradients","Count parameters as 4n(n + d + 1)"],
@@ -2954,12 +3005,14 @@ var M5=[
    answer:"c(t) = <b>1.0856</b>, h(t) = <b>0.398</b>.",
    trap:"Gates use sigmoid (0 to 1) but the candidate uses tanh (−1 to 1). Mixing them up gives a negative 'gate', which is meaningless."}],
  practice:[
+  {id:"m5t7p5",d:"easy",q:"Explain selective read, selective write and selective forget in an LSTM and name the gate that performs each.",hint:"Three gates, three equations.",a:"<p><b>Selective forget</b>: the <b>forget gate</b> f keeps only part of the old cell state, f ⊙ c(t−1). <b>Selective read</b>: the <b>input gate</b> i reads only part of the new candidate into the cell state, i ⊙ c̃(t). Together c(t) = f ⊙ c(t−1) + i ⊙ c̃(t). <b>Selective write</b>: the <b>output gate</b> o writes only part of the cell state to the hidden state, h(t) = o ⊙ tanh(c(t)). Each gate is a sigmoid of [h(t−1), x(t)], so its values lie between 0 and 1.</p>"},
   {id:"m5t7p1",d:"easy",q:"Name the three LSTM gates and state what each controls, using the deck's words.",hint:"Forgetting, remembering, selecting.",a:"<p><b>Forget gate (forgetting):</b> multiplies the old cell state, pushing values towards 0 to discard them. <b>Input gate (remembering):</b> decides how much of the new candidate is added to memory. <b>Output gate (selecting):</b> decides how much of the memory is used to form the output h(t). The deck calls the remember and select gates the input and output gates.</p>"},
   {id:"m5t7p2",d:"moderate",q:"Find c(t) and h(t) when c(t−1) = 1.0, f = 0.5, i = 1.0, c̃ = −0.4, o = 1.0.",hint:"Cell state first.",a:"<p>c(t) = 0.5(1.0) + 1.0(−0.4) = 0.5 − 0.4 = <b>0.1</b>. h(t) = 1.0 × tanh(0.1) = <b>0.0997</b>. The new information partly cancels the retained memory.</p>"},
   {id:"m5t7p3",d:"moderate",q:"Explain why the LSTM cell update helps against vanishing gradients, referring to the equation.",hint:"Addition against repeated multiplication by W.",a:"<p>c(t) = f ⊙ c(t−1) + i ⊙ c̃(t) updates memory by <b>addition</b>. The derivative of c(t) with respect to c(t−1) is just f. When the network sets f close to 1, the gradient passes back along the cell state almost unchanged instead of being multiplied by a weight matrix and a squashing derivative at every step. So the signal survives many steps.</p>"},
   {id:"m5t7p4",d:"moderate",q:"Count the parameters of an LSTM layer with 4 hidden units and 3 inputs.",hint:"Four blocks.",a:"<p>4n(n + d + 1) = 4 × 4 × (4 + 3 + 1) = 4 × 4 × 8 = <b>128</b>. Check by block: each block has 4 × (4 + 3) + 4 = 32, and 4 blocks give 128. A plain RNN hidden layer of the same size has 32.</p>"}],
  questions:[
   {q:"Explain the LSTM architecture, the role of each gate and why it mitigates vanishing gradients.",marks:5,d:"moderate",priority:"high",source:"deck slides 65 to 76"},
+  {q:"Explain selective read, selective write and selective forget in a Long Short-Term Memory network.",marks:5,d:"moderate",priority:"high",source:"syllabus Module 5 contents"},
   {q:"Given the gate values, compute the cell state and hidden state of an LSTM at a step.",marks:5,d:"moderate",priority:"high",source:"syllabus LO 5.4"}]},
 
 {id:"m5t8",m:"m5",title:"GRU and Choosing the Right Recurrent Model",type:"theory",priority:"high",los:["5.4"],
@@ -3012,7 +3065,27 @@ var M5=[
   {id:"m5t9p1",d:"easy",q:"Give two privacy risks and two actions for an RNN trained on customer-call recordings.",hint:"What can a sequence model leak, and what can you remove?",a:"<p><b>Risks:</b> (1) recordings identify speakers and contain personal details; (2) a trained model can memorise and reproduce rare sequences. <b>Actions:</b> (1) obtain consent and limit use to the stated purpose, following the applicable data-protection law; (2) anonymise or minimise the data and test the model for memorised content before release.</p>"},
   {id:"m5t9p2",d:"application",app:true,q:"A hospital plans an LSTM to predict patient deterioration from vital-sign sequences. List one issue in each of: legal, safety, environmental, and give an action for each.",hint:"One row per dimension.",a:"<p><b>Legal:</b> health data is sensitive personal data → lawful basis and consent, de-identify, restrict access. <b>Safety:</b> a missed deterioration or a false alarm harms patients → validate on local data across patient groups, keep clinicians in the decision loop, monitor after launch. <b>Environmental:</b> repeated retraining on growing logs consumes energy → retrain on a schedule not continuously, use a GRU or smaller model if accuracy is equal, and record the energy used.</p>"}],
  questions:[
-  {q:"Discuss the legal, ethical and environmental considerations in deploying an RNN-based system on speech or health data.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 5.5"}]}
+  {q:"Discuss the legal, ethical and environmental considerations in deploying an RNN-based system on speech or health data.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 5.5"}]},
+{id:"m5t10",m:"m5",title:"Self-Learning: Attention in RNNs and RNNs in Reinforcement Learning",type:"theory",priority:"low",los:["5.4"],
+ src:"Syllabus self-learning topic. No slides in your decks; written from the standard treatment.",
+ summary:"Attention lets a decoder look back at every encoder state; recurrent layers give a reinforcement-learning agent memory.",
+ whatIs:"<p>Two extensions of the recurrent network. <b>Attention</b> removes the bottleneck of squeezing a whole input sequence into one final hidden state. <b>RNNs in reinforcement learning</b> give an agent a memory of past observations when one observation does not show the full state.</p>",
+ concept:"<h4>Attention mechanism</h4><p>In a plain encoder–decoder RNN the decoder sees only the encoder's last hidden state, so long inputs are forgotten. With attention, at every output step the decoder computes a weight for <b>each</b> encoder state and uses their weighted sum.</p>"+
+  "<div class='eqb'>score e(t, j) = score( decoder state s(t−1), encoder state h(j) )\nweights α(t, j) = softmax over j of e(t, j)\ncontext c(t) = Σ α(t, j) h(j)</div>"+
+  "<p>The weights sum to 1 and show which input positions the output is 'looking at'. Benefits: handles long sequences, gives a short path for gradients, and the weights can be inspected. Attention without recurrence is the basis of the Transformer.</p>"+
+  "<h4>RNNs in reinforcement learning</h4><p>In many tasks the agent sees only part of the state (a partially observable environment): one camera frame does not show speed or what is behind a wall. A recurrent layer (LSTM or GRU) in the policy or value network keeps a hidden state that summarises the past observations, so the action depends on history and not only on the present frame.</p>"+
+  "<p>Example: the <b>Deep Recurrent Q-Network (DRQN)</b> replaces a fully connected layer of the DQN with an LSTM. Training uses backpropagation through time over short sequences of experience.</p>",
+ needToKnow:["State the bottleneck problem attention solves","Write context = weighted sum of encoder states with softmax weights","Say why an RL agent may need memory (partial observability)","Name DRQN as DQN with an LSTM layer"],
+ recognition:{clues:["'Long sentences are translated badly', 'fixed-length context vector'","'Partially observable', 'agent with memory'"],
+  wording:["Explain the attention mechanism in sequence-to-sequence models.","How are RNNs used in reinforcement learning?"],
+  firstMove:"For attention: scores → softmax weights → weighted sum. For RL: say what the hidden state remembers.",
+  trap:"Saying attention weights are fixed. They are recomputed for every output step."},
+ mistakes:["Forgetting the softmax, so the weights do not sum to 1","Using only the last encoder state in an 'attention' answer","Saying a feed-forward policy can handle partial observability without stacked inputs or memory","Confusing attention with a gate of the LSTM"],
+ practice:[
+  {id:"m5t10p1",d:"moderate",q:"Attention scores for three encoder states are 2, 1 and 0. The encoder states (scalars) are 1, 2 and 3. Find the attention weights and the context value.",hint:"e² = 7.389, e¹ = 2.718, e⁰ = 1.",a:"<p>Sum = 7.389 + 2.718 + 1 = 11.107. Weights = <b>0.665, 0.245, 0.090</b>. Context = 0.665(1) + 0.245(2) + 0.090(3) = 0.665 + 0.489 + 0.270 = <b>1.42</b>.</p>"},
+  {id:"m5t10p2",d:"easy",q:"Why does a reinforcement-learning agent playing from single screen frames benefit from an LSTM layer?",hint:"What can one frame not show?",a:"<p>One frame does not show velocity or objects that were visible earlier, so the environment is only partially observable. The LSTM's hidden state carries information from earlier frames, so the agent can choose actions from the history of observations. This is the idea of the DRQN.</p>"}],
+ questions:[
+  {q:"Explain the attention mechanism in RNN-based encoder–decoder models.",marks:5,d:"moderate",priority:"low",source:"syllabus self-learning"}]}
 ];
 
 /* ============================ MODULE 6 TOPICS: EMERGING TRENDS (GAN, DEEPFAKE, DIFFUSION) ============================ */
@@ -3232,7 +3305,34 @@ var M6=[
   {id:"m6t6p2",d:"moderate",q:"With ᾱ₂ = 0.64, x₀ = 1.0 and ε = 0.5, find x₂.",hint:"Use the shares from the previous question.",a:"<p>x₂ = √0.64(1.0) + √0.36(0.5) = 0.8 + 0.6 × 0.5 = 0.8 + 0.3 = <b>1.1</b>.</p>"},
   {id:"m6t6p3",d:"moderate",q:"State the diffusion training loss and what is being predicted. Why can training pick any step t at random?",hint:"The closed form.",a:"<p>The network ε<sub>θ</sub>(x<sub>t</sub>, t) predicts the noise ε that was added; the loss is the mean squared error ‖ε − ε<sub>θ</sub>(x<sub>t</sub>, t)‖². Any step t can be chosen at random because the closed form x<sub>t</sub> = √ᾱ<sub>t</sub> x₀ + √(1 − ᾱ<sub>t</sub>) ε produces the noisy image for that step directly, without running the earlier steps.</p>"}],
  questions:[
-  {q:"For the given noise schedule compute ᾱ at each step and the noisy value at step 3 for the given x₀ and ε.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 6.4"}]}
+  {q:"For the given noise schedule compute ᾱ at each step and the noisy value at step 3 for the given x₀ and ε.",marks:5,d:"moderate",priority:"medium",source:"syllabus LO 6.4"}]},
+{id:"m6t7",m:"m6",title:"Self-Learning: GAN Variants and Responsible Practice for Generative Models",type:"theory",priority:"low",los:["6.4"],
+ src:"Syllabus self-learning topic. No slides in your decks; written from the standard treatment.",
+ summary:"StyleGAN, CycleGAN and BigGAN in one table, and what responsible use of a generative model requires.",
+ whatIs:"<p>Three well-known GAN variants, each built for a different purpose, and the practices that keep generative models from causing harm.</p>",
+ concept:"<div class='scroll'><table><tr><th>Variant</th><th>Purpose</th><th>Key idea</th><th>Example</th></tr>"+
+  "<tr><td><b>StyleGAN</b></td><td>High-resolution, controllable images</td><td>A mapping network turns the noise z into a style vector w, which is injected at every layer of the generator; coarse layers control pose and shape, fine layers control colour and texture</td><td>Photorealistic faces of people who do not exist</td></tr>"+
+  "<tr><td><b>CycleGAN</b></td><td>Image-to-image translation <b>without paired data</b></td><td>Two generators (A→B, B→A) and two discriminators, with a <b>cycle-consistency loss</b>: translating to B and back must return the original</td><td>Horse ↔ zebra, summer ↔ winter, photo ↔ painting</td></tr>"+
+  "<tr><td><b>BigGAN</b></td><td>Large-scale, class-conditional generation</td><td>Very large batches and networks; class label given to the generator; the truncation trick trades variety for quality</td><td>ImageNet images of a chosen class</td></tr></table></div>"+
+  "<h4>Responsible AI practices for generative models</h4><ul>"+
+  "<li><b>Consent and data rights:</b> train on data you may use; do not generate real people without consent.</li>"+
+  "<li><b>Labelling and provenance:</b> mark synthetic media with watermarks or content credentials.</li>"+
+  "<li><b>Misuse safeguards:</b> block harmful requests (non-consensual images, fraud, disinformation); monitor use.</li>"+
+  "<li><b>Bias testing:</b> check outputs across groups, because the generator reproduces bias in its training data.</li>"+
+  "<li><b>Transparency and accountability:</b> document the model, its limits and who is responsible; keep human review for sensitive uses.</li>"+
+  "<li><b>Sustainability:</b> report and reduce the energy used in training and generation.</li></ul>",
+ needToKnow:["Give the purpose of StyleGAN, CycleGAN and BigGAN","State the cycle-consistency idea","Say what the style vector controls in StyleGAN","List four responsible practices for generative models"],
+ recognition:{clues:["'Unpaired image translation' → CycleGAN","'Control over style at each resolution' → StyleGAN","'Class-conditional ImageNet generation' → BigGAN"],
+  wording:["Write short notes on StyleGAN, CycleGAN and BigGAN.","What are responsible AI practices for generative models?"],
+  firstMove:"One row per variant: purpose, key idea, example.",
+  trap:"Saying CycleGAN needs matching image pairs. Its point is that it does not."},
+ mistakes:["Mixing up the variants' purposes","Describing cycle consistency as a discriminator","Listing ethical problems without practices that address them","Forgetting consent when real people's images are involved"],
+ practice:[
+  {id:"m6t7p1",d:"easy",q:"Which GAN variant would you choose to (a) turn daytime road photos into night-time ones with no matching pairs, (b) generate high-resolution faces with control over hairstyle?",hint:"Unpaired translation; style control.",a:"<p>(a) <b>CycleGAN</b>: unpaired image-to-image translation with a cycle-consistency loss. (b) <b>StyleGAN</b>: the style vector injected at each layer gives control over attributes such as hairstyle.</p>"},
+  {id:"m6t7p2",d:"application",app:true,q:"A start-up releases a face-generation app. Give four responsible-AI measures it should take.",hint:"Consent, labelling, misuse, bias.",a:"<p>(1) Do not allow images of real people without their consent. (2) Watermark or label every generated image. (3) Block and monitor harmful uses such as impersonation and non-consensual content. (4) Test outputs for bias across gender and skin tone, and publish the model's limits with a contact for complaints.</p>"}],
+ questions:[
+  {q:"Write short notes on StyleGAN, CycleGAN and BigGAN.",marks:5,d:"moderate",priority:"low",source:"syllabus self-learning"},
+  {q:"Discuss responsible AI practices for generative models.",marks:5,d:"easy",priority:"low",source:"syllabus self-learning"}]}
 ];
 
 var TOPICS = M1.concat(M2).concat(M3).concat(M4).concat(M5).concat(M6);
@@ -3791,6 +3891,18 @@ var QUIZ_ESE=[
 ];
 var QUIZ_MSE_N=QUIZ.length;
 QUIZ=QUIZ.concat(QUIZ_ESE);
+QUIZ=QUIZ.concat([
+{t:"m5t7",stage:"recognise",q:"In the syllabus wording, 'selective forget' in an LSTM is performed by the:",o:["Input gate","Forget gate","Output gate","Candidate layer"],a:1,e:"The forget gate multiplies the old cell state: f ⊙ c(t−1) keeps only part of it."},
+{t:"m5t7",stage:"recognise",q:"'Selective write' (writing part of the cell state to the hidden state) corresponds to the:",o:["Forget gate","Input gate","Output gate","Reset gate"],a:2,e:"h(t) = o ⊙ tanh(c(t)): the output gate decides how much of the state is written out."},
+{t:"m5t7",stage:"concept",q:"'Selective read' in an LSTM means:",o:["Reading the whole input unchanged","Taking only part of the new candidate into the cell state through the input gate","Erasing the cell state","Reading the output of the previous layer twice"],a:1,e:"The input gate scales the candidate: i ⊙ c̃(t) is added to the cell state."},
+{t:"m2t17",stage:"concept",q:"A model with high bias and low variance typically:",o:["Overfits","Underfits","Fits well","Has zero training error"],a:1,e:"High bias means the model is too rigid to capture the pattern, so it is wrong even on training data."},
+{t:"m1t13",stage:"concept",q:"Which event is usually taken as the start of the modern deep-learning period?",o:["The perceptron, 1958","Backpropagation, 1986","LeNet-5, 1998","AlexNet winning ImageNet, 2012"],a:3,e:"AlexNet (2012) showed that deep CNNs trained on GPUs with ReLU and dropout beat earlier methods by a wide margin."},
+{t:"m1t13",stage:"concept",q:"What did Minsky and Papert show in 1969?",o:["Backpropagation converges","A single perceptron cannot represent XOR","Deep networks need GPUs","ReLU avoids vanishing gradients"],a:1,e:"Their analysis of the perceptron's limits led to a fall in neural-network research until multilayer training became practical."},
+{t:"m1t17",stage:"concept",q:"In transfer learning by feature extraction, which part is trained?",o:["The whole network from random weights","Only the new output layer","Only the first convolution layer","Nothing"],a:1,e:"The pre-trained base is frozen and only the new head is trained."},
+{t:"m4t7",stage:"concept",q:"The encoder of a variational autoencoder outputs:",o:["A class label","A mean and a standard deviation for each code unit","A real/fake probability","The reconstructed image"],a:1,e:"The code is a distribution; z is sampled as μ + σε."},
+{t:"m5t10",stage:"concept",q:"Attention in an encoder–decoder RNN lets the decoder use:",o:["Only the last encoder state","A weighted sum of all encoder states","Only the first input","No encoder information"],a:1,e:"Softmax weights over all encoder states give the context for each output step."},
+{t:"m6t7",stage:"recognise",q:"Which GAN variant translates images between two domains without paired examples?",o:["StyleGAN","CycleGAN","BigGAN","DCGAN"],a:1,e:"CycleGAN uses two generators and a cycle-consistency loss, so no paired data is needed."}
+]);
 
 /* ===================== RAPID REVISION CHECKLIST (Exam Mode) ===================== */
 var PLAN_LAST30=[

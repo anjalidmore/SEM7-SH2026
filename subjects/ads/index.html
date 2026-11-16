@@ -4324,7 +4324,19 @@ TOPICS.push({
 <div class="scroll"><table class="t"><thead><tr><th>Test</th><th>Hypotheses</th><th>Rejection region</th></tr></thead><tbody>
 <tr><td>Two-tailed</td><td>H₀: μ = μ₀, H₁: μ ≠ μ₀</td><td>Both tails (α/2 each)</td></tr>
 <tr><td>Right-tailed</td><td>H₀: μ ≤ μ₀, H₁: μ &gt; μ₀</td><td>Right tail</td></tr>
-<tr><td>Left-tailed</td><td>H₀: μ ≥ μ₀, H₁: μ &lt; μ₀</td><td>Left tail</td></tr></tbody></table></div>`,
+<tr><td>Left-tailed</td><td>H₀: μ ≥ μ₀, H₁: μ &lt; μ₀</td><td>Left tail</td></tr></tbody></table></div>
+<h4>The p-value approach (LO 3.4)</h4>
+<p>The <b>p-value</b> is the probability, assuming H₀ is true, of getting a test statistic at least as extreme as the one observed. It is the smallest level of significance at which H₀ would be rejected.</p>
+<div class="formula">Two-tailed:   p = 2 × P(Z ≥ |z|)
+One-tailed:   p = P(Z ≥ z)   (or P(Z ≤ z) for a left tail)
+
+Decision:  p ≤ α → reject H₀        p &gt; α → do not reject H₀</div>
+<p>It always gives the same decision as the critical-value method. A small p-value means the sample would be very unlikely if H₀ were true. It is <b>not</b> the probability that H₀ is true.</p>
+<table><tr><th>p-value</th><th>Evidence against H₀</th></tr>
+<tr><td>p ≤ 0.01</td><td>Very strong: significant at 1%</td></tr>
+<tr><td>0.01 &lt; p ≤ 0.05</td><td>Strong: significant at 5% but not at 1%</td></tr>
+<tr><td>p &gt; 0.05</td><td>Not significant at 5%</td></tr></table>
+<p>Example: the ocean-depth test gives Z = 2.07. Area from 0 to 2.07 = 0.4808, so one tail = 0.5 − 0.4808 = 0.0192 and p = 2 × 0.0192 = <b>0.0384</b>. Since 0.0384 &lt; 0.05, reject H₀: the same decision as 2.07 &gt; 1.96.</p>`,
  examAnswer:{
   short:"Define the term asked (H₀, α, Type I error …) in one line each.",
   medium:"The five-step table, or the 2 × 2 error table with α, β and the two risks, plus an example.",
@@ -4348,6 +4360,10 @@ TOPICS.push({
    why:"The test only sees a sample, so either wrong decision is possible; their probabilities trade off unless more information (a larger n) is collected.",
    trap:"Saying α and β add up to 1. They are conditional on different states of the world."}],
  practice:[
+  {id:"p_m3t4_3", d:"standard", marks:5, q:"A two-tailed z-test gives Z = 1.50. Find the p-value and state the decision at 5%. Then do the same for a right-tailed test with Z = 1.80 at 5% and at 1%.",
+   a:`<div class="formula">Two-tailed, Z = 1.50:  area(0 to 1.50) = 0.4332 → tail = 0.0668 → p = 2 × 0.0668 = 0.1336
+Right-tailed, Z = 1.80: area(0 to 1.80) = 0.4641 → p = 0.5 − 0.4641 = 0.0359</div>
+<div class="answer">Z = 1.50: p = 0.134 &gt; 0.05 → <b>do not reject H₀</b>. Z = 1.80 (one-tailed): p = 0.036 → <b>reject at 5%</b> (0.036 &lt; 0.05) but <b>not at 1%</b> (0.036 &gt; 0.01).</div>`},
   {id:"p_m3t4_1", d:"basic", marks:5, q:"Explain the general procedure for testing a hypothesis.",
    a:`1. <b>Null hypothesis H₀</b> — a definite statement of no difference, e.g. H₀: μ = μ₀.<br>2. <b>Alternative hypothesis H₁</b> — μ ≠ μ₀ (two-tailed) or μ &gt; μ₀ / μ &lt; μ₀ (one-tailed).<br>3. <b>Level of significance α</b> — fixed in advance, usually 5% or 1%; the maximum risk of rejecting a true H₀.<br>4. <b>Test statistic</b> — z when n ≥ 30 or σ is known; t when n &lt; 30 and σ is unknown. Compute it under H₀.<br>5. <b>Conclusion</b> — compare with the table (critical) value: if |computed| &lt; critical, accept H₀; otherwise reject H₀, and state the result in the words of the problem.`},
   {id:"p_m3t4_2", d:"basic", marks:5, q:"Distinguish one-tailed and two-tailed tests. When would you use each? Give the 5% critical z values.",
@@ -4356,6 +4372,7 @@ A <b>one-tailed</b> test has H₁: μ &gt; μ₀ (right-tailed) or μ &lt; μ₀
 Use a one-tailed test when the claim has a direction (“training <i>improves</i> scores”, “bulbs last <i>at least</i> 1200 h”); otherwise two-tailed.`}],
  questions:[
   {q:"Explain the steps in testing a hypothesis.", marks:5, d:"basic", priority:"high", source:"source"},
+  {q:"What is a p-value? How is it used to reach a conclusion in a hypothesis test?", marks:5, d:"basic", priority:"medium", source:"predicted"},
   {q:"Explain Type I and Type II errors.", marks:5, d:"basic", priority:"high", source:"source"},
   {q:"Distinguish one-tailed and two-tailed tests.", marks:5, d:"basic", priority:"medium", source:"source"}]
 });
@@ -4986,7 +5003,7 @@ TOPICS.push({
 <tr><td>Density-based</td><td>Outliers sit in low-density regions (LOF handles varying density)</td></tr>
 <tr><td>Clustering</td><td>Outliers do not belong to any cluster, or form small far-away clusters</td></tr>
 <tr><td>Classification</td><td>Needs labelled data with an “outlier” class; outliers are rare, so oversample them</td></tr></tbody></table></div>
-<div class="box neutral"><h5>Gap in the material</h5><p style="margin:0">No COMP B slides for 5.1–5.5 or for <b>5.6 SMOTE</b> have been received. This topic follows the course textbook. SMOTE has no source yet and is not covered here.</p></div>`,
+<div class="box neutral"><h5>Gap in the material</h5><p style="margin:0">No COMP B slides for 5.1–5.5 or for <b>5.6 SMOTE</b> have been received. This topic follows the course textbook. SMOTE has no class slides either; it has its own page, written from the standard treatment.</p></div>`,
  examAnswer:{
   short:"Definition of an outlier with the context point.",
   medium:"Definition, the four causes with examples, and what to do with each.",
@@ -5211,6 +5228,106 @@ LOF(p)           = [ Σ lrd(o) / |N_k(p)| ] / lrd(p)</div>
 });
 
 /* ============================ MODULE 6 ============================== */
+
+TOPICS.push({
+ id:"m5t5", m:"m5", title:"SMOTE: Synthetic Minority Over-sampling Technique",
+ classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 5.6"],
+ src:"Syllabus 5.6 · no class slides received; standard treatment (Chawla et al., 2002)",
+ summary:"Balance a rare class by creating new minority points on the line between a minority point and one of its nearest minority neighbours.",
+ whatIs:`<p>Anomaly data are <b>imbalanced</b>: frauds, faults and attacks are a tiny share of the records. A classifier trained on such data can score 98% accuracy by calling everything normal. <b>SMOTE</b> fixes the training set by adding <b>synthetic</b> minority-class points, instead of duplicating the existing ones.</p>`,
+ needToKnow:[
+  "Class imbalance: the minority (anomaly) class is far smaller than the majority class.",
+  "Synthetic point = x + λ × (x_nn − x), with λ a random number between 0 and 1.",
+  "x_nn is one of the k nearest <b>minority</b> neighbours of x (k = 5 by default).",
+  "Apply SMOTE to the training set only, never to the test set.",
+  "Judge the result with precision, recall and F1, not accuracy."],
+ recognition:{
+  clues:["<b>“Imbalanced”, “only 2% are fraud”, “rare class”</b> → SMOTE.",
+   "<b>A minority point, a neighbour and a random number</b> → compute the synthetic point.",
+   "<b>“How many synthetic samples to balance the data?”</b> → majority count − minority count."],
+  wording:["Explain SMOTE with a suitable example.",
+   "Generate a synthetic sample for the minority point (2, 3) using its neighbour (4, 5) and λ = 0.5.",
+   "How does SMOTE handle class imbalance?"],
+  firstStep:"Identify the minority class and write the formula x_new = x + λ(x_nn − x).",
+  method:"Pick a minority point → find its k nearest minority neighbours → choose one → difference × λ → add to the point → repeat until the classes are balanced.",
+  trap:"Taking neighbours from the majority class. SMOTE uses <b>minority</b> neighbours only."},
+ concept:`<div class="box neutral"><h5>Not in your lecture material</h5><p style="margin:0">No class slides cover this point. It is written from the standard textbook treatment so the syllabus line is not left blank.</p></div>
+<h4>Why not just copy the minority rows?</h4>
+<p>Random over-sampling repeats the same points, so the classifier memorises them (overfitting). SMOTE creates <b>new</b> points between existing minority points, which widens the region the classifier learns for the rare class.</p>
+<h4>The algorithm</h4>
+<ol><li>Take a minority-class point <b>x</b>.</li>
+<li>Find its <b>k nearest neighbours within the minority class</b>.</li>
+<li>Choose one neighbour <b>x_nn</b> at random.</li>
+<li>Take a random number <b>λ</b> between 0 and 1.</li>
+<li>Create the synthetic point on the line joining them.</li>
+<li>Repeat until the required number of synthetic points is made.</li></ol>
+<div class="formula">x_new = x + λ × (x_nn − x)          0 ≤ λ ≤ 1
+
+λ = 0 gives x itself, λ = 1 gives the neighbour, λ = 0.5 gives the midpoint.
+Synthetic points needed to balance = (majority count) − (minority count)</div>
+<table><tr><th>Advantages</th><th>Limitations</th></tr>
+<tr><td>No exact duplicates, so less overfitting than random over-sampling</td><td>Can create points inside the majority region when the classes overlap (noise)</td></tr>
+<tr><td>No information is thrown away, unlike under-sampling</td><td>Ignores the majority class when placing new points</td></tr>
+<tr><td>Improves recall on the rare class</td><td>Less effective in very high dimensions; works on numeric attributes</td></tr></table>
+<p><b>Evaluation (LO 5.6).</b> Split the data first and apply SMOTE to the <b>training</b> part only; a test set with synthetic points gives a false picture. Compare models using recall, precision and F1 on the minority class, because accuracy is misleading on imbalanced data.</p>
+<p>Variants worth naming: <b>Borderline-SMOTE</b> (over-samples only minority points near the class boundary) and <b>ADASYN</b> (makes more synthetic points for minority points that are harder to learn).</p>`,
+ examAnswer:{
+  short:"Definition, the formula x_new = x + λ(x_nn − x), and one advantage.",
+  medium:"Imbalance problem → algorithm steps → formula → one worked synthetic point.",
+  long:"As medium, plus advantages, limitations, train-only rule and evaluation by recall and F1."},
+ mistakes:[
+  "Using a majority-class neighbour.",
+  "Applying SMOTE before the train/test split, or to the test set.",
+  "Saying SMOTE duplicates minority records. It interpolates new ones.",
+  "Reporting accuracy alone after balancing."],
+ examples:[
+  {id:"ex_m5t5_1", topic:"m5t5", title:"One synthetic point, step by step",
+   category:"SMOTE",
+   recog:"Minority points listed with a random number λ.",
+   need:"Distances within the minority class, then the interpolation formula.",
+   q:"The minority class has three points: A(2, 3), B(4, 5) and C(3, 7). Using k = 1 and Euclidean distance, generate a synthetic point for A with λ = 0.5, and another with λ = 0.2.",
+   steps:[
+    "Distances from A: to B = √(2² + 2²) = √8 = <b>2.83</b>; to C = √(1² + 4²) = √17 = <b>4.12</b>.",
+    "Nearest minority neighbour of A is <b>B(4, 5)</b>.",
+    "Difference B − A = (4 − 2, 5 − 3) = (2, 2).",
+    "λ = 0.5: x_new = (2, 3) + 0.5 × (2, 2) = <b>(3, 4)</b>.",
+    "λ = 0.2: x_new = (2, 3) + 0.2 × (2, 2) = <b>(2.4, 3.4)</b>."],
+   answer:`<div class="formula">x_new = A + λ(B − A)
+λ = 0.5 → (3, 4)        λ = 0.2 → (2.4, 3.4)</div>
+<div class="answer">Both synthetic points lie on the line segment from A to B. They are added to the training set with the <b>minority</b> label.</div>`,
+   why:"Points between two genuine minority points are plausible members of the same class.",
+   trap:"Multiplying λ by the neighbour itself. λ multiplies the <b>difference</b> (x_nn − x)."},
+  {id:"ex_m5t5_2", topic:"m5t5", title:"How many synthetic points are needed",
+   category:"SMOTE",
+   recog:"Class counts given; “balance the dataset”.",
+   need:"Majority − minority, then per-point share.",
+   q:"A training set has 950 normal and 50 fraudulent transactions. How many synthetic fraud records must SMOTE create to balance the classes, how many per original fraud record, and what is the over-sampling percentage?",
+   steps:[
+    "Synthetic points needed = 950 − 50 = <b>900</b>.",
+    "Per original minority record = 900/50 = <b>18</b>.",
+    "Over-sampling percentage = 18 × 100 = <b>1800%</b>.",
+    "After SMOTE: 950 normal and 950 fraud, 1,900 training records in all."],
+   answer:`<div class="answer"><b>900 synthetic records</b>, 18 from each original fraud record (1800% over-sampling). The test set is left untouched.</div>`,
+   why:"Balancing means bringing the minority count up to the majority count.",
+   trap:"Answering 950. That is the final minority count, not the number created."}],
+ practice:[
+  {id:"p_m5t5_1", d:"standard", marks:5, q:"Minority point P(1, 2) has nearest minority neighbour Q(5, 4). Generate synthetic points for λ = 0.25 and λ = 0.75.",
+   a:`<div class="formula">Q − P = (4, 2)
+λ = 0.25:  (1, 2) + 0.25 × (4, 2) = (2, 2.5)
+λ = 0.75:  (1, 2) + 0.75 × (4, 2) = (4, 3.5)</div>
+<div class="answer">Synthetic points <b>(2, 2.5)</b> and <b>(4, 3.5)</b>.</div>`},
+  {id:"p_m5t5_2", d:"basic", marks:5, q:"Compare SMOTE with random over-sampling and random under-sampling.",
+   a:`<table><tr><th>Method</th><th>What it does</th><th>Risk</th></tr>
+<tr><td>Random under-sampling</td><td>Deletes majority records</td><td>Loses information</td></tr>
+<tr><td>Random over-sampling</td><td>Duplicates minority records</td><td>Overfitting to the repeated points</td></tr>
+<tr><td>SMOTE</td><td>Creates new minority points by interpolation between neighbours</td><td>Noise where classes overlap</td></tr></table>`},
+  {id:"p_m5t5_3", d:"moderate", marks:5, q:"A fraud model trained on 9,900 normal and 100 fraud records reports 99% accuracy. Why is this not enough, and how would you evaluate the model after using SMOTE?",
+   a:`A model that predicts “normal” for every record is right 9,900 times in 10,000: <b>99% accuracy with zero frauds caught</b> (recall 0).<br>Evaluation: split into training and test sets first; apply SMOTE to the <b>training</b> set only; test on the original imbalanced test set; report the confusion matrix with <b>recall</b> (frauds caught), <b>precision</b> (alerts that were real) and <b>F1</b> for the fraud class, and compare with the model trained without SMOTE.`}],
+ questions:[
+  {q:"Explain SMOTE. How does it handle the class imbalance problem?", marks:5, d:"standard", priority:"high", source:"predicted"},
+  {q:"Generate a synthetic sample using SMOTE for a given minority point, its nearest neighbour and a random number.", marks:5, d:"standard", priority:"high", source:"predicted"},
+  {q:"Why is accuracy a poor measure for anomaly detection? Which measures are used instead?", marks:5, d:"basic", priority:"medium", source:"predicted"}]
+});
 
 TOPICS.push({
  id:"m6t1", m:"m6", title:"Time Series: Components, Taxonomy of Forecasting, ARIMA",
@@ -5796,6 +5913,102 @@ TOPICS.forEach(t => {
    weak-topic detection. stage: "recognise" | "select" | "solve" | "concept"
    ===================================================================== */
 const QUIZ = [
+{t:"m5t5", m:"m5", stage:"concept", q:"SMOTE creates new minority-class records by",
+ o:["Copying existing minority records","Interpolating between a minority point and one of its nearest minority neighbours","Deleting majority records","Relabelling majority records"], a:1,
+ e:"x_new = x + λ(x_nn − x). Copying is random over-sampling; deleting is under-sampling."},
+{t:"m5t5", m:"m5", stage:"solve", q:"Minority point (2, 3), neighbour (4, 5), λ = 0.5. The synthetic point is",
+ o:["(6, 8)","(3, 4)","(2, 2.5)","(1, 1)"], a:1,
+ e:"(2, 3) + 0.5 × (2, 2) = (3, 4), the midpoint."},
+{t:"m5t5", m:"m5", stage:"solve", q:"A training set has 800 normal and 200 anomalous records. Synthetic records needed to balance it:",
+ o:["200","600","800","1000"], a:1,
+ e:"800 − 200 = 600, i.e. 3 per original minority record."},
+{t:"m5t5", m:"m5", stage:"select", q:"SMOTE should be applied to",
+ o:["The whole dataset before splitting","The test set only","The training set only","Both sets separately"], a:2,
+ e:"The test set must stay as real data. Synthetic test points make the scores look better than they are."},
+{t:"m5t3", m:"m5", stage:"recognise", q:"A point is flagged because its distance to its 3rd nearest neighbour is very large. The method is",
+ o:["Statistical (3σ)","Distance-based","SMOTE","Decomposition"], a:1,
+ e:"Scoring by the distance to the k-th nearest neighbour is the distance-based approach."},
+{t:"m5t1", m:"m5", stage:"concept", q:"On data with 1% anomalies, a model that labels everything normal has",
+ o:["99% accuracy and 0 recall","1% accuracy","99% recall","50% accuracy"], a:0,
+ e:"Accuracy looks excellent while no anomaly is found. This is why recall, precision and F1 are used."},
+{t:"m3t4", m:"m3", stage:"concept", q:"A test gives p = 0.03. At α = 0.05 the decision is",
+ o:["Do not reject H₀","Reject H₀","Accept H₁ only at 1%","No decision is possible"], a:1,
+ e:"p ≤ α → reject H₀. At α = 0.01 the same result would not be significant."},
+{t:"m3t4", m:"m3", stage:"concept", q:"The p-value is",
+ o:["The probability that H₀ is true","The probability, if H₀ is true, of a result at least as extreme as the one observed","The level of significance","The probability of a Type II error"], a:1,
+ e:"It is computed assuming H₀ is true. It is not the probability of H₀ itself."},
+{t:"m3t1", m:"m3", stage:"solve", q:"X is normal with mean 50 and S.D. 10. The z-score of X = 65 is",
+ o:["0.65","1.5","15","6.5"], a:1,
+ e:"z = (65 − 50)/10 = 1.5."},
+{t:"m3t1", m:"m3", stage:"concept", q:"In a normal distribution, about what percentage of values lie within μ ± 2σ?",
+ o:["68%","95%","99.7%","50%"], a:1,
+ e:"The 68–95–99.7 rule: ±1σ, ±2σ, ±3σ."},
+{t:"m3t1", m:"m3", stage:"solve", q:"For a standard normal variate, area(0 to 1) = 0.3413. P(Z > 1) is",
+ o:["0.3413","0.1587","0.8413","0.6826"], a:1,
+ e:"0.5 − 0.3413 = 0.1587."},
+{t:"m3t2", m:"m3", stage:"solve", q:"Calls arrive at a mean of 2 per minute (Poisson). P(no call in a minute) is",
+ o:["e⁻² = 0.135","0.5","2e⁻² = 0.271","1 − e⁻²"], a:0,
+ e:"P(0) = e⁻ᵐ m⁰/0! = e⁻² = 0.135."},
+{t:"m3t3", m:"m3", stage:"solve", q:"σ = 12 and n = 36. The standard error of the mean is",
+ o:["12","2","0.33","72"], a:1,
+ e:"SE = σ/√n = 12/6 = 2."},
+{t:"m3t3", m:"m3", stage:"concept", q:"The Central Limit Theorem says that for large n the sampling distribution of the mean is",
+ o:["The same shape as the population","Approximately normal whatever the population's shape","Always Poisson","Uniform"], a:1,
+ e:"With mean μ and standard error σ/√n. This is why z-tests work on non-normal data."},
+{t:"m3t5", m:"m3", stage:"solve", q:"n = 100, x̄ = 52, μ₀ = 50, σ = 10. The test statistic Z is",
+ o:["0.2","2","20","0.02"], a:1,
+ e:"Z = (52 − 50)/(10/√100) = 2/1 = 2."},
+{t:"m3t6", m:"m3", stage:"select", q:"Two different groups of 12 and 15 patients are compared on mean recovery time. The test is",
+ o:["Paired t-test","Independent samples t-test with 25 df","One-sample z-test","One-way ANOVA with 3 groups"], a:1,
+ e:"Two separate small samples: independent t-test, df = n₁ + n₂ − 2 = 25."},
+{t:"m3t7", m:"m3", stage:"solve", q:"In a one-way ANOVA, MS between = 12 and MS within = 3. F is",
+ o:["0.25","4","9","36"], a:1,
+ e:"F = MS between / MS within = 12/3 = 4."},
+{t:"m3t7", m:"m3", stage:"concept", q:"The null hypothesis of a one-way ANOVA is",
+ o:["All group variances differ","All group means are equal","At least one mean differs","The data are not normal"], a:1,
+ e:"H₀: μ₁ = μ₂ = … = μ_k. A large F leads to its rejection."},
+{t:"m4t1", m:"m4", stage:"concept", q:"In y = a + bx, the intercept a is",
+ o:["The change in y per unit of x","The value of y when x = 0","The correlation coefficient","The error term"], a:1,
+ e:"b is the slope (change in y per unit x); a is where the line cuts the y-axis."},
+{t:"m4t1", m:"m4", stage:"solve", q:"The fitted line is y′ = 8.4x + 3.2. The estimate at x = 6 is",
+ o:["50.4","53.6","11.6","69.6"], a:1,
+ e:"8.4 × 6 + 3.2 = 53.6."},
+{t:"m4t2", m:"m4", stage:"solve", q:"Errors are 2, −1, 3, −2. The MAE is",
+ o:["0.5","2","4.5","8"], a:1,
+ e:"(2 + 1 + 3 + 2)/4 = 2. The plain mean of the errors (0.5) lets them cancel."},
+{t:"m4t2", m:"m4", stage:"solve", q:"SSE = 20 and SST = 100. R² is",
+ o:["0.2","0.8","5","0.64"], a:1,
+ e:"R² = 1 − SSE/SST = 1 − 0.2 = 0.8: the model explains 80% of the variation."},
+{t:"m4t2", m:"m4", stage:"concept", q:"The error term e in y = a + bx + e represents",
+ o:["The slope","The part of y not explained by x","The intercept","The sample size"], a:1,
+ e:"It is the difference between the actual y and the value on the line: the residual."},
+{t:"m4t3", m:"m4", stage:"recognise", q:"House price is to be predicted from area, number of rooms and age. The model is",
+ o:["Simple linear regression","Multiple linear regression","Correlation analysis","One-way ANOVA"], a:1,
+ e:"One dependent variable and several predictors: Y = b₀ + b₁X₁ + b₂X₂ + b₃X₃."},
+{t:"m4t4", m:"m4", stage:"solve", q:"b₁ = 6 with standard error 2. The t-statistic for H₀: b₁ = 0 is",
+ o:["12","3","0.33","4"], a:1,
+ e:"t = b₁/SE(b₁) = 6/2 = 3."},
+{t:"m6t1", m:"m6", stage:"concept", q:"In ARIMA(p, d, q), d stands for",
+ o:["The number of autoregressive terms","The number of differences taken to make the series stationary","The number of moving-average terms","The seasonal period"], a:1,
+ e:"p = autoregressive order, d = degree of differencing, q = moving-average order."},
+{t:"m6t1", m:"m6", stage:"recognise", q:"A steady long-term rise in sales over ten years is which component?",
+ o:["Trend","Seasonality","Cyclical","Irregular"], a:0,
+ e:"Trend is the long-term direction. Seasonality repeats within a year."},
+{t:"m6t3", m:"m6", stage:"solve", q:"F₅ = 40, actual y₅ = 50, α = 0.2. The exponential-smoothing forecast F₆ is",
+ o:["48","42","45","50"], a:1,
+ e:"F₆ = αy₅ + (1 − α)F₅ = 0.2(50) + 0.8(40) = 42."},
+{t:"m6t3", m:"m6", stage:"solve", q:"y = 10, 12, 14, 16. The average-method forecast for the next period is",
+ o:["16","13","14","18"], a:1,
+ e:"Mean of all observations: 52/4 = 13."},
+{t:"m6t4", m:"m6", stage:"solve", q:"Squared errors are 4, 9, 16, 7. The RMSE is",
+ o:["9","3","36","6"], a:1,
+ e:"MSE = 36/4 = 9, RMSE = √9 = 3."},
+{t:"m6t4", m:"m6", stage:"solve", q:"Actual 200, forecast 180. The absolute percentage error is",
+ o:["20%","10%","11.1%","9%"], a:1,
+ e:"|200 − 180|/200 = 10%. The divisor is the actual value."},
+{t:"m2t15", m:"m2", stage:"recognise", q:"A smooth curve showing how the values of one variable are spread, drawn from its mean and standard deviation, is a",
+ o:["Scatter plot","Distribution chart","Bubble chart","Ogive"], a:1,
+ e:"The distribution chart is the univariate plot of the fitted distribution; a histogram shows the same idea with bars."},
 /* ---------------- MODULE 1 ---------------- */
 {t:"m1t1", m:"m1", stage:"concept", q:"Which of the following best defines Data Science?",
  o:["Writing software applications","Collecting, analysing and extracting knowledge from data to solve problems","Designing computer networks","Storing files in databases"], a:1,
@@ -6432,7 +6645,7 @@ BUILDING THE TABLE
 <li><b>Statistical:</b> |z| &gt; 3, or outside Q1 − 1.5 IQR / Q3 + 1.5 IQR.</li>
 <li><b>Distance:</b> score = distance to the k-th nearest neighbour; normalise first.</li>
 <li><b>LOF:</b> k-distance → reach-dist = max(k-dist(o), dist) → lrd = k/Σreach → LOF = avg neighbour lrd/own lrd.</li>
-<li><b>SMOTE (5.6):</b> no class material received yet.</li></ol>`},
+<li><b>SMOTE (5.6):</b> x_new = x + λ(x_nn − x), with a minority neighbour and 0 ≤ λ ≤ 1; training set only; judge by recall and F1.</li></ol>`},
 /* ------------------------------ MODULE 6 ------------------------------ */
 {m:"m6", h:"Module 6 in eight lines", b:`<ol class="list" style="margin-bottom:0">
 <li><b>Components:</b> trend · seasonality (fixed period) · cyclical (no fixed period) · irregular.</li>

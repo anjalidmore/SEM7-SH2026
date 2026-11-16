@@ -1522,7 +1522,7 @@ var M1_NUM3 = [
     "<tr><td>C</td><td>4</td><td>2</td></tr><tr><td>D</td><td>3</td><td>1</td></tr>"+
     "<tr><td>E</td><td>2</td><td>5</td></tr><tr><td><b>Total</b></td><td></td><td><b>9</b></td></tr></table></div>"+
     "<p>Reading the costs back off the original table confirms the total: A&rarr;5 costs 1, B&rarr;1 costs 0, C&rarr;4 costs 2, D&rarr;3 costs 1, E&rarr;2 costs 5. Sum = 1 + 0 + 2 + 1 + 5 = <b>9</b>.</p>"+
-    "<div class='box'><h5>Now covered elsewhere</h5><p>Transportation, its optimality tests, the Hungarian algorithm, sequencing, TSP and integer programming all have their own pages on this site, built from the decks that arrived after this page was first written. Revised simplex, dual simplex and sensitivity analysis still have no material anywhere.</p></div>",
+    "<div class='box'><h5>Now covered elsewhere</h5><p>Transportation, its optimality tests, the Hungarian algorithm, sequencing, TSP and integer programming all have their own pages on this site, built from the decks that arrived after this page was first written. Revised simplex, dual simplex and sensitivity analysis have no lecture material; their pages on this site follow the textbook.</p></div>",
   needToKnow:[
     "Read an assignment cost matrix and total the cost of a stated assignment.",
     "Verify that an assignment is valid — exactly one job per person and one person per job.",
@@ -4656,11 +4656,613 @@ var M6_TOPICS = [
 }
 ];
 
+/* ===== ESE additions: syllabus headings that had no page (written from the standard
+   textbook treatment, because no lecture deck covers them; each page says so) ===== */
+var ESE_SRC = bx("warning","Not in your lecture material","<p>No deck or handwritten note in your folder covers this syllabus heading. This page follows the standard textbook treatment (Taha; Hillier &amp; Lieberman; Kanti Swarup). If your teacher gives a different notation, use theirs.</p>");
+var ESE_ADD = [
+{
+  id:"m2t7", m:"m2", type:"problem-solving", priority:"high", los:[],
+  title:"Multi-server model (M/M/c) — several servers, one queue",
+  summary:"The syllabus's 'multi-server model': c identical servers fed by one queue. Find P₀ first, then Lq, then everything else.",
+  whatIs:"<p>In the model <b>(M/M/c):(∞/FCFS)</b> arrivals are Poisson at rate λ, each of the <b>c</b> servers serves exponentially at rate μ, and customers wait in <b>one common queue</b>. The system is stable only when λ &lt; cμ.</p>",
+  concept:ESE_SRC+
+    "<h4>Symbols</h4><p>r = λ/μ (the offered load) and ρ = λ/(cμ) (utilisation of each server). ρ must be below 1.</p>"+
+    "<h4>The formulas, in the order you use them</h4>"+
+    mono("P0 = 1 / [ sum(n = 0 to c-1) r^n / n!   +   r^c / ( c! (1 - rho) ) ]\nLq = P0 * r^c * rho / ( c! (1 - rho)^2 )\nLs = Lq + r\nWq = Lq / lambda\nWs = Wq + 1/mu\nP(an arrival has to wait) = r^c * P0 / ( c! (1 - rho) )")+
+    "<h4>Shortcut for two servers (c = 2)</h4>"+
+    mono("P0 = (1 - rho) / (1 + rho)\nLq = 2 rho^3 / (1 - rho^2)")+
+    "<p>Only P₀ and Lq are new. Ls, Wq and Ws follow from the same relations as the single-server model (Ls = Lq + λ/μ and Little's law).</p>"+
+    "<h4>Single server against multi-server</h4>"+
+    tbl(["","(M/M/1)","(M/M/c)"],[
+      ["Stability","λ &lt; μ","λ &lt; cμ"],
+      ["Utilisation","ρ = λ/μ","ρ = λ/(cμ)"],
+      ["P₀","1 − ρ","the bracket formula above"],
+      ["In service on average","λ/μ","λ/μ (shared among c servers)"],
+      ["Ls − Lq","λ/μ","λ/μ"]]),
+  needToKnow:[
+    "Recognise the model from 'two counters', 'three clerks', c > 1 in Kendall's notation.",
+    "Check λ < cμ before using any formula.",
+    "Compute P₀, then Lq, then Ls, Wq, Ws in that order.",
+    "Use the c = 2 shortcut: P₀ = (1 − ρ)/(1 + ρ), Lq = 2ρ³/(1 − ρ²)."
+  ],
+  recognition:{
+    clues:["More than one server: 'two tellers', 'three pumps', 'a second counter is opened'.","Kendall's notation with c = 2 or 3, such as (M/M/2):(∞/FCFS).","λ larger than μ but smaller than cμ."],
+    wording:["Find the average waiting time if two clerks serve the customers.","What is the probability that a customer has to wait?","Compare one fast server with two servers."],
+    firstMove:"Write r = λ/μ and ρ = λ/(cμ), confirm ρ < 1, then compute P₀.",
+    trap:"Using the single-server formula Lq = λ²/(μ(μ − λ)) with μ replaced by cμ. Two servers at rate μ are not the same as one server at rate 2μ."
+  },
+  examAnswer:{
+    short:"State the model, write ρ = λ/(cμ), give P₀ and Lq.",
+    medium:"r and ρ → P₀ → Lq → Ls, Wq, Ws with units.",
+    long:"As medium, plus P(wait) and one line comparing with the single-server system."
+  },
+  mistakes:[
+    "Taking ρ = λ/μ instead of λ/(cμ).",
+    "Forgetting the n = 0 term (which is 1) in the P₀ sum.",
+    "Adding 1 instead of λ/μ when going from Lq to Ls.",
+    "Treating c servers as one server c times as fast."
+  ],
+  examples:[
+    {id:"m2t7e1", title:"Two tellers, λ = 10 and μ = 6 per hour",
+     q:"Customers arrive at a bank at 10 per hour (Poisson). Each of two tellers serves 6 customers per hour (exponential). Find P₀, Lq, Ls, Wq and Ws.",
+     steps:["One teller alone cannot cope: λ = 10 > μ = 6. With two, cμ = 12 > 10, so the system is stable.",
+       "r = λ/μ = 10/6 = 1.667; ρ = λ/(cμ) = 10/12 = 0.8333.",
+       "P₀ = 1 / [1 + 1.667 + (1.667² / 2) / (1 − 0.8333)] = 1 / [2.667 + 8.333] = 1/11 = <b>0.0909</b>.",
+       "Lq = P₀ r² ρ / (2! (1 − ρ)²) = 0.0909 × 2.778 × 0.8333 / (2 × 0.02778) = <b>3.79 customers</b>.",
+       "Ls = Lq + r = 3.79 + 1.67 = <b>5.45 customers</b>.",
+       "Wq = Lq/λ = 3.79/10 = 0.379 hour = <b>22.7 minutes</b>. Ws = Wq + 1/μ = 22.7 + 10 = <b>32.7 minutes</b>.",
+       "Check with the shortcut: Lq = 2ρ³/(1 − ρ²) = 2(0.5787)/(0.3056) = 3.79 ✓."],
+     answer:"<b>P₀ = 0.091, Lq = 3.79, Ls = 5.45, Wq = 22.7 min, Ws = 32.7 min.</b>",
+     trap:"ρ is 10/12, not 10/6. A utilisation above 1 means you forgot to divide by c."},
+    {id:"m2t7e2", title:"Three servers, λ = 20 and μ = 10 per hour",
+     q:"A clinic has three doctors. Patients arrive at 20 per hour and each doctor treats 10 per hour. Find P₀, the average number waiting and the average wait.",
+     steps:["r = 20/10 = 2; ρ = 20/30 = 0.667.",
+       "Sum for n = 0, 1, 2: 1 + 2 + 2²/2! = 5.",
+       "Last term: r³/(3!(1 − ρ)) = 8/(6 × 0.3333) = 4.",
+       "P₀ = 1/(5 + 4) = <b>1/9 = 0.111</b>.",
+       "Lq = P₀ r³ ρ / (3!(1 − ρ)²) = 0.111 × 8 × 0.667 / (6 × 0.1111) = <b>0.889 patients</b>.",
+       "Wq = 0.889/20 = 0.0444 hour = <b>2.67 minutes</b>. Ls = 0.889 + 2 = <b>2.89</b>."],
+     answer:"<b>P₀ = 1/9, Lq = 0.89, Ls = 2.89, Wq = 2.67 minutes.</b>",
+     trap:"The sum in P₀ runs from n = 0 to c − 1 = 2: three terms, not two."}
+  ],
+  practice:[
+    {id:"m2t7p1", d:"moderate", marks:10, q:"λ = 8 per hour, μ = 5 per hour, two servers. Find P₀, Lq, Ls, Wq and Ws.",
+     hint:"ρ = 8/10 = 0.8. Use the c = 2 shortcut.",
+     a:"<p>r = 1.6, ρ = 0.8. <b>P₀ = (1 − 0.8)/(1 + 0.8) = 0.111</b>.</p><p class='mono'>Lq = 2(0.8)³/(1 − 0.64) = 1.024/0.36 = 2.84\nLs = 2.84 + 1.6 = 4.44\nWq = 2.84/8 = 0.356 h = 21.3 min\nWs = 21.3 + 12 = 33.3 min</p>"},
+    {id:"m2t7p2", d:"moderate", marks:5, q:"A counter has λ = 12 and μ = 10 per hour. Show that one server fails, then find Lq and Wq with two servers.",
+     hint:"ρ = 12/20 = 0.6.",
+     a:"<p>One server: ρ = 12/10 = 1.2 > 1, so the queue grows without limit.</p><p>Two servers: ρ = 0.6, P₀ = 0.4/1.6 = <b>0.25</b>. Lq = 2(0.216)/(1 − 0.36) = <b>0.675</b>. Wq = 0.675/12 = 0.0563 h = <b>3.4 minutes</b>.</p>"},
+    {id:"m2t7p3", d:"easy", marks:2, q:"In the two-teller example (λ = 10, μ = 6), what is the probability that an arriving customer has to wait?",
+     hint:"P(wait) = r² P₀ / (2!(1 − ρ)).",
+     a:"<p>P(wait) = 2.778 × 0.0909 / (2 × 0.1667) = <b>0.758</b>. About three customers in four find both tellers busy.</p>"}
+  ],
+  questions:[
+    {q:"Explain the multi-server queuing model (M/M/c):(∞/FCFS) and write its formulas for P₀, Lq, Ls, Wq and Ws.", marks:5, d:"moderate", priority:"high", source:"syllabus"},
+    {q:"Arrivals 10 per hour, two servers each serving 6 per hour. Find the average number in the queue and the average waiting time.", marks:10, d:"moderate", priority:"high", source:"syllabus"},
+    {q:"Distinguish single-server and multi-server queuing models.", marks:5, d:"easy", priority:"medium", source:"syllabus"}
+  ]
+},
+{
+  id:"m2t8", m:"m2", type:"problem-solving", priority:"medium", los:[],
+  title:"Constant service, finite queue and finite population models",
+  summary:"The remaining syllabus models: constant service time (M/D/1), limited waiting room (M/M/1):(N/FCFS), and a limited calling population (machine repair).",
+  whatIs:"<p>Three variations on the single-server model. Each changes one assumption: the service time is <b>constant</b>; the system can hold only <b>N</b> customers; or the customers come from a <b>finite population</b> of K.</p>",
+  concept:ESE_SRC+
+    "<h4>1. Constant rate service — (M/D/1):(∞/FCFS)</h4>"+
+    "<p>Service takes exactly 1/μ every time (an automatic car wash, a vending machine). With no variation in service, the queue is <b>half</b> that of the exponential model.</p>"+
+    mono("Lq = lambda^2 / ( 2 mu (mu - lambda) )  =  rho^2 / ( 2 (1 - rho) )\nWq = lambda / ( 2 mu (mu - lambda) )\nLs = Lq + lambda/mu\nWs = Wq + 1/mu")+
+    "<h4>2. Finite queue — (M/M/1):(N/FCFS)</h4>"+
+    "<p>At most N customers can be in the system. An arrival who finds N present is turned away, so the system is stable even when λ ≥ μ.</p>"+
+    mono("P0 = (1 - rho) / (1 - rho^(N+1))            (rho not equal to 1)\nPn = P0 * rho^n                            for n = 0, 1, ..., N\nLs = sum of n * Pn\nEffective arrival rate = lambda (1 - PN)\nLq = Ls - (1 - P0)\nWs = Ls / effective rate,   Wq = Lq / effective rate")+
+    "<h4>3. Finite population — machine repair model</h4>"+
+    "<p>K machines, each breaks down at rate λ while running; one repairman repairs at rate μ. The more machines are down, the fewer are left to break, so the arrival rate falls as the queue grows.</p>"+
+    mono("Pn = [ K! / (K - n)! ] * (lambda/mu)^n * P0     for n = 0, 1, ..., K\nP0 = 1 / sum of the terms [ K!/(K - n)! ] (lambda/mu)^n\nLs = K - (mu/lambda)(1 - P0)\nLq = K - ((lambda + mu)/lambda)(1 - P0)")+
+    "<h4>Infinite against finite population</h4>"+
+    tbl(["","Infinite population","Finite population"],[
+      ["Source of customers","Unlimited (a bank, a toll booth)","A fixed small group (5 machines, 10 terminals)"],
+      ["Arrival rate","Constant λ, whatever the queue","Falls as more of the group are already in the system"],
+      ["Stability condition","λ &lt; μ needed","Always stable"],
+      ["Kendall's notation","(M/M/1):(∞/FCFS)","(M/M/1):(K/K/FCFS) or 'finite source'"]]),
+  needToKnow:[
+    "State what each model changes compared with (M/M/1):(∞/FCFS).",
+    "Use Lq = ρ²/(2(1 − ρ)) for constant service and say it is half the exponential value.",
+    "Compute P₀, Pₙ and Ls for a finite queue of N.",
+    "Compute P₀ and Ls for the machine-repair model.",
+    "Distinguish finite and infinite calling populations."
+  ],
+  recognition:{
+    clues:["'Service takes exactly 4 minutes', 'constant service time', D in Kendall's notation.","'Room for only 3 cars', 'customers who find the shop full go elsewhere', a finite number after the colon.","'A mechanic looks after 4 machines': a small fixed group of customers."],
+    wording:["Find the average queue length if the service time is constant.","What fraction of customers is turned away?","Find the average number of machines out of order."],
+    firstMove:"Name the model first. Then write only the formulas of that model.",
+    trap:"Using Ls = λ/(μ − λ) for a finite queue or a finite population. That formula assumes unlimited room and an unlimited source."
+  },
+  examAnswer:{
+    short:"Name the model and write its Lq (or P₀) formula.",
+    medium:"Model → formula → substitution → answer with units.",
+    long:"As medium, plus the comparison with (M/M/1):(∞/FCFS)."
+  },
+  mistakes:[
+    "Forgetting the 2 in the denominator for constant service.",
+    "Dividing by λ instead of the effective arrival rate λ(1 − P_N) in the finite-queue model.",
+    "Using ρⁿ(1 − ρ) for Pₙ when the capacity is finite.",
+    "Leaving out the K!/(K − n)! factor in the finite-population model."
+  ],
+  examples:[
+    {id:"m2t8e1", title:"Constant service: automatic car wash",
+     q:"Cars arrive at an automatic car wash at 10 per hour (Poisson). The wash takes exactly 4 minutes. Find Lq, Wq, Ls and Ws, and compare with exponential service.",
+     steps:["μ = 60/4 = 15 per hour; ρ = 10/15 = 0.667.",
+       "Lq = λ²/(2μ(μ − λ)) = 100/(2 × 15 × 5) = <b>0.667 cars</b>.",
+       "Wq = λ/(2μ(μ − λ)) = 10/150 = 0.0667 hour = <b>4 minutes</b>.",
+       "Ls = Lq + ρ = 0.667 + 0.667 = <b>1.33 cars</b>. Ws = 4 + 4 = <b>8 minutes</b>.",
+       "With exponential service (M/M/1): Lq = 100/(15 × 5) = 1.33 and Wq = 8 minutes. Constant service halves both."],
+     answer:"<b>Lq = 0.67, Wq = 4 min, Ls = 1.33, Ws = 8 min; the queue is half that of (M/M/1).</b>",
+     trap:"Only Lq and Wq are halved. Ls and Ws are not half, because the service part is unchanged."},
+    {id:"m2t8e2", title:"Finite queue: room for 3 in the system",
+     q:"A one-chair barber shop has room for 2 waiting customers (N = 3 in the system). Arrivals are 3 per hour and service 6 per hour. Find P₀, the fraction turned away, Ls, Lq, Ws and Wq.",
+     steps:["ρ = 3/6 = 0.5; ρ⁴ = 0.0625.",
+       "P₀ = (1 − 0.5)/(1 − 0.0625) = 0.5/0.9375 = <b>0.5333</b>.",
+       "P₁ = 0.2667, P₂ = 0.1333, P₃ = 0.0667 (each half the one before). Check: sum = 1.",
+       "Fraction turned away = P₃ = <b>0.0667</b> (about 6.7%).",
+       "Ls = 1(0.2667) + 2(0.1333) + 3(0.0667) = <b>0.733</b>.",
+       "Effective arrival rate = 3(1 − 0.0667) = 2.8 per hour.",
+       "Lq = Ls − (1 − P₀) = 0.733 − 0.467 = <b>0.267</b>.",
+       "Ws = 0.733/2.8 = 0.262 hour = <b>15.7 minutes</b>; Wq = 0.267/2.8 = 0.0952 hour = <b>5.7 minutes</b>. Check: 15.7 − 5.7 = 10 minutes = 1/μ ✓."],
+     answer:"<b>P₀ = 0.533, 6.7% turned away, Ls = 0.73, Lq = 0.27, Ws = 15.7 min, Wq = 5.7 min.</b>",
+     trap:"Divide by the effective rate 2.8, not by λ = 3: the customers turned away never wait."},
+    {id:"m2t8e3", title:"Finite population: one mechanic, three machines",
+     q:"A mechanic looks after 3 machines. Each running machine breaks down on average once an hour; a repair takes 15 minutes on average. Find the probability that all machines are running and the average number out of order.",
+     steps:["λ = 1 per hour per machine, μ = 4 per hour, λ/μ = 0.25, K = 3.",
+       "Terms K!/(K − n)! × 0.25ⁿ: n = 0: 1; n = 1: 3 × 0.25 = 0.75; n = 2: 6 × 0.0625 = 0.375; n = 3: 6 × 0.015625 = 0.09375.",
+       "Sum = 2.21875, so P₀ = 1/2.21875 = <b>0.4507</b>.",
+       "Ls = K − (μ/λ)(1 − P₀) = 3 − 4(0.5493) = <b>0.803 machines</b> out of order.",
+       "Lq = K − ((λ + μ)/λ)(1 − P₀) = 3 − 5(0.5493) = <b>0.254 machines</b> waiting for repair.",
+       "Machines running on average = 3 − 0.803 = 2.20."],
+     answer:"<b>P₀ = 0.451; on average 0.80 machines are down, of which 0.25 are waiting.</b>",
+     trap:"P₀ here is 'no machine down', i.e. the mechanic is idle. It is not 1 − λ/μ."}
+  ],
+  practice:[
+    {id:"m2t8p1", d:"easy", marks:5, q:"λ = 8 per hour and the service time is exactly 5 minutes. Find Lq and Wq.",
+     hint:"μ = 12.",
+     a:"<p>Lq = 64/(2 × 12 × 4) = <b>0.667</b>. Wq = 8/(2 × 12 × 4) = 0.0833 hour = <b>5 minutes</b>. (Exponential service would give 1.33 and 10 minutes.)</p>"},
+    {id:"m2t8p2", d:"moderate", marks:10, q:"(M/M/1):(3/FCFS) with λ = 4 and μ = 6 per hour. Find P₀, P₃, Ls and Wq.",
+     hint:"ρ = 2/3 and ρ⁴ = 16/81.",
+     a:"<p>P₀ = (1/3)/(1 − 0.1975) = <b>0.4154</b>. P₁ = 0.2769, P₂ = 0.1846, <b>P₃ = 0.1231</b>.</p><p class='mono'>Ls = 0.2769 + 2(0.1846) + 3(0.1231) = 1.015\nEffective rate = 4(1 − 0.1231) = 3.508\nLq = 1.015 − (1 − 0.4154) = 0.431\nWq = 0.431/3.508 = 0.123 h = 7.4 min</p>"},
+    {id:"m2t8p3", d:"moderate", marks:5, q:"One repairman, 4 machines, λ = 1 breakdown per hour per machine, μ = 5 repairs per hour. Find P₀ and the average number of machines out of order.",
+     hint:"Terms: 1, 0.8, 0.48, 0.192, 0.0384.",
+     a:"<p>Sum = 2.5104, so <b>P₀ = 0.398</b>. Ls = 4 − 5(1 − 0.398) = <b>0.99 machines</b>.</p>"}
+  ],
+  questions:[
+    {q:"Explain the queuing model with constant service time and compare its queue length with the exponential model.", marks:5, d:"moderate", priority:"medium", source:"syllabus"},
+    {q:"Distinguish between finite and infinite population queuing models with one example each.", marks:5, d:"easy", priority:"high", source:"syllabus"},
+    {q:"For (M/M/1):(N/FCFS) derive or state P₀ and Pₙ, and find the fraction of customers lost for λ = 3, μ = 6, N = 3.", marks:10, d:"moderate", priority:"medium", source:"syllabus"}
+  ]
+},
+{
+  id:"m1t28", m:"m1", type:"theory", priority:"medium", los:[],
+  title:"Duality theorems — weak duality, main duality and complementary slackness",
+  summary:"The three theorems the syllabus names, the symmetric and asymmetric dual, and one numerical pair that shows all three.",
+  whatIs:"<p>The duality theorems say how the primal and the dual are tied together: every dual feasible value <b>bounds</b> the primal (weak duality), the two optimal values are <b>equal</b> (main duality), and a slack constraint in one problem means a <b>zero</b> variable in the other (complementary slackness).</p>",
+  concept:ESE_SRC+
+    "<h4>Symmetric and asymmetric dual</h4>"+
+    tbl(["","Symmetric dual","Asymmetric dual"],[
+      ["Primal form","Canonical: Max, all constraints ≤, all variables ≥ 0","Standard: constraints are equations (=), variables ≥ 0"],
+      ["Dual constraints","All ≥","All ≥"],
+      ["Dual variables","All ≥ 0","<b>Unrestricted in sign</b>"],
+      ["Rule to remember","≤ constraint ↔ non-negative dual variable","= constraint ↔ unrestricted dual variable"]])+
+    "<p>The reverse also holds: an unrestricted primal variable gives an equality constraint in the dual.</p>"+
+    "<h4>1. Weak duality theorem</h4>"+
+    "<p>If x is any feasible solution of the primal (maximisation) and y any feasible solution of the dual (minimisation), then <b>Z(x) ≤ W(y)</b>. Every dual feasible value is an upper bound on the primal.</p>"+
+    "<p>Consequences: if Z(x) = W(y) for some feasible pair, both are optimal. If the primal is unbounded, the dual is infeasible.</p>"+
+    "<h4>2. Main (fundamental, strong) duality theorem</h4>"+
+    "<p>If either problem has a finite optimal solution, so does the other, and the optimal values are equal: <b>Max Z = Min W</b>.</p>"+
+    "<h4>3. Complementary slackness theorem</h4>"+
+    "<p>At the optimum, for every constraint and its dual variable:</p>"+
+    mono("(primal slack i) x (dual variable y_i) = 0\n(dual surplus j) x (primal variable x_j) = 0")+
+    "<p>In words: a constraint that is not tight has a zero dual variable; a positive variable has a tight dual constraint.</p>"+
+    "<h4>One pair that shows all three</h4>"+
+    mono("Primal:  Max Z = 3x1 + 5x2          Dual:  Min W = 4y1 + 12y2 + 18y3\n         x1        <= 4                      y1       + 3y3 >= 3\n              2x2  <= 12                          2y2 + 2y3 >= 5\n         3x1 + 2x2 <= 18                     y1, y2, y3 >= 0\n         x1, x2 >= 0")+
+    "<ul><li><b>Weak duality:</b> x = (4, 3) is feasible with Z = 27; y = (3, 2.5, 0) is feasible with W = 42. 27 ≤ 42.</li>"+
+    "<li><b>Main duality:</b> the optima are x = (2, 6) with Z = 36 and y = (0, 1.5, 1) with W = 36. Equal.</li>"+
+    "<li><b>Complementary slackness:</b> constraint 1 has slack 4 − 2 = 2, so y₁ = 0. x₁ and x₂ are positive, so both dual constraints are tight: 0 + 3(1) = 3 and 2(1.5) + 2(1) = 5.</li></ul>",
+  needToKnow:[
+    "State the weak duality theorem and its two consequences.",
+    "State the main duality theorem: Max Z = Min W.",
+    "State complementary slackness and use it to get one solution from the other.",
+    "Say when a dual variable is unrestricted (equality constraint: asymmetric dual)."
+  ],
+  recognition:{
+    clues:["'State and explain' followed by the name of a theorem.","An equality constraint in a primal whose dual is asked.","'Verify that the primal and dual have the same optimal value.'"],
+    wording:["State the weak duality theorem.","Explain the complementary slackness theorem.","Distinguish symmetric and asymmetric dual problems."],
+    firstMove:"Write the theorem in one sentence with the inequality or equation, then one line on what it means.",
+    trap:"Saying the primal and dual have the same solution. They have the same optimal value; the variables differ."
+  },
+  examAnswer:{
+    short:"The statement of the theorem with its symbol line (Z ≤ W, or Max Z = Min W, or slack × dual variable = 0).",
+    medium:"Statement, meaning in words, and one consequence.",
+    long:"All three theorems with the numerical pair above as illustration."
+  },
+  mistakes:[
+    "Writing weak duality as Z ≥ W for a maximisation primal.",
+    "Making the dual variable of an equality constraint non-negative.",
+    "Applying complementary slackness to a solution that is not optimal.",
+    "Confusing 'unbounded primal' (dual infeasible) with 'infeasible primal'."
+  ],
+  examples:[
+    {id:"m1t28e1", title:"Dual solution from the primal by complementary slackness",
+     q:"The primal Max Z = 3x₁ + 5x₂ subject to x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18 has optimum x = (2, 6). Find the dual solution without solving the dual.",
+     steps:["Slacks at (2, 6): constraint 1: 4 − 2 = 2 (not tight); constraint 2: 12 − 12 = 0; constraint 3: 18 − 18 = 0.",
+       "Constraint 1 is not tight, so <b>y₁ = 0</b>.",
+       "x₁ > 0, so the first dual constraint is tight: y₁ + 3y₃ = 3, giving <b>y₃ = 1</b>.",
+       "x₂ > 0, so the second dual constraint is tight: 2y₂ + 2y₃ = 5, giving <b>y₂ = 1.5</b>.",
+       "W = 4(0) + 12(1.5) + 18(1) = 36 = Z ✓."],
+     answer:"<b>y = (0, 1.5, 1), W = 36 = Z.</b>",
+     trap:"A zero slack does not force its dual variable to be positive; it only allows it. Only a positive slack forces a zero."}
+  ],
+  practice:[
+    {id:"m1t28p1", d:"easy", marks:5, q:"Write the dual of Max Z = 2x₁ + 3x₂ subject to x₁ + x₂ = 5, x₁ − x₂ ≤ 2, x₁, x₂ ≥ 0. Which dual variable is unrestricted?",
+     hint:"The equality constraint gives the unrestricted variable.",
+     a:"<p class='mono'>Min W = 5y1 + 2y2\n   y1 + y2 >= 2\n   y1 - y2 >= 3\n   y1 unrestricted in sign, y2 >= 0</p><p>y₁ is unrestricted because its primal constraint is an equation. This is an <b>asymmetric</b> dual.</p>"},
+    {id:"m1t28p2", d:"moderate", marks:5, q:"For a maximisation primal, x gives Z = 40 and a dual feasible y gives W = 40. What can you conclude, and which theorem do you use?",
+     hint:"Weak duality.",
+     a:"<p>By weak duality Z ≤ W for every feasible pair, so no primal solution can exceed 40 and no dual solution can be below 40. Both solutions are therefore <b>optimal</b>, with common value 40.</p>"}
+  ],
+  questions:[
+    {q:"State and explain the weak duality theorem and the main duality theorem.", marks:5, d:"moderate", priority:"medium", source:"syllabus"},
+    {q:"State the complementary slackness theorem and explain its use.", marks:5, d:"moderate", priority:"medium", source:"syllabus"},
+    {q:"Distinguish between symmetric and asymmetric dual problems.", marks:2, d:"easy", priority:"medium", source:"syllabus"}
+  ]
+},
+{
+  id:"m1t29", m:"m1", type:"problem-solving", priority:"low", los:[],
+  title:"Dual simplex method",
+  summary:"Start from a table that is optimal but infeasible (negative right-hand sides) and pivot until it is feasible. No artificial variables.",
+  whatIs:"<p>The ordinary simplex method keeps the solution feasible and works towards optimality. The <b>dual simplex method</b> does the opposite: it keeps the optimality condition satisfied and works towards feasibility. It suits minimisation problems with ≥ constraints, and it is the method used after adding a Gomory cut.</p>",
+  concept:ESE_SRC+
+    "<h4>When it applies</h4><p>All Cⱼ − Zⱼ ≤ 0 (for a maximisation) but at least one right-hand side is negative.</p>"+
+    "<h4>Steps</h4><ol>"+
+    "<li>Write the problem as a maximisation. Multiply each ≥ constraint by −1 to make it ≤, then add slack variables. Some right-hand sides are now negative.</li>"+
+    "<li><b>Leaving variable (key row first):</b> the row with the most negative right-hand side.</li>"+
+    "<li><b>Entering variable:</b> for the negative entries of the key row only, compute |(Cⱼ − Zⱼ) / entry| and take the smallest.</li>"+
+    "<li>Pivot as usual.</li>"+
+    "<li>Stop when every right-hand side is ≥ 0. If the key row has no negative entry, the problem is infeasible.</li></ol>"+
+    tbl(["","Simplex","Dual simplex"],[
+      ["Starts","Feasible, not optimal","Optimal, not feasible"],
+      ["Chosen first","Entering variable (key column)","Leaving variable (key row)"],
+      ["Ratio test","Solution ÷ key column, positive entries","(Cⱼ − Zⱼ) ÷ key row, negative entries"],
+      ["Artificial variables","Needed for ≥ constraints","Not needed"]]),
+  needToKnow:[
+    "State when the dual simplex method is used.",
+    "Choose the leaving row (most negative RHS) before the entering column.",
+    "Do the ratio test on negative entries of the key row.",
+    "Recognise infeasibility: no negative entry in the key row."
+  ],
+  recognition:{
+    clues:["'Solve by the dual simplex method.'","A minimisation with all ≥ constraints and positive costs.","A Gomory cut has just been added to an optimal table."],
+    wording:["Use the dual simplex method to solve the LPP.","Why is the dual simplex method used after a cutting plane is added?"],
+    firstMove:"Convert to Max, multiply the ≥ rows by −1, and check that all Cⱼ − Zⱼ ≤ 0.",
+    trap:"Choosing the entering column first, as in the ordinary simplex method."
+  },
+  examAnswer:{
+    short:"The condition (optimal but infeasible) and the two selection rules.",
+    medium:"Steps 1 to 5 in order.",
+    long:"The steps plus one worked iteration and the comparison table."
+  },
+  mistakes:[
+    "Taking ratios with positive entries of the key row.",
+    "Forgetting to change Min Z into Max (−Z) and to restore the sign at the end.",
+    "Adding artificial variables when none are needed.",
+    "Stopping when Cⱼ − Zⱼ ≤ 0 although a right-hand side is still negative."
+  ],
+  examples:[
+    {id:"m1t29e1", title:"Min Z = 3x₁ + 2x₂ with three constraints",
+     q:"Solve by the dual simplex method: Min Z = 3x₁ + 2x₂ subject to 3x₁ + x₂ ≥ 3, 4x₁ + 3x₂ ≥ 6, x₁ + x₂ ≤ 3, x₁, x₂ ≥ 0.",
+     steps:["Rewrite: Max Z′ = −3x₁ − 2x₂ with −3x₁ − x₂ + s₁ = −3, −4x₁ − 3x₂ + s₂ = −6, x₁ + x₂ + s₃ = 3.",
+       "Starting table: basis s₁ = −3, s₂ = −6, s₃ = 3. Cⱼ − Zⱼ = −3, −2, 0, 0, 0: all ≤ 0, so it is optimal but infeasible.",
+       "<b>Iteration 1.</b> Most negative RHS is −6: s₂ leaves. Ratios on the negative entries of that row: x₁: |−3/−4| = 0.75; x₂: |−2/−3| = 0.667. Smallest is x₂: x₂ enters.",
+       tbl(["Basis","x₁","x₂","s₁","s₂","s₃","RHS"],[["s₁","−5/3","0","1","−1/3","0","−1"],["x₂","4/3","1","0","−1/3","0","2"],["s₃","−1/3","0","0","1/3","1","1"],["Cⱼ − Zⱼ","−1/3","0","0","−2/3","0",""]]),
+       "<b>Iteration 2.</b> Only negative RHS is −1: s₁ leaves. Ratios: x₁: |(−1/3)/(−5/3)| = 0.2; s₂: |(−2/3)/(−1/3)| = 2. x₁ enters.",
+       tbl(["Basis","x₁","x₂","s₁","s₂","s₃","RHS"],[["x₁","1","0","−3/5","1/5","0","3/5"],["x₂","0","1","4/5","−3/5","0","6/5"],["s₃","0","0","−1/5","2/5","1","6/5"]]),
+       "All right-hand sides are now ≥ 0, so the table is optimal and feasible.",
+       "Z = 3(3/5) + 2(6/5) = 9/5 + 12/5 = <b>21/5</b>. Check: 3(0.6) + 1.2 = 3 ✓; 4(0.6) + 3(1.2) = 6 ✓; 0.6 + 1.2 = 1.8 ≤ 3 ✓."],
+     answer:"<b>x₁ = 3/5, x₂ = 6/5, Min Z = 21/5 = 4.2.</b>",
+     trap:"Z′ = −21/5 in the table. The answer to the original minimisation is +21/5."}
+  ],
+  practice:[
+    {id:"m1t29p1", d:"moderate", marks:10, q:"Solve by the dual simplex method: Min Z = 2x₁ + x₂ subject to 3x₁ + x₂ ≥ 3, 4x₁ + 3x₂ ≥ 6, x₁ + 2x₂ ≥ 3, x₁, x₂ ≥ 0.",
+     hint:"First key row: the −6 row. Ratios 2/4 and 1/3, so x₂ enters.",
+     a:"<p>Max Z′ = −2x₁ − x₂ with rows −3x₁ − x₂ + s₁ = −3, −4x₁ − 3x₂ + s₂ = −6, −x₁ − 2x₂ + s₃ = −3.</p><p>Iteration 1: s₂ leaves (−6); ratios 0.5 and 0.333, so x₂ enters. Iteration 2: s₁ leaves; x₁ enters.</p><p><b>x₁ = 3/5, x₂ = 6/5, Min Z = 12/5 = 2.4.</b> Check: 3(0.6) + 1.2 = 3 ✓; 2.4 + 3.6 = 6 ✓; 0.6 + 2.4 = 3 ✓.</p>"},
+    {id:"m1t29p2", d:"easy", marks:2, q:"In a dual simplex table the key row is (2, 0, 1, 3 | −4). What do you conclude?",
+     hint:"Look for a negative entry.",
+     a:"<p>The row has no negative entry, so no variable can enter. The problem has <b>no feasible solution</b>.</p>"}
+  ],
+  questions:[
+    {q:"Explain the dual simplex method. How does it differ from the simplex method?", marks:5, d:"moderate", priority:"medium", source:"syllabus"},
+    {q:"Solve by the dual simplex method: Min Z = 3x₁ + 2x₂ subject to 3x₁ + x₂ ≥ 3, 4x₁ + 3x₂ ≥ 6, x₁ + x₂ ≤ 3.", marks:10, d:"moderate", priority:"low", source:"syllabus"}
+  ]
+},
+{
+  id:"m1t30", m:"m1", type:"theory", priority:"low", los:[],
+  title:"Revised simplex method",
+  summary:"The same simplex steps, carried out with the inverse of the basis matrix instead of the whole table.",
+  whatIs:"<p>The <b>revised simplex method</b> reaches the same answer as the ordinary simplex method through the same sequence of bases. It stores only the <b>basis inverse B⁻¹</b> and computes, at each iteration, just the numbers needed to choose the entering and leaving variables.</p>",
+  concept:ESE_SRC+
+    "<h4>What is computed at each iteration</h4><ol>"+
+    "<li><b>Simplex multipliers:</b> π = c_B B⁻¹.</li>"+
+    "<li><b>Net evaluations</b> of the non-basic columns: cⱼ − π aⱼ. If none is positive (maximisation), stop.</li>"+
+    "<li><b>Entering column</b> in terms of the current basis: y = B⁻¹ a_k.</li>"+
+    "<li><b>Ratio test</b> with x_B = B⁻¹ b to find the leaving variable.</li>"+
+    "<li><b>Update B⁻¹</b> by the pivot operation on y.</li></ol>"+
+    "<h4>Why it is used</h4><ul>"+
+    "<li>Less computation: only B⁻¹ (m × m) is updated, not all the columns.</li>"+
+    "<li>Less storage and less round-off error: the original data are used each time.</li>"+
+    "<li>π gives the dual solution directly.</li>"+
+    "<li>It is the form used in computer codes for large problems.</li></ul>"+
+    tbl(["","Simplex","Revised simplex"],[
+      ["Works on","The whole table","B⁻¹, x_B and π only"],
+      ["Entries updated per iteration","(m + 1)(n + 1)","About (m + 1)²"],
+      ["Best for","Hand calculation, small problems","Computers, many variables and few constraints"],
+      ["Result","Same optimal solution","Same optimal solution"]]),
+  needToKnow:[
+    "Say what the revised simplex method stores (B⁻¹) and what it recomputes.",
+    "List the five steps of an iteration.",
+    "Give three advantages over the ordinary simplex method.",
+    "Know that π = c_B B⁻¹ is the dual solution."
+  ],
+  recognition:{
+    clues:["'Revised simplex' in the question.","'Advantages over the simplex method'.","B⁻¹ or 'basis inverse' mentioned."],
+    wording:["Explain the revised simplex method.","What are the advantages of the revised simplex method over the ordinary simplex method?"],
+    firstMove:"One sentence: same method, but only B⁻¹ is carried. Then the steps.",
+    trap:"Describing it as a different algorithm that visits different corner points. The path is the same; only the bookkeeping changes."
+  },
+  examAnswer:{
+    short:"Definition plus two advantages.",
+    medium:"Definition, the five steps, three advantages.",
+    long:"As medium, with the comparison table and one iteration of the example."
+  },
+  mistakes:[
+    "Confusing it with the dual simplex method.",
+    "Writing π = B⁻¹ c_B in the wrong order (π is a row vector: c_B B⁻¹).",
+    "Claiming it needs fewer iterations; it needs less work per iteration."
+  ],
+  examples:[
+    {id:"m1t30e1", title:"Two iterations on Max Z = 3x₁ + 5x₂",
+     q:"Apply the revised simplex method to Max Z = 3x₁ + 5x₂ subject to x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18.",
+     steps:["Start: basis (s₁, s₂, s₃), B⁻¹ = I, x_B = (4, 12, 18), π = (0, 0, 0). Net evaluations: x₁: 3, x₂: 5. x₂ enters.",
+       "y = B⁻¹a₂ = (0, 2, 2). Ratios 12/2 = 6 and 18/2 = 9: s₂ leaves.",
+       "New basis (s₁, x₂, s₃): B⁻¹ rows (1, 0, 0), (0, ½, 0), (0, −1, 1); x_B = (4, 6, 6); π = c_B B⁻¹ = (0, 5/2, 0).",
+       "Net evaluations: x₁: 3 − π·(1, 0, 3) = 3; s₂: 0 − 5/2 = −5/2. x₁ enters.",
+       "y = B⁻¹a₁ = (1, 0, 3). Ratios 4/1 = 4 and 6/3 = 2: s₃ leaves.",
+       "New basis (s₁, x₂, x₁): B⁻¹ rows (1, ⅓, −⅓), (0, ½, 0), (0, −⅓, ⅓); x_B = (2, 6, 2); π = (0, 3/2, 1).",
+       "Net evaluations: s₂: −3/2; s₃: −1. None positive, so the solution is optimal.",
+       "Z = π·b = 0(4) + 1.5(12) + 1(18) = <b>36</b>."],
+     answer:"<b>x₁ = 2, x₂ = 6, Z = 36; the dual solution is π = (0, 3/2, 1).</b>",
+     trap:"The final π is the dual solution found on the duality-theorems page: the two pages agree."}
+  ],
+  practice:[
+    {id:"m1t30p1", d:"easy", marks:5, q:"State three advantages of the revised simplex method over the simplex method.",
+     hint:"Computation, storage and accuracy.",
+     a:"<ol><li>Fewer calculations per iteration: only B⁻¹ is updated.</li><li>Less storage, and round-off errors do not build up because the original data are used each time.</li><li>The simplex multipliers π give the dual solution, and the method suits computer coding of large problems.</li></ol>"},
+    {id:"m1t30p2", d:"moderate", marks:2, q:"A basis has c_B = (0, 5, 3) and B⁻¹ rows (1, ⅓, −⅓), (0, ½, 0), (0, −⅓, ⅓). Find π.",
+     hint:"π = c_B B⁻¹: multiply each row by its cost and add.",
+     a:"<p>π = 0(1, ⅓, −⅓) + 5(0, ½, 0) + 3(0, −⅓, ⅓) = (0, 5/2 − 1, 1) = <b>(0, 3/2, 1)</b>.</p>"}
+  ],
+  questions:[
+    {q:"Explain the revised simplex method and state its advantages over the simplex method.", marks:5, d:"moderate", priority:"low", source:"syllabus"}
+  ]
+},
+{
+  id:"m1t31", m:"m1", type:"problem-solving", priority:"medium", los:[],
+  title:"Sensitivity analysis",
+  summary:"How far a cost or a resource can change before the optimal solution changes, and what one extra unit of a resource is worth.",
+  whatIs:"<p><b>Sensitivity analysis</b> (post-optimality analysis) studies how the optimal solution of an LPP responds to changes in the data: the objective coefficients cⱼ, the right-hand sides bᵢ, and the constraint coefficients. It answers 'what if' questions without solving the problem again.</p>",
+  concept:ESE_SRC+
+    "<h4>The two changes asked most often</h4>"+
+    tbl(["Change","What stays the same inside the range","What changes"],[
+      ["Objective coefficient cⱼ","The optimal corner (values of the variables)","The value of Z"],
+      ["Right-hand side bᵢ","The set of binding constraints and the shadow price","The values of the variables and Z"]])+
+    "<h4>Shadow price (dual price)</h4><p>The increase in the optimal Z when one more unit of resource i is available. It equals the dual variable yᵢ, and it is read from the Cⱼ − Zⱼ row under the slack column sᵢ. A constraint with unused slack has shadow price 0.</p>"+
+    "<h4>Range of an objective coefficient (two variables)</h4><p>The corner stays optimal while the slope of the objective line stays between the slopes of the two constraints that meet there.</p>"+
+    "<h4>Range of a right-hand side</h4><p>The shadow price holds while the same constraints stay binding, that is, while the moving corner still satisfies every other constraint.</p>"+
+    "<h4>Worked on Max Z = 3x₁ + 5x₂, x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18</h4>"+
+    "<p>Optimum (2, 6), Z = 36. Constraints 2 and 3 are binding; shadow prices y = (0, 1.5, 1).</p>"+
+    tbl(["Quantity","Current","Range in which the result holds"],[
+      ["c₁","3","0 ≤ c₁ ≤ 7.5"],
+      ["c₂","5","c₂ ≥ 2"],
+      ["b₁","4","b₁ ≥ 2 (shadow price 0)"],
+      ["b₂","12","6 ≤ b₂ ≤ 18 (shadow price 1.5)"],
+      ["b₃","18","12 ≤ b₃ ≤ 24 (shadow price 1)"]]),
+  needToKnow:[
+    "Define sensitivity analysis and say why it is done.",
+    "Define the shadow price and read it as a dual variable.",
+    "Find the range of an objective coefficient for a two-variable problem.",
+    "Find the range of a right-hand side and the new Z inside it."
+  ],
+  recognition:{
+    clues:["'By how much can the profit of product 1 change…'","'What is one more hour of machine time worth?'","'Post-optimality', 'shadow price', 'range of optimality'."],
+    wording:["Perform sensitivity analysis on the objective coefficients.","Find the range of b₂ for which the current basis remains optimal.","Explain the significance of sensitivity analysis."],
+    firstMove:"Solve the LPP first and mark which constraints are binding at the optimum.",
+    trap:"Using a shadow price outside its range. Beyond the range the set of binding constraints changes and so does the price."
+  },
+  examAnswer:{
+    short:"Definition and what the shadow price means.",
+    medium:"Definition, the two kinds of change, and one range computed.",
+    long:"The full table of ranges for the given problem with one 'what if' checked."
+  },
+  mistakes:[
+    "Saying the variables change when cⱼ changes inside its range. Only Z changes.",
+    "Giving a non-binding constraint a positive shadow price.",
+    "Comparing slopes with the wrong sign.",
+    "Forgetting that the ranges are found one change at a time."
+  ],
+  examples:[
+    {id:"m1t31e1", title:"Range of c₁ and c₂",
+     q:"For Max Z = c₁x₁ + c₂x₂ with the constraints x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18, the optimum is (2, 6) when c₁ = 3 and c₂ = 5. Find the range of each coefficient that keeps (2, 6) optimal.",
+     steps:["The corner (2, 6) is where 2x₂ = 12 (slope 0) meets 3x₁ + 2x₂ = 18 (slope −3/2).",
+       "The objective line has slope −c₁/c₂. The corner stays optimal while −3/2 ≤ −c₁/c₂ ≤ 0.",
+       "With c₂ = 5: 0 ≤ c₁/5 ≤ 3/2, so <b>0 ≤ c₁ ≤ 7.5</b>.",
+       "With c₁ = 3: 3/c₂ ≤ 3/2, so <b>c₂ ≥ 2</b> (no upper limit).",
+       "Example: if c₁ rises to 6 the solution is still (2, 6) and Z = 6(2) + 5(6) = 42."],
+     answer:"<b>0 ≤ c₁ ≤ 7.5 and c₂ ≥ 2. Inside these ranges the solution stays (2, 6); only Z changes.</b>",
+     trap:"At the ends of the range (c₁ = 7.5) there are alternate optima along a constraint line."},
+    {id:"m1t31e2", title:"Shadow price and range of b₂",
+     q:"In the same problem, the second resource rises from 12 to 14. Find the new Z, and the range of b₂ over which the shadow price holds.",
+     steps:["Shadow price of constraint 2 is y₂ = 1.5.",
+       "The corner is where 2x₂ = b₂ meets 3x₁ + 2x₂ = 18: x₂ = b₂/2, x₁ = (18 − b₂)/3.",
+       "It must satisfy 0 ≤ x₁ ≤ 4: (18 − b₂)/3 ≥ 0 gives b₂ ≤ 18; (18 − b₂)/3 ≤ 4 gives b₂ ≥ 6. Range: <b>6 ≤ b₂ ≤ 18</b>.",
+       "14 is inside the range, so ΔZ = 1.5 × 2 = 3 and <b>Z = 39</b>.",
+       "Check: x₂ = 7, x₁ = 4/3, Z = 3(4/3) + 5(7) = 4 + 35 = 39 ✓."],
+     answer:"<b>New Z = 39 at (4/3, 7). The shadow price 1.5 holds for 6 ≤ b₂ ≤ 18.</b>",
+     trap:"The variables do change when b changes. It is the shadow price that stays fixed."}
+  ],
+  practice:[
+    {id:"m1t31p1", d:"moderate", marks:5, q:"In the same problem, find the range of b₃ and the value of Z when b₃ = 21.",
+     hint:"Corner: x₂ = 6, x₁ = (b₃ − 12)/3.",
+     a:"<p>0 ≤ (b₃ − 12)/3 ≤ 4 gives <b>12 ≤ b₃ ≤ 24</b>. Shadow price y₃ = 1, so at b₃ = 21, Z = 36 + 3 = <b>39</b> (x = (3, 6): 9 + 30 = 39 ✓).</p>"},
+    {id:"m1t31p2", d:"easy", marks:2, q:"A constraint has 5 units of unused slack at the optimum. What is its shadow price, and why?",
+     hint:"Complementary slackness.",
+     a:"<p><b>Zero.</b> The resource is not fully used, so one more unit adds nothing to Z. This is complementary slackness: positive slack means a zero dual variable.</p>"}
+  ],
+  questions:[
+    {q:"What is sensitivity analysis? Explain its importance in linear programming.", marks:5, d:"easy", priority:"medium", source:"syllabus"},
+    {q:"Explain shadow price and the range of optimality of an objective coefficient.", marks:5, d:"moderate", priority:"medium", source:"syllabus"}
+  ]
+},
+{
+  id:"m1t32", m:"m1", type:"problem-solving", priority:"low", los:[],
+  title:"Graphical method for two jobs on m machines",
+  summary:"Two jobs with different machine orders: draw one job on each axis, block out the machine conflicts and find the path with the least idle time.",
+  whatIs:"<p>Two jobs must each pass through m machines, each in its <b>own</b> order. A machine can work on only one job at a time. The graphical method finds the schedule with the smallest total elapsed time.</p>",
+  concept:ESE_SRC+
+    "<h4>Steps</h4><ol>"+
+    "<li>Mark the processing times of <b>Job 1 along the x-axis</b> and of <b>Job 2 along the y-axis</b>, each in its own machine order.</li>"+
+    "<li>For each machine, shade the rectangle where its interval on the x-axis meets its interval on the y-axis. Inside a block both jobs would be on the same machine: <b>not allowed</b>.</li>"+
+    "<li>Start at the origin and move to the finish point (total time of Job 1, total time of Job 2) using three kinds of move: <b>45° line</b> (both jobs worked), <b>horizontal</b> (Job 1 worked, Job 2 idle), <b>vertical</b> (Job 2 worked, Job 1 idle).</li>"+
+    "<li>Keep to the 45° line as much as possible and go round the blocks. The best path has the least horizontal plus vertical length.</li></ol>"+
+    mono("Total elapsed time = processing time of Job 1 + idle time of Job 1\n                   = processing time of Job 2 + idle time of Job 2")+
+    "<p>Idle time of Job 1 = total length of the vertical moves; idle time of Job 2 = total length of the horizontal moves.</p>",
+  needToKnow:[
+    "Set up the axes and the machine blocks.",
+    "Explain the three kinds of move.",
+    "Read the idle times off the path.",
+    "Check that both expressions for the elapsed time agree."
+  ],
+  recognition:{
+    clues:["Exactly two jobs and several machines.","Each job has its own sequence of machines.","'Use the graphical method' in a sequencing question."],
+    wording:["Determine the minimum total elapsed time using the graphical method.","Find the idle time of each job."],
+    firstMove:"Add up the processing time of each job; these fix the finish point of the graph.",
+    trap:"Applying Johnson's rule. Johnson's rule needs every job to visit the machines in the same order."
+  },
+  examAnswer:{
+    short:"The elapsed time and the idle time of each job.",
+    medium:"Axes, blocks, path described in words, elapsed time with the check.",
+    long:"The graph with the path, plus the timetable of each job on each machine."
+  },
+  mistakes:[
+    "Passing through a shaded block.",
+    "Marking the y-axis in the machine order of Job 1 instead of Job 2.",
+    "Counting diagonal length as idle time.",
+    "Reporting only one of the two elapsed-time checks."
+  ],
+  examples:[
+    {id:"m1t32e1", title:"Two jobs, five machines",
+     q:"Job 1 goes through machines A, B, C, D, E in that order with times 3, 4, 2, 6, 2 hours. Job 2 goes through B, C, A, D, E with times 5, 4, 3, 2, 6 hours. Find the minimum total elapsed time and the idle time of each job.",
+     steps:["Totals: Job 1 = 3 + 4 + 2 + 6 + 2 = 17 hours; Job 2 = 5 + 4 + 3 + 2 + 6 = 20 hours. Finish point (17, 20).",
+       "Job 1 intervals on x: A 0–3, B 3–7, C 7–9, D 9–15, E 15–17. Job 2 intervals on y: B 0–5, C 5–9, A 9–12, D 12–14, E 14–20.",
+       "Blocks: A (0–3, 9–12), B (3–7, 0–5), C (7–9, 5–9), D (9–15, 12–14), E (15–17, 14–20).",
+       "Best path: vertical from (0, 0) to (0, 5); then 45° from (0, 5) to (15, 20), which passes every block only at a corner; then horizontal from (15, 20) to (17, 20).",
+       "Idle time of Job 1 = 5 hours (vertical). Idle time of Job 2 = 2 hours (horizontal).",
+       "Elapsed time = 17 + 5 = <b>22 hours</b> = 20 + 2 ✓.",
+       tbl(["Machine","Job 1","Job 2"],[["A","5–8","9–12"],["B","8–12","0–5"],["C","12–14","5–9"],["D","14–20","12–14"],["E","20–22","14–20"]])],
+     answer:"<b>Minimum elapsed time 22 hours. Job 1 waits 5 hours at the start; Job 2 finishes at 20 and is idle for the last 2.</b>",
+     trap:"Starting both jobs at time 0 looks natural but forces longer waits later. Check the timetable: no machine has two jobs at once."}
+  ],
+  practice:[
+    {id:"m1t32p1", d:"moderate", marks:5, q:"Job 1: A, B, C with times 2, 3, 2. Job 2: B, A, C with times 3, 2, 3. Find the minimum elapsed time.",
+     hint:"Finish point (7, 8). Blocks: A (0–2, 3–5), B (2–5, 0–3), C (5–7, 5–8).",
+     a:"<p>One best path: vertical 1, 45° for 2, vertical 2, 45° for 3, horizontal 2. Idle time of Job 1 = 3, of Job 2 = 2.</p><p><b>Elapsed time = 7 + 3 = 10 hours</b> = 8 + 2 ✓.</p>"},
+    {id:"m1t32p2", d:"easy", marks:2, q:"In the graphical method, what does a vertical move represent?",
+     hint:"Which job's time is on the y-axis?",
+     a:"<p>Job 2 is being processed while <b>Job 1 is idle</b>. A horizontal move is the opposite, and a 45° move means both jobs are being processed.</p>"}
+  ],
+  questions:[
+    {q:"Explain the graphical method for processing two jobs through m machines.", marks:5, d:"moderate", priority:"low", source:"syllabus"}
+  ]
+},
+{
+  id:"m1t33", m:"m1", type:"theory", priority:"low", los:[],
+  title:"Routing problems and an introduction to decomposition algorithms",
+  summary:"Two short syllabus headings: what a routing problem is, and how a very large LPP is split into a master problem and sub-problems.",
+  whatIs:"<p>A <b>routing problem</b> asks for the best route through a network. A <b>decomposition algorithm</b> solves a very large linear programme by breaking it into smaller ones that are solved separately and coordinated by a master problem.</p>",
+  concept:ESE_SRC+
+    "<h4>Routing problems</h4>"+
+    "<p>A network routing problem consists of finding an optimum route between two or more nodes in relation to total time, cost or distance. Restrictions may apply: a node may not be visited twice, or the route must return to the start.</p>"+
+    tbl(["Type","What is asked","Solved by"],[
+      ["Travelling salesman problem","Visit every city once and return to the start at least cost","Assignment method with sub-tour elimination, or branch and bound"],
+      ["Shortest route (minimal path)","Cheapest path from one node to another","Dynamic programming (the stagecoach method of Module 4)"]])+
+    "<p>The TSP differs from an assignment problem by one extra condition: the route must be a <b>single tour</b>, with no sub-tours.</p>"+
+    "<h4>Decomposition algorithms</h4>"+
+    "<p>Large LPPs often have a special structure: several <b>independent blocks</b> of constraints (one per division, plant or period) tied together by a few <b>linking constraints</b> (shared budget or resources). This is called a block-angular structure.</p>"+
+    "<p>The <b>Dantzig–Wolfe decomposition principle</b> uses it as follows:</p><ol>"+
+    "<li>Keep the linking constraints in a small <b>master problem</b>.</li>"+
+    "<li>Give each block its own <b>sub-problem</b>.</li>"+
+    "<li>The master problem sends <b>prices</b> (its dual values) for the shared resources to the sub-problems.</li>"+
+    "<li>Each sub-problem solves its own small LPP at those prices and returns a <b>proposal</b> (a corner point) to the master. This is column generation.</li>"+
+    "<li>Repeat until no sub-problem can offer a proposal that improves the master. The solution is then optimal for the whole problem.</li></ol>"+
+    "<h4>Why decompose</h4><ul>"+
+    "<li>Each sub-problem is small, so the work and the storage needed are much less than for the full problem.</li>"+
+    "<li>It matches how organisations plan: headquarters sets prices, divisions plan for themselves.</li></ul>",
+  needToKnow:[
+    "Define a routing problem and name its two types.",
+    "State how the TSP differs from the assignment problem.",
+    "Describe the block-angular structure that decomposition needs.",
+    "Explain the master problem, sub-problems, prices and proposals."
+  ],
+  recognition:{
+    clues:["'Routing problem' as a short note.","'Decomposition', 'Dantzig–Wolfe', 'master problem'.","A large LPP described as divisions sharing common resources."],
+    wording:["Write a short note on routing problems.","Explain the decomposition principle for large linear programming problems."],
+    firstMove:"Define the term in one sentence, then give the structure (types for routing; master and sub-problems for decomposition).",
+    trap:"Describing decomposition as time-series decomposition (trend and seasonality). That belongs to another subject."
+  },
+  examAnswer:{
+    short:"The definition and the two types (routing), or the master/sub-problem idea (decomposition).",
+    medium:"Definition, structure and one advantage.",
+    long:"The five steps of Dantzig–Wolfe with the block-angular structure described."
+  },
+  mistakes:[
+    "Treating a TSP solution with sub-tours as valid.",
+    "Saying decomposition changes the optimal solution. It gives the same optimum with less work.",
+    "Omitting the linking constraints, which are the reason a master problem is needed."
+  ],
+  examples:[
+    {id:"m1t33e1", title:"Spotting a structure that can be decomposed",
+     q:"A company has three plants. Each plant has its own labour and machine constraints. All three share one budget constraint. How would the decomposition principle treat this LPP?",
+     steps:["Linking constraint: the shared budget. It goes into the <b>master problem</b>.",
+       "Independent blocks: the labour and machine constraints of plant 1, plant 2 and plant 3. Each becomes a <b>sub-problem</b>.",
+       "The master problem announces a price for budget money. Each plant plans its own production at that price and returns its plan.",
+       "The master combines the plans, revises the price, and the cycle repeats until no plant can improve the total."],
+     answer:"<b>One master problem (budget) and three sub-problems (one per plant), coordinated by the price of the shared budget.</b>",
+     trap:"If there were no shared constraint, no master problem would be needed: the three plants could simply be solved separately."}
+  ],
+  practice:[
+    {id:"m1t33p1", d:"easy", marks:2, q:"How does the travelling salesman problem differ from the assignment problem?",
+     hint:"One extra condition.",
+     a:"<p>Both pick one entry in each row and column of a cost matrix at least cost. The TSP adds the condition that the choices form <b>one complete tour</b> through all the cities, with no sub-tours, and no city is assigned to itself.</p>"},
+    {id:"m1t33p2", d:"easy", marks:5, q:"Write a short note on decomposition algorithms.",
+     hint:"Structure, master problem, sub-problems, advantage.",
+     a:"<p>Decomposition algorithms solve large LPPs whose constraints form independent blocks joined by a few linking constraints. In the Dantzig–Wolfe method a master problem holds the linking constraints and sends prices to the sub-problems; each sub-problem solves its own block and returns a proposal; the process repeats until no proposal improves the master. The answer is the same as solving the whole problem, with far less computation and storage.</p>"}
+  ],
+  questions:[
+    {q:"Write a short note on routing problems.", marks:2, d:"easy", priority:"low", source:"syllabus"},
+    {q:"Write a short note on decomposition algorithms in linear programming.", marks:5, d:"moderate", priority:"low", source:"syllabus"}
+  ]
+}
+];
+
 var TOPICS = [].concat(M1_THEORY, M1_THEORY2, M1_NUM1, M1_NUM2, M1_NUM3, M1_QB, M1_COVER,
                        M2_TOPICS, M2_NUM, M2_KENDALL,
                        M3_TOPICS, M4_TOPICS,
                        M5_THEORY, M5_NUM, M5_ODD,
-                       M6_TOPICS);
+                       M6_TOPICS, ESE_ADD);
 var TBYID = {};
 TOPICS.forEach(function(t){ TBYID[t.id] = t; });
 function topicsOf(m){ return TOPICS.filter(function(t){ return t.m === m; }); }
@@ -5075,7 +5677,7 @@ var QUIZ = [
  e:"The notes are explicit that points within and on the boundary of the feasible region represent feasible solutions. The boundary matters, because the optimum is almost always on it — usually at a corner. Option C confuses feasible solutions with the corner points you evaluate."},
 {t:"m1t7", stage:"recognise", q:"In the furniture dealer problem (5x + y ≤ 100, x + y ≤ 60), the point (25, 40) is:",
  o:["infeasible, because 5(25) + 40 = 165 > 100","feasible but not optimal","the optimal solution","on the boundary of the feasible region"], a:0,
- e:"It satisfies x + y = 65 — no, in fact it fails that one too. The decisive failure is the first constraint: 5(25) + 40 = 165, far above 100. The notes name (25, 40) as their example of an infeasible solution. Test every constraint before declaring a point feasible."},
+ e:"It fails both constraints: x + y = 65 > 60, and 5(25) + 40 = 165, far above 100. The notes name (25, 40) as their example of an infeasible solution. Test every constraint before declaring a point feasible."},
 {t:"m1t8", stage:"select", q:"The constraint 3x₁ + 9x₂ ≥ 30 is converted to standard form as:",
  o:["3x₁ + 9x₂ − s + a = 30","3x₁ + 9x₂ + s = 30","3x₁ + 9x₂ + s + a = 30","3x₁ + 9x₂ − s = 30"], a:0,
  e:"A ≥ constraint needs the surplus subtracted (it measures the excess above the requirement) and then an artificial added to supply an identity column for the starting basis. Option B is the ≤ treatment; option D omits the artificial and leaves no starting basis."},
@@ -5680,6 +6282,96 @@ var QUIZ5 = [
 ];
 QUIZ = QUIZ.concat(QUIZ5);
 
+/* ===== ESE additions: quiz items for the pages added above and for topics that had none ===== */
+var QUIZ6 = [
+{t:"m2t7", stage:"recognise", q:"A post office has three counters fed by one queue. Arrivals are Poisson and service is exponential. The model is:",
+ o:["(M/M/1):(∞/FCFS)","(M/M/3):(∞/FCFS)","(M/D/3):(∞/FCFS)","(M/M/1):(3/FCFS)"], a:1,
+ e:"Three servers gives c = 3 in the third position. (M/M/1):(3/FCFS) would be one server with room for three customers."},
+{t:"m2t7", stage:"concept", q:"For c servers each serving at rate μ, the utilisation of a server is:",
+ o:["λ/μ","λ/(cμ)","cλ/μ","μ/(cλ)"], a:1,
+ e:"ρ = λ/(cμ). The system is stable only when this is below 1, that is, λ < cμ."},
+{t:"m2t7", stage:"solve", q:"Two servers, λ = 8 and μ = 5 per hour. P₀ is:",
+ o:["0.2","0.111","0.8","0.36"], a:1,
+ e:"ρ = 8/10 = 0.8. For c = 2, P₀ = (1 − ρ)/(1 + ρ) = 0.2/1.8 = 0.111."},
+{t:"m2t7", stage:"solve", q:"Two servers with ρ = 0.6. The average number waiting, Lq, is:",
+ o:["0.9","0.675","1.5","0.36"], a:1,
+ e:"Lq = 2ρ³/(1 − ρ²) = 2(0.216)/0.64 = 0.675. The value 0.9 is the single-server Lq at ρ = 0.6."},
+{t:"m2t7", stage:"concept", q:"Which statement about two servers at rate μ and one server at rate 2μ is correct?",
+ o:["They give identical queues","They have the same utilisation but different Lq","The two-server system is unstable","The single fast server always has the longer queue"], a:1,
+ e:"Both have ρ = λ/(2μ), but the formulas for P₀ and Lq differ, so the queues differ."},
+{t:"m2t8", stage:"concept", q:"Compared with exponential service at the same rates, constant service time makes Lq:",
+ o:["double","half","the same","zero"], a:1,
+ e:"For (M/D/1), Lq = λ²/(2μ(μ − λ)), exactly half the (M/M/1) value."},
+{t:"m2t8", stage:"solve", q:"λ = 10 per hour and service takes exactly 4 minutes. Wq is:",
+ o:["8 minutes","4 minutes","2 minutes","6 minutes"], a:1,
+ e:"μ = 15. Wq = λ/(2μ(μ − λ)) = 10/(2 × 15 × 5) = 1/15 hour = 4 minutes."},
+{t:"m2t8", stage:"recognise", q:"'A mechanic services 5 machines' is an example of:",
+ o:["an infinite calling population","a finite calling population","a multi-server model","constant service"], a:1,
+ e:"The customers are a fixed group of 5, so the arrival rate falls as more of them are already down."},
+{t:"m2t8", stage:"solve", q:"(M/M/1):(3/FCFS) with ρ = 0.5. P₀ is:",
+ o:["0.5","0.533","0.467","0.0667"], a:1,
+ e:"P₀ = (1 − ρ)/(1 − ρ⁴) = 0.5/0.9375 = 0.533. The value 0.5 is for unlimited capacity."},
+{t:"m2t8", stage:"concept", q:"In a finite-queue model the waiting times are found by dividing by:",
+ o:["λ","μ","the effective arrival rate λ(1 − P_N)","N"], a:2,
+ e:"Customers who find the system full are lost, so only λ(1 − P_N) per unit time actually enter."},
+{t:"m1t28", stage:"concept", q:"For a maximisation primal with feasible x and a dual with feasible y, weak duality states:",
+ o:["Z(x) ≥ W(y)","Z(x) ≤ W(y)","Z(x) = W(y)","Z(x) + W(y) = 0"], a:1,
+ e:"Every dual feasible value is an upper bound on the primal objective. Equality holds only at the optimum."},
+{t:"m1t28", stage:"concept", q:"A primal constraint has positive slack at the optimum. Its dual variable is:",
+ o:["positive","zero","negative","unrestricted"], a:1,
+ e:"Complementary slackness: slack × dual variable = 0, so a positive slack forces the dual variable to zero."},
+{t:"m1t28", stage:"recognise", q:"The dual variable of an equality constraint in the primal is:",
+ o:["non-negative","non-positive","unrestricted in sign","always zero"], a:2,
+ e:"An equation in the primal gives an unrestricted dual variable. This is the asymmetric dual."},
+{t:"m1t29", stage:"select", q:"In the dual simplex method, the first choice in each iteration is:",
+ o:["the entering variable with the most positive Cⱼ − Zⱼ","the leaving variable with the most negative right-hand side","the smallest ratio in the key column","the artificial variable"], a:1,
+ e:"The key row is chosen first (most negative RHS), then the entering variable by a ratio test on that row."},
+{t:"m1t29", stage:"concept", q:"The dual simplex method starts from a table that is:",
+ o:["feasible but not optimal","optimal but not feasible","neither optimal nor feasible","degenerate"], a:1,
+ e:"All Cⱼ − Zⱼ already satisfy the optimality condition, but some right-hand sides are negative."},
+{t:"m1t30", stage:"concept", q:"The revised simplex method differs from the simplex method in that it:",
+ o:["visits different corner points","updates only the basis inverse B⁻¹","needs artificial variables for every constraint","works only for minimisation"], a:1,
+ e:"The sequence of bases is the same. Only B⁻¹, x_B and the multipliers π are carried, which saves computation and storage."},
+{t:"m1t31", stage:"concept", q:"The shadow price of a resource is:",
+ o:["its market price","the change in optimal Z per extra unit of the resource","the slack remaining","the cost coefficient of its slack variable"], a:1,
+ e:"It is the dual variable of the constraint, valid while the right-hand side stays inside its range."},
+{t:"m1t31", stage:"solve", q:"A constraint has shadow price 1.5 and its right-hand side rises by 2 inside the allowed range. Z:",
+ o:["rises by 1.5","rises by 3","does not change","rises by 0.75"], a:1,
+ e:"ΔZ = shadow price × change = 1.5 × 2 = 3."},
+{t:"m1t31", stage:"concept", q:"An objective coefficient changes but stays inside its range of optimality. Then:",
+ o:["the optimal values of the variables change","the optimal corner stays the same and only Z changes","the problem becomes infeasible","the shadow prices become zero"], a:1,
+ e:"The same corner stays optimal. Z changes because the coefficient multiplying the same values has changed."},
+{t:"m1t32", stage:"recognise", q:"Two jobs must pass through five machines, each job in a different order. The method to use is:",
+ o:["Johnson's rule","the graphical method","the Hungarian method","VAM"], a:1,
+ e:"Johnson's rule needs the same machine order for every job. With two jobs and different orders, use the graphical method."},
+{t:"m1t32", stage:"solve", q:"Job 1 needs 17 hours of processing and is idle for 5 hours on the best path. The total elapsed time is:",
+ o:["12 hours","17 hours","22 hours","27 hours"], a:2,
+ e:"Elapsed time = processing time + idle time = 17 + 5 = 22 hours."},
+{t:"m1t33", stage:"concept", q:"In the Dantzig–Wolfe decomposition principle, the master problem contains:",
+ o:["all the constraints","only the linking (common) constraints","only the non-negativity conditions","one block of constraints"], a:1,
+ e:"The independent blocks become sub-problems. The few constraints that tie them together stay in the master problem."},
+{t:"m4t4", stage:"solve", q:"Returns for allotting 0, 1, 2 units: project A 0, 5, 8; project B 0, 4, 9. With 2 units in total the best return is:",
+ o:["8","9","10","13"], a:1,
+ e:"Options: (2, 0) = 8; (1, 1) = 5 + 4 = 9; (0, 2) = 9. The maximum is 9."},
+{t:"m4t4", stage:"recognise", q:"In capital budgeting by dynamic programming, the stages are:",
+ o:["the rupees available","the projects","the returns","the years"], a:1,
+ e:"One stage per project. The state is the money still available; the decision is how much to allot to that project."},
+{t:"m4t6", stage:"concept", q:"In the employment smoothening problem, the state at each stage is:",
+ o:["the month number","the workforce level carried from the previous month","the hiring cost","the total cost so far"], a:1,
+ e:"Each month is a stage. The workforce in the previous month is the state, because it fixes the hiring or firing cost."},
+{t:"m4t6", stage:"solve", q:"Requirement is 5 workers; 7 are employed. Excess costs 3 per worker per month. The excess cost this month is:",
+ o:["3","6","15","21"], a:1,
+ e:"Excess = 7 − 5 = 2 workers, costing 2 × 3 = 6."},
+{t:"m6t2", stage:"concept", q:"In ABC analysis, class A items are:",
+ o:["few in number but high in annual usage value","many in number and low in value","items that never move","vital for production"], a:0,
+ e:"A items are roughly 10% of the items carrying about 70% of the annual usage value, so they get the tightest control."},
+{t:"m6t2", stage:"recognise", q:"Which classification is based on how critical an item is to production?",
+ o:["ABC","VED","FSN","HML"], a:1,
+ e:"VED: Vital, Essential, Desirable. ABC is by usage value, FSN by rate of movement, HML by unit price."}
+];
+QUIZ = QUIZ.concat(QUIZ6);
+
+
 /* ===== 15 · progress model ===== */
 var KEY = "or_mse_study_v1";
 var THEME_KEY = "sem7.theme";
@@ -5945,9 +6637,7 @@ function viewModule(m){
   }
 
   if (m === "m1"){
-    h += '<details><summary>In the folder, but no topic page yet ('+M1_UNBUILT.length+')</summary><div class="det-body"><ul class="small muted">';
-    M1_UNBUILT.forEach(function(g){ h += '<li>'+esc(g)+'</li>'; });
-    h += '</ul></div></details><details><summary>Syllabus headings with no material anywhere ('+M1_GAPS.length+')</summary><div class="det-body"><ul class="small muted">';
+    h += '<details><summary>Syllabus headings with no lecture material: pages written from the textbook ('+M1_GAPS.length+')</summary><div class="det-body"><ul class="small muted">';
     M1_GAPS.forEach(function(g){ h += '<li>'+esc(g)+'</li>'; });
     h += '</ul></div></details>';
   }

@@ -298,6 +298,12 @@ DATA.theory.m1 = [
  examAnswer:"Two named goals with one line each — scientific (understanding) vs engineering (building working systems).",
  mistakes:"Don't merge the two into one goal — the exam explicitly separates 'understanding' from 'building.'"
 },
+{id:"m1t25", topic:"Self-Learning", marks:5, priority:"low", flashcard:false,
+ q:"Self-learning: what is Unicode, and why do Unicode and tokenizers matter for NLP in Indian languages?",
+ understand:"Text reaches a program as bytes. Unicode says which character each number stands for; the tokenizer decides where one unit ends. Indian scripts make both steps harder than English. (No class slides on this; written from the standard treatment.)",
+ a:"Unicode — one standard that gives every character of every script a unique number (code point). Devanagari has its own block, U+0900 to U+097F. UTF-8 stores a code point in 1 to 4 bytes: English letters take 1 byte, Devanagari characters take 3.\nWhy it matters for Indian languages:\n- One visible character can be several code points. 'कि' is क (consonant) + ि (vowel sign), so counting code points does not count characters, and splitting between them breaks the word.\n- The same text can be encoded in more than one way, so text must be normalised (Unicode NFC/NFKC) before comparing or counting.\n- Mixed scripts and romanised text ('main ghar gaya') appear in the same sentence (code-mixing).\nTokenizers:\n- Whitespace tokenization is weak for morphologically rich and agglutinative languages, where one word carries many morphemes.\n- Subword tokenizers (BPE, WordPiece, SentencePiece) split rare words into known pieces, so there are no out-of-vocabulary words.\nTools and formats for regional languages: Indic NLP Library, iNLTK, IndicBERT and MuRIL models, AI4Bharat IndicTrans; data usually in UTF-8 text, JSON or CoNLL-U.",
+ examAnswer:"Define Unicode and UTF-8 → two problems for Indian scripts (combining vowel signs, normalisation) → why subword tokenizers → two tools",
+ mistakes:"Unicode is not a font or an encoding of bytes: Unicode assigns numbers, UTF-8 stores them. Do not say one Devanagari syllable is one code point."},
 {id:"m1t24", topic:"1.3", marks:3, priority:"low", flashcard:false,
  q:"Name three technical trends shaping NLP as of 2026.",
  a:"On-device/Edge NLP: compressed (TinyML) models running on phones/wearables instead of the cloud. Autonomous language agents: multi-step task planning with memory + tools (LangGraph, AutoGen). Efficient attention: linear/sparse attention research (e.g. Linformer) to handle longer contexts without hardware bottlenecks. (A 4th: Knowledge graphs — Neo4j/TigerGraph embedded into enterprise infrastructure for traceability.)",
@@ -372,6 +378,9 @@ DATA.numericals.m1 = [
 ];
 
 DATA.quiz.m1_theory = [
+ {q:"In UTF-8, a Devanagari character such as 'क' is stored in:", type:"mcq",
+  options:["1 byte","2 bytes","3 bytes","8 bytes"], correct:2,
+  explanation:"Devanagari code points (U+0900 to U+097F) take 3 bytes in UTF-8; basic English letters take 1."},
  {q:"NLU stands for:", type:"mcq", options:["Natural Language Utility","Natural Language Understanding","Natural Linguistic Unit","None of these"], correct:1, explanation:"NLU = Natural Language Understanding — maps input to meaning representation."},
  {q:"Which pipeline stage answers the question 'What is the base form?'", type:"mcq", options:["Preprocessing","Morphological","Syntactic","Pragmatic"], correct:1, explanation:"The Morphological stage determines base/root forms (stemming/lemmatization)."},
  {q:"'Levels' of linguistic analysis describe what a program executes, in order.", type:"tf", correct:false, explanation:"False — that's the definition of 'Stages'. 'Levels' describe language itself (linguistic theory), independent of any tool."},
@@ -643,6 +652,12 @@ DATA.theory.m2 = [
  mistakes:"Don't describe an FST as 'just an FSA with two states' — the defining property is the input:output labeled transition, not the number of states.",
  diagram:"Draw 2 states q0, q1: q0 has a self-loop labeled 'aa:b'; arcs q0→q1 labeled 'b:a' and 'b:b'; q1 has a self-loop labeled 'b:ε'; and an arc q1→q0 labeled 'a:ba'. Label format is always 'input:output'."
 },
+{id:"m2t37", topic:"2.5", marks:3, priority:"medium", flashcard:true,
+ q:"What is a regular relation? How is it related to regular languages and finite-state transducers?",
+ understand:"A regular language is a set of strings. A regular relation is a set of PAIRS of strings. The first is what an FSA accepts; the second is what an FST encodes. (The syllabus heading 2.5 uses this term; it is the formal name for what an FST computes.)",
+ a:"Regular language — a set of strings that can be described by a regular expression and accepted by a finite-state automaton (FSA).\nRegular relation — a set of pairs of strings (upper : lower) that can be encoded by a finite-state transducer (FST). The FST reads one string and writes the other.\nIn morphology the pairs are (lexical form : surface form), for example (cat +N +PL : cats) and (fox +N +PL : foxes).\nProperties used in practice:\n- Inversion: swapping the two sides gives another regular relation, so one FST does both analysis (cats → cat +N +PL) and generation (cat +N +PL → cats).\n- Composition: two FSTs in sequence can be merged into one (lexicon FST composed with spelling-rule FSTs).\n- Union: also closed. Regular relations are not closed under intersection in general.\nSummary: regular expression ↔ regular language ↔ FSA; regular relation ↔ FST.",
+ examAnswer:"Define regular language (set of strings, FSA) → define regular relation (set of string pairs, FST) → one morphology pair → inversion and composition",
+ mistakes:"Do not call a regular relation a 'regular expression'. A regular expression describes one set of strings; a relation maps between two."},
 {id:"m2t22", topic:"2.6", marks:5, priority:"high", flashcard:true,
  q:"Explain the Porter Stemmer's core notation: consonant/vowel, C/V, and the measure m.",
  a:"A consonant is any letter other than A,E,I,O,U, and also Y when NOT preceded by a consonant (so in 'TOY' the consonants are T,Y; in 'TRY' they are T,R). A list of consonants is denoted C, a list of vowels is denoted V. Any word has the form [C]VCVC...[V], which can be written [C](VC)^m[V] where m is called the MEASURE of the word — m=0 for short words like TR, EE, Y; m=1 for TROUBLE, OATS, IVY; m=2 for TROUBLES, PRIVATE, OATEN. Rules are conditioned on m (e.g. '(m>0) ATION → ATE' only applies if the stem before ATION has measure > 0), and where multiple rules could match, only the rule with the LONGEST matching suffix is applied.",
@@ -1020,6 +1035,12 @@ DATA.numericals.m2.push(
 });
 
 DATA.quiz.m2_theory = [
+ {q:"A regular relation is:", type:"mcq",
+  options:["a set of strings accepted by an FSA","a set of pairs of strings encoded by an FST","a regular expression with back-references","a context-free rule"], correct:1,
+  explanation:"Regular language = set of strings (FSA). Regular relation = set of string pairs (FST), e.g. cat +N +PL : cats."},
+ {q:"Because regular relations are closed under inversion, a morphological FST can be used for:", type:"mcq",
+  options:["analysis only","generation only","both analysis and generation","neither"], correct:2,
+  explanation:"Swapping the two tapes turns the analyser (cats → cat +N +PL) into a generator (cat +N +PL → cats)."},
  {q:"A 'lexeme' and a 'type' mean the same thing.", type:"tf", correct:false, explanation:"False — a lexeme is the abstract dictionary entry (e.g. RUN covers run/ran/running); a type is a unique TOKEN FORM (run, ran, running would be 3 different types but 1 lexeme)."},
  {q:"Which law states that vocabulary size grows as a power function of corpus size?", type:"mcq", options:["Zipf's Law","Heaps' Law","Bayes' Law","Markov's Law"], correct:1, explanation:"Heaps' Law: |V| = K×N^β, with β≈0.5 typically."},
  {q:"According to Zipf's Law, if a word has rank 10 and frequency 500, what is the constant k?", type:"mcq", options:["50","510","5000","490"], correct:2, explanation:"k = f×r = 500×10 = 5000"},
@@ -1042,7 +1063,7 @@ DATA.quiz.m2_numericals = [
  {q:"A text has 80 tokens and 60 types. What is its TTR?", type:"mcq", options:["0.60","0.75","0.80","1.33"], correct:1, explanation:"TTR = 60/80 = 0.75 (moderate-to-high diversity)"},
  {q:"A word has rank 5 and frequency 2000. Using Zipf's Law, what is the predicted frequency at rank 20?", type:"mcq", options:["500","2000","8000","100"], correct:0, explanation:"k=2000×5=10000. f(20)=10000/20=500"},
  {q:"Apply Porter's Step 1a to 'caresses'.", type:"mcq", options:["caress","caresse","carress","caresses"], correct:0, explanation:"SSES→SS: caresses→caress"},
- {q:"Corpus: <s> I am here </s> <s> who am I </s>. What is P(I|<s>)?", type:"mcq", options:["1/2","1/3","2/2","1/1"], correct:0, explanation:"count(<s>,I)=1 (only 'who am I' has I after... wait count sentences starting with I: only sentence 1 starts with I) count(<s>)=2 → P=1/2"},
+ {q:"Corpus: <s> I am here </s> <s> who am I </s>. What is P(I|<s>)?", type:"mcq", options:["1/2","1/3","2/2","1/1"], correct:0, explanation:"Only the first sentence starts with I, so count(<s>, I) = 1. There are two sentences, so count(<s>) = 2. P(I|<s>) = 1/2."},
  {q:"Laplace smoothing formula for bigram probability adds 1 to the numerator and adds ___ to the denominator.", type:"mcq", options:["1","the vocabulary size |V|","the total token count N","nothing"], correct:1, explanation:"P(wi|wi-1) = (c(wi-1,wi)+1)/(c(wi-1)+|V|)"},
  {q:"If N1=6 and N=60 in a Good-Turing setup, what is P*GT(unseen)?", type:"mcq", options:["0.1","0.06","0.6","6"], correct:0, explanation:"P*GT(unseen) = N1/N = 6/60 = 0.1"},
  {q:"A uniform vocabulary of 200 equally-likely words has perplexity equal to:", type:"mcq", options:["1","100","200","sqrt(200)"], correct:2, explanation:"For a uniform vocabulary, perplexity exactly equals the vocabulary size."},
@@ -3508,6 +3529,12 @@ DATA.theory.m4 = [
  a:"cos(A, B) = (A · B) / (‖A‖ × ‖B‖) = Σ AᵢBᵢ / (√ΣAᵢ² × √ΣBᵢ²)\nRange: 0 (no shared words, orthogonal) to 1 (identical direction) for non-negative count or TF-IDF vectors; −1 to 1 for general embeddings.\nCosine distance = 1 − cosine similarity.\nWhy not Euclidean: document length changes the vector's magnitude. Two documents on the same topic, one ten times longer, are far apart in Euclidean distance but have almost the same direction.\nUsed in: Lesk with vectors (sentence vs gloss), information retrieval (query vs documents), word similarity, retrieval for RAG.",
  examAnswer:"Formula → range → distance = 1 − similarity → why direction beats magnitude → two uses",
  mistakes:"Do not forget to SQUARE-ROOT the norms. Writing ‖A‖ = ΣAᵢ² is the most common slip in the numerical."},
+{id:"m4t18", topic:"4.2", marks:5, priority:"medium", flashcard:true,
+ q:"Classify WSD approaches into classical, intermediate (machine-learning-enhanced) and deep-learning-based (contextual) approaches, with one method each.",
+ understand:"The syllabus groups WSD methods by generation. It is the same list of algorithms, arranged by how much they learn from data.",
+ a:"1. Classical approaches (knowledge-based) — use dictionaries and thesauri, no training data.\n- Lesk's algorithm: choose the sense whose gloss overlaps most with the context.\n- WordNet-based methods: semantic similarity and selectional restrictions.\n- Baseline: most frequent sense.\n2. Intermediate / machine-learning-enhanced approaches — learn from corpora with hand-chosen features (neighbouring words, POS tags, collocations).\n- Supervised: Naive Bayes, decision lists, SVM, trained on a sense-tagged corpus.\n- Semi-supervised: Yarowsky bootstrapping from a few seeds.\n- Unsupervised: clustering of contexts (word sense induction, HyperLex).\n3. Deep-learning-based / contextual WSD — the model learns its own features.\n- BiLSTM models that read the whole sentence.\n- Contextual embeddings (BERT): the vector of the target word depends on its sentence; choose the sense whose embedding (from sense-tagged examples or glosses) is nearest, or fine-tune a classifier.\nTrend: accuracy rises from 1 to 3, and so does the need for data and computing power; interpretability falls.",
+ examAnswer:"Three headings → one or two methods under each → what each needs (dictionary / tagged corpus and features / large pre-trained model) → one-line trend",
+ mistakes:"Do not place Naive Bayes under classical knowledge-based methods: it needs a sense-tagged corpus. Do not say BERT needs no data: it is pre-trained on very large text."},
 {id:"m4t17", topic:"Self-Learning: Transformer-based models for semantic representation", marks:3, priority:"medium", flashcard:true,
  q:"Self-learning: how do BERT, RoBERTa and GPT give contextual and multilingual semantic representations?",
  understand:"All three are Transformers pretrained on huge text; BERT and RoBERTa read both sides, GPT reads left to right.",
@@ -3537,7 +3564,7 @@ DATA.numericals.m4 = [
   {id:"m4n1p2", difficulty:"easy", q:"What is the length of a one-hot vector over a vocabulary of 19 unique words, and how many 1s does it have?", answer:"Length 19, exactly one 1 (all other entries 0)."},
   {id:"m4n1p3", difficulty:"basic", q:"Count-vectorize 'It was the best of times. It was the worst of times.' and 'It was the age of wisdom. It was the age of foolishness'. Vocabulary alphabetical.", answer:"Vocabulary (10 unique words, alphabetical): [age, best, foolishness, it, of, the, times, was, wisdom, worst].\nS1: age0 best1 foolishness0 it2 of2 the2 times2 was2 wisdom0 worst1 → [0,1,0,2,2,2,2,2,0,1]\nS2: age2 best0 foolishness1 it2 of2 the2 times0 was2 wisdom1 worst0 → [2,0,1,2,2,2,0,2,1,0]"},
   {id:"m4n1p4", difficulty:"basic", q:"One-hot encode 'Left is right and right is wrong' using the alphabetical vocabulary [and, is, left, right, wrong].", answer:"|V| = 5. Positions: and=1, is=2, left=3, right=4, wrong=5.\nleft → [0,0,1,0,0]; is → [0,1,0,0,0]; right → [0,0,0,1,0]; and → [1,0,0,0,0]; right → [0,0,0,1,0]; is → [0,1,0,0,0]; wrong → [0,0,0,0,1].\n7 words encoded as 7 vectors of length 5."},
-  {id:"m4n1p5", difficulty:"moderate", q:"'She sells sea shells on the sea shore and' has how many unique words, and what is the count vector of 'She sells shells'? Use the vocabulary sorted alphabetically (case-insensitive).", answer:"Unique words: and, on, sea, sells, shells, shore, she, the → 8 (not 9).\nCount vector of 'She sells shells': and0 on0 sea0 sells1 shells1 shore0 she1 the0 → [0,0,0,1,1,0,1,0].\nNote: the class solution prints nine 1s for this text, which cannot be right for an 8-word vocabulary, and 'sea' appears twice. Trust the count."},
+  {id:"m4n1p5", difficulty:"moderate", q:"'She sells sea shells on the sea shore and' has how many unique words, and what is the count vector of 'She sells shells'? Use the vocabulary sorted alphabetically (case-insensitive).", answer:"Unique words in alphabetical order: and, on, sea, sells, she, shells, shore, the → 8 (not 9).\nCount vector of 'She sells shells': and0 on0 sea0 sells1 she1 shells1 shore0 the0 → [0,0,0,1,1,1,0,0].\nNote: the class solution prints nine 1s for this text, which cannot be right for an 8-word vocabulary, and 'sea' appears twice. Trust the count."},
   {id:"m4n1p6", difficulty:"exam-level", q:"Two sentences use vocabularies of 44 unique words together. Sentence 1 has 26 tokens, of which 'her' occurs twice. Without seeing the sentence, what do you know about its count vector?", answer:"It has 44 entries; the 'her' entry is 2; all entries are non-negative integers; they sum to 26; any word of the vocabulary that does not occur in sentence 1 contributes 0."}
  ]
 },
@@ -3709,6 +3736,12 @@ DATA.solved.m4 = [
 ];
 
 DATA.quiz.m4_theory = [
+ {q:"Which WSD method belongs to the deep-learning-based (contextual) group?", type:"mcq",
+  options:["Lesk's algorithm","Naive Bayes on a sense-tagged corpus","Nearest sense using BERT contextual embeddings","Yarowsky bootstrapping"], correct:2,
+  explanation:"Lesk is classical (knowledge-based); Naive Bayes and Yarowsky are machine-learning approaches; BERT-based methods are contextual."},
+ {q:"Which WSD approach needs no sense-tagged corpus and assigns no predefined sense labels, grouping contexts instead?", type:"mcq",
+  options:["Supervised","Knowledge-based","Unsupervised clustering","Semi-supervised"], correct:2,
+  explanation:"Unsupervised WSD (word sense induction) clusters the contexts of a word; each cluster is taken as a sense."},
  {q:"'The boy kicks the ball' is represented as kick(boy, ball). This is an example of:", type:"mcq",
   options:["a syntactic parse","a predicate–argument meaning representation","a lexical lookup","a word embedding"], correct:1,
   explanation:"kick is the predicate; boy (agent) and ball (object) are its arguments. A parse would show NP and VP, not roles."},
@@ -3949,6 +3982,12 @@ DATA.theory.m5 = [
  a:"From TP, FP, FN, TN:\nPrecision = TP ÷ (TP + FP)    Recall = TP ÷ (TP + FN)\nF1 = 2 × P × R ÷ (P + R) = 2TP ÷ (2TP + FP + FN) — the harmonic mean.\nWhy F1: precision alone rewards flagging very little; recall alone rewards flagging everything. F1 punishes both. Accuracy is misleading on imbalanced data.\nExample: 100 emails, 20 spam, 15 predicted spam, 12 correct → TP = 12, FP = 3, FN = 8. P = 80%, R = 60%, F1 = 68.57%.\nMulti-class averages:\n- Binary F1: one positive class\n- Macro F1: F1 per class, then a plain average (every class equal)\n- Micro F1: pool TP, FP, FN across classes, then one F1 (every instance equal)\n- Weighted F1: per-class F1 averaged with each class's number of true examples as the weight\nUsed in classification, sentiment analysis, spam detection and NER.",
  examAnswer:"Three formulas → the spam example → why harmonic mean → four averages in a table",
  mistakes:"F1 is the HARMONIC mean, not the arithmetic mean. For P = 0.8 and R = 0.6 the arithmetic mean is 0.70; F1 is 0.686."},
+{id:"m5t18", topic:"5.1", marks:5, priority:"medium", flashcard:true,
+ q:"What are discourse (coherence) relations? Explain the main relations with an example each.",
+ understand:"Two sentences form a discourse only if the reader can find a relation between them. Naming that relation is what 'discourse relations' means in the syllabus.",
+ a:"A coherence relation is a meaning connection between two discourse segments that makes the text hang together. Hobbs' relations:\n- Result: the first causes the second. 'The tyre burst. The car skidded.'\n- Explanation: the second gives the cause of the first. 'The car skidded. The tyre had burst.'\n- Parallel: the two say similar things about similar entities. 'Riya plays the violin. Sneha plays the flute.'\n- Elaboration: the second gives more detail on the first. 'Dev bought a car. It is a red hatchback.'\n- Occasion (narration): the events follow one another. 'She opened the door. She walked in.'\nRhetorical Structure Theory (RST) describes the same idea with a nucleus (the main segment) and a satellite (the supporting segment) joined by a relation such as Evidence or Contrast.\nSignals: connectives such as because, so, but, then, for example. The relation can also be left implicit, as in the examples above.\nUse: summarisation (keep nuclei), question answering (why-questions need Explanation), coherence scoring of generated text.",
+ examAnswer:"Define → four or five relations with a two-sentence example each → nucleus and satellite (RST) → one use",
+ mistakes:"Do not confuse Result with Explanation: check which sentence is the cause. Cohesive words alone (pronouns, repetition) do not make a coherence relation."},
 {id:"m5t17", topic:"Self-Learning: Transformer-based models for coreference and discourse", marks:3, priority:"medium", flashcard:true,
  q:"Self-learning: how do Transformer-based models help coreference resolution and discourse understanding?",
  understand:"Attention lets any word look at any other word, so a pronoun can find its referent many sentences away.",
@@ -4143,6 +4182,12 @@ DATA.solved.m5 = [
 ];
 
 DATA.quiz.m5_theory = [
+ {q:"'The car skidded. The tyre had burst.' The coherence relation is:", type:"mcq",
+  options:["Result","Explanation","Parallel","Elaboration"], correct:1,
+  explanation:"The second sentence gives the cause of the first: Explanation. In the reverse order it would be Result."},
+ {q:"'Riya plays the violin. Sneha plays the flute.' The coherence relation is:", type:"mcq",
+  options:["Occasion","Explanation","Parallel","Result"], correct:2,
+  explanation:"Similar statements about similar entities: Parallel."},
  {q:"Cohesion is best described as:", type:"mcq",
   options:["a meaning relation between sentences","the linking of words in the text (reference, ellipsis, repetition, conjunction)","a type of anaphora","the speaker's intention"], correct:1,
   explanation:"Cohesion is the visible textual linking. The meaning relation between sentences is coherence."},
@@ -4477,7 +4522,7 @@ DATA.numericals.m6 = [
    "Step 2 — predicted entities: (Satya Nadella, PER), (Microsoft, PER), (2018, DATE) → 3.",
    "Step 3 — matches: only (Satya Nadella, PER). 'Microsoft' has the wrong type; '2018' has the wrong span. TP = 1, FP = 2, FN = 2.",
    "Step 4 — P = 1/3, R = 1/3, F1 = 1/3 = 0.333.",
-   "Step 5 — token-level accuracy would look much better (5 of 7 tags right = 0.71), which is why NER is scored on entities."
+   "Step 5 — token-level accuracy would look much better (4 of 7 tags right = 0.57: Microsoft, June and 2018 are wrong), which is why NER is scored on entities."
   ]
  },
  practice:[
