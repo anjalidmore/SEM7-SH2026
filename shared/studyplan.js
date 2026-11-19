@@ -40,7 +40,7 @@
   "use strict";
 
   /* ---------- the day ---------- */
-  var STUDY_START = "2026-11-17";                  /* replanned 17 Nov evening: nothing studied yet */
+  var STUDY_START = "2026-11-19";                  /* AI written 19 Nov; the plan starts that afternoon */
   var UNIT = 0.5;                                    /* hours; every plan quantity is a multiple */
   var DAY = [
     { key:"am",  label:"Morning",   from:"08:30", to:"11:30", h:3 },
@@ -52,18 +52,18 @@
     { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 }
   ];
   var DAY_OF = {                                     /* a day with its own blocks */
-    "2026-11-17": [ { key:"eve", label:"Tonight", from:"20:15", to:"00:15", h:4 } ]
+    "2026-11-19": [ { key:"pm",  label:"Afternoon", from:"14:30", to:"17:00", h:2.5 },
+                    { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 } ]
   };
   var LAST_LOOK = { key:"last", label:"Before the paper", from:"08:30", to:"09:30", h:1 };
-  var MOCK_H = { ai:1.5, nlp:2, ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
+  var MOCK_H = { nlp:2, ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
   var POST_SHARE = 0.80;                             /* MSE modules carry 10 of 50 marks (you); syllabus range is 20-30% */
   var DIFF_K = { 1:0.22, 2:0.28, 3:0.34, 4:0.40, 5:0.46 };   /* study hours per lecture hour: a fast learner */
   var REFRESH = 0.4;                                 /* an MSE module is a refresh */
   var SPLIT = { core:0.55, deepen:0.20, revise:0.25 };
-  var ONLY_FROM = { nlp:"2026-11-18", dl:"2026-11-28" };   /* NLP: none tonight, at most one module on 18 Nov */               /* a subject studied only from this day (DL: the two days before it) */
+  var ONLY_FROM = { dl:"2026-11-28" };   /* a subject studied only from this day (DL: the two days before it) */
   var LEND_CAP = 0.20;
-  var ORDER = { ai:[5,6,4,2,3,1] };                  /* fixed study order. AI: 5 and 6 tonight (27 marks, readable late),
-                                                        4 tomorrow morning while fresh (the numericals), then the MSE refresh */                               /* most of a subject's own days it can lend */
+  var ORDER = {};                                   /* fixed study order per subject, e.g. { nlp:[4,5,6,1,2,3] } */
 
   /* ---------- the evidence ----------
      hrs   syllabus contact hours (low, high)
@@ -74,26 +74,6 @@
      sig   [factor, why]
      first what to do first, most weighted first */
   var M = {
-    ai: [
-      { n:1, hrs:[4,6],  los:6, d:1, pre:true,  needs:[],
-        sig:[[1.10,"CIA 1 was set on this module"]],
-        first:["Agent types and the PEAS table","Environment properties","Rational agent","Agentic vs traditional AI"] },
-      { n:2, hrs:[8,10], los:5, d:3, pre:true,  needs:[],
-        sig:[[1.10,"CIA 2 was A* and alpha-beta"]],
-        first:["A* worked on a graph","Alpha-beta pruning on a tree","Minimax","BFS / DFS / IDS compared","Hill climbing, annealing, genetic algorithm"] },
-      { n:3, hrs:[8,10], los:6, d:4, pre:true,  needs:[],
-        sig:[],
-        first:["Resolution with CNF conversion","Forward and backward chaining","First-order sentence conversion","Unification","Wumpus world"] },
-      { n:4, hrs:[6,8],  los:3, d:5, pre:false, needs:[2,3],
-        sig:[],
-        first:["Bayesian network: build it, count CPT values, infer","Bayes' rule and joint probability","STRIPS actions and plan checking","Partial-order plan","Hierarchical and multi-agent planning"] },
-      { n:5, hrs:[7,9],  los:5, d:3, pre:false, needs:[],
-        sig:[],
-        first:["Transformer and attention","BERT, GPT, ChatGPT","SHAP and LIME","Prompt engineering","AI regulation and the Responsible-AI case"] },
-      { n:6, hrs:[4,6],  los:3, d:2, pre:false, needs:[5],
-        sig:[],
-        first:["The tool-calling loop","Single vs multi-agent design","Orchestration and workflows","Human in the loop vs autonomous","ClarifAI end to end"] }
-    ],
     nlp: [
       { n:1, hrs:[2,4],   los:4, d:1, pre:true,  needs:[],
         sig:[],

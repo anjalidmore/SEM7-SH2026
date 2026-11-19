@@ -38,8 +38,6 @@
   /* Exam order. `keys` are the subject's own progress keys, used by the hub only
      to notice that progress exists before the subject has published a summary. */
   var SUBJECTS = [
-    { code:"ai",  short:"AI",  name:"Artificial Intelligence",      course:"CEPCC712", date:"2026-11-19",
-      accent:"#4a48c4", keys:["cepcc712_ai_study_progress_v1"] },
     { code:"nlp", short:"NLP", name:"Natural Language Processing",  course:"CEPEC7032", date:"2026-11-21",
       accent:"#2c5f8a", keys:["nlpExamPrepProgress_v3", "nlpExamPrepProgress_v2"] },
     { code:"ads", short:"ADS", name:"Applied Data Science",         course:"CEPEC7041", date:"2026-11-25",
@@ -152,7 +150,7 @@
      afternoon of an exam day goes to the paper after it. Returns one entry per
      day: { date, exam (the paper written that day, or null), main (the paper
      studied for, or null after the last one) }. */
-  var STUDY_START = "2026-11-16";
+  var STUDY_START = "2026-11-19";
   function studyStart(){ return at(STUDY_START, "00:00"); }
   function plan(now){
     now = now || new Date();
@@ -194,7 +192,6 @@
      keeps a short stack of the views it has shown; Back restores the previous
      one, and from a site's first view goes to the semester hub. */
   var ROUTES = {
-    ai:  { get:function(){ return location.hash; }, set:function(r){ location.hash = r; } },
     ads: { get:function(){ return { v:view, t:currentTopic }; },
            set:function(r){ view = r.v; currentTopic = r.t; render(); window.scrollTo(0, 0); } },
     or:  { get:function(){ return view; }, set:function(r){ go(r); } },
@@ -216,7 +213,6 @@
     }
     var f = window.render;
     if(typeof f === "function") window.render = function(){ var out = f.apply(this, arguments); note(); return out; };
-    if(code === "ai") window.addEventListener("hashchange", function(){ setTimeout(note, 0); });
     note();
     document.addEventListener("click", function(e){
       var b = e.target.closest && e.target.closest("[data-s7-back]");
@@ -324,28 +320,6 @@
      effectiveStatus, render, MODULES, TOPICS, TOPIC_BY_ID, openTopic, goto, examTopics, topicStatus,
      go, highTopics, overallProgress, moduleProgress, overallStats, moduleStats */
   var ADAPTERS = {
-    ai: { hooks:["saveProgress", "render"],
-      summarize:function(){
-        var o = overallProgress(), ts = allTopics(), n = studyNext(), next = null;
-        if(n.topic) next = { title:n.topic.title, target:"topic:" + n.topic.id, m:n.topic.moduleId };
-        else if(n.quiz) next = { title:n.quiz.title, target:"quiz:" + n.quiz.id, m:n.quiz.module };
-        var m = next && find(COURSE.modules, next.m);
-        /* Core: the topic and practice items of Core topics (quizzes are Extra) */
-        var ct = ts.filter(function(t){ return !t.notCovered && isCore(t); }), cp = { done:0, total:0 };
-        COURSE.modules.forEach(function(x){ moduleItems(x).forEach(function(i){
-          if(i.kind !== "quiz" && find(ct, i.id)){ cp.total++; if(i.done) cp.done++; }
-        }); });
-        return { label:"Study items completed", unit:"study items", pct:o.pct, done:o.done, total:o.total,
-          topics:{ done:ts.filter(function(t){ return P.topics[t.id] === "done"; }).length, total:ts.length },
-          core: coreFigure(cp, ct, function(id){ var v = statusOf(id); return v === "prog" ? "progress" : v; }),
-          current: m ? cur(m.id, "Module " + m.num + " · " + m.title) : null, next:next,
-          modules: COURSE.modules.map(function(x){ return mod(x.id, moduleProgress(x).pct, x.title); }) };
-      },
-      open:function(target){
-        var t = split(target);
-        if((t[0] === "topic" && topicById(t[1])) || t[0] === "quiz") location.hash = "#/" + t[0] + "/" + t[1];
-        else if(t[0] === "module" && find(COURSE.modules, t[1])) location.hash = "#/module/" + t[1];
-      }},
     nlp: { hooks:["saveProgress", "render"],
       summarize:function(){
         var o = overallStats(), mods = Object.keys(MODULE_TITLES), groups = {};
@@ -494,7 +468,6 @@
       var target = "";
       try { target = decodeURIComponent(location.hash.slice(HASH.length)); } catch(e){}
       try { history.replaceState(null, "", location.pathname + location.search); } catch(e){}
-      if(code === "ai") location.hash = "#/";   /* AI routes by hash: give it a valid one first */
       if(target && ad && ad.open) try { ad.open(target); } catch(e){}
     }
     publish();
@@ -700,7 +673,6 @@
     formula:'<path d="M17.5 4.5h-11l6 7.5-6 7.5h11"/>',
     search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20.5 20.5-5.2-5.2"/>',
     /* subjects */
-    ai:'<path d="M12 3.5 13.9 9a1.6 1.6 0 0 0 1.1 1.1l5.5 1.9-5.5 1.9a1.6 1.6 0 0 0-1.1 1.1L12 20.5 10.1 15A1.6 1.6 0 0 0 9 13.9L3.5 12 9 10.1A1.6 1.6 0 0 0 10.1 9z"/><path d="M19 2.5v3.5M20.8 4.2h-3.5"/>',
     nlp:'<path d="M20.5 15a2 2 0 0 1-2 2H8l-4.5 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/>',
     ads:'<path d="M3 3v18h18"/><path d="M8 16.5v-4M12.5 16.5V7M17 16.5v-7"/>',
     or:'<circle cx="6" cy="18.5" r="2.5"/><circle cx="18" cy="5.5" r="2.5"/><path d="M8.5 18.5h8a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7h8"/>',

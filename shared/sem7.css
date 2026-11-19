@@ -6,7 +6,7 @@
    Those site rules use the tokens below, never raw colours.
 
    Each subject page sets two attributes on <html>:
-     data-subject="ai|nlp|ads|or|dl"   picks the accent colour
+     data-subject="nlp|ads|or|dl"   picks the accent colour
      data-ui="a"                       only on sites (ADS, NLP) whose markup
                                        relies on bare <button> styling
    Sections: 1 tokens · 2 base · 3 app shell · 4 layout · 5 components ·
@@ -45,7 +45,6 @@
   }
 }
 /* One accent per subject (the same colours the hub uses), lifted for dark mode. */
-html[data-subject="ai"]{--accent:#4a48c4}
 html[data-subject="nlp"]{--accent:#2c5f8a}
 html[data-subject="ads"]{--accent:#c2410c}
 html[data-subject="or"]{--accent:#2f5bd0}

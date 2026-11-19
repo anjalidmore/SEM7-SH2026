@@ -12,15 +12,6 @@
   "use strict";
   var S = window.SEM7_SYLLABUS = {
 
-    ai: { paper:null, modules:[
-      { id:"m1", built:true, title:"Fundamentals of Artificial Intelligence and Agents" },
-      { id:"m2", built:true, title:"Problem Solving, Search and Optimization" },
-      { id:"m3", built:true, title:"Knowledge Representation and Reasoning" },
-      { id:"m4", built:true, title:"Planning and Uncertainty" },
-      { id:"m5", built:true, title:"Generative AI, Explainable AI, Responsible AI & Ethics" },
-      { id:"m6", built:true, title:"AI in Real-World Domains and Future Directions" }
-    ]},
-
     nlp: { paper:null, modules:[
       { id:"m1", built:true, title:"Introduction to NLP" },
       { id:"m2", built:true, title:"Text Processing & Word-Level Analysis" },

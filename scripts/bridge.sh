@@ -28,7 +28,7 @@ if [[ "${1:-}" == "--from" ]]; then
   [[ -s "$from" ]] && grep -qi '</body>' "$from" || { echo "$from is empty or not a site; nothing copied" >&2; exit 1; }
 fi
 codes=("$@")
-[[ ${#codes[@]} -gt 0 ]] || codes=(ai nlp ads or dl)
+[[ ${#codes[@]} -gt 0 ]] || codes=(nlp ads or dl)
 
 status=0
 for code in "${codes[@]}"; do

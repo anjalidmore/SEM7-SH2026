@@ -1,12 +1,14 @@
 # Semester 7 study dashboard
 
-One repository for the five Semester VII study sites and the semester hub that sits above them.
+One repository for the Semester VII study sites and the semester hub that sits above them.
 Everything is static: no backend, no build step, no dependencies, no network requests. It works
 opened from disk and on GitHub Pages.
 
+AI (CEPCC712) was written on Thu 19 Nov 2026 and removed: its site, notes and lecture material are gone.
+Tag **`ai-final`** keeps the last version of its site (`git checkout ai-final -- subjects/ai`).
+
 | Exam (10:30–12:30) | Subject | Site |
 |---|---|---|
-| Thu 19 Nov 2026 | Artificial Intelligence (CEPCC712) | `subjects/ai/` |
 | Sat 21 Nov 2026 | Natural Language Processing (CEPEC7032) | `subjects/nlp/` |
 | Wed 25 Nov 2026 | Applied Data Science (CEPEC7041) | `subjects/ads/` |
 | Fri 27 Nov 2026 | Operations Research (OEC7015) | `subjects/or/` |
@@ -43,9 +45,7 @@ with their git history, keeping only the site files. Tag **`mse-final`** marks e
 was for the Mid Sem, before any End Sem work.
 
 `_resources/<code>/` holds each subject's lecture material, copied on 31 Oct 2026 from the original
-folders in `~/Desktop/projects/Sem7/`. Put new End Sem material here. `_resources/ai/ese.html` and
-`ESE-COVERAGE.md` are an earlier AI End Sem draft, kept as reference only; AI's End Sem site is
-`subjects/ai/index.html`.
+folders in `~/Desktop/projects/Sem7/`. Put new End Sem material here.
 
 ## How the hub gets each subject's progress
 
@@ -67,7 +67,6 @@ hub shows the same figure as that site's dashboard, with that site's meaning:
 
 | Site | Figure shown |
 |---|---|
-| AI | Study items completed |
 | NLP | Items done |
 | ADS | Questions marked done |
 | OR | Exam-priority questions done |

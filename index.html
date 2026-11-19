@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Semester 7 · End Sem</title>
-<meta name="description" content="Semester VII End Sem study dashboard: timetable, progress and study plan for all five subjects.">
+<meta name="description" content="Semester VII End Sem study dashboard: timetable, progress and study plan for the remaining papers.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23171a21'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' fill='white' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E">
 <style>
 :root{
@@ -106,6 +106,16 @@ h2 .s7-i{color:var(--ink-mute)}
 .card{display:flex; flex-direction:column; gap:12px; background:var(--panel); border:1px solid var(--border);
   border-radius:var(--radius); padding:16px; min-width:0}
 .card.done{opacity:.65}
+/* finished papers: one compact archived row each */
+.done-l{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:8px}
+.done-l li{display:flex; align-items:center; gap:12px; background:var(--panel-2); border:1px dashed var(--border);
+  border-radius:var(--radius); padding:10px 16px; font-size:.86rem; color:var(--ink-soft); min-width:0}
+.done-l .nm{flex:1; min-width:0}
+.done-l .nm a{color:var(--ink); font-weight:620; text-decoration:none}
+.done-l .nm a:hover{text-decoration:underline; text-underline-offset:3px}
+.done-l .nm span{display:block; font-size:.76rem; color:var(--ink-mute)}
+.done-l .tag{flex:none; font-size:.72rem; font-weight:650; padding:2px 8px; border-radius:999px;
+  background:var(--acc-soft); color:var(--acc-ui); white-space:nowrap}
 .card .hd{display:flex; align-items:center; gap:12px}
 .card .nm{flex:1; min-width:0}
 .card h3{font-size:.98rem; line-height:1.3}
@@ -260,6 +270,7 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
     <section aria-labelledby="subs-h">
       <h2 id="subs-h"></h2>
       <ul class="subs" id="subs"></ul>
+      <ul class="done-l" id="done" aria-label="Papers written"></ul>
     </section>
 
     <div class="two">
@@ -462,23 +473,30 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
         '<div class="acts"><a class="btn primary" href="' + continueHref(next, ps) + '">' + 'Open ' + esc(next.short) + I("arrow") + '</a></div>';
     } else {
       hero.className = "hero";
-      hero.innerHTML = '<span class="ico lg">' + I("check") + '</span><div class="what"><div class="t">All five papers are done.</div></div>';
+      hero.innerHTML = '<span class="ico lg">' + I("check") + '</span><div class="what"><div class="t">All papers are done.</div></div>';
     }
 
-    /* overview */
-    var avg = Math.round(list.reduce(function(a, s){ return a + (sums[s.code] ? sums[s.code].pct : 0); }, 0) / list.length);
-    var withTopics = list.filter(function(s){ return sums[s.code] && sums[s.code].topics; });
+    /* overview: only the papers still ahead count; written ones are archived below */
+    var active = list.filter(function(s){ return S.countdown(s, now).state !== "done"; });
+    var written = list.filter(function(s){ return S.countdown(s, now).state === "done"; });
+    var avg = active.length ? Math.round(active.reduce(function(a, s){ return a + (sums[s.code] ? sums[s.code].pct : 0); }, 0) / active.length) : 100;
+    var withTopics = active.filter(function(s){ return sums[s.code] && sums[s.code].topics; });
     var tLeft = withTopics.reduce(function(a, s){ var t = sums[s.code].topics; return a + t.total - t.done; }, 0);
-    var allMods = [].concat.apply([], list.map(function(s){ var y = S.syllabus(s.code); return y ? y.modules : []; }));
+    var allMods = [].concat.apply([], active.map(function(s){ var y = S.syllabus(s.code); return y ? y.modules : []; }));
     var ready = allMods.filter(function(m){ return m.built; }).length;
     function stat(icon, v, l){ return '<div class="stat"><span class="ico">' + I(icon) + '</span><div><div class="v">' + v + '</div><div class="l">' + l + '</div></div></div>'; }
     document.getElementById("stats").innerHTML =
-      stat("target", avg + "%", "Overall progress") +
-      stat("checks", withTopics.length ? tLeft : "&mdash;", "Topics left" + (withTopics.length < list.length ? ' <b>&middot; ' + withTopics.length + ' of 5 opened</b>' : '')) +
+      stat("target", avg + "%", "Progress, " + plural(active.length, "paper") + " left" + (written.length ? ' <b>&middot; ' + written.length + ' of ' + list.length + ' written</b>' : '')) +
+      stat("checks", withTopics.length ? tLeft : "&mdash;", "Topics left" + (withTopics.length < active.length ? ' <b>&middot; ' + withTopics.length + ' of ' + active.length + ' opened</b>' : '')) +
       stat("layers", ready + "/" + allMods.length, "Modules with material");
 
-    /* subjects */
-    document.getElementById("subs").innerHTML = list.map(function(s){ return cardHTML(s, sums[s.code], now, s === pick); }).join("");
+    /* subjects: cards for papers ahead, one archived row per paper written */
+    document.getElementById("subs").innerHTML = active.map(function(s){ return cardHTML(s, sums[s.code], now, s === pick); }).join("");
+    document.getElementById("done").innerHTML = written.map(function(s){
+      return '<li class="acc"' + accStyle(s) + '><span class="ico">' + I("check") + '</span>' +
+        '<div class="nm"><a href="' + S.subjectHref(s) + '">' + esc(s.name) + '</a><span>Written ' + dateText(s) + ' &middot; archived, site still opens</span></div>' +
+        '<span class="tag">' + esc(s.short) + ' done</span></li>';
+    }).join("");
 
     /* study timetable: day by day, module by module (shared/studyplan.js) */
     var PL = window.SEM7_PLAN ? PLAN_CACHE || (PLAN_CACHE = window.SEM7_PLAN.build(now)) : null;
