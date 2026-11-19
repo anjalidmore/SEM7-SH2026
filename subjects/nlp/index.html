@@ -6030,7 +6030,8 @@ function topicKeyOf(m, topic){
   if(c) return c[1];
   return m + (/^Math Seeds/i.test(t) ? "-ms" : "-sl");
 }
-function groupTitle(g){ return (/^\d/.test(g.key) ? g.key+" · " : "") + (TOPIC_TITLES[g.key] || g.key); }
+function sectionTitle(key){ return (/^\d/.test(key) ? key+" · " : "") + (TOPIC_TITLES[key] || key); }
+function groupTitle(g){ return g.title || sectionTitle(g.key); }
 /* Core: Core-tagged or high-priority ones; practice inherits its parent's tag */
 function inCore(i){
   if(!SEM7.coreOnly()) return true;
@@ -6071,29 +6072,35 @@ Object.keys(EXAM_ASKED).forEach(id=>{
   if(q){ q.asked = EXAM_ASKED[id]; q.core = true; if("priority" in q || q.q) q.priority = "high"; }
 });
 function coreGroup(g){ return !SEM7.coreOnly() || g.items.some(inCore); }
+/* One card and one page per question: every theory question, numerical set and
+   class-solved set stands alone (16 Nov 2026: "i want the questions in different
+   boxes"). The group key is the question's own id; `section` keeps its syllabus
+   section (4.1, 4.2 ...) for ordering and labels. */
 function topicGroups(m){
-  const g = {}, add = key => g[key] || (g[key] = {key, m, theory:[], nums:[], solved:[]});
-  (DATA.theory[m]||[]).forEach(q=>add(topicKeyOf(m,q.topic)).theory.push(q));
-  (DATA.numericals[m]||[]).forEach(t=>add(topicKeyOf(m,t.topic)).nums.push(t));
-  ((DATA.solved||{})[m]||[]).forEach(t=>add(topicKeyOf(m,t.topic)).solved.push(t));
-  const items = moduleItems(m);
+  const items = moduleItems(m), out = [];
   const rank = k => /^\d/.test(k) ? k.split(".").map(Number).reduce((a,b)=>a*100+b,0) : (k.endsWith("-ms") ? 1e6 : 2e6);
-  return Object.values(g).sort((a,b)=>rank(a.key)-rank(b.key)).map(x=>{
-    x.items = items.filter(i=>topicKeyOf(m,i.topic)===x.key);
-    x.track = x.items.some(i=>studyKindOf(i)==="numerical") ? "numerical" : "theory";
+  const make = (key, topic, title, theory, nums, solved, own) => {
+    const x = {key, m, section:topicKeyOf(m, topic), title, theory, nums, solved};
+    x.items = items.filter(own);
+    x.track = nums.length || solved.length ? "numerical" : "theory";
     x.total = x.items.length; x.done = x.items.filter(i=>effectiveStatus(i)==="done").length;
-    x.high = x.theory.some(q=>q.priority==="high");
-    x.asked = x.theory.concat(x.nums, x.solved).some(q=>q.asked);
-    return x;
-  });
+    x.high = theory.concat(nums, solved).some(q=>q.priority==="high");
+    x.asked = theory.concat(nums, solved).some(q=>q.asked);
+    x.marks = (theory[0] || solved[0] || {}).marks || null;
+    out.push(x);
+  };
+  (DATA.theory[m]||[]).forEach(q=>make(q.id, q.topic, q.q, [q], [], [], i=>i.id===q.id));
+  (DATA.numericals[m]||[]).forEach(t=>make(t.id, t.topic, t.title, [], [t], [], i=>i.parent===t.id));
+  ((DATA.solved||{})[m]||[]).forEach(t=>make(t.id, t.topic, t.title, [], [], [t], i=>i.id===t.id || i.parent===t.id));
+  /* stable sort by syllabus section, keeping the data order inside a section */
+  return out.map((x,i)=>({x,i})).sort((a,b)=>rank(a.x.section)-rank(b.x.section) || a.i-b.i).map(o=>o.x);
 }
 function allTopicGroups(){ return Object.keys(MODULE_TITLES).reduce((a,m)=>a.concat(topicGroups(m)),[]); }
 function groupByKey(key){ return allTopicGroups().find(g=>g.key===key) || null; }
 function topicCard(g){
-  const n = (k, w) => k ? k+" "+w+(k===1?"":"s") : "";
-  const sum = [n(g.theory.length,"theory question"), n(g.nums.length+g.solved.length,"worked set")].filter(Boolean).join(" · ");
+  const sum = [esc(sectionTitle(g.section)), g.marks ? g.marks+" marks" : "", g.track==="numerical" ? "Worked set" : ""].filter(Boolean).join(" · ");
   return SEM7.ui.topicCard({linkTitle:true, title:esc(groupTitle(g)), summary:sum, high:g.high||g.asked, pill:g.asked ? '<span class="pill asked">Asked in exam</span>' : g.high ? '<span class="pill high">High priority</span>' : "",
-    done:g.done, total:g.total, unit:"items", attrs:'data-ntopic="'+esc(g.key)+'"'});
+    done:g.done, total:g.total, unit:g.total===1 ? "item" : "items", attrs:'data-ntopic="'+esc(g.key)+'"'});
 }
 function nlpMark(id){ return {done:statusOf(id)==="done", attrs:'data-nlpmark="'+esc(id)+'"'}; }
 function renderTopicPage(key){
@@ -6105,7 +6112,8 @@ function renderTopicPage(key){
   /* 1 · Concept: each question's idea in plain words, the formulas, the class method */
   let concept = "";
   const plain = theory.filter(q=>q.understand);
-  if(plain.length) concept += '<div class="s7-terms">'+plain.map(q=>'<div class="s7-term"><b>'+esc(q.q)+'</b><span>'+esc(q.understand)+'</span></div>').join("")+'</div>';
+  if(plain.length === 1 && theory.length === 1) concept += SEM7.ui.rich(plain[0].understand);
+  else if(plain.length) concept += '<div class="s7-terms">'+plain.map(q=>'<div class="s7-term"><b>'+esc(q.q)+'</b><span>'+esc(q.understand)+'</span></div>').join("")+'</div>';
   g.nums.forEach(t=>{
     concept += '<h4>'+esc(t.title)+'</h4>'+SEM7.ui.rich(t.concept)+(t.formula ? '<div class="formula">'+esc(t.formula)+'</div>' : "");
   });
@@ -6129,9 +6137,10 @@ function renderTopicPage(key){
   const modLink = 'data-nv="'+m+'"';
   return SEM7.ui.topic({
     head:{crumb:[{label:esc(num)+" &middot; "+esc(mtitle), attrs:modLink},
-                 {label:g.track==="numerical" ? "Numericals" : "Theory", attrs:modLink+' data-nsub="'+g.track+'"'}],
+                 {label:g.track==="numerical" ? "Numericals" : "Theory", attrs:modLink+' data-nsub="'+g.track+'"'},
+                 {label:esc(sectionTitle(g.section))}],
       title:esc(groupTitle(g)), meta:g.asked ? '<span class="pill asked">Asked in exam</span>' : g.high ? '<span class="pill high">High priority</span>' : "",
-      progress:{done:g.done, total:g.total, unit:"items done"}},
+      progress:{done:g.done, total:g.total, unit:g.total===1 ? "item done" : "items done"}},
     concept,
     answer:theory.map(q=>({id:"item_"+q.id, label:(q.asked ? "Asked in exam · " : "")+q.marks+" marks", marks:q.marks, q:esc(q.q),
       body:esc(q.examAnswer||""), more:{key:"ans-"+q.id, html:SEM7.ui.rich(q.a)}, mark:nlpMark(q.id)})),

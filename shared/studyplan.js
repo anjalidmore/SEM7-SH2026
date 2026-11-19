@@ -40,7 +40,7 @@
   "use strict";
 
   /* ---------- the day ---------- */
-  var STUDY_START = "2026-11-16";
+  var STUDY_START = "2026-11-17";                  /* replanned 17 Nov evening: nothing studied yet */
   var UNIT = 0.5;                                    /* hours; every plan quantity is a multiple */
   var DAY = [
     { key:"am",  label:"Morning",   from:"08:30", to:"11:30", h:3 },
@@ -51,14 +51,19 @@
     { key:"pm",  label:"Afternoon", from:"14:30", to:"17:00", h:2.5 },
     { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 }
   ];
+  var DAY_OF = {                                     /* a day with its own blocks */
+    "2026-11-17": [ { key:"eve", label:"Tonight", from:"20:15", to:"00:15", h:4 } ]
+  };
   var LAST_LOOK = { key:"last", label:"Before the paper", from:"08:30", to:"09:30", h:1 };
-  var MOCK_H = { ai:3, nlp:2, ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
+  var MOCK_H = { ai:1.5, nlp:2, ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
   var POST_SHARE = 0.80;                             /* MSE modules carry 10 of 50 marks (you); syllabus range is 20-30% */
   var DIFF_K = { 1:0.22, 2:0.28, 3:0.34, 4:0.40, 5:0.46 };   /* study hours per lecture hour: a fast learner */
   var REFRESH = 0.4;                                 /* an MSE module is a refresh */
   var SPLIT = { core:0.55, deepen:0.20, revise:0.25 };
-  var ONLY_FROM = { dl:"2026-11-28" };               /* a subject studied only from this day (DL: the two days before it) */
-  var LEND_CAP = 0.20;                               /* most of a subject's own days it can lend */
+  var ONLY_FROM = { nlp:"2026-11-18", dl:"2026-11-28" };   /* NLP: none tonight, at most one module on 18 Nov */               /* a subject studied only from this day (DL: the two days before it) */
+  var LEND_CAP = 0.20;
+  var ORDER = { ai:[5,6,4,2,3,1] };                  /* fixed study order. AI: 5 and 6 tonight (27 marks, readable late),
+                                                        4 tomorrow morning while fresh (the numericals), then the MSE refresh */                               /* most of a subject's own days it can lend */
 
   /* ---------- the evidence ----------
      hrs   syllabus contact hours (low, high)
@@ -208,6 +213,7 @@
   /* priority: a module that unlocks a heavier one counts as that heavy one */
   function priorities(code, W){
     var list = M[code], p = {};
+    if(ORDER[code]){ ORDER[code].forEach(function(n, i){ p[key(code, n)] = 100 - i; }); return p; }
     list.forEach(function(m){ p[key(code, m.n)] = W[key(code, m.n)].marks; });
     for(var pass = 0; pass < list.length; pass++){
       list.forEach(function(m){
@@ -243,7 +249,7 @@
         blocks.push({ b:LAST_LOOK, only:exam.code });
         EXAM_DAY_AFTER.forEach(function(b){ blocks.push({ b:b }); });
       } else {
-        DAY.forEach(function(b){ blocks.push({ b:b }); });
+        (DAY_OF[ymd(day)] || DAY).forEach(function(b){ blocks.push({ b:b }); });
       }
       blocks.forEach(function(x){
         var slot = { date:day, ymd:ymd(day), key:x.b.key, label:x.b.label, from:x.b.from, to:x.b.to,
@@ -331,7 +337,7 @@
       var v = (m.marks + 0.35 * unlocks) * (m.pre ? 0.6 : 1);     /* a prerequisite also earns part of what it unlocks */
       chunks.push({ m:m, kind:"core",   h:m.core, dens:v * SPLIT.core / m.core,     after:null });
       if(deepen > 0) chunks.push({ m:m, kind:"deepen", h:deepen, dens:v * SPLIT.deepen / deepen, after:"core" });
-      chunks.push({ m:m, kind:"rev",    h:m.rev,  dens:v * SPLIT.revise / m.rev,     after:"core" });
+      chunks.push({ m:m, kind:"rev",    h:m.rev,  dens:v * SPLIT.revise / m.rev * (ORDER[m.code] ? 0.2 : 1), after:"core" });   /* a fixed-order subject learns everything before revising */
     });
     var left = chunks.slice(), done = 0, skipped = [];
     while(left.length){
@@ -389,13 +395,13 @@
             var left2 = hrs;
             while(left2 > 1e-9){
               var cand = null, kind = null;
-              var rdy = st.learn.filter(function(m){
+              var rdy = ORDER[code] ? st.learn.slice() : st.learn.filter(function(m){
                 return m.needs.every(function(q){ var x = mods[q]; return !x || x.todo.learn <= 1e-9; });
               });
               if(rdy.length){
                 rdy.sort(function(a, b){ return b.p - a.p; });
                 var top = rdy.slice(0, 3);
-                if(slot.key === "eve" || day.hard >= 1){
+                if(!ORDER[code] && (slot.key === "eve" || day.hard >= 1)){
                   var easy = top.filter(function(m){ return effD(m, "l") <= 2; })[0];
                   if(easy) cand = easy;
                 }

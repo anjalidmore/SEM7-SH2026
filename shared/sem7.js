@@ -184,6 +184,8 @@
     return '<button type="button" class="sem7-back" data-s7-back title="Back">' + icon("back") + 'Back</button>' +
       '<a class="sem7-a sem7-home" href="../../index.html">' + icon("home") + 'Semester 7</a>' +
       '<span class="sem7-subs">' + subs + '</span>' +
+      '<a class="sem7-syl" href="../../syllabus.html?s=' + s.code + '" target="_blank" rel="noopener" title="Open the ' +
+        esc(s.short) + ' syllabus checklist in a new tab">' + icon("checks") + 'Syllabus</a>' +
       '<span class="sem7-next">' + when + '</span>';
   }
 

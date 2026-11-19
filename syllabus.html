@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Syllabus · Semester 7</title>
+<meta name="description" content="Official syllabus as a checklist: every topic with the learning outcomes beneath it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23171a21'/%3E%3Cpath d='M9 16.5l5 5 9-10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="shared/sem7.css">
+<script src="shared/sem7.js"></script>
+<script src="shared/syllabus-text.js"></script>
+<script>
+/* Step-by-step notes for the chosen subject: shared/notes-<code>.js (optional). */
+(function(){ var m = /[?&]s=([a-z]+)/.exec(location.search); if(m) document.write('<script src="shared/notes-' + m[1] + '.js"><\/script>'); })();
+</script>
+<style>
+/* Syllabus checklist page. Uses the shared tokens only. */
+.sy-wrap{max-width:860px; margin:0 auto; padding:0 var(--gutter) 72px}
+.sy-top{background:var(--surface-2); border-bottom:1px solid var(--border); font:500 .8rem/1.3 var(--sans)}
+.sy-top-in{max-width:860px; margin:0 auto; padding:6px var(--gutter); display:flex; flex-wrap:wrap; align-items:center; gap:4px 16px}
+.sy-top a{color:var(--text-2); text-decoration:none; border-radius:5px; padding:3px 6px; margin:0 -6px}
+.sy-top a:hover{color:var(--text); background:var(--surface-3)}
+.sy-top a.sy-home{font-weight:600; color:var(--text)}
+.sy-top a[aria-current=page]{color:var(--text); font-weight:650; box-shadow:inset 0 -2px 0 var(--accent-ui); border-radius:0}
+.sy-top .sy-site{margin-left:auto}
+.sy-head{padding:28px 0 6px}
+.sy-kicker{font:600 .74rem/1.2 var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ui)}
+.sy-head h1{margin:6px 0 2px; font-size:1.55rem}
+.sy-sub{color:var(--muted); font-size:.86rem; margin:0}
+.sy-overall{position:-webkit-sticky; position:sticky; top:0; z-index:5; background:var(--bg); display:flex; align-items:center;
+  gap:10px 14px; flex-wrap:wrap; padding:12px 0; border-bottom:1px solid var(--border); margin-bottom:18px}
+.sy-overall .bar{flex:1 1 160px}
+.sy-count{font-variant-numeric:tabular-nums; color:var(--text-2); font-size:.86rem; white-space:nowrap}
+.sy-count b{color:var(--text); font-weight:650}
+.sy-reset{font:500 .8rem/1 var(--sans); color:var(--muted); background:none; border:1px solid var(--border); border-radius:6px;
+  padding:6px 10px; cursor:pointer}
+.sy-reset:hover{color:var(--text); border-color:var(--border-2)}
+.sy-mod{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin:0 0 16px; overflow:hidden}
+.sy-mod-h{display:flex; align-items:baseline; gap:10px 12px; flex-wrap:wrap; padding:14px 18px 12px; border-bottom:1px solid var(--border)}
+.sy-mod-n{font:650 .95rem/1.3 var(--mono); color:var(--accent-ui)}
+.sy-mod-h h2{flex:1 1 220px; margin:0; padding:0; border:0; font-size:1.05rem; line-height:1.35}
+.sy-meta{display:flex; gap:6px; flex-wrap:wrap; align-items:center; font:500 .76rem/1 var(--sans); color:var(--muted)}
+.sy-meta span{border:1px solid var(--border); border-radius:999px; padding:4px 8px; white-space:nowrap; font-variant-numeric:tabular-nums}
+.sy-meta .sy-done{color:var(--text-2); background:var(--surface-2)}
+.sy-meta .sy-done.full{color:var(--good); border-color:color-mix(in srgb, var(--good) 40%, var(--surface))}
+.sy-sec{padding:12px 18px}
+.sy-sec + .sy-sec{border-top:1px solid var(--border)}
+.sy-lab{font:650 .8rem/1.3 var(--sans); color:var(--text); margin:0 0 6px}
+.sy-sec p{margin:0; color:var(--text-2); font-size:.9rem}
+.sy-sec p + p{margin-top:4px}
+.sy-grp{font:600 .86rem/1.4 var(--sans); color:var(--text); margin:12px 0 2px}
+.sy-grp:first-of-type{margin-top:4px}
+.sy-list{list-style:none; margin:0; padding:0}
+.sy-list li{margin:0}
+.sy-item{display:flex; align-items:flex-start; gap:10px; padding:5px 8px; margin:0 -8px; border-radius:6px; cursor:pointer; font-size:.93rem; line-height:1.45}
+.sy-item:hover{background:var(--surface-2)}
+.sy-item input{flex:none; width:17px; height:17px; margin:2px 0 0; accent-color:var(--accent-ui); cursor:pointer}
+.sy-item input:checked + span{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--border-2)}
+.sy-q{margin:0 0 6px 27px; border:1px solid var(--border); border-radius:8px; background:var(--surface)}
+.sy-q[open]{border-color:var(--border-2); margin-bottom:12px}
+.sy-q summary{display:flex; align-items:flex-start; gap:8px; padding:7px 10px; cursor:pointer; list-style:none; font:600 .88rem/1.45 var(--sans); color:var(--text)}
+.sy-q summary::-webkit-details-marker{display:none}
+.sy-q summary::before{content:"Q"; flex:none; font:650 .7rem/1.45rem var(--mono); width:1.45rem; height:1.45rem; text-align:center; border-radius:5px;
+  color:var(--accent-ui); background:var(--surface-2); border:1px solid var(--border)}
+.sy-q summary span{flex:1 1 auto}
+.sy-q summary em{flex:none; font:500 .72rem/1.45rem var(--sans); font-style:normal; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
+.sy-q summary:hover{background:var(--surface-2); border-radius:8px}
+.sy-a{padding:4px 12px 10px 12px; border-top:1px solid var(--border); font-size:.9rem; line-height:1.55; color:var(--text-2); overflow-x:auto}
+.sy-a p{margin:8px 0 0; color:var(--text-2); font-size:.9rem}
+.sy-a ul,.sy-a ol{margin:6px 0 0; padding-left:20px}
+.sy-a li{margin:3px 0}
+.sy-a b{color:var(--text)}
+.sy-a table{border-collapse:collapse; margin:8px 0 0; font-size:.86rem; width:100%}
+.sy-a th,.sy-a td{border:1px solid var(--border); padding:5px 8px; text-align:left; vertical-align:top}
+.sy-a th{background:var(--surface-2); color:var(--text); font-weight:650}
+.sy-a pre{margin:8px 0 0; padding:8px 10px; background:var(--surface-2); border-radius:6px; font:500 .82rem/1.5 var(--mono); overflow-x:auto; white-space:pre}
+.sy-x{margin:10px 0 0; padding:6px 10px; border-left:2px solid var(--accent-line); background:var(--surface-2); border-radius:0 6px 6px 0; font-size:.86rem}
+.sy-x b{color:var(--text)}
+.sy-tools{display:flex; gap:8px; margin-left:auto}
+@media (max-width:560px){ .sy-q{margin-left:0} }
+@media print{ .sy-q{break-inside:avoid} .sy-tools{display:none!important} }
+.sy-los{list-style:none; margin:0; padding:0}
+.sy-los li{margin:0; padding:5px 0 5px 12px; border-left:2px solid var(--accent-line); color:var(--text-2); font-size:.88rem; line-height:1.5}
+.sy-los li + li{margin-top:6px}
+.sy-lead{font-size:.86rem!important; margin-bottom:8px!important}
+.sy-note{color:var(--muted); font-size:.82rem; margin:22px 0 0}
+.sy-pick{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px; margin-top:20px}
+.sy-pick a{display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px;
+  text-decoration:none; color:var(--text)}
+.sy-pick a:hover{border-color:var(--border-2)}
+.sy-pick b{display:block; font-size:1rem}
+.sy-pick span{color:var(--muted); font-size:.82rem}
+@media (max-width:560px){ .sy-mod-h,.sy-sec{padding-left:14px; padding-right:14px} .sy-top .sy-site{margin-left:0} }
+@media print{ .sy-top,.sy-reset{display:none!important} .sy-overall{position:static} .sy-mod{break-inside:avoid} }
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px">This page needs JavaScript to show the syllabus.</p></noscript>
+<div id="app"></div>
+<script>
+(function(){
+  "use strict";
+  var S = window.SEM7, ALL = window.SEM7_SYLLABUS_TEXT, app = document.getElementById("app");
+  if(!S || !ALL){ app.textContent = "The syllabus could not be loaded."; return; }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+  /* One topic per comma. Semicolons and sentence ends ("problem. Finding ...")
+     separate topics too. Commas inside brackets stay with their topic. The
+     words themselves are never changed, only trimmed. */
+  function topics(text){
+    var out = [], cur = "", depth = 0, i, c;
+    function push(){ var t = cur.trim(); if(t) out.push(t); cur = ""; }
+    for(i = 0; i < text.length; i++){
+      c = text.charAt(i);
+      if(c === "(") depth++;
+      else if(c === ")") depth = Math.max(0, depth - 1);
+      if(depth === 0 && (c === "," || c === ";")){ push(); continue; }
+      cur += c;
+      if(depth === 0 && c === "." && /^\s+[A-Z(]/.test(text.slice(i + 1))) push();
+    }
+    push();
+    return out;
+  }
+
+  var code = (/[?&]s=([a-z]+)/.exec(location.search) || [])[1];
+  var subj = code && S.byCode(code), data = code && ALL[code];
+
+  function topBar(){
+    return '<div class="sy-top" role="navigation" aria-label="Syllabus"><div class="sy-top-in">' +
+      '<a class="sy-home" href="index.html">Semester 7</a>' +
+      S.SUBJECTS.map(function(o){
+        return '<a href="syllabus.html?s=' + o.code + '" title="' + esc(o.name) + '"' + (o.code === code ? ' aria-current="page"' : '') + '>' + esc(o.short) + '</a>';
+      }).join("") +
+      (subj ? '<a class="sy-site" href="subjects/' + code + '/index.html">Open ' + esc(subj.short) + ' study site</a>' : '') +
+      '</div></div>';
+  }
+
+  if(!subj || !data){
+    document.title = "Syllabus · Semester 7";
+    app.innerHTML = topBar() + '<div class="sy-wrap"><div class="sy-head"><div class="sy-kicker">Semester 7</div><h1>Syllabus</h1>' +
+      '<p class="sy-sub">Pick a subject.</p></div><div class="sy-pick">' +
+      S.SUBJECTS.map(function(o){
+        return '<a href="syllabus.html?s=' + o.code + '"><b>' + esc(o.short) + '</b><span>' + esc(o.name) + ' · ' + esc(o.course) + '</span></a>';
+      }).join("") + '</div></div>';
+    return;
+  }
+
+  document.documentElement.setAttribute("data-subject", code);
+  document.title = subj.short + " syllabus · Semester 7";
+
+  var KEY = "sem7.syllabus." + code, ticks = {};
+  try { ticks = JSON.parse(S.lsGet(KEY) || "{}") || {}; } catch(e){ ticks = {}; }
+  function save(){ S.lsSet(KEY, JSON.stringify(ticks)); }
+
+  /* One small question per syllabus topic (an entry may hold several). */
+  var NOTES = (window.SEM7_NOTES || {})[code] || {}, hasNotes = false;
+  /* Plain text goes through the shared formatter; tables and other HTML pass as written. */
+  function body(a){
+    return String(a).split(/(<table[\s\S]*?<\/table>)/).map(function(part){
+      return /^<table/.test(part) ? part : S.ui.rich(part);
+    }).join("");
+  }
+  function notesHTML(id){
+    var n = NOTES[id];
+    if(!n) return "";
+    hasNotes = true;
+    return [].concat(n).map(function(o){
+      return '<details class="sy-q"><summary><span>' + esc(o.q) + '</span>' + (o.m ? '<em>' + esc(o.m) + ' marks</em>' : '') + '</summary><div class="sy-a">' +
+        body(o.a) +
+        (o.trap ? '<div class="sy-x"><b>Trap:</b> ' + esc(o.trap) + '</div>' : '') +
+        (o.ask && o.ask.length ? '<div class="sy-x"><b>Also asked as:</b> ' + o.ask.map(esc).join(" · ") + '</div>' : '') +
+        '</div></details>';
+    }).join("");
+  }
+
+  var totals = [];   /* per module: ids of its topics */
+  function moduleHTML(m, mi){
+    var ids = [], h = "";
+    h += '<section class="sy-mod" data-m="' + mi + '"><div class="sy-mod-h"><span class="sy-mod-n">' + esc(m.n) + '</span><h2>' + esc(m.title) + '</h2>' +
+      '<div class="sy-meta">' + (m.co ? '<span>' + esc(m.co) + '</span>' : '') + '<span>' + esc(m.hrs) + ' Hrs</span><span class="sy-done" data-done></span></div></div>';
+    if(m.obj) h += '<div class="sy-sec"><div class="sy-lab">' + esc(m.objLabel) + '</div><p>' + esc(m.obj) + '</p></div>';
+
+    h += '<div class="sy-sec"><div class="sy-lab">' + esc(m.contentsLabel) + '</div>';
+    m.contents.forEach(function(entry, ei){
+      var label = typeof entry === "string" ? "" : entry[0], text = typeof entry === "string" ? entry : entry[1];
+      if(label) h += '<div class="sy-grp">' + esc(label) + '</div>';
+      h += '<ul class="sy-list">' + topics(text).map(function(t, ti){
+        var id = mi + "." + ei + "." + ti;
+        ids.push(id);
+        return '<li><label class="sy-item"><input type="checkbox" data-id="' + id + '"' + (ticks[id] ? " checked" : "") + '><span>' + esc(t) + '</span></label>' + notesHTML(id) + '</li>';
+      }).join("") + '</ul>';
+    });
+    h += '</div>';
+
+    if(m.self) h += '<div class="sy-sec"><div class="sy-lab">Self-Learning Topics:</div>' +
+      [].concat(m.self).map(function(t){ return '<p>' + esc(t) + '</p>'; }).join("") + '</div>';
+    if(m.los && m.los.length) h += '<div class="sy-sec"><div class="sy-lab">' + esc(m.loLabel) + '</div>' +
+      (m.loLead ? '<p class="sy-lead">' + esc(m.loLead) + '</p>' : '') +
+      '<ul class="sy-los">' + m.los.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join("") + '</ul></div>';
+    h += '</section>';
+    totals[mi] = ids;
+    return h;
+  }
+
+  var mods = data.modules.map(moduleHTML).join("");
+  var hasLos = data.modules.some(function(m){ return m.los && m.los.length; });
+  app.innerHTML = topBar() + '<div class="sy-wrap">' +
+    '<div class="sy-head"><div class="sy-kicker">Syllabus · ' + esc(data.course) + '</div><h1>' + esc(data.name) + '</h1>' +
+    '<p class="sy-sub">' + (hasNotes ? 'One topic, one question. Open it, learn it, tick it.' : 'Official syllabus, word for word. Tick a topic when you have covered it.') + '</p></div>' +
+    '<div class="sy-overall"><div class="bar" role="progressbar" aria-label="Topics covered" aria-valuemin="0" aria-valuemax="100"><i></i></div>' +
+    '<span class="sy-count" id="sy-count"></span><span class="sy-tools">' + (hasNotes ? '<button type="button" class="sy-reset" id="sy-open">Open all</button>' : '') +
+    '<button type="button" class="sy-reset" id="sy-reset">Clear ticks</button></span></div>' +
+    mods +
+    (hasLos ? '' : '<p class="sy-note">This subject\'s syllabus lists contents only. It has no module-wise learning outcomes.</p>') +
+    '<p class="sy-note">Total: ' + esc(data.total) + ' Hrs. Ticks are saved in this browser only.</p></div>';
+
+  function paint(){
+    var all = 0, done = 0;
+    totals.forEach(function(ids, mi){
+      var d = ids.filter(function(id){ return ticks[id]; }).length;
+      all += ids.length; done += d;
+      var el = app.querySelector('.sy-mod[data-m="' + mi + '"] [data-done]');
+      el.textContent = d + " / " + ids.length;
+      el.classList.toggle("full", d === ids.length);
+    });
+    var pct = all ? Math.round(done / all * 100) : 0, bar = app.querySelector(".sy-overall .bar");
+    bar.setAttribute("aria-valuenow", pct);
+    bar.firstChild.style.width = pct + "%";
+    bar.firstChild.classList.toggle("s7-full", done === all);
+    document.getElementById("sy-count").innerHTML = "<b>" + done + "</b> / " + all + " topics · " + pct + "%";
+  }
+  app.addEventListener("change", function(e){
+    var id = e.target && e.target.getAttribute && e.target.getAttribute("data-id");
+    if(!id) return;
+    if(e.target.checked) ticks[id] = 1; else delete ticks[id];
+    save(); paint();
+  });
+  document.getElementById("sy-reset").addEventListener("click", function(){
+    if(!Object.keys(ticks).length || !window.confirm("Clear every tick for " + subj.short + "?")) return;
+    ticks = {}; save();
+    Array.prototype.forEach.call(app.querySelectorAll("input[data-id]"), function(i){ i.checked = false; });
+    paint();
+  });
+  var openBtn = document.getElementById("sy-open");
+  if(openBtn) openBtn.addEventListener("click", function(){
+    var on = openBtn.textContent === "Open all";
+    Array.prototype.forEach.call(app.querySelectorAll("details.sy-q"), function(d){ d.open = on; });
+    openBtn.textContent = on ? "Close all" : "Open all";
+  });
+  /* Ticked in another tab: keep this one in step. */
+  window.addEventListener("storage", function(e){
+    if(e.key !== KEY) return;
+    try { ticks = JSON.parse(e.newValue || "{}") || {}; } catch(err){ ticks = {}; }
+    Array.prototype.forEach.call(app.querySelectorAll("input[data-id]"), function(i){ i.checked = !!ticks[i.getAttribute("data-id")]; });
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
