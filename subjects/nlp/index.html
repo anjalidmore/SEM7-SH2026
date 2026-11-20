@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="../../shared/sem7.css">
 <script src="../../shared/sem7.js"></script>
 <script src="../../shared/syllabus.js"></script>
+<script src="priority.js"></script>
+<script src="priority-m2-m4.js"></script>
+<script src="priority-m5-m6.js"></script>
 <script>
 /* NLP had no theme switch; it uses the same three-way one as the other subjects. */
 (function(){ try { var t = localStorage.getItem("sem7.theme"); if(t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch(e){} })();
@@ -105,6 +108,7 @@ table.nb-t th,table.nb-t td{white-space:nowrap}
     <button class="brand s7-brand" data-view="dashboard" id="brandBtn">Natural Language Processing</button>
     <nav class="maintabs s7-tabs" id="mainNav" aria-label="Main sections">
       <button data-view="dashboard" class="active">Dashboard</button>
+      <button data-view="priority">Priority</button>
       <button data-view="notes">Notes</button>
       <button data-view="m1">Module 1</button>
       <button data-view="m2">Module 2</button>
@@ -6161,6 +6165,7 @@ function render(){
   }
   else if(ROUTE.view==="mock") app.appendChild(renderMock());
   else if(ROUTE.view==="fullmarks") app.appendChild(renderFullMarks());
+  else if(ROUTE.view==="priority") app.appendChild(renderPriority());
   else if(ROUTE.view==="search") app.appendChild(renderSearch());
   else if(ROUTE.view==="topic") app.innerHTML = renderTopicPage(ROUTE.topic);
   else if(SEM7.isPending("nlp", ROUTE.view)) app.innerHTML = SEM7.ui.pending("nlp", ROUTE.view);
@@ -6301,6 +6306,7 @@ function renderDashboard(){
     numericals:{done:done(nums), total:nums.length}, theory:{done:done(th), total:th.length},
     next:nx && {kicker:"Study next &middot; "+esc(MODULE_TITLES[nx.m].split("—")[0].trim()), title:esc(groupTitle(nx)), attrs:'data-ntopic="'+esc(nx.key)+'"'},
     built, attrs:id=>'data-nv="'+id+'"'});
+  wrap.insertAdjacentHTML("beforeend", pzDashCard());
   wrap.insertAdjacentHTML("beforeend", importantCard());
   return wrap;
 }
@@ -6348,6 +6354,8 @@ function renderModule(m){
       progress:{pct:pct(d, l.length), done:d, total:l.length, unit:"items done"}});
   });
   wrap.appendChild(head);
+  const pzStrip = pzModuleStrip(m);   /* priority items of this module (priority.js) */
+  if(pzStrip) wrap.appendChild(pzStrip);
   const tabs = el("div",{});
   tabs.innerHTML = SEM7.ui.subtabs(SUBTABS.map(([k,lab])=>({label:lab, on:isOn(k), attrs:'data-nsub="'+k+'" data-nv="'+m+'"',
     n:k==="numerical"||k==="theory" ? groups.filter(g=>g.track===k).length : null})));
@@ -6440,7 +6448,7 @@ Object.keys(IMPORTANT).forEach(id=>{
   if(q){ q.imp = IMPORTANT[id]; q.core = true; if("priority" in q || q.q) q.priority = "high"; }
 });
 const IMP_PILL = '<span class="pill asked">Important</span>';
-function headPill(g){ return (g.imp ? IMP_PILL : "") + (g.asked ? '<span class="pill asked">Asked in exam</span>' : "") + (!g.imp && !g.asked && g.high ? '<span class="pill high">High priority</span>' : ""); }
+function headPill(g){ return pzPill(g) + (g.imp ? IMP_PILL : "") + (g.asked ? '<span class="pill asked">Asked in exam</span>' : "") + (!g.imp && !g.asked && g.high ? '<span class="pill high">High priority</span>' : ""); }
 function coreGroup(g){ return !SEM7.coreOnly() || g.items.some(inCore); }
 /* One card and one page per question: every theory question, numerical set and
    class-solved set stands alone (16 Nov 2026: "i want the questions in different
