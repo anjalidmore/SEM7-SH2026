@@ -83,16 +83,16 @@
         first:["Asked: type-token ratio, count vectorization, inflectional morphemes","Perplexity and n-gram probabilities","Smoothing (Laplace, Good-Turing)","Porter stemmer","TF-IDF"] },
       { n:3, hrs:[9,11],  los:6, d:4, pre:true,  needs:[2],
         sig:[[1.10,"Past internal tests ask HMM, CKY and PCFG every time"]],
-        first:["Asked: HMM training and emission probabilities","Asked: PCFG parse probability","Viterbi","CKY table","Leftmost derivation and parse tree"] },
+        first:["Important: HMM path probability, hot lead cold feet (2 marks)","Asked: HMM training and emission probabilities","Asked: PCFG parse probability","Viterbi","CKY table","Leftmost derivation and parse tree"] },
       { n:4, hrs:[7,9],   los:8, d:4, pre:false, needs:[2],
         sig:[[1.15,"CIA 4 is a report on word senses, embeddings and BERT"]],
-        first:["Asked: Lesk pseudocode and worked problem","Asked: one-hot sum, cosine similarity and distance","Asked: semantic relations from a paragraph","Word sense disambiguation: three approaches compared","FastText and BERT in outline"] },
+        first:["Important list Q5: Lesk pseudocode and worked problem (10 marks)","Asked: one-hot sum, cosine similarity and distance","Asked: semantic relations from a paragraph","Word sense disambiguation: three approaches compared","FastText and BERT in outline"] },
       { n:5, hrs:[5,7],   los:6, d:3, pre:false, needs:[3],
         sig:[],
-        first:["Asked: Hobbs algorithm on a parse tree","Asked: Centering problem","Asked: reference, anaphora, precision, recall and F1","BLEU and ROUGE worked","Discourse coherence and relations"] },
+        first:["Important list Q3: Hobbs on a parse tree (class tree, Camelot) (10 marks)","Important list Q4: Centering problem, four transitions (10 marks)","Asked: reference, anaphora, precision, recall and F1","BLEU and ROUGE worked","Discourse coherence and relations"] },
       { n:6, hrs:[4,6],   los:8, d:2, pre:false, needs:[4,5],   /* 10 LOs, two are teamwork and not examinable */
         sig:[],
-        first:["Asked: summarization steps (10 marks)","Asked: RAG five stages and finding the faulty stage","Asked: application error sources and fixes (10 marks)","Machine translation: rule, statistical, neural","Indian-language challenges"] }
+        first:["Important list Q1-Q2: RAG five stages; application given, find the faulty stage (10 marks each)","Important list Q6: application given, sources of error and fixes (10 marks)","Important list Q7: summarization steps (10 marks)","Machine translation: rule, statistical, neural","Indian-language challenges"] }
     ],
     ads: [
       { n:1, hrs:[4,4],   los:4, d:1, pre:true,  needs:[],

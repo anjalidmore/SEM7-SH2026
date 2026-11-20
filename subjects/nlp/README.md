@@ -10,6 +10,18 @@ Engineering, Curriculum N-2024, Semester 7). End Sem exam: **21 Nov 2026**.
 No backend, no build step, no dependencies, no network requests. It works from disk (`file://`) and on
 GitHub Pages. It is wired to the shared Semester 7 layer (`../../shared/sem7.css`, `sem7.js`, `syllabus.js`).
 
+## ESE important questions list (added 20 Nov 2026)
+
+Seven 10-mark questions were sent to the class on 20 Nov as near-certain for the paper. All seven are
+answered on the site and every page that answers one carries an **Important** tag (filled pill), ranks
+first in its module list, and is listed in an **Important questions** card at the foot of the Dashboard
+and at the top of the Full-Marks Guide. Six pages were added because of the list and its material:
+`m6i1` RAG five stages, `s_m6_ragfix` RAG faulty-stage diagnosis, `s_m6_errsrc` application error
+sources, `m6i2` summarization steps (10 marks), `s_m5_hobbs` Hobbs on the class tree and the Camelot
+tree, `s_m5_center` the class centering examples. Existing Lesk, Hobbs, centering, RAG, ethics and
+summarization pages are tagged too, as is the HMM 'hot lead cold feet' problem (sent 19 Nov).
+The data is `IMPORTANT_LIST` in `index.html`, just before `NEW_CONTENT_END`.
+
 ## What is in the site
 
 Content is built for **Modules 1–6**:

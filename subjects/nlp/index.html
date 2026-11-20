@@ -4709,6 +4709,238 @@ DATA.fullMarksGuide.lastMinute.push(
 );
 
 
+/* =========================================================
+   IMPORTANT QUESTIONS (sent to the class 20 Nov 2026, "90% will be asked")
+   1 RAG five stages · 2 RAG application: faulty stage + fix · 3 Hobbs + problem
+   4 Centering problem · 5 Lesk + problem · 6 Application: sources of error + fix
+   7 Text summarization steps. All 10 marks.
+   Material sent with it (filed in _resources/nlp/Comp B/):
+   centering.docx → 5.07, class Hobbs tree photo → 5.08, Hobbs NP/PRON doubt → 5.09,
+   HMM 'hot lead cold feet' solution photo (19 Nov) → 3.02.
+   Items added here because of that material: m6i1, m6i2, s_m6_ragfix, s_m6_errsrc,
+   s_m5_hobbs, s_m5_center.
+   ========================================================= */
+DATA.theory.m6.push(
+{id:"m6i1", topic:"6.4", marks:10, priority:"high", flashcard:true,
+ q:"Explain the five stages of Retrieval-Augmented Generation (RAG) with a diagram.",
+ understand:"RAG is an open-book exam for a language model: prepare the book (stages 1–3), look up the right pages (stage 4), answer from them with a citation (stage 5).",
+ a:"Why RAG: an LLM alone answers from memory, so its knowledge is frozen at the training cutoff, it has never seen private documents, it fills gaps with fluent invented text (hallucination) and it cannot cite a source. Retraining for every change is slow and costly. RAG retrieves the relevant text at question time and makes the model answer from it.\n\nDiagram (draw two lanes that meet at the vector database):\nOFFLINE  Documents → [1 Load & extract] → [2 Chunk] → [3 Embed & store] → Vector DB\nONLINE   Question → embed (same model) → [4 Retrieve top-k] → [5 Augment prompt + Generate] → Answer + citation\n\nStage 1 · Ingestion (load and extract)\n- Read every format: PDF, DOCX, HTML; OCR (Tesseract) for scanned pages.\n- Clean noise: headers, footers, page numbers, broken hyphens. Keep structure (headings, lists, tables).\n- Attach metadata: source, page, section, date, access level. It is needed later for citations, date filters and permissions.\n- Tools: PyMuPDF, pdfplumber, Unstructured.\n\nStage 2 · Chunking\n- Split the text into pieces of about one idea each, typically ~500 tokens with 10–20% overlap (50–100 tokens).\n- Why: a 40-page handbook cannot be pasted into every prompt; one vector per small idea matches a question precisely; the answer can cite '4.2, page 14'.\n- Too small loses context ('26 weeks' of what?); too large mixes topics and dilutes the match. Overlap stops a fact from being cut in half.\n\nStage 3 · Embedding and indexing (store)\n- An embedding model turns each chunk into a vector (e.g. 384 numbers with all-MiniLM-L6-v2); similar meaning → nearby vectors ('parental leave' near 'time off after a baby').\n- Store vector + original text + metadata in a vector database (Chroma, FAISS, Pinecone). Acme example: 40 pages → ≈180 chunks → 180 × 384 numbers → one Chroma collection.\n- Runs once, and again only when a document changes.\n\nStage 4 · Retrieval\n- Embed the user's question with the SAME embedding model.\n- Similarity search (cosine) in the vector DB returns the top-k chunks (k = 3–5), filtered by metadata (date, access).\n- Meaning match, not keyword match: 'Can I take time off after my baby is born?' finds 4.2 Parental Leave (0.82) although the words differ; SQL LIKE '%time off%' returns 0 rows.\n- Improvements: hybrid search (keyword + vector), re-ranking.\n\nStage 5 · Augmentation and generation\n- Build the augmented prompt: SYSTEM 'Answer using ONLY the context. Cite sources as [n]. If the answer is not there, say I don't know.' + CONTEXT (the top-k chunks with source tags) + QUESTION.\n- The LLM generates a grounded answer with a citation: 'Yes, after 12 months of service you get 26 weeks of paid parental leave [HR_Policy.pdf, p.14, 4.2].'\n\nAdvantages: up-to-date (re-index one document instead of retraining), private data stays in the database, every answer is traceable to a source chunk, fewer hallucinations.\nLimitations: the model can still ignore the context; retrieval can miss; stale or conflicting versions; permission-aware retrieval is needed.",
+ examAnswer:"Why RAG (4 problems of an LLM alone) → the two-lane diagram → the five stages, each with what happens + one Acme example + one tool → advantages → limitations. Ten marks = two marks per stage, so give each stage its own heading.",
+ mistakes:"The seminar numbers the INGESTION pipeline alone as 'steps 1–5' (load, extract, chunk, embed, store). If the question says 'five stages of RAG', give the end-to-end five above and name the ingestion sub-steps inside stages 1–3, so either reading earns the marks. Never forget: query and chunks must use the same embedding model."},
+{id:"m6i2", topic:"6.2", marks:10, priority:"high", flashcard:true,
+ q:"What is text summarization? Explain the steps involved in text summarization.",
+ understand:"Read the text, decide which ideas matter most, keep only those, and present them as a short readable summary. Extractive copies the best sentences; abstractive rewrites.",
+ a:"Text summarization produces a short version of one or more documents that keeps the important information and the overall meaning. Types: extractive (selects sentences from the source) vs abstractive (generates new sentences); single- vs multi-document; generic vs query-focused.\n\nPipeline (draw it as a flow):\nInput text → 1 Preprocessing → 2 Representation → 3 Sentence scoring → 4 Selection → 5 Ordering / generation → 6 Post-processing → 7 Evaluation\n\nStep 1 · Preprocessing\n- Sentence segmentation, tokenization, lowercasing, stop-word removal, stemming or lemmatization.\n- Example: 'The players were running' → [player, run].\n\nStep 2 · Representation (analysis)\n- Turn each sentence into something that can be scored: word frequencies, a TF-IDF vector, or a sentence embedding.\n- Build a sentence-similarity matrix (cosine similarity) if a graph method is used.\n\nStep 3 · Sentence scoring (content selection)\n- Frequency / TF-IDF: sum of the weights of the sentence's words.\n- Position: the first sentences of a news article carry the main point.\n- Cue phrases: 'in conclusion', 'the main result'.\n- Title or query overlap: similarity to the title, or to the user's query for query-focused summaries.\n- Graph centrality (TextRank / LexRank): sentences are nodes, edges are cosine similarities, a PageRank-style iteration gives central sentences a high score.\n\nStep 4 · Selection\n- Pick the top-k sentences up to the compression ratio (e.g. 30% of the text).\n- Remove redundancy: skip a sentence too similar to one already chosen (Maximal Marginal Relevance).\n\nStep 5 · Ordering (extractive) / Generation (abstractive)\n- Extractive: put the chosen sentences back in their original document order.\n- Abstractive: an encoder–decoder Transformer (BART, T5, PEGASUS) encodes the document, attention focuses on important parts, the decoder generates a new summary word by word (beam search); pointer-generator networks copy rare words and names.\n\nStep 6 · Post-processing\n- Fix dangling pronouns (replace 'He' with the name if its antecedent was dropped: coreference resolution), join sentences smoothly, check length.\n\nStep 7 · Evaluation\n- Automatic: ROUGE-1, ROUGE-2, ROUGE-L (recall of n-grams against a human reference summary).\n- Human: coherence, fluency, coverage, factual correctness.\n\nWorked mini example (extractive, frequency method): text = 'NLP helps computers understand language. NLP is used in chatbots. The weather was pleasant.' After stop-word removal, frequencies: NLP 2, computers 1, understand 1, language 1, used 1, chatbots 1, weather 1, pleasant 1. Scores: S1 = 2+1+1+1 = 5, S2 = 2+1+1 = 4, S3 = 1+1 = 2. 1-sentence summary: S1; 2-sentence summary: S1, S2 in document order.\n\nApplications: news digests, legal and medical reports, meeting minutes, research abstracts (Notion AI, Quillbot).\nChallenges: factual errors (hallucination) in abstractive output, coherence, long documents, multilingual and personalised summaries.",
+ examAnswer:"Definition + four types → pipeline diagram → the seven steps, each with one line of 'how' and one example → the frequency-scoring mini example → ROUGE → two challenges. For 10 marks the diagram and the worked scoring example are what separate full marks from 6.",
+ mistakes:"Do not stop at 'extractive vs abstractive': the question asks for STEPS. Also: extractive output has no new words, so hallucination is an abstractive problem; ROUGE is recall-oriented (BLEU is for translation)."}
+);
+
+DATA.solved.m6.push(
+{
+ id:"s_m6_ragfix", title:"RAG application given: find the faulty stage and suggest improvements", topic:"6.4", marks:10,
+ lo:["LO 6.2","LO 6.6"], src:"Important list 20 Nov 2026 (Q2); stages and failure modes from the 6.02 RAG seminar",
+ idea:"Read the symptom, then ask which stage could produce it: was the text never read (1), cut badly (2), represented badly (3), not found or the wrong version found (4), or found but not used (5)?",
+ method:"Symptom → faulty stage → improvement\n  Text from scanned pages or tables missing, headers mixed into answers → 1 INGESTION → OCR, table-aware parsing, clean headers/footers, attach metadata\n  Answer has half a fact or loses the condition ('26 weeks' with no rule) → 2 CHUNKING → ~500 tokens, 10–20% overlap, split at headings\n  Right chunk exists but synonyms or another language are not matched → 3 EMBEDDING → stronger / domain / multilingual model; same model for query and chunks; re-embed\n  Old version retrieved, unauthorised document retrieved, irrelevant top-k, exact codes missed → 4 RETRIEVAL → date metadata + versioning, access filters, hybrid (keyword + vector) search, re-ranking, tune k\n  Correct chunk retrieved but the answer contradicts it, invents, or gives no citation → 5 GENERATION → strict prompt ('ONLY the context, cite, say I don't know'), low temperature, citation check, put the best chunk first\nWrite the answer as: application in one line → the five stages in one line → a table (symptom | stage | why | fix) → how you would test the fix (a test-question set, precision@k / recall@k, citation accuracy).",
+ classQs:[
+  {q:"An HR assistant built with RAG on the company handbook tells an employee: 'You get 12 weeks of parental leave.' The current (2026) handbook says 26 weeks; the 2023 handbook said 12 weeks. Both PDFs are in the knowledge base. Identify the faulty stage and suggest improvements.",
+   steps:[
+    "Five stages: 1 ingestion → 2 chunking → 3 embedding/indexing → 4 retrieval → 5 generation.",
+    "The answer is fluent and specific (12 weeks), so the model did not invent it: it read a real chunk. Generation is not the main fault.",
+    "Both the 2023 and 2026 chunks are near-identical in meaning, so both score high in similarity search; nothing told retrieval to prefer the current one. Fault: STAGE 4, RETRIEVAL (stale or conflicting sources).",
+    "Root cause starts at STAGE 1: no 'updated' date or version was stored in the metadata during ingestion, so retrieval had nothing to filter on.",
+    "Improvements: (a) attach version and effective-date metadata at ingestion; (b) filter or boost the latest version at query time; (c) remove superseded documents from the index or re-index on change; (d) in the prompt, tell the model to prefer the newest dated source and to mention a conflict; (e) cite the source so a wrong version is visible."],
+   answer:"Faulty stage: retrieval (stage 4), caused by missing date/version metadata at ingestion (stage 1). Fix with version metadata, latest-version filtering, re-indexing on change and citations.",
+   watch:"Name the stage AND give the reason from the symptom. A list of generic RAG improvements without a diagnosis earns half the marks."},
+  {q:"A hospital guideline bot answers 'What is the dose of drug X for children?' with the adult dose. The guideline reads: '...For children under 12, the dose is' and the next line, after a page break, gives the child dose. Identify the faulty stages and suggest improvements.",
+   steps:[
+    "The child dose is in the document, so ingestion read it (stage 1 is fine, unless the page break also broke extraction).",
+    "Fixed-size chunks with no overlap cut the sentence: one chunk ends with 'the dose is', the next starts with the number. Neither holds the whole fact. Fault: STAGE 2, CHUNKING.",
+    "Retrieval then returns the chunk that matches 'children' and 'dose' but holds no number, plus an adult-dose chunk (stage 4 works as designed on bad chunks).",
+    "The model fills the gap with the adult number it can see. Fault: STAGE 5, GENERATION — it should have said the context does not contain the child dose.",
+    "Improvements: chunk by section/heading with 10–20% overlap so the condition and the number stay together; re-rank to prefer chunks containing both 'children' and a dose; strict prompt 'answer only from the context, otherwise say I don't know'; cite the chunk; for medicine, require human verification."],
+   answer:"Faulty stages: chunking (fact split in two) and generation (answered without support). Fix: overlap and structure-aware chunking, re-ranking, a strict 'I don't know' prompt with citations, human review for medical answers.",
+   watch:"Two stages can be at fault. Say which caused the problem first (chunking) and which made it worse (generation)."},
+  {q:"An e-commerce support bot retrieves the correct chunk 'Opened earphones cannot be returned for hygiene reasons' but replies 'Yes, you can return any product within 30 days.' Identify the faulty stage and suggest improvements.",
+   steps:[
+    "Ingestion, chunking, embedding and retrieval worked: the correct chunk reached the prompt.",
+    "The answer contradicts the context and matches the model's general knowledge of return policies. Fault: STAGE 5, GENERATION (the model ignored the context: hallucination).",
+    "Improvements: strict system prompt ('Answer using ONLY the context; if the context says no, say no'); lower temperature; put the most relevant chunk first and keep k small so it is not buried; require a citation and reject answers whose cited chunk does not support them (citation check / answer-grounding check); log and test with a fixed question set."],
+   answer:"Faulty stage: generation. The retrieval was correct; the model overrode the context. Fix with a strict grounded prompt, citation checking, lower temperature and a regression test set.",
+   watch:"If the right chunk was retrieved, do not blame retrieval or embeddings."}
+ ],
+ practice:[
+  {id:"sp_m6rag1", difficulty:"basic", kind:"scenario", src:"6.02",
+   q:"A legal search assistant says 'I don't know' for a clause that exists in a scanned contract. Which stage failed, and the fix?",
+   answer:"Stage 1, ingestion: a scanned PDF has no text layer, so nothing was extracted, chunked or embedded. Fix: run OCR (Tesseract) during ingestion and check extracted text length per page."},
+  {id:"sp_m6rag2", difficulty:"moderate", kind:"scenario", src:"6.02",
+   q:"An intern asks the company assistant about salary bands and receives the confidential salary document. Which stage failed, and the fix?",
+   answer:"Stage 4, retrieval (permission-aware retrieval missing), rooted in stage 1 not storing access metadata. Fix: store an access field per chunk and filter by the user's role at query time."},
+  {id:"sp_m6rag3", difficulty:"moderate", kind:"scenario", src:"6.02",
+   q:"Users ask in Hindi; the documents are in English; retrieval returns unrelated chunks. Which stage, and the fix?",
+   answer:"Stage 3, embedding: an English-only embedding model puts Hindi questions in a different region of the vector space. Fix: a multilingual embedding model (e.g. multilingual-e5-large) for both chunks and queries, then re-embed the collection."},
+  {id:"sp_m6rag4", difficulty:"exam-level", kind:"scenario", src:"6.02",
+   q:"Queries containing exact product codes like 'XR-2041' retrieve the wrong product manual. Which stage, and the fix?",
+   answer:"Stage 4, retrieval: dense embeddings capture meaning but blur exact strings. Fix: hybrid search (BM25 keyword + vector) and a re-ranker; optionally store the product code as metadata and filter on it."}
+ ]
+},
+{
+ id:"s_m6_errsrc", title:"NLP application given: identify the sources of error and suggest improvements", topic:"6.5", marks:10,
+ lo:["LO 6.4","LO 6.5"], src:"Important list 20 Nov 2026 (Q6); pipeline stages from 1.04 NLP stages and applications",
+ idea:"Walk the application through the NLP pipeline from 1.04 (data → preprocessing → morphological → syntactic → semantic → pragmatic/discourse → application) and ask at each level: what in THIS input could go wrong here?",
+ method:"Template for 10 marks:\n  1. Name the application and its pipeline (from 1.04, e.g. sentiment: preprocessing → morphological → syntactic → semantic → application).\n  2. For each wrong output, give: error | source (pipeline level) | why it happens | improvement. Aim for 5–6 rows.\n  3. Add data / model / bias sources (training data domain, imbalance, code-mixing, bias).\n  4. Say how you would measure the improvement (precision, recall, F1, confusion matrix, error analysis on a test set).\nLevel → typical error → fix:\n  DATA            domain mismatch, imbalance, bias          → in-domain data, balancing, augmentation, audit\n  PREPROCESSING   stop-word list removes 'not'; emojis, typos, Hinglish dropped → keep negations, emoji lexicon, spell correction, transliteration\n  MORPHOLOGICAL   aggressive stemming ('university' → 'univers'), rich Hindi morphology → lemmatization, morphological analyser\n  SYNTACTIC       wrong POS or PP-attachment ('saw the man with the telescope') → better tagger/parser, PCFG / neural parser\n  SEMANTIC        word sense ('bank'), idioms ('kick the bucket'), NER misses → WSD (Lesk, BERT), idiom lexicon, NER model\n  PRAGMATIC / DISCOURSE  sarcasm, indirect requests, pronouns across turns → context models, speech-act / intent detection, coreference, dialogue state\n  APPLICATION     wrong threshold, no aspect-level output, no fallback → aspect-based model, calibrated thresholds, human hand-off",
+ classQs:[
+  {q:"A sentiment-analysis system for product reviews gives these outputs: (a) 'Not bad at all' → Negative; (b) 'Great, the phone died in two days' → Positive; (c) 'Battery bekaar hai' → Neutral; (d) 'The camera is excellent but the battery is terrible' → Positive overall; (e) 'Worst purchase 😡' → Neutral. Identify the sources of error and suggest improvements.",
+   steps:[
+    "Application and pipeline (1.04): preprocessing → morphological → syntactic → semantic → application (classification).",
+    "(a) Source: PREPROCESSING — the stop-word list removed 'not', leaving 'bad'. Also SEMANTIC — negation scope is not modelled. Fix: keep negation words, mark negation scope (NOT_bad), or use a contextual model (BERT) that sees 'not bad' together.",
+    "(b) Source: PRAGMATIC — sarcasm: 'Great' is literally positive, the situation is negative. Fix: train on sarcasm-labelled data; use contextual models that weigh the contrast between a positive word and a negative event.",
+    "(c) Source: DATA / PREPROCESSING — code-mixed Hinglish; 'bekaar' (useless) is out of vocabulary. Fix: transliteration + a Hinglish lexicon, multilingual models (mBERT, IndicBERT), code-mixed training data.",
+    "(d) Source: APPLICATION / SEMANTIC — one label for a review with two opposite aspects; 'but' signals that the second clause matters more. Fix: aspect-based sentiment analysis (camera: positive, battery: negative); handle contrastive conjunctions.",
+    "(e) Source: PREPROCESSING — the emoji was stripped as noise, and 'worst' alone was not weighted. Fix: keep emojis and map them with an emoji sentiment lexicon.",
+    "Measure: per-class precision, recall and F1 on a held-out set; a confusion matrix; error analysis on the misclassified reviews."],
+   answer:"Error sources: stop-word removal of negation (preprocessing), sarcasm (pragmatic), code-mixing/OOV (data), mixed aspects (application/semantic), emoji loss (preprocessing). Improvements: negation handling, contextual Transformer models, code-mixed and sarcasm data, aspect-based sentiment, emoji lexicon; verify with F1 and a confusion matrix.",
+   watch:"Every row needs all three: the error, the pipeline level it comes from, and a specific fix. 'Use deep learning' alone is not an improvement."},
+  {q:"An English → Hindi machine-translation app produces: (a) 'He kicked the bucket' → a sentence about kicking a bucket; (b) 'I went to the bank to fish' → the money-bank word; (c) 'The doctor said she would come' → masculine verb form in Hindi; (d) 'I saw the man with the telescope' → the man holds the telescope, but the speaker meant they used it; (e) 'Apple launched a phone' → 'seb' (the fruit). Identify the sources of error and suggest improvements.",
+   steps:[
+    "Pipeline (1.04): preprocessing → morphological → syntactic → semantic → pragmatic → application.",
+    "(a) SEMANTIC (idiom, non-compositional meaning): translated word by word. Fix: idiom/multi-word-expression lexicon; neural MT trained on parallel text containing idioms.",
+    "(b) SEMANTIC (word sense ambiguity): 'bank' has river and money senses; 'fish' should select the river sense. Fix: word sense disambiguation (Lesk-style context overlap, or contextual embeddings).",
+    "(c) MORPHOLOGICAL + DATA BIAS: Hindi verbs agree with gender; the model learned 'doctor = male' from biased data and ignored 'she'. Fix: coreference-aware translation, gender-balanced / counterfactual training data.",
+    "(d) SYNTACTIC (PP-attachment ambiguity): the parser attached 'with the telescope' to 'the man' instead of 'saw'. Fix: better parser / context; ask the user when the sentence is genuinely ambiguous.",
+    "(e) SEMANTIC (named entity not recognised): 'Apple' is an ORG here. Fix: run NER first and transliterate entities instead of translating them.",
+    "Measure: BLEU against reference translations plus human evaluation of adequacy and fluency; an error-category tally."],
+   answer:"Error sources: idiom (semantic), word sense (semantic), gender agreement and bias (morphological + data), attachment (syntactic), NER (semantic). Improvements: MWE lexicon, WSD, gender-fair data and coreference, better parsing, NER-before-translation; evaluate with BLEU and human judgement.",
+   watch:"Link each error to the Module it comes from (Lesk/WSD = M4, parsing = M3, morphology = M2, coreference = M5); examiners reward that link."},
+  {q:"A customer-support chatbot: (a) user types 'cancle my ordr' → 'Sorry, I did not understand'; (b) 'Can you tell me my order status?' → 'Yes.'; (c) 'I have two orders. Cancel the second one.' → cancels the first; (d) 'This is the third time I am asking!!' → 'Glad to help! 😊'. Identify the sources of error and suggest improvements.",
+   steps:[
+    "Pipeline (1.04): preprocessing → semantic → pragmatic → application.",
+    "(a) PREPROCESSING: spelling errors make the intent words out of vocabulary. Fix: spell correction (edit distance), subword tokenization, training data with typos.",
+    "(b) PRAGMATIC: an indirect request (speech act) is read as a yes/no question. Fix: intent detection trained on indirect requests; map 'Can you…' to the request intent.",
+    "(c) DISCOURSE: 'the second one' (one-anaphora / reference) is not resolved against the earlier list. Fix: dialogue state tracking and coreference/reference resolution over the conversation.",
+    "(d) PRAGMATIC (emotion, frustration): the reply ignores sentiment. Fix: sentiment/emotion detection and escalation to a human agent.",
+    "Measure: intent accuracy and F1, task-success rate, human hand-off rate."],
+   answer:"Error sources: spelling (preprocessing), indirect speech act (pragmatic), unresolved reference (discourse), ignored frustration (pragmatic). Improvements: spell correction, intent detection, dialogue state + coreference, sentiment-based escalation.",
+   watch:"Chatbots fail mostly at the pragmatic and discourse levels (1.04's quick-reference table names pragmatic analysis as the most important stage for chatbots and QA). Say so."}
+ ],
+ practice:[
+  {id:"sp_m6err1", difficulty:"basic", kind:"scenario", src:"1.04",
+   q:"A spam filter marks 'Your FREE exam timetable is attached' as spam. Source of error and fix?",
+   answer:"Semantic level / data: the classifier relies on a single keyword ('FREE') learned from spam-heavy data. Fix: use context features (sender, whole-message meaning), more legitimate examples containing such words, and tune the threshold for precision."},
+  {id:"sp_m6err2", difficulty:"moderate", kind:"scenario", src:"1.04",
+   q:"A resume parser misses 'B.E.' and 'B.Tech.' as degrees and splits 'Dr. A. P. J. Abdul Kalam' into several sentences. Sources and fixes?",
+   answer:"Preprocessing (sentence segmentation treats every period as a sentence end) and semantic (NER lacks Indian degree and name patterns). Fix: an abbreviation list for the segmenter; train or extend NER with Indian degree names and name formats; gazetteers."},
+  {id:"sp_m6err3", difficulty:"exam-level", kind:"scenario", src:"1.04",
+   q:"A question-answering system answers 'Who is the PM?' with a name from 2014. Source of error and fix?",
+   answer:"Data / pragmatic: the knowledge is frozen at training time and the question depends on the current date (context). Fix: retrieval-augmented generation over up-to-date sources with date metadata, and resolve time-dependent questions against today's date."}
+ ]
+}
+);
+
+DATA.solved.m5.push(
+{
+ id:"s_m5_hobbs", title:"Hobbs on a drawn parse tree: the class tree (Jonathan Bing) and the deck's Camelot tree", topic:"5.2", marks:10,
+ lo:["LO 5.1","LO 5.5"], src:"Important list 20 Nov 2026 (Q3); class tree photo (5.08), NP/PRON doubt (5.09), 5.02 Hobbs deck",
+ idea:"Why the tree has NP above 'he' (the doubt sent with the list):\n- A constituency tree has two levels of labels. Phrase tags (NP, VP, PP, S) say what job a group of words does; word tags (PRP/PRON, NNP, VBZ) say the part of speech of one word.\n- A pronoun replaces a whole noun phrase ('he' stands for 'Jonathan Bing'), so 'he' is an NP by itself. Strictly, PRON sits UNDER the NP: NP → PRON → he.\n- Hobbs needs the NP node: step 1 starts at the NP immediately dominating the pronoun, and while walking the tree (breadth-first, left-to-right) it proposes ONLY NP nodes as antecedents.",
+ method:"Hobbs as the deck states it (4 steps), then the full form:\n  1. Start at the NP node immediately dominating the pronoun.\n  2. Climb to the first NP or S node above it. Call it X and the path p.\n  3. Traverse all branches below X to the LEFT of p, breadth-first, left-to-right. Propose any NP met (full algorithm: only if an NP or S lies between it and X).\n  4. If X is the highest S of the sentence, traverse the previous sentences, most recent first, each breadth-first left-to-right; propose each NP met.\n  5. Otherwise climb to the next NP or S (new X); if X is an NP not reached through its own nominal, propose X; traverse left of p (and, if X is an S, right of p without going below an NP or S); go to 4.\nEach proposed NP is accepted only if it agrees in gender, number and person (and makes sense with the verb). The first one accepted is the antecedent.\nExam layout: draw the tree → number the NPs → show the path for each pronoun with arrows → write the order in which NPs are proposed → agreement check → resolved discourse.",
+ classQs:[
+  {q:"Class tree (drawn on paper, 20 Nov). Sentence 1: (S1 (NP Jonathan Bing) (NP Bingthon John)). Sentence 2: (S2 (VP (VB forgets) (PP (Adv-conj where) (NP he₁) (VP is going))) (Conj and) (VP (VB thinks (NP he₂) (VP is gone)))). Use Hobbs' algorithm to resolve he₁ and he₂.",
+   steps:[
+    "Read the trees: S* is the discourse root. S1 holds two NPs, Jonathan Bing (left) and Bingthon John (right). S2 has no subject NP: two VPs joined by 'and'. he₁ sits in the PP after 'forgets where'; he₂ sits under 'thinks'.",
+    "he₁ · Step 1: start at the NP above he₁.\nStep 2: climb PP → VP → S2. PP and VP are neither NP nor S, so X = S2; path p = S2 → VP → PP → NP(he₁).",
+    "he₁ · Step 3: branches below S2 to the left of p: VB 'forgets' and Adv-conj 'where'. No NP, nothing proposed.",
+    "he₁ · Step 4: X = S2 is the highest S of sentence 2, so go to the previous sentence S1 and traverse it breadth-first, left-to-right: first NP met = NP(Jonathan Bing).\nAgreement: male, singular, third person = 'he'. Accepted.\nhe₁ = Jonathan Bing.",
+    "he₂ · Steps 1–2: start at the NP above he₂; climb VB → VP → S2. X = S2; p = S2 → VP₂ → VB → NP(he₂).",
+    "he₂ · Step 3: branches left of p below S2, breadth-first: VP₁, Conj → VB, PP, 'and' → forgets, Adv-conj, NP(he₁), VP … The only NP met is NP(he₁).\nDeck version (propose any NP seen): propose he₁, which agrees, so he₂ = he₁ = Jonathan Bing.\nFull version: he₁ has no NP or S between it and S2, so it is not proposed; S2 is the highest S, so go to S1 (step 4) and the first NP met is again Jonathan Bing.",
+    "Why not Bingthon John: in S1 breadth-first, left-to-right, NP(Jonathan Bing) is met first and already agrees, so the search stops. Bingthon John would be proposed only if Jonathan Bing failed agreement.",
+    "Resolved discourse: 'Jonathan Bing … (Jonathan Bing) forgets where Jonathan Bing is going and thinks Jonathan Bing is gone.'"],
+   answer:"he₁ = Jonathan Bing; he₂ = Jonathan Bing (directly, or via he₁). Both routes of the algorithm give the same answer; show the path, the breadth-first order and the agreement check.",
+   watch:"Names and node labels are copied from the handwritten photo (5.08); the original sentence was not in any file, so check the spelling against your class notebook. The drawing hangs NP and VP under VB 'thinks'; a textbook tree would put them under VP (VP → VB S(NP VP)). It does not change the answer. Draw NP → PRP → he for each pronoun, not 'he' straight under VP."},
+  {q:"Deck example (5.02): 'The castle in Camelot remained the residence of the king until 536 when he moved it to London.' Tree: S2 → NP3 (the castle in NP5 Camelot) + VP (remained NP4 (the residence of NP6 the king) + PP (until NP2 (536 Rel(when S1 (NP he) (VP moved NP1 it (to London))))))). Resolve 'it' and 'he'.",
+   steps:[
+    "'it' · Start at NP1 (it). Climb VP → S1: X = S1. Left of p: NP(he). No NP or S lies between it and S1, so it is not proposed (it and he cannot be the same thing anyway: binding).",
+    "'it' · S1 is not the highest S. Climb Rel → NP2: X = NP2 ('536 when …'). X is an NP, so propose NP2 = 536. Rejected: you cannot 'move' a year (selectional restriction of 'moved').",
+    "'it' · Left of p under NP2: only N '536', no NP. Climb PP → VP → S2: X = S2. Traverse left of p, breadth-first: NP3 'the castle in Camelot' is met first. Neuter, singular, movable. Accepted.\nit = the castle (in Camelot).",
+    "'he' · Same climb: S1 → nothing; NP2 '536' proposed, fails gender (not a male person).",
+    "'he' · At S2, breadth-first, left of p: NP3 the castle (fails) → NP4 the residence (fails) → NP5 Camelot (fails) → NP6 the king (male, singular). Accepted.\nhe = the king.",
+    "Resolved: '… until 536 when the king moved the castle to London.'"],
+   answer:"it = the castle in Camelot (536 rejected by meaning); he = the king (the first male NP in breadth-first order). The dashed arrows on the deck's figure are this search path.",
+   watch:"Proposal order is breadth-first by depth, not left-to-right reading order: NP4 (depth 2) is proposed before NP5 (depth 3) although Camelot is read first."}
+ ],
+ practice:[
+  {id:"sp_m5hob1", difficulty:"basic", kind:"concept", src:"5.09",
+   q:"Why does the parse tree show NP above 'he' instead of just PRON?",
+   answer:"A pronoun replaces a whole noun phrase, so it fills an NP slot; PRON is its word-level tag and sits under the NP (NP → PRON → he). Hobbs starts at the NP immediately dominating the pronoun and proposes only NP nodes, so the NP node must be in the tree."},
+  {id:"sp_m5hob2", difficulty:"moderate", kind:"concept", src:"5.02",
+   q:"In the Hobbs search, why is an NP proposed in step 3 only if an NP or S lies between it and X?",
+   answer:"It enforces the binding constraint: a plain pronoun cannot corefer with an NP in the same minimal clause ('John likes him': him ≠ John). An intervening NP or S node means the candidate is outside that clause."}
+ ]
+},
+{
+ id:"s_m5_center", title:"Centering: Cf, Cb, Cp and naming the transition (class examples)", topic:"5.2", marks:10,
+ lo:["LO 5.1","LO 5.5"], src:"Important list 20 Nov 2026 (Q4); centering explanation sent with it (5.07)",
+ idea:"Cf = who is mentioned (ranked). Cp = who is most important now (top of Cf). Cb = who links this sentence to the previous one. Then ask two questions: is Cb the same as last time? is Cb the same as Cp?",
+ method:"For each utterance Uₙ:\n  Cf(Uₙ) — all entities in Uₙ, ranked by grammatical role. Class notes order: subject > direct object > indirect object > others. ('Ravi gave Priya a book' → Cf = [Ravi, book, Priya].)\n  Cp(Uₙ) — first element of Cf(Uₙ).\n  Cb(Uₙ) — the highest-ranked entity of Cf(Uₙ₋₁) that also appears in Uₙ. Cb(U₁) is undefined.\nTwo questions → transition:\n                     Cb(Uₙ) = Cp(Uₙ)     Cb(Uₙ) ≠ Cp(Uₙ)\n  Cb same as before   CONTINUE            RETAIN\n  Cb changed          SMOOTH SHIFT        ROUGH SHIFT\nThe class sheet's labels 'Same + Same', 'Same + Different', 'Different + Same', 'Different + Different' mean (Cb same as before?) + (Cb same as Cp?).\nPreference: Continue > Retain > Smooth shift > Rough shift. To resolve a pronoun, pick the antecedent that gives the most preferred transition (after agreement).\nTable to draw for every utterance: U | Cf | Cp | Cb | transition.",
+ classQs:[
+  {q:"CONTINUE. U1: 'Priya entered the classroom.' U2: 'She opened her notebook.' Find Cf, Cp, Cb and the transition.",
+   steps:[
+    "U1: Cf = [Priya, classroom]; Cp = Priya. The class sheet takes Priya as the established centre (previous Cb = Priya).",
+    "U2: 'She' = Priya (female, singular, the subject of U1). Cf = [Priya, notebook]; Cp = Priya.",
+    "Cb(U2) = highest-ranked entity of Cf(U1) realised in U2 = Priya.",
+    "Q1: Cb(U2) = Cb(U1) = Priya → same. Q2: Cb(U2) = Cp(U2) = Priya → same.",
+    "Same + Same → CONTINUE: the same person stays in focus."],
+   answer:"Cb(U2) = Priya = Cb(U1) and = Cp(U2) → CONTINUE.",
+   watch:"Strictly Cb(U1) is undefined (first utterance); the sheet assumes Priya is already the centre. If the exam gives only two sentences, say this assumption in one line."},
+  {q:"RETAIN. U0: 'The cake was ready.' U1: 'The chef placed the cake on the counter.' U2: 'The waiter carried the cake to the table.' Find the transition U1 → U2.",
+   steps:[
+    "U0: Cf = [cake].",
+    "U1: Cf = [chef, cake, counter]; Cp = chef. Cb(U1) = highest of Cf(U0) realised in U1 = cake.",
+    "U2: Cf = [waiter, cake, table]; Cp = waiter. Cb(U2) = highest of Cf(U1) realised in U2: chef is absent, cake is present → cake.",
+    "Q1: Cb(U2) = Cb(U1) = cake → same. Q2: Cb(U2) = cake ≠ Cp(U2) = waiter → different.",
+    "Same + Different → RETAIN: the old focus (cake) is kept, but a new entity (waiter) gets the prominent subject position."],
+   answer:"Previous Cb = cake, current Cb = cake, current Cp = waiter → RETAIN.",
+   watch:"Cb is NOT the subject of U2. It is looked up from the previous Cf list."},
+  {q:"SMOOTH SHIFT. U0: 'Nina and Arjun were at the railway station.' U1: 'Nina spoke to Arjun.' U2: 'Arjun boarded the train.' Find the transition U1 → U2.",
+   steps:[
+    "U0: Cf = [Nina, Arjun, station].",
+    "U1: Cf = [Nina, Arjun]; Cp = Nina. Cb(U1) = Nina (highest of Cf(U0) realised in U1).",
+    "U2: Cf = [Arjun, train]; Cp = Arjun. Cb(U2) = highest of Cf(U1) realised in U2: Nina is absent, Arjun is present → Arjun.",
+    "Q1: Cb(U2) = Arjun ≠ Cb(U1) = Nina → different. Q2: Cb(U2) = Cp(U2) = Arjun → same.",
+    "Different + Same → SMOOTH SHIFT: focus moves to Arjun, and Arjun is also the subject."],
+   answer:"Previous Cb = Nina, current Cb = Arjun, current Cp = Arjun → SMOOTH SHIFT.",
+   watch:"Smooth vs rough depends only on Cb = Cp, not on how many entities changed."},
+  {q:"ROUGH SHIFT. U0: 'Nina and Arjun were at the railway station.' U1: 'Nina spoke to Arjun.' U2: 'A security guard stopped Arjun.' Find the transition U1 → U2.",
+   steps:[
+    "U1: Cf = [Nina, Arjun]; Cp = Nina; Cb(U1) = Nina.",
+    "U2: Cf = [security guard, Arjun]; Cp = security guard (subject). Cb(U2) = highest of Cf(U1) realised in U2 = Arjun (Nina is not mentioned).",
+    "Q1: Cb(U2) = Arjun ≠ Cb(U1) = Nina → different. Q2: Cb(U2) = Arjun ≠ Cp(U2) = security guard → different.",
+    "Different + Different → ROUGH SHIFT: the link moves to Arjun, but the sentence makes the guard most prominent. The least coherent transition."],
+   answer:"Previous Cb = Nina, current Cb = Arjun, current Cp = security guard → ROUGH SHIFT.",
+   watch:"Write the U | Cf | Cp | Cb | transition table: it is what the marks are for."}
+ ],
+ practice:[
+  {id:"sp_m5cen1", difficulty:"basic", kind:"concept", src:"5.07",
+   q:"'Ravi gave Priya a book.' Write Cf and Cp using the class ordering.",
+   answer:"Cf = [Ravi, book, Priya] (subject > direct object > indirect object). Cp = Ravi."},
+  {id:"sp_m5cen2", difficulty:"exam-level", kind:"scenario", src:"5.07",
+   q:"U1 'Meera met Kavya at the library.' U2 'She lent her a pen.' U3 'Kavya thanked Meera.' Resolve the pronouns with centering and name the transitions.",
+   answer:"U1: Cf = [Meera, Kavya, library]; Cp = Meera; Cb undefined.\nU2: try She = Meera, her = Kavya: Cf = [Meera, pen, Kavya]; Cp = Meera; Cb = Meera (top of Cf(U1) realised). Cb = Cp → CONTINUE-type (preferred), so She = Meera, her = Kavya. (She = Kavya would make Cp = Kavya ≠ Cb = Meera → Retain, less preferred.)\nU3: Cf = [Kavya, Meera]; Cp = Kavya; Cb = highest of Cf(U2) realised = Meera. Cb same as before (Meera) but ≠ Cp (Kavya) → RETAIN."}
+ ]
+}
+);
+
+/* The list itself: question → item ids on the site. Shown on the Dashboard,
+   at the top of the Full-Marks Guide, and as an Important tag everywhere. */
+const IMPORTANT_LIST = [
+ {n:1, q:"RAG: the five stages", marks:10, ids:["m6i1","m6t13"]},
+ {n:2, q:"RAG application given: identify the faulty stage and suggest improvements", marks:10, ids:["s_m6_ragfix","s_m6_design"]},
+ {n:3, q:"Hobbs algorithm + problem", marks:10, ids:["s_m5_hobbs","m5t7","m5n1"]},
+ {n:4, q:"Centering problem", marks:10, ids:["s_m5_center","m5n2","m5t8"]},
+ {n:5, q:"Lesk algorithm + problem", marks:10, ids:["s_m4_lesk","m4t9","m4n4","m4t7"]},
+ {n:6, q:"Application given: identify sources of error and suggest improvements", marks:10, ids:["s_m6_errsrc","s_m6_ethics","m6t14"]},
+ {n:7, q:"Text summarization: explain the steps", marks:10, ids:["m6i2","m6t4","m6t3"]},
+ {n:"+", q:"Also sent (19 Nov): HMM path probability, 'hot lead cold feet' as JJ NN JJ NN", marks:2, ids:["nb-m3-vit2"]}
+];
+
 /* ===== NEW_CONTENT_END ===== */
 /* ===== APP ENGINE ===== */
 /* ================= PROGRESS STORE ================= */
@@ -5952,12 +6184,28 @@ function renderDashboard(){
   Object.keys(MODULE_TITLES).forEach(m=>{ const l = moduleItems(m).filter(inCore); built[m] = {pct:pct(done(l), l.length)}; });
   /* study next: the first Core topic page with work left, started ones first */
   const open = allTopicGroups().filter(g=>coreGroup(g) && g.done < g.total);
-  const nx = open.find(g=>g.asked && g.done > 0) || open.find(g=>g.asked) || open.find(g=>g.done > 0) || open[0];
+  const nx = open.find(g=>g.imp && g.done > 0) || open.find(g=>g.imp) || open.find(g=>g.asked && g.done > 0) || open.find(g=>g.asked) || open.find(g=>g.done > 0) || open[0];
   wrap.innerHTML = SEM7.ui.dashboard({code:"nlp", overall:{done:done(all), total:all.length},
     numericals:{done:done(nums), total:nums.length}, theory:{done:done(th), total:th.length},
     next:nx && {kicker:"Study next &middot; "+esc(MODULE_TITLES[nx.m].split("—")[0].trim()), title:esc(groupTitle(nx)), attrs:'data-ntopic="'+esc(nx.key)+'"'},
     built, attrs:id=>'data-nv="'+id+'"'});
+  wrap.insertAdjacentHTML("beforeend", importantCard());
   return wrap;
+}
+/* The 20 Nov important list: one row per question, linking to the page
+   that answers it (the first listed id) with a done count over its pages. */
+function importantCard(){
+  const rows = IMPORTANT_LIST.map(x=>{
+    const gs = []; x.ids.forEach(id=>{ const g = groupByKey(id) || groupOfItem(id); if(g && gs.indexOf(g) < 0) gs.push(g); });
+    if(!gs.length) return "";
+    const d = gs.reduce((a,g)=>a+g.done,0), t = gs.reduce((a,g)=>a+g.total,0);
+    return '<div class="s7-qrow" style="cursor:pointer" data-ntopic="'+esc(gs[0].key)+'"><div class="s7-qt"><b>Q'+esc(x.n)+'</b> &middot; '+esc(x.q)+
+      '<br><span class="small-muted">'+gs.map(g=>esc(groupTitle(g))).join(" · ")+'</span></div>'+
+      '<div class="s7-qm"><b>'+esc(x.marks)+' marks</b><span>'+d+'/'+t+' done</span>'+IMP_PILL+'</div></div>';
+  }).join("");
+  return '<section class="card" style="margin-top:20px"><h2>Important questions (sent 20 Nov)</h2>'+
+    '<p class="small-muted">The class was told these will almost certainly be asked, 10 marks each. Every linked page carries the Important tag.</p>'+
+    '<div class="s7-qs">'+rows+'</div></section>';
 }
 function makeStat(num,label){
   const st = el("div",{class:"stat"});
@@ -5997,7 +6245,7 @@ function renderModule(m){
   else if(sub==="flashcards") wrap.appendChild(renderFlashcards(m));
   else if(String(sub).indexOf("quiz")===0) wrap.appendChild(renderQuizPicker(m));
   else {
-    const list = el("div",{}), shown = groups.filter(g=>g.track===sub).sort((a,b)=>(b.asked?1:0)-(a.asked?1:0));
+    const list = el("div",{}), shown = groups.filter(g=>g.track===sub).sort((a,b)=>((b.imp?2:0)+(b.asked?1:0))-((a.imp?2:0)+(a.asked?1:0)));
     list.innerHTML = shown.length ? shown.map(topicCard).join("")
       : '<div class="empty">'+(SEM7.coreOnly() ? "No Core topics in this track." : "No topics in this track.")+'</div>';
     wrap.appendChild(list);
@@ -6071,6 +6319,16 @@ Object.keys(EXAM_ASKED).forEach(id=>{
   const q = SRC_BY_ID()[id];
   if(q){ q.asked = EXAM_ASKED[id]; q.core = true; if("priority" in q || q.q) q.priority = "high"; }
 });
+/* Important list of 20 Nov 2026 (IMPORTANT_LIST above): tag every listed item,
+   force it to high priority and Core. Ranks above "Asked in exam". */
+const IMPORTANT = {};
+IMPORTANT_LIST.forEach(x=>x.ids.forEach(id=>{ IMPORTANT[id] = "Q"+x.n+" · "+x.q; }));
+Object.keys(IMPORTANT).forEach(id=>{
+  const q = SRC_BY_ID()[id];
+  if(q){ q.imp = IMPORTANT[id]; q.core = true; if("priority" in q || q.q) q.priority = "high"; }
+});
+const IMP_PILL = '<span class="pill asked">Important</span>';
+function headPill(g){ return (g.imp ? IMP_PILL : "") + (g.asked ? '<span class="pill asked">Asked in exam</span>' : "") + (!g.imp && !g.asked && g.high ? '<span class="pill high">High priority</span>' : ""); }
 function coreGroup(g){ return !SEM7.coreOnly() || g.items.some(inCore); }
 /* One card and one page per question: every theory question, numerical set and
    class-solved set stands alone (16 Nov 2026: "i want the questions in different
@@ -6086,6 +6344,7 @@ function topicGroups(m){
     x.total = x.items.length; x.done = x.items.filter(i=>effectiveStatus(i)==="done").length;
     x.high = theory.concat(nums, solved).some(q=>q.priority==="high");
     x.asked = theory.concat(nums, solved).some(q=>q.asked);
+    x.imp = theory.concat(nums, solved).some(q=>q.imp || (q.practice||[]).some(p=>p.imp));
     x.marks = (theory[0] || solved[0] || {}).marks || null;
     out.push(x);
   };
@@ -6099,7 +6358,7 @@ function allTopicGroups(){ return Object.keys(MODULE_TITLES).reduce((a,m)=>a.con
 function groupByKey(key){ return allTopicGroups().find(g=>g.key===key) || null; }
 function topicCard(g){
   const sum = [esc(sectionTitle(g.section)), g.marks ? g.marks+" marks" : "", g.track==="numerical" ? "Worked set" : ""].filter(Boolean).join(" · ");
-  return SEM7.ui.topicCard({linkTitle:true, title:esc(groupTitle(g)), summary:sum, high:g.high||g.asked, pill:g.asked ? '<span class="pill asked">Asked in exam</span>' : g.high ? '<span class="pill high">High priority</span>' : "",
+  return SEM7.ui.topicCard({linkTitle:true, title:esc(groupTitle(g)), summary:sum, high:g.high||g.asked||g.imp, pill:headPill(g),
     done:g.done, total:g.total, unit:g.total===1 ? "item" : "items", attrs:'data-ntopic="'+esc(g.key)+'"'});
 }
 function nlpMark(id){ return {done:statusOf(id)==="done", attrs:'data-nlpmark="'+esc(id)+'"'}; }
@@ -6123,10 +6382,10 @@ function renderTopicPage(key){
   const examples = [], practice = [];
   g.nums.forEach(t=>{
     if(t.workedExample) examples.push({id:t.id+"-we", anchor:"item_"+t.id, kind:"Worked example", q:esc(t.workedExample.title), steps:t.workedExample.steps.map(esc)});
-    (t.practice||[]).filter(p=>inCore({id:p.id, sub:"numericals", parent:t.id})).forEach(p=>practice.push({id:p.id, anchor:"item_"+p.id, d:p.difficulty, q:esc(p.q), a:p.answer}));
+    (t.practice||[]).filter(p=>inCore({id:p.id, sub:"numericals", parent:t.id})).forEach(p=>practice.push({id:p.id, anchor:"item_"+p.id, d:p.difficulty, q:esc(p.q), a:p.answer, tags:p.imp ? IMP_PILL : ""}));
   });
   g.solved.forEach(t=>{
-    (t.classQs||[]).forEach((c,i)=>examples.push({id:t.id+"-c"+i, anchor:i ? null : "item_"+t.id, kind:"Class solved", marks:i ? null : t.marks,
+    (t.classQs||[]).forEach((c,i)=>examples.push({id:t.id+"-c"+i, anchor:i ? null : "item_"+t.id, kind:"Class solved", marks:i ? null : t.marks, tags:t.imp ? IMP_PILL : "",
       q:esc(c.q), steps:(c.steps||[]).map(esc), answer:esc(c.answer), trap:c.watch && esc(c.watch), mark:i ? null : t.id}));
     (t.practice||[]).forEach(p=>practice.push({id:p.id, anchor:"item_"+p.id, d:p.difficulty, q:esc(p.q), a:p.answer}));
   });
@@ -6139,16 +6398,16 @@ function renderTopicPage(key){
     head:{crumb:[{label:esc(num)+" &middot; "+esc(mtitle), attrs:modLink},
                  {label:g.track==="numerical" ? "Numericals" : "Theory", attrs:modLink+' data-nsub="'+g.track+'"'},
                  {label:esc(sectionTitle(g.section))}],
-      title:esc(groupTitle(g)), meta:g.asked ? '<span class="pill asked">Asked in exam</span>' : g.high ? '<span class="pill high">High priority</span>' : "",
+      title:esc(groupTitle(g)), meta:headPill(g),
       progress:{done:g.done, total:g.total, unit:g.total===1 ? "item done" : "items done"}},
     concept,
-    answer:theory.map(q=>({id:"item_"+q.id, label:(q.asked ? "Asked in exam · " : "")+q.marks+" marks", marks:q.marks, q:esc(q.q),
+    answer:theory.map(q=>({id:"item_"+q.id, label:(q.imp ? "Important · " : q.asked ? "Asked in exam · " : "")+q.marks+" marks", marks:q.marks, q:esc(q.q),
       body:esc(q.examAnswer||""), more:{key:"ans-"+q.id, html:SEM7.ui.rich(q.a)}, mark:nlpMark(q.id)})),
     mistakes:theory.filter(q=>q.mistakes).map(q=>esc(q.mistakes)),
     examples:examples.map(e=>Object.assign(e, {})),
     practice,
     recog:method ? {method} : null,
-    questions:theory.map(q=>({q:esc(q.q), marks:q.marks, source:"source"})),
+    questions:theory.map(q=>({q:esc(q.q), marks:q.marks, source:"source", imp:!!q.imp})),
     mark:(kind, id)=>{
       const e = examples.find(x=>x.id===id);
       if(kind==="ex") return e && e.mark ? nlpMark(e.mark) : null;
@@ -7130,7 +7389,9 @@ function renderFullMarks(){
   const asked = [], seen = {};
   Object.keys(EXAM_ASKED).forEach(id=>{ const n = EXAM_ASKED[id]; if(!seen[n]){ seen[n] = 1; asked.push(n); } });
   G.askedInExam = asked;
+  G.importantList = IMPORTANT_LIST.map(x=>"Q"+x.n+" · "+x.q+" ("+x.marks+" marks)");
   const sections = [
+    ["importantList","❗ Important list sent 20 Nov: expected in the paper, do these first"],
     ["askedInExam","🎯 Asked in the exam — top priority, do these first"],
     ["highPriority","⭐ High-Priority Topics — do not leave these"],
     ["frequentlyTestable","🔁 Frequently Testable Concepts"],

@@ -11,11 +11,12 @@ Resources are filed as **subject → division → module**: `_resources/nlp/<Com
 |---|---|---|
 | Module 1 - Introduction to NLP | 0 | 10 |
 | Module 2 - Text Processing & Word-Level Analysis | 0 | 3 |
-| Module 3 - Syntax Analysis & Sequence Modeling | 0 | 1 |
+| Module 3 - Syntax Analysis & Sequence Modeling | 0 | 2 |
 | Module 4 - Semantic Analysis & Word Representations | 0 | 5 |
-| Module 5 - Discourse & Advanced NLP | 0 | 6 |
+| Module 5 - Discourse & Advanced NLP | 0 | 10 |
 | Module 6 - Applications & Ethical Perspectives | 0 | 2 |
 | `_Books` | 0 | 4 |
+| `_Important Questions` | 0 | 1 |
 | `_CIA` | 0 | 1 |
 | `_Notes` | 0 | 1 |
 | `_Past papers & practice` | 0 | 5 |
@@ -31,6 +32,8 @@ Resources are filed as **subject → division → module**: `_resources/nlp/<Com
 - Module 6: nothing in Comp A (material exists in the other division).
 
 ## 3 · Findings from the audit
+
+- **ESE important questions list** filed 20 Nov 2026: `Comp B/_Important Questions/0.01 [ALL MODULES] ESE important questions - 20 Nov 2026.md`. Seven 10-mark questions (RAG five stages; RAG application, faulty stage; Hobbs + problem; centering problem; Lesk + problem; application, sources of error; summarization steps). Material sent with it, filed by module and marked `[IMPORTANT]` in the file name: `Module 5/5.07` centering explanation (docx), `5.08` class Hobbs parse tree (photo, Jonathan Bing), `5.09` Hobbs NP-vs-PRON doubt (diagram + text), `Module 3/3.02` HMM 'hot lead cold feet' solution (photo, sent 19 Nov). The Jonathan Bing sentence exists only as that photo; it is in no deck, paper or book.
 
 - Modules 4-6 now have decks, practice sets and a seminar PDF in `_resources/nlp/Comp B/`. The site in this folder still carries Modules 1-3 only, so Modules 4-6 are the open build work.
 - The only Comp A file is the MSE syllabus; everything else is Comp B.
