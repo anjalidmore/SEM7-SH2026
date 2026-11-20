@@ -3213,7 +3213,8 @@ const QUIZ_SETS = {
  m4:[
   {key:"m4_theory",    title:"Quiz 1 · Core Concepts",       desc:"Semantic relations, WordNet, WSD families, embeddings."},
   {key:"m4_numericals",title:"Quiz 2 · Applied & Numerical", desc:"Count vectors, TF-IDF, cosine, Naive Bayes WSD, Skip-gram pairs."},
-  {key:"m4_challenge", title:"Quiz 3 · Exam-Style Challenge",desc:"Zeugma, stop words in Lesk, TF-IDF of a common word."}
+  {key:"m4_challenge", title:"Quiz 3 · Exam-Style Challenge",desc:"Zeugma, stop words in Lesk, TF-IDF of a common word."},
+  {key:"m4_q41",       title:"Quiz 4.1 · Semantic Relations (Hard)",desc:"Identify the relation from the words, describe a relation, choose which is ___, and tell look-alike relations apart."}
  ],
  m5:[
   {key:"m5_theory",    title:"Quiz 1 · Core Concepts",       desc:"Cohesion, reference, centering, pragmatics, metrics."},
@@ -3806,6 +3807,103 @@ DATA.quiz.m4_challenge = [
  {q:"GloVe and Word2Vec both give 'bank' one vector regardless of the sentence. Which model gives a different vector per sentence?", type:"mcq",
   options:["FastText","BERT","One-hot","Count vectors"], correct:1,
   explanation:"BERT's vectors depend on the whole sentence. FastText is still static."}
+];
+
+/* ---- Quiz 4.1: semantic relations, hard (identify / describe / choose / difference) ---- */
+DATA.quiz.m4_q41 = [
+ /* A. Words given: identify the relation */
+ {q:"IDENTIFY · petal – flower. What does 'petal' stand in relation to 'flower'?", type:"mcq",
+  options:["Hyponym","Meronym","Holonym","Hypernym"], correct:1,
+  explanation:"A petal is PART OF a flower, so petal is the meronym (flower is the holonym). The trap is hyponym: test with 'a petal is a kind of flower', which is false."},
+ {q:"IDENTIFY · tree – forest. 'Forest' is the ___ of 'tree'.", type:"mcq",
+  options:["Hypernym","Holonym","Hyponym","Synonym"], correct:1,
+  explanation:"A forest is made up of trees: forest is the whole (holonym), tree the part/member (meronym). Hypernym is wrong because 'a tree is a kind of forest' is false. Both hypernym and holonym are the 'bigger' term; only the IS-A test separates them."},
+ {q:"IDENTIFY · Fruit is the hypernym of mango, and food is the hypernym of fruit. What is mango to food?", type:"mcq",
+  options:["No relation: hyponymy holds only between direct neighbours","Hyponym, because IS-A is transitive","Meronym, because mango is part of the food group","Co-hyponym of food"], correct:1,
+  explanation:"Mango IS-A fruit and fruit IS-A food, so mango IS-A food. WordNet's hypernym chains (rose → flower → plant) depend on this transitivity."},
+ {q:"IDENTIFY · mango – apple", type:"mcq",
+  options:["Synonyms, since both are fruits","Antonyms","Co-hyponyms: they share the hypernym 'fruit'","Meronym – holonym"], correct:2,
+  explanation:"They are siblings under one hypernym (fruit). Sharing a parent does not make words synonyms: you cannot substitute 'apple' for 'mango' and keep the meaning."},
+ {q:"IDENTIFY · write – right – rite", type:"mcq",
+  options:["Homographs","Homophones","Polysemy","Synonyms"], correct:1,
+  explanation:"Same pronunciation, different spellings and unrelated meanings: homophones. They break speech recognition, which hears one sound and has to choose the spelling."},
+ {q:"IDENTIFY · lead (the metal, /led/) – lead (to guide, /liːd/)", type:"mcq",
+  options:["Homophones","Homographs","Polysemy","Antonyms"], correct:1,
+  explanation:"Same spelling, different pronunciation and meaning: homographs. They break text-to-speech, which has to pick the pronunciation from the spelling."},
+ {q:"IDENTIFY · bass (the fish, /bæs/) – bass (low musical tone, /beɪs/). Select every label that applies.", type:"multi",
+  options:["Homonymy","Homograph","Homophone","Polysemy"], correct:[0,1],
+  explanation:"Same spelling with unrelated meanings, so it is homonymy, and the spelling is shared, so it is a homograph. It is NOT a homophone because the two words are pronounced differently, and NOT polysemy because the senses are unrelated."},
+ {q:"IDENTIFY · mouth (of a person) – mouth (of a river)", type:"mcq",
+  options:["Homonymy","Polysemy","Homophony","Meronymy"], correct:1,
+  explanation:"The senses are related: a river's mouth is the opening where it empties, extended from the body's opening. Related senses of one lexeme = polysemy. Homonymy would need the senses to be unrelated (bat / bat)."},
+ {q:"IDENTIFY · 'The White House announced new tariffs today.'", type:"mcq",
+  options:["Meronymy","Metonymy","Hyponymy","Homonymy"], correct:1,
+  explanation:"'The White House' stands for the US President's administration, which is closely associated with the building. One name used for an associated thing = metonymy. The building is not part of the administration, so this is not meronymy."},
+ {q:"IDENTIFY · 'She lost her keys and her temper.'", type:"mcq",
+  options:["Polysemy only","Zeugma","Metonymy","Antonymy"], correct:1,
+  explanation:"One occurrence of 'lost' governs two objects in two different senses (misplaced the keys, failed to control the temper). That is a zeugma, and its odd or comic effect is the evidence that the two senses are distinct."},
+ {q:"IDENTIFY · Which relation holds in BOTH 'dark – light' and 'short – long'?", type:"mcq",
+  options:["Antonymy: opposite on one feature, similar otherwise","Homonymy","Hypernymy","Complementary synonymy"], correct:0,
+  explanation:"Each pair is opposite on exactly one dimension (brightness, length) and alike on everything else. These are the deck's own examples of antonymy."},
+
+ /* B. Relation given: which description fits */
+ {q:"DESCRIBE · Which description of MERONYMY is fully correct?", type:"mcq",
+  options:["Part–whole; symmetric and transitive","Part–whole; asymmetric and transitive","Part–whole; asymmetric and intransitive","Kind-of; asymmetric and transitive"], correct:1,
+  explanation:"X is a meronym of Y if X denotes a part of Y. It is asymmetric (wheel is part of car, car is not part of wheel) and transitive (spoke → wheel → car). 'Kind-of' describes hyponymy."},
+ {q:"DESCRIBE · The ZEUGMA test is:", type:"mcq",
+  options:["Substituting one word for another in every context to prove synonymy","Joining two uses of a word under one occurrence; if the result sounds odd, the uses are distinct senses","Checking whether two words share a WordNet synset","Checking whether two words are pronounced the same"], correct:1,
+  explanation:"'Which flights serve breakfast?' + 'Does Midwest serve Philadelphia?' → 'Does Midwest serve breakfast and Philadelphia?' sounds odd, so the two uses of 'serve' are different senses. Option A is the substitution test for synonymy."},
+ {q:"DESCRIBE · METONYMY is:", type:"mcq",
+  options:["Naming a part of a whole","Using the name of one thing to refer to something closely associated with it","Two words with the same sound","A word whose meaning is the opposite of another's"], correct:1,
+  explanation:"The crown for the monarchy, Delhi for the Indian government, 'the city's heartbeat' for its people. Option A describes meronymy, the relation students most often confuse it with."},
+ {q:"DESCRIBE · HYPERNYM. Which description is right?", type:"mcq",
+  options:["The more specific term; it inherits the properties of its subclass","The superordinate, more general term; its hyponyms inherit its properties","The whole that contains a part","A word with several related senses"], correct:1,
+  explanation:"Vehicle is the hypernym (superordinate) of car, and car inherits everything true of vehicles. Option C describes the holonym."},
+ {q:"DESCRIBE · In WordNet, a SYNSET represents:", type:"mcq",
+  options:["One word with all its senses","One concept (sense), expressed by a set of synonymous lemmas and a gloss","A word together with its antonyms","A part-of-speech class"], correct:1,
+  explanation:"A synset is a SENSE. The word 'bank' appears in several synsets, one per sense, so a synset can never be 'one word with all its senses'."},
+ {q:"DESCRIBE · 'Perfect synonymy is rare.' Which statement explains why?", type:"mcq",
+  options:["Synonyms always differ in spelling","Two lexemes are perfect synonyms only if they can be substituted in ALL contexts, and politeness, register or a second sense usually blocks one","Synonyms must have different parts of speech","WordNet stores synonyms in different synsets"], correct:1,
+  explanation:"Water / H2O mean the same substance, but 'a glass of H2O' sounds technical and odd. Synonymy is usually a relation between particular senses in particular contexts."},
+
+ /* C. Choose which is ___ */
+ {q:"CHOOSE · Which of these is a HYPONYM of 'vehicle'?", type:"mcq",
+  options:["wheel","engine","ambulance","road"], correct:2,
+  explanation:"An ambulance IS-A vehicle. Wheel and engine are PARTS of a vehicle (meronyms), and road is only associated with vehicles."},
+ {q:"CHOOSE · Which pair shows POLYSEMY rather than homonymy?", type:"mcq",
+  options:["bat (cricket) / bat (mammal)","bank (river) / bank (money)","paper (the material) / paper (a newspaper)","bear (the animal) / bear (to carry)"], correct:2,
+  explanation:"A newspaper is printed on paper, so the senses are related: polysemy. The other three pairs have unrelated senses that only share a form: homonymy."},
+ {q:"CHOOSE · Select ALL pairs in which the FIRST word is a meronym of the second.", type:"multi",
+  options:["wheel – car","finger – hand","dog – animal","page – book","rose – flower"], correct:[0,1,3],
+  explanation:"Wheel, finger and page are parts of car, hand and book. Dog – animal and rose – flower are IS-A (hyponym – hypernym), not part-of."},
+ {q:"CHOOSE · Which of the following is a ZEUGMA?", type:"mcq",
+  options:["She lost her keys and her wallet.","He caught a cold and the last train.","The pen is mightier than the sword.","The bank by the river flooded."], correct:1,
+  explanation:"'Caught' means 'became infected with' for the cold and 'managed to board' for the train: two senses under one verb. In option A, 'lost' means the same thing for both objects, so there is no zeugma. Option C is metonymy."},
+ {q:"CHOOSE · Which antonym pair lies at opposite ends of a SCALE rather than forming a binary opposition?", type:"mcq",
+  options:["dead – alive","on – off","hot – cold","true – false"], correct:2,
+  explanation:"Hot and cold allow degrees in between (warm, cool, 'very hot'). Dead/alive, on/off and true/false are binary: not one means the other. The deck: 'antonyms can define a binary opposition or opposite ends of a scale'."},
+ {q:"CHOOSE · Which relation is NOT one that WordNet uses to link synsets (per the deck)?", type:"mcq",
+  options:["Antonymy","Hypernymy / hyponymy","Meronymy / holonymy","Homophony"], correct:3,
+  explanation:"WordNet links senses by meaning: synonymy, antonymy, IS-A and PART-OF. Homophony is about pronunciation, which WordNet does not store."},
+
+ /* D. What's the difference */
+ {q:"DIFFERENCE · The single criterion that separates homonymy from polysemy is:", type:"mcq",
+  options:["Whether the spellings match","Whether the pronunciations match","Whether the senses are related","Whether the words have the same part of speech"], correct:2,
+  explanation:"Both have one form and several senses. Related senses (bank building / bank institution) = polysemy; unrelated senses (bank money / bank river) = homonymy. Spelling and sound separate homographs from homophones instead."},
+ {q:"DIFFERENCE · A rose IS A flower; a petal IS PART OF a flower. Which statement is correct?", type:"mcq",
+  options:["Both rose and petal are hyponyms of flower","Rose is a hyponym of flower; petal is a meronym of flower","Rose is a meronym of flower; petal is a hyponym of flower","Both are meronyms of flower"], correct:1,
+  explanation:"Hyponymy passes the 'X is a kind of Y' test; meronymy passes the 'X is a part of Y' test. Use these two tests whenever a question gives you a pair."},
+ {q:"DIFFERENCE · 'All hands on deck' uses 'hands' for sailors. A student labels it MERONYMY. What is the better label, and why?", type:"mcq",
+  options:["Meronymy is right: a hand is part of a sailor","Metonymy (part for whole): in this sentence the word refers to the person; meronymy is the dictionary relation hand–body, not a way of referring","Hyponymy: a hand is a kind of sailor","Polysemy: 'hands' has unrelated senses"], correct:1,
+  explanation:"Meronymy is a fixed relation between two senses in the lexicon (hand is part of body). Metonymy is a choice made when the word is used: naming one thing to mean an associated thing. Part-for-whole metonymy is also called synecdoche."},
+ {q:"DIFFERENCE · Homophone vs homograph: which is correct?", type:"mcq",
+  options:["Homophone = same spelling; homograph = same sound","Homophone = same sound, different spelling (piece/peace); homograph = same spelling, different meaning or sound (bass/bass)","They are the same thing","Homophones are always polysemous"], correct:1,
+  explanation:"'phone' = sound, 'graph' = writing. Homophones break speech recognition; homographs break text-to-speech and information retrieval."},
+ {q:"DIFFERENCE · Hypernym vs holonym. A car IS A vehicle and HAS wheels. Select every TRUE statement.", type:"multi",
+  options:["Vehicle is the hypernym of car","Car is the holonym of wheel","Vehicle is the holonym of car","Car is the hypernym of wheel"], correct:[0,1],
+  explanation:"The hypernym is the more general CLASS (car IS-A vehicle). The holonym is the WHOLE (wheel is part of car). A car is not part of a vehicle, and a wheel is not a kind of car."},
+ {q:"DIFFERENCE · If two words are synonyms, they must share ALL of their senses.", type:"tf", correct:false,
+  explanation:"False. Synonymy holds between SENSES. 'Big' and 'large' are synonyms in their size sense, but only 'big' has the sense 'older' ('my big sister' ≠ 'my large sister')."}
 ];
 
 DATA.revision = DATA.revision || {};
@@ -6954,7 +7052,7 @@ function renderQuizPicker(m){
   }
   const wrap = el("div",{});
   wrap.appendChild(el("p",{class:"small-muted"},
-    ["Three quizzes, deliberately progressive. Take them in order — Quiz 3 is at MSE difficulty."]));
+    [((QUIZ_SETS[m]||[]).length>3 ? (QUIZ_SETS[m]||[]).length+" quizzes. Quizzes 1–3 are progressive (Quiz 3 is at MSE difficulty); the extra quiz drills one topic." : "Three quizzes, deliberately progressive. Take them in order — Quiz 3 is at MSE difficulty.")]));
   (QUIZ_SETS[m]||[]).forEach(q=>{
     const qs = DATA.quiz[q.key];
     if(!qs || !qs.length) return;
