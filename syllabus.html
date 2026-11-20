@@ -36,7 +36,20 @@
   padding:6px 10px; cursor:pointer}
 .sy-reset:hover{color:var(--text); border-color:var(--border-2)}
 .sy-mod{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin:0 0 16px; overflow:hidden}
-.sy-mod-h{display:flex; align-items:baseline; gap:10px 12px; flex-wrap:wrap; padding:14px 18px 12px; border-bottom:1px solid var(--border)}
+.sy-mod-h{display:flex; align-items:center; gap:10px 12px; flex-wrap:wrap; padding:12px 18px; cursor:pointer; list-style:none}
+.sy-mod-h::-webkit-details-marker{display:none}
+.sy-mod-h:hover{background:var(--surface-2)}
+.sy-mod[open] > .sy-mod-h{border-bottom:1px solid var(--border)}
+.sy-ring{flex:none; position:relative; width:44px; height:44px}
+.sy-ring svg{display:block; width:44px; height:44px; transform:rotate(-90deg)}
+.sy-ring circle{fill:none; stroke-width:5}
+.sy-ring .trk{stroke:var(--surface-3)}
+.sy-ring .val{stroke:var(--accent-ui); stroke-linecap:round; transition:stroke-dasharray .35s ease}
+.sy-ring.full .val{stroke:var(--good)}
+.sy-ring b{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:650 .68rem/1 var(--sans); color:var(--text); font-variant-numeric:tabular-nums}
+.sy-chev{flex:none; width:18px; height:18px; color:var(--muted); transition:transform .2s ease}
+.sy-mod[open] .sy-chev{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){ .sy-ring .val,.sy-chev{transition:none} }
 .sy-mod-n{font:650 .95rem/1.3 var(--mono); color:var(--accent-ui)}
 .sy-mod-h h2{flex:1 1 220px; margin:0; padding:0; border:0; font-size:1.05rem; line-height:1.35}
 .sy-meta{display:flex; gap:6px; flex-wrap:wrap; align-items:center; font:500 .76rem/1 var(--sans); color:var(--muted)}
@@ -175,10 +188,17 @@
   }
 
   var totals = [];   /* per module: ids of its topics */
+  /* Which module dropdowns are open, remembered per browser. */
+  var OKEY = KEY + ".open", openMods = {};
+  try { openMods = JSON.parse(S.lsGet(OKEY) || "{}") || {}; } catch(e){ openMods = {}; }
   function moduleHTML(m, mi){
     var ids = [], h = "";
-    h += '<section class="sy-mod" data-m="' + mi + '"><div class="sy-mod-h"><span class="sy-mod-n">' + esc(m.n) + '</span><h2>' + esc(m.title) + '</h2>' +
-      '<div class="sy-meta">' + (m.co ? '<span>' + esc(m.co) + '</span>' : '') + '<span>' + esc(m.hrs) + ' Hrs</span><span class="sy-done" data-done></span></div></div>';
+    h += '<details class="sy-mod" data-m="' + mi + '"' + (openMods[mi] ? " open" : "") + '><summary class="sy-mod-h">' +
+      '<span class="sy-ring" data-ring><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="trk" cx="22" cy="22" r="18"/>' +
+      '<circle class="val" cx="22" cy="22" r="18" pathLength="100" stroke-dasharray="0 100"/></svg><b></b></span>' +
+      '<span class="sy-mod-n">' + esc(m.n) + '</span><h2>' + esc(m.title) + '</h2>' +
+      '<div class="sy-meta">' + (m.co ? '<span>' + esc(m.co) + '</span>' : '') + '<span>' + esc(m.hrs) + ' Hrs</span><span class="sy-done" data-done></span></div>' +
+      '<svg class="sy-chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>';
     if(m.obj) h += '<div class="sy-sec"><div class="sy-lab">' + esc(m.objLabel) + '</div><p>' + esc(m.obj) + '</p></div>';
 
     h += '<div class="sy-sec"><div class="sy-lab">' + esc(m.contentsLabel) + '</div>';
@@ -198,7 +218,7 @@
     if(m.los && m.los.length) h += '<div class="sy-sec"><div class="sy-lab">' + esc(m.loLabel) + '</div>' +
       (m.loLead ? '<p class="sy-lead">' + esc(m.loLead) + '</p>' : '') +
       '<ul class="sy-los">' + m.los.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join("") + '</ul></div>';
-    h += '</section>';
+    h += '</details>';
     totals[mi] = ids;
     return h;
   }
@@ -223,6 +243,11 @@
       var el = app.querySelector('.sy-mod[data-m="' + mi + '"] [data-done]');
       el.textContent = d + " / " + ids.length;
       el.classList.toggle("full", d === ids.length);
+      var p = ids.length ? Math.round(d / ids.length * 100) : 0,
+          ring = app.querySelector('.sy-mod[data-m="' + mi + '"] [data-ring]');
+      ring.querySelector(".val").setAttribute("stroke-dasharray", p + " 100");
+      ring.querySelector("b").textContent = p + "%";
+      ring.classList.toggle("full", d === ids.length && d > 0);
     });
     var pct = all ? Math.round(done / all * 100) : 0, bar = app.querySelector(".sy-overall .bar");
     bar.setAttribute("aria-valuenow", pct);
@@ -242,10 +267,20 @@
     Array.prototype.forEach.call(app.querySelectorAll("input[data-id]"), function(i){ i.checked = false; });
     paint();
   });
+  app.addEventListener("toggle", function(e){
+    var m = e.target.getAttribute && e.target.getAttribute("data-m");
+    if(m === null || !e.target.classList.contains("sy-mod")) return;
+    if(e.target.open) openMods[m] = 1; else delete openMods[m];
+    S.lsSet(OKEY, JSON.stringify(openMods));
+  }, true);
+  /* Printing shows every module. */
+  window.addEventListener("beforeprint", function(){
+    Array.prototype.forEach.call(app.querySelectorAll("details.sy-mod"), function(d){ d.open = true; });
+  });
   var openBtn = document.getElementById("sy-open");
   if(openBtn) openBtn.addEventListener("click", function(){
     var on = openBtn.textContent === "Open all";
-    Array.prototype.forEach.call(app.querySelectorAll("details.sy-q"), function(d){ d.open = on; });
+    Array.prototype.forEach.call(app.querySelectorAll("details.sy-mod, details.sy-q"), function(d){ d.open = on; });
     openBtn.textContent = on ? "Close all" : "Open all";
   });
   /* Ticked in another tab: keep this one in step. */
