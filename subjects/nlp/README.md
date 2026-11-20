@@ -22,6 +22,15 @@ tree, `s_m5_center` the class centering examples. Existing Lesk, Hobbs, centerin
 summarization pages are tagged too, as is the HMM 'hot lead cold feet' problem (sent 19 Nov).
 The data is `IMPORTANT_LIST` in `index.html`, just before `NEW_CONTENT_END`.
 
+## Classmate's notes audit, Modules 4–5 (20 Nov 2026)
+
+A classmate's handwritten notes (`NLP 4 to 6.pdf`, Modules 4–5 only) were checked against the site. Added:
+the Pranav/Shruti and Vasundhara/Floyd count-vector problems (`m4n1p7`, `m4n1p8`), the sea-shells one-hot
+problem (`m4n1p9`), the mouse/cat cosine problem with the angle (`m4n3p8`), and the Ernest/Martin centering
+problem (on `s_m5_center`). `m4n1p4` was rebuilt as the full 19-word class problem. Theory gained simplified-Lesk
+pseudocode, the HyperLex edge-weight formula, the unsmoothed Naive Bayes formula, the class's seven constraints,
+the full centering ranking and the three reference problem types.
+
 ## What is in the site
 
 Content is built for **Modules 1–6**:
