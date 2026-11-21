@@ -12,15 +12,6 @@
   "use strict";
   var S = window.SEM7_SYLLABUS = {
 
-    nlp: { paper:null, modules:[
-      { id:"m1", built:true, title:"Introduction to NLP" },
-      { id:"m2", built:true, title:"Text Processing & Word-Level Analysis" },
-      { id:"m3", built:true, title:"Syntax Analysis & Sequence Modeling" },
-      { id:"m4", built:true, title:"Semantic Analysis and Word Representations" },
-      { id:"m5", built:true, title:"Discourse and Advanced NLP" },
-      { id:"m6", built:true, title:"Applications and Ethical Perspectives in NLP" }
-    ]},
-
     ads: { paper:null, modules:[
       { id:"m1", built:true, title:"Introduction to Data Science" },
       { id:"m2", built:true, title:"Data Exploration using Descriptive Statistics" },

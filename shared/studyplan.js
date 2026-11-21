@@ -40,7 +40,7 @@
   "use strict";
 
   /* ---------- the day ---------- */
-  var STUDY_START = "2026-11-19";                  /* AI written 19 Nov; the plan starts that afternoon */
+  var STUDY_START = "2026-11-21";                  /* NLP written 21 Nov; the plan starts that afternoon */
   var UNIT = 0.5;                                    /* hours; every plan quantity is a multiple */
   var DAY = [
     { key:"am",  label:"Morning",   from:"08:30", to:"11:30", h:3 },
@@ -52,18 +52,18 @@
     { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 }
   ];
   var DAY_OF = {                                     /* a day with its own blocks */
-    "2026-11-19": [ { key:"pm",  label:"Afternoon", from:"14:30", to:"17:00", h:2.5 },
+    "2026-11-21": [ { key:"pm",  label:"Afternoon", from:"14:30", to:"17:00", h:2.5 },
                     { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 } ]
   };
   var LAST_LOOK = { key:"last", label:"Before the paper", from:"08:30", to:"09:30", h:1 };
-  var MOCK_H = { nlp:2, ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
+  var MOCK_H = { ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
   var POST_SHARE = 0.80;                             /* MSE modules carry 10 of 50 marks (you); syllabus range is 20-30% */
   var DIFF_K = { 1:0.22, 2:0.28, 3:0.34, 4:0.40, 5:0.46 };   /* study hours per lecture hour: a fast learner */
   var REFRESH = 0.4;                                 /* an MSE module is a refresh */
   var SPLIT = { core:0.55, deepen:0.20, revise:0.25 };
   var ONLY_FROM = { dl:"2026-11-28" };   /* a subject studied only from this day (DL: the two days before it) */
   var LEND_CAP = 0.20;
-  var ORDER = {};                                   /* fixed study order per subject, e.g. { nlp:[4,5,6,1,2,3] } */
+  var ORDER = {};                                   /* fixed study order per subject, e.g. { ads:[4,5,6,1,2,3] } */
 
   /* ---------- the evidence ----------
      hrs   syllabus contact hours (low, high)
@@ -74,26 +74,6 @@
      sig   [factor, why]
      first what to do first, most weighted first */
   var M = {
-    nlp: [
-      { n:1, hrs:[2,4],   los:4, d:1, pre:true,  needs:[],
-        sig:[],
-        first:["Ambiguity types","NLP stages","Type-token ratio"] },
-      { n:2, hrs:[10,12], los:6, d:3, pre:true,  needs:[],
-        sig:[[1.10,"Past internal tests ask perplexity, Porter stemmer and regex"]],
-        first:["Asked: type-token ratio, count vectorization, inflectional morphemes","Perplexity and n-gram probabilities","Smoothing (Laplace, Good-Turing)","Porter stemmer","TF-IDF"] },
-      { n:3, hrs:[9,11],  los:6, d:4, pre:true,  needs:[2],
-        sig:[[1.10,"Past internal tests ask HMM, CKY and PCFG every time"]],
-        first:["Important: HMM path probability, hot lead cold feet (2 marks)","Asked: HMM training and emission probabilities","Asked: PCFG parse probability","Viterbi","CKY table","Leftmost derivation and parse tree"] },
-      { n:4, hrs:[7,9],   los:8, d:4, pre:false, needs:[2],
-        sig:[[1.15,"CIA 4 is a report on word senses, embeddings and BERT"]],
-        first:["Important list Q5: Lesk pseudocode and worked problem (10 marks)","Asked: one-hot sum, cosine similarity and distance","Asked: semantic relations from a paragraph","Word sense disambiguation: three approaches compared","FastText and BERT in outline"] },
-      { n:5, hrs:[5,7],   los:6, d:3, pre:false, needs:[3],
-        sig:[],
-        first:["Important list Q3: Hobbs on a parse tree (class tree, Camelot) (10 marks)","Important list Q4: Centering problem, four transitions (10 marks)","Asked: reference, anaphora, precision, recall and F1","BLEU and ROUGE worked","Discourse coherence and relations"] },
-      { n:6, hrs:[4,6],   los:8, d:2, pre:false, needs:[4,5],   /* 10 LOs, two are teamwork and not examinable */
-        sig:[],
-        first:["Important list Q1-Q2: RAG five stages; application given, find the faulty stage (10 marks each)","Important list Q6: application given, sources of error and fixes (10 marks)","Important list Q7: summarization steps (10 marks)","Machine translation: rule, statistical, neural","Indian-language challenges"] }
-    ],
     ads: [
       { n:1, hrs:[4,4],   los:4, d:1, pre:true,  needs:[],
         sig:[],

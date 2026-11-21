@@ -7,9 +7,11 @@ opened from disk and on GitHub Pages.
 AI (CEPCC712) was written on Thu 19 Nov 2026 and removed: its site, notes and lecture material are gone.
 Tag **`ai-final`** keeps the last version of its site (`git checkout ai-final -- subjects/ai`).
 
+NLP (CEPEC7032) was written on Sat 21 Nov 2026 and removed the same way: site, notes, syllabus and plan
+data, and lecture material. Tag **`nlp-final`** keeps the last version (`git checkout nlp-final -- subjects/nlp shared/notes-nlp.js`).
+
 | Exam (10:30–12:30) | Subject | Site |
 |---|---|---|
-| Sat 21 Nov 2026 | Natural Language Processing (CEPEC7032) | `subjects/nlp/` |
 | Wed 25 Nov 2026 | Applied Data Science (CEPEC7041) | `subjects/ads/` |
 | Fri 27 Nov 2026 | Operations Research (OEC7015) | `subjects/or/` |
 | Mon 30 Nov 2026 | Deep Learning (HMCAL703) | `subjects/dl/` |
@@ -67,7 +69,6 @@ hub shows the same figure as that site's dashboard, with that site's meaning:
 
 | Site | Figure shown |
 |---|---|
-| NLP | Items done |
 | ADS | Questions marked done |
 | OR | Exam-priority questions done |
 | DL | High-priority questions done |

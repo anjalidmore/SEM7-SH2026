@@ -38,8 +38,6 @@
   /* Exam order. `keys` are the subject's own progress keys, used by the hub only
      to notice that progress exists before the subject has published a summary. */
   var SUBJECTS = [
-    { code:"nlp", short:"NLP", name:"Natural Language Processing",  course:"CEPEC7032", date:"2026-11-21",
-      accent:"#2c5f8a", keys:["nlpExamPrepProgress_v3", "nlpExamPrepProgress_v2"] },
     { code:"ads", short:"ADS", name:"Applied Data Science",         course:"CEPEC7041", date:"2026-11-25",
       accent:"#c2410c", keys:["ads_study_guide_cepec7041_v2"] },
     { code:"or",  short:"OR",  name:"Operations Research",          course:"OEC7015",  date:"2026-11-27",
@@ -150,7 +148,7 @@
      afternoon of an exam day goes to the paper after it. Returns one entry per
      day: { date, exam (the paper written that day, or null), main (the paper
      studied for, or null after the last one) }. */
-  var STUDY_START = "2026-11-19";
+  var STUDY_START = "2026-11-21";
   function studyStart(){ return at(STUDY_START, "00:00"); }
   function plan(now){
     now = now || new Date();
@@ -195,9 +193,7 @@
     ads: { get:function(){ return { v:view, t:currentTopic }; },
            set:function(r){ view = r.v; currentTopic = r.t; render(); window.scrollTo(0, 0); } },
     or:  { get:function(){ return view; }, set:function(r){ go(r); } },
-    dl:  { get:function(){ return { v:VIEW.v, id:VIEW.id }; }, set:function(r){ go(r.v, r.id); } },
-    nlp: { get:function(){ return { view:ROUTE.view, topic:ROUTE.topic }; },
-           set:function(r){ ROUTE.view = r.view; ROUTE.topic = r.topic; render(); } }
+    dl:  { get:function(){ return { v:VIEW.v, id:VIEW.id }; }, set:function(r){ go(r.v, r.id); } }
   };
   function watchBack(code){
     var rt = ROUTES[code], stack = [], restoring = false, last = null;
@@ -320,55 +316,6 @@
      effectiveStatus, render, MODULES, TOPICS, TOPIC_BY_ID, openTopic, goto, examTopics, topicStatus,
      go, highTopics, overallProgress, moduleProgress, overallStats, moduleStats */
   var ADAPTERS = {
-    nlp: { hooks:["saveProgress", "render"],
-      summarize:function(){
-        var o = overallStats(), mods = Object.keys(MODULE_TITLES), groups = {};
-        /* NLP marks questions, not topics; a syllabus topic (1.1, 2.4 ...) counts
-           as done when every question filed under it is done. */
-        mods.forEach(function(m){ moduleItems(m).forEach(function(i){
-          var code = m + ":" + ((String(i.topic || "").match(/^\d+(\.\d+)?/) || ["?"])[0]);
-          var g = groups[code] || (groups[code] = { all:0, done:0 });
-          g.all++; if(effectiveStatus(i) === "done") g.done++;
-        }); });
-        /* Core: Core-tagged ones; practice inherits its parent's tag */
-        var src = {}, ci = [];
-        mods.forEach(function(m){ ["theory", "numericals", "solved"].forEach(function(k){
-          ((DATA[k] || {})[m] || []).forEach(function(q){ src[q.id] = q; (q.practice || []).forEach(function(x){ src[x.id] = x; }); });
-        }); });
-        mods.forEach(function(m){ moduleItems(m).forEach(function(i){
-          var own = src[i.id], par = i.parent && src[i.parent];
-          var c = own && typeof own.core === "boolean" ? own.core : par && typeof par.core === "boolean" ? par.core :
-            isCore(own) || isCore(par);
-          if(c) ci.push({ id:i.id, title:i.label, item:i });
-        }); });
-        var cs = function(id){ var v = effectiveStatus(find(ci, id).item); return v === "review" ? "progress" : v || "none"; };
-        var nc = coreFigure({ done:ci.filter(function(x){ return cs(x.id) === "done"; }).length, total:ci.length }, ci, cs);
-        nc.next.forEach(function(x){ x.target = "item:" + x.target.slice(6); });
-        var keys = Object.keys(groups), nu = nextUp();
-        var sub = nu.kind === "quiz" ? "quiz" : nu.kind === "solved" ? "solved" : "";
-        return { label:"Items done", unit:"items", pct:o.pct, done:o.done, total:o.total,
-          topics:{ done:keys.filter(function(k){ return groups[k].done === groups[k].all; }).length, total:keys.length },
-          core:nc,
-          current: nu.m ? cur(nu.m, MODULE_TITLES[nu.m].replace(/\s+—\s+/, " · ")) : null,
-          next: { title:String(nu.label), target: nu.m ? "module:" + nu.m + (sub ? ":" + sub : "") : "view:mock" },
-          modules: mods.map(function(m){ return mod(m, moduleStats(m).pct, MODULE_TITLES[m].split("—").pop().trim()); }) };
-      },
-      open:function(target){
-        var t = split(target);
-        if(t[0] === "view" && t[1] === "mock"){ ROUTE.view = "mock"; render(); return; }
-        if(t[0] === "item"){
-          var it = null;
-          Object.keys(MODULE_TITLES).forEach(function(m){ it = it || find(moduleItems(m), t[1]); });
-          if(it) jumpTo(it.m, it.sub, it.id);
-          return;
-        }
-        if(t[0] !== "module") return;
-        var ms = split(t[1]);
-        if(!MODULE_TITLES[ms[0]]) return;
-        ROUTE.view = ms[0];
-        if(ms[1]) ROUTE.sub[ms[0]] = ms[1];
-        render();
-      }},
     ads: { hooks:["save", "render"],
       summarize:function(){
         var o = overallProgress(), n = studyNext(), next = null;
@@ -673,7 +620,6 @@
     formula:'<path d="M17.5 4.5h-11l6 7.5-6 7.5h11"/>',
     search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20.5 20.5-5.2-5.2"/>',
     /* subjects */
-    nlp:'<path d="M20.5 15a2 2 0 0 1-2 2H8l-4.5 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/>',
     ads:'<path d="M3 3v18h18"/><path d="M8 16.5v-4M12.5 16.5V7M17 16.5v-7"/>',
     or:'<circle cx="6" cy="18.5" r="2.5"/><circle cx="18" cy="5.5" r="2.5"/><path d="M8.5 18.5h8a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7h8"/>',
     dl:'<circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="m6.7 7.1 3.6 3.8M6.7 16.9l3.6-3.8M13.7 10.9l3.6-3.8M13.7 13.1l3.6 3.8"/>'
