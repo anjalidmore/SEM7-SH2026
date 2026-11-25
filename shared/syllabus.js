@@ -12,15 +12,6 @@
   "use strict";
   var S = window.SEM7_SYLLABUS = {
 
-    ads: { paper:null, modules:[
-      { id:"m1", built:true, title:"Introduction to Data Science" },
-      { id:"m2", built:true, title:"Data Exploration using Descriptive Statistics" },
-      { id:"m3", built:true, title:"Data Exploration using Inferential Statistics" },
-      { id:"m4", built:true, title:"Regression Analysis" },
-      { id:"m5", built:true, title:"Anomaly Detection" },
-      { id:"m6", built:true, title:"Time Series Forecasting" }
-    ]},
-
     /* The OR syllabus has course-level outcomes only, so its modules carry no LOs. */
     or: { paper:null, modules:[
       { id:"m1", built:true, title:"Introduction to OR & Linear Programming" },

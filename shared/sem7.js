@@ -5,7 +5,7 @@
 
    A subject site adds two lines at the very end of its <body>:
      <script src="../../shared/sem7.js"></script>
-     <script>window.SEM7 && SEM7.attach("ads");</script>
+     <script>window.SEM7 && SEM7.attach("or");</script>
    SEM7.attach does three things and nothing else:
      1. adds a thin strip above the site's own header: back to the semester
         hub, jump to another subject, and this subject's exam countdown;
@@ -38,8 +38,6 @@
   /* Exam order. `keys` are the subject's own progress keys, used by the hub only
      to notice that progress exists before the subject has published a summary. */
   var SUBJECTS = [
-    { code:"ads", short:"ADS", name:"Applied Data Science",         course:"CEPEC7041", date:"2026-11-25",
-      accent:"#c2410c", keys:["ads_study_guide_cepec7041_v2"] },
     { code:"or",  short:"OR",  name:"Operations Research",          course:"OEC7015",  date:"2026-11-27",
       accent:"#2f5bd0", keys:["or_mse_study_v1"] },
     { code:"dl",  short:"DL",  name:"Deep Learning",                course:"HMCAL703", date:"2026-11-30",
@@ -148,7 +146,7 @@
      afternoon of an exam day goes to the paper after it. Returns one entry per
      day: { date, exam (the paper written that day, or null), main (the paper
      studied for, or null after the last one) }. */
-  var STUDY_START = "2026-11-21";
+  var STUDY_START = "2026-11-25";
   function studyStart(){ return at(STUDY_START, "00:00"); }
   function plan(now){
     now = now || new Date();
@@ -190,8 +188,6 @@
      keeps a short stack of the views it has shown; Back restores the previous
      one, and from a site's first view goes to the semester hub. */
   var ROUTES = {
-    ads: { get:function(){ return { v:view, t:currentTopic }; },
-           set:function(r){ view = r.v; currentTopic = r.t; render(); window.scrollTo(0, 0); } },
     or:  { get:function(){ return view; }, set:function(r){ go(r); } },
     dl:  { get:function(){ return { v:VIEW.v, id:VIEW.id }; }, set:function(r){ go(r.v, r.id); } }
   };
@@ -316,24 +312,6 @@
      effectiveStatus, render, MODULES, TOPICS, TOPIC_BY_ID, openTopic, goto, examTopics, topicStatus,
      go, highTopics, overallProgress, moduleProgress, overallStats, moduleStats */
   var ADAPTERS = {
-    ads: { hooks:["save", "render"],
-      summarize:function(){
-        var o = overallProgress(), n = studyNext(), next = null;
-        if(n.topic) next = { title:n.topic.title, target:"topic:" + n.topic.id, m:n.topic.m };
-        else if(n.view) next = { title:n.view === "quiz" ? "Self-test quiz" : "Exam practice", target:"view:" + n.view };
-        var m = next && next.m && find(MODULES, next.m);
-        return { label:"Questions marked done", unit:"questions", pct:o.pct, done:o.done, total:o.total,
-          topics:{ done:o.topicsDone, total:o.topics },
-          core: coreFigure(progressOf(TOPICS.filter(isCore)), TOPICS.filter(isCore), topicStatus),
-          current: m ? cur(m.id, "Module " + m.num + " · " + m.title) : null, next:next,
-          modules: MODULES.map(function(x){ return mod(x.id, moduleProgress(x.id).pct, x.title); }) };
-      },
-      open:function(target){
-        var t = split(target);
-        if(t[0] === "topic" && TOPIC_BY_ID[t[1]]) openTopic(t[1]);
-        else if(t[0] === "view" && (t[1] === "quiz" || t[1] === "exam")) goto(t[1]);
-        else if(t[0] === "module" && find(MODULES, t[1])) goto(t[1]);
-      }},
     or: { hooks:["saveProgress", "render"],
       summarize:function(){
         var o = overallProgress(), list = examTopics(), t = firstOpen(list, topicStatus);
@@ -620,7 +598,6 @@
     formula:'<path d="M17.5 4.5h-11l6 7.5-6 7.5h11"/>',
     search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20.5 20.5-5.2-5.2"/>',
     /* subjects */
-    ads:'<path d="M3 3v18h18"/><path d="M8 16.5v-4M12.5 16.5V7M17 16.5v-7"/>',
     or:'<circle cx="6" cy="18.5" r="2.5"/><circle cx="18" cy="5.5" r="2.5"/><path d="M8.5 18.5h8a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7h8"/>',
     dl:'<circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="m6.7 7.1 3.6 3.8M6.7 16.9l3.6-3.8M13.7 10.9l3.6-3.8M13.7 13.1l3.6 3.8"/>'
   };

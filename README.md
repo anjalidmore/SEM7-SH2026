@@ -10,9 +10,11 @@ Tag **`ai-final`** keeps the last version of its site (`git checkout ai-final --
 NLP (CEPEC7032) was written on Sat 21 Nov 2026 and removed the same way: site, notes, syllabus and plan
 data, and lecture material. Tag **`nlp-final`** keeps the last version (`git checkout nlp-final -- subjects/nlp shared/notes-nlp.js`).
 
+ADS (CEPEC7041) was written on Wed 25 Nov 2026 and removed the same way: site, notes, syllabus and plan
+data, and lecture material. Tag **`ads-final`** keeps the last version (`git checkout ads-final -- subjects/ads shared/notes-ads.js`).
+
 | Exam (10:30–12:30) | Subject | Site |
 |---|---|---|
-| Wed 25 Nov 2026 | Applied Data Science (CEPEC7041) | `subjects/ads/` |
 | Fri 27 Nov 2026 | Operations Research (OEC7015) | `subjects/or/` |
 | Mon 30 Nov 2026 | Deep Learning (HMCAL703) | `subjects/dl/` |
 
@@ -56,7 +58,7 @@ reads or changes it. Instead, each subject site loads `shared/sem7.js` in its `<
 `<body>` with:
 
 ```html
-<script>window.SEM7 && SEM7.attach("ads");</script>
+<script>window.SEM7 && SEM7.attach("or");</script>
 ```
 
 `SEM7.attach` adds a thin strip above the site's own header (back to the hub, jump to another
@@ -69,7 +71,6 @@ hub shows the same figure as that site's dashboard, with that site's meaning:
 
 | Site | Figure shown |
 |---|---|
-| ADS | Questions marked done |
 | OR | Exam-priority questions done |
 | DL | High-priority questions done |
 

@@ -2,7 +2,7 @@
 Static site: no backend, no build step, no dependencies. Works from disk and on GitHub Pages.
 
 ## Run
-- Open index.html (hub) or subjects/<ads|or|dl>/index.html in a browser.
+- Open index.html (hub) or subjects/<or|dl>/index.html in a browser.
 - No test suite or package.json found.
 - `scripts/bridge.sh` checks each subject is wired to shared/ and adds the attach line if missing.
 
@@ -18,7 +18,8 @@ Static site: no backend, no build step, no dependencies. Works from disk and on 
 - Tag `mse-final` marks the sites as they were for the Mid Sem.
 - AI was written 19 Nov and removed (site, notes, resources); tag `ai-final` keeps its last version.
 - NLP was written 21 Nov and removed the same way; tag `nlp-final` keeps its last version.
-- Exams: ADS 25 Nov, OR 27 Nov, DL 30 Nov 2026 (per README).
+- ADS was written 25 Nov and removed the same way; tag `ads-final` keeps its last version.
+- Exams: OR 27 Nov, DL 30 Nov 2026 (per README).
 
 ## Git
 - Branch: main. Remote: origin, github.com/anjalidmore/SEM7-SH2026

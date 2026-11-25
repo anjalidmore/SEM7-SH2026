@@ -40,7 +40,7 @@
   "use strict";
 
   /* ---------- the day ---------- */
-  var STUDY_START = "2026-11-21";                  /* NLP written 21 Nov; the plan starts that afternoon */
+  var STUDY_START = "2026-11-25";                  /* ADS written 25 Nov; the plan starts that afternoon */
   var UNIT = 0.5;                                    /* hours; every plan quantity is a multiple */
   var DAY = [
     { key:"am",  label:"Morning",   from:"08:30", to:"11:30", h:3 },
@@ -52,7 +52,7 @@
     { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 }
   ];
   var DAY_OF = {                                     /* a day with its own blocks */
-    "2026-11-21": [ { key:"pm",  label:"Afternoon", from:"14:30", to:"17:00", h:2.5 },
+    "2026-11-25": [ { key:"pm",  label:"Afternoon", from:"14:30", to:"17:00", h:2.5 },
                     { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 } ]
   };
   var LAST_LOOK = { key:"last", label:"Before the paper", from:"08:30", to:"09:30", h:1 };
@@ -60,60 +60,16 @@
   /* ---------- hand-written days ----------
      A day listed here is not generated: its slots are shown as written.
      keep: generated blocks of that day to keep (by key), the rest are dropped.
-     Item: { code, k (module key, links the chip; omit for whole-paper work), h, title, tag, text }.
-     ADS 23-25 Nov: from the lecturer's call of 23 Nov. Ch1, Ch2 and Ch6 diagrams
-     memorised, theory read once, sums practised; MLIR (multiple regression, M4)
-     optional, central tendency as its fallback; self-study questions may be skipped. */
-  var FIXED = {
-    "2026-11-23": { keep:[], slots:[
-      { label:"Evening", from:"18:00", to:"20:15", items:[
-        { code:"ads", k:"ads2", h:2.25, tag:"Sums", title:"Ch2 sums: the MLIR fallback",
-          text:"Mean, median, mode (grouped data) · SD and variance · quartiles · Pearson and Bowley skewness · kurtosis · correlation" } ] },
-      { label:"Night", from:"21:00", to:"23:30", items:[
-        { code:"ads", k:"ads1", h:1, tag:"Theory + diagrams", title:"Ch1: read once, draw twice",
-          text:"Data science process · hold-out, k-fold, bootstrap · data preparation" },
-        { code:"ads", k:"ads2", h:1, tag:"Theory + diagrams", title:"Ch2 theory and diagrams",
-          text:"Box plot · histogram · skewness shapes · kurtosis curves · correlation scatter plots" },
-        { code:"ads", k:"ads1", h:0.5, tag:"Recall", title:"Redraw Ch1 and Ch2 diagrams",
-          text:"Blank paper, notes closed. Sleep by 12:15." } ] }
-    ]},
-    "2026-11-24": { keep:[], slots:[
-      { label:"Morning", from:"08:00", to:"12:45", items:[
-        { code:"ads", k:"ads2", h:0.33, tag:"Recall", title:"Redraw last night’s diagrams",
-          text:"From memory, then check." },
-        { code:"ads", k:"ads3", h:2.17, tag:"Sums", title:"Ch3 sums",
-          text:"z-test · t-tests (one-sample, two-sample, paired) · confidence intervals · one-way ANOVA · Type I/II errors as theory" },
-        { code:"ads", k:"ads6", h:2, tag:"Diagrams + sums", title:"Ch6: diagrams first, then sums",
-          text:"Trend, seasonal, cyclic, irregular · additive vs multiplicative · moving average · exponential smoothing · MAE, RMSE, MAPE" } ] },
-      { label:"Afternoon", from:"13:45", to:"18:00", items:[
-        { code:"ads", k:"ads5", h:1.75, tag:"Sums", title:"Ch5 sums",
-          text:"IQR fences · 3-sigma · LOF with Manhattan distance · distance vs density as theory" },
-        { code:"ads", k:"ads4", h:1.5, tag:"Sums", title:"Ch4: simple regression, MLIR capped at 30 min",
-          text:"Least squares and error metrics are a must. MLIR: 30 min max; if the formulas don’t stick, drop it" },
-        { code:"ads", k:"ads2", h:0.75, tag:"Sums", title:"Ch2 sums, second round",
-          text:"Grouped median and mode · Bowley skewness" } ] },
-      { label:"Evening", from:"19:00", to:"22:45", items:[
-        { code:"ads", h:2, tag:"Mock", title:"Timed mock paper, 2 h",
-          text:"Q1 in 15 min · each 5-mark part in 10 min · the 10-mark question in 10–15 min · 30 min buffer. Attempt every option." },
-        { code:"ads", h:1, tag:"Revise", title:"Fix the mock mistakes",
-          text:"Redo every wrong or slow answer." },
-        { code:"ads", k:"ads6", h:0.75, tag:"Recall", title:"Formula sheet + redraw Ch1, Ch2, Ch6",
-          text:"One page of formulas. Sleep by 11:15." } ] }
-    ]},
-    "2026-11-25": { keep:["pm", "eve"], slots:[
-      { label:"Before the paper", from:"06:30", to:"08:30", items:[
-        { code:"ads", h:2, tag:"Last look", title:"Diagrams, one sum of each type, formula sheet",
-          text:"Redraw diagrams blank · one sum each: central tendency, skewness, t-test, moving average, IQR/LOF. Skip self-study questions in the paper; if MLIR comes, take the other option. Stop at 8:30." } ] }
-    ]}
-  };
-  var MOCK_H = { ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
+     Item: { code, k (module key, links the chip; omit for whole-paper work), h, title, tag, text }. */
+  var FIXED = {};
+  var MOCK_H = { or:2, dl:2.5 };  /* timed paper + fixing it */
   var POST_SHARE = 0.80;                             /* MSE modules carry 10 of 50 marks (you); syllabus range is 20-30% */
   var DIFF_K = { 1:0.22, 2:0.28, 3:0.34, 4:0.40, 5:0.46 };   /* study hours per lecture hour: a fast learner */
   var REFRESH = 0.4;                                 /* an MSE module is a refresh */
   var SPLIT = { core:0.55, deepen:0.20, revise:0.25 };
   var ONLY_FROM = { dl:"2026-11-28" };   /* a subject studied only from this day (DL: the two days before it) */
   var LEND_CAP = 0.20;
-  var ORDER = {};                                   /* fixed study order per subject, e.g. { ads:[4,5,6,1,2,3] } */
+  var ORDER = {};                                   /* fixed study order per subject, e.g. { or:[4,5,6,1,2,3] } */
 
   /* ---------- the evidence ----------
      hrs   syllabus contact hours (low, high)
@@ -124,26 +80,6 @@
      sig   [factor, why]
      first what to do first, most weighted first */
   var M = {
-    ads: [
-      { n:1, hrs:[4,4],   los:4, d:1, pre:true,  needs:[],
-        sig:[],
-        first:["Data science process","Validation: hold-out, k-fold, bootstrap","Data preparation"] },
-      { n:2, hrs:[12,12], los:6, d:3, pre:true,  needs:[],
-        sig:[[1.10,"CIA 2 was worked from this module"]],
-        first:["Mean, median, mode and spread numericals","Skewness (Pearson, Bowley) and kurtosis","Correlation","Box plot and histogram reading"] },
-      { n:3, hrs:[6,6],   los:4, d:3, pre:false, needs:[2],
-        sig:[],
-        first:["t-tests","ANOVA one-way and two-way","z-test and confidence intervals","Normal and Poisson probabilities","Type I and II errors"] },
-      { n:4, hrs:[10,10], los:6, d:4, pre:false, needs:[2,3],
-        sig:[],
-        first:["Simple regression by least squares","Multiple regression and partial coefficients","R-squared, adjusted R-squared, F-test, t-test of coefficients","MAE, MSE, RMSE, MAPE"] },
-      { n:5, hrs:[6,6],   los:8, d:3, pre:false, needs:[2],
-        sig:[],
-        first:["Local Outlier Factor with Manhattan distance","3-sigma and IQR fences","Distance vs density based detection","SMOTE"] },
-      { n:6, hrs:[5,5],   los:6, d:3, pre:false, needs:[4],
-        sig:[],
-        first:["Additive and multiplicative decomposition","Moving average and exponential smoothing","MAE, RMSE, MAPE, MASE","Components and ARIMA in outline"] }
-    ],
     or: [
       { n:1, hrs:[15,17], los:0, d:3, pre:true,  needs:[],
         sig:[[1.10,"Past internal paper and the important-questions list are on LP, transportation and games"]],

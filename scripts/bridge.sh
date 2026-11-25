@@ -7,7 +7,7 @@
 # Adds the attach line if it is missing; reports anything else that is missing.
 #
 #   scripts/bridge.sh                          check every subject
-#   scripts/bridge.sh ads or                   only these subjects
+#   scripts/bridge.sh or dl                    only these subjects
 #   scripts/bridge.sh --from <file> <code> --force
 #                                              overwrite a subject with a copy from elsewhere
 #
@@ -28,7 +28,7 @@ if [[ "${1:-}" == "--from" ]]; then
   [[ -s "$from" ]] && grep -qi '</body>' "$from" || { echo "$from is empty or not a site; nothing copied" >&2; exit 1; }
 fi
 codes=("$@")
-[[ ${#codes[@]} -gt 0 ]] || codes=(ads or dl)
+[[ ${#codes[@]} -gt 0 ]] || codes=(or dl)
 
 status=0
 for code in "${codes[@]}"; do
