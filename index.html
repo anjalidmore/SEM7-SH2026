@@ -410,6 +410,12 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
       return '<li class="it acc"' + accStyle(s) + '><a class="chip acc" ' + accStyle(s) + ' href="' + S.subjectHref(s) + '">' + I(it.code) + esc(s.short) + '</a><div class="tx"><b>Recall quiz</b><span class="h">' + hrs(it.h) + '</span>' +
         '<div class="fs">Notes closed. Write what you remember of ' + esc(ms || "today") + ', then check.</div></div></li>';
     }
+    if(it.kind === "task"){
+      var tm = it.h < 1 ? Math.round(it.h * 60) + " min" : (Math.round(it.h * 4) / 4) + "h";
+      return '<li class="it acc"' + accStyle(s) + '>' + (m ? mchip(it.code, m.n) : '<a class="chip acc" ' + accStyle(s) + ' href="' + S.subjectHref(s) + '">' + I(it.code) + esc(s.short) + '</a>') +
+        '<div class="tx"><b>' + esc(it.title) + '</b><span class="kd k-learn">' + esc(it.tag) + '</span><span class="h">' + tm + '</span>' +
+        '<div class="fs">' + esc(it.text) + '</div></div></li>';
+    }
     var kind = it.kind, label = KIND[kind] || kind;
     if(kind !== "revise") label += it.depth === "core" ? " &middot; Core pass" : "";
     var first = kind === "revise" ? m.first.slice(0, 3) : m.first.slice(0, it.depth === "core" ? 3 : 5);
@@ -424,12 +430,12 @@ footer{margin-top:32px; font-size:.8rem; color:var(--ink-mute)}
     var seen = {}, chips = "";
     d.slots.forEach(function(sl){ sl.items.forEach(function(it){
       var id = it.kind === "last" ? "last" + it.code : it.k || ("x" + it.code);
-      if(seen[id] || it.kind === "recall" || it.kind === "mock") return;
+      if(seen[id] || it.kind === "recall" || it.kind === "mock" || (it.kind === "task" && !it.k)) return;
       seen[id] = 1;
       chips += it.kind === "last" ? '<a class="chip paper acc" ' + accStyle(S.byCode(it.code)) + ' href="' + S.subjectHref(S.byCode(it.code)) + '">' + I("paper") + esc(S.byCode(it.code).short) + ' paper</a>'
         : mchip(it.code, PLAN_CACHE.mods[it.k].n);
     }); });
-    if(!chips) d.slots.forEach(function(sl){ sl.items.forEach(function(it){ if(!seen[it.code]){ seen[it.code] = 1; chips += chip(S.byCode(it.code), {}, "", esc(S.byCode(it.code).short) + ' ' + KIND[it.kind].toLowerCase()); } }); });
+    if(!chips) d.slots.forEach(function(sl){ sl.items.forEach(function(it){ if(!seen[it.code]){ seen[it.code] = 1; chips += chip(S.byCode(it.code), {}, "", esc(S.byCode(it.code).short) + ' ' + (KIND[it.kind] || "study").toLowerCase()); } }); });
     var open = state && state.hasOwnProperty(d.ymd) ? state[d.ymd] : (isNow || (diff > 0 && S.dayDiff(now, S.studyStart()) > 0 && d.ymd === PLAN_CACHE.days[0].ymd));
     var examTag = d.exam ? '<span class="kd k-learn acc" ' + accStyle(S.byCode(d.exam)) + '>' + esc(S.byCode(d.exam).short) + ' paper ' + esc(S.EXAM.start) + '</span>' : '';
     return '<details class="dc' + (isNow ? ' now' : '') + (past ? ' past' : '') + '" data-d="' + d.ymd + '"' + (open ? ' open' : '') + '>' +

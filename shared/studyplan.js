@@ -56,6 +56,56 @@
                     { key:"eve", label:"Evening",   from:"18:30", to:"21:00", h:2.5 } ]
   };
   var LAST_LOOK = { key:"last", label:"Before the paper", from:"08:30", to:"09:30", h:1 };
+
+  /* ---------- hand-written days ----------
+     A day listed here is not generated: its slots are shown as written.
+     keep: generated blocks of that day to keep (by key), the rest are dropped.
+     Item: { code, k (module key, links the chip; omit for whole-paper work), h, title, tag, text }.
+     ADS 23-25 Nov: from the lecturer's call of 23 Nov. Ch1, Ch2 and Ch6 diagrams
+     memorised, theory read once, sums practised; MLIR (multiple regression, M4)
+     optional, central tendency as its fallback; self-study questions may be skipped. */
+  var FIXED = {
+    "2026-11-23": { keep:[], slots:[
+      { label:"Evening", from:"18:00", to:"20:15", items:[
+        { code:"ads", k:"ads2", h:2.25, tag:"Sums", title:"Ch2 sums: the MLIR fallback",
+          text:"Mean, median, mode (grouped data) · SD and variance · quartiles · Pearson and Bowley skewness · kurtosis · correlation" } ] },
+      { label:"Night", from:"21:00", to:"23:30", items:[
+        { code:"ads", k:"ads1", h:1, tag:"Theory + diagrams", title:"Ch1: read once, draw twice",
+          text:"Data science process · hold-out, k-fold, bootstrap · data preparation" },
+        { code:"ads", k:"ads2", h:1, tag:"Theory + diagrams", title:"Ch2 theory and diagrams",
+          text:"Box plot · histogram · skewness shapes · kurtosis curves · correlation scatter plots" },
+        { code:"ads", k:"ads1", h:0.5, tag:"Recall", title:"Redraw Ch1 and Ch2 diagrams",
+          text:"Blank paper, notes closed. Sleep by 12:15." } ] }
+    ]},
+    "2026-11-24": { keep:[], slots:[
+      { label:"Morning", from:"08:00", to:"12:45", items:[
+        { code:"ads", k:"ads2", h:0.33, tag:"Recall", title:"Redraw last night’s diagrams",
+          text:"From memory, then check." },
+        { code:"ads", k:"ads3", h:2.17, tag:"Sums", title:"Ch3 sums",
+          text:"z-test · t-tests (one-sample, two-sample, paired) · confidence intervals · one-way ANOVA · Type I/II errors as theory" },
+        { code:"ads", k:"ads6", h:2, tag:"Diagrams + sums", title:"Ch6: diagrams first, then sums",
+          text:"Trend, seasonal, cyclic, irregular · additive vs multiplicative · moving average · exponential smoothing · MAE, RMSE, MAPE" } ] },
+      { label:"Afternoon", from:"13:45", to:"18:00", items:[
+        { code:"ads", k:"ads5", h:1.75, tag:"Sums", title:"Ch5 sums",
+          text:"IQR fences · 3-sigma · LOF with Manhattan distance · distance vs density as theory" },
+        { code:"ads", k:"ads4", h:1.5, tag:"Sums", title:"Ch4: simple regression, MLIR capped at 30 min",
+          text:"Least squares and error metrics are a must. MLIR: 30 min max; if the formulas don’t stick, drop it" },
+        { code:"ads", k:"ads2", h:0.75, tag:"Sums", title:"Ch2 sums, second round",
+          text:"Grouped median and mode · Bowley skewness" } ] },
+      { label:"Evening", from:"19:00", to:"22:45", items:[
+        { code:"ads", h:2, tag:"Mock", title:"Timed mock paper, 2 h",
+          text:"Q1 in 15 min · each 5-mark part in 10 min · the 10-mark question in 10–15 min · 30 min buffer. Attempt every option." },
+        { code:"ads", h:1, tag:"Revise", title:"Fix the mock mistakes",
+          text:"Redo every wrong or slow answer." },
+        { code:"ads", k:"ads6", h:0.75, tag:"Recall", title:"Formula sheet + redraw Ch1, Ch2, Ch6",
+          text:"One page of formulas. Sleep by 11:15." } ] }
+    ]},
+    "2026-11-25": { keep:["pm", "eve"], slots:[
+      { label:"Before the paper", from:"06:30", to:"08:30", items:[
+        { code:"ads", h:2, tag:"Last look", title:"Diagrams, one sum of each type, formula sheet",
+          text:"Redraw diagrams blank · one sum each: central tendency, skewness, t-test, moving average, IQR/LOF. Skip self-study questions in the paper; if MLIR comes, take the other option. Stop at 8:30." } ] }
+    ]}
+  };
   var MOCK_H = { ads:3, or:2, dl:2.5 };  /* timed paper + fixing it */
   var POST_SHARE = 0.80;                             /* MSE modules carry 10 of 50 marks (you); syllabus range is 20-30% */
   var DIFF_K = { 1:0.22, 2:0.28, 3:0.34, 4:0.40, 5:0.46 };   /* study hours per lecture hour: a fast learner */
@@ -399,6 +449,17 @@
       out.items = merged;
       if(out.items.length) day.slots.push(out);
     }
+    /* hand-written days replace what was generated for them */
+    days.forEach(function(d){
+      var f = FIXED[d.ymd];
+      if(!f) return;
+      var kept = d.slots.filter(function(s){ return f.keep.indexOf(s.key) >= 0; });
+      d.slots = f.slots.map(function(s){
+        var items = s.items.map(function(it){ var o = {}; for(var p in it) o[p] = it[p]; o.kind = "task"; return o; });
+        return { key:"fixed", label:s.label, from:s.from, to:s.to, items:items,
+                 hours:items.reduce(function(a, it){ return a + it.h; }, 0) };
+      }).concat(kept);
+    });
     days.forEach(function(d){
       var main = {};
       d.slots.forEach(function(s){ s.items.forEach(function(it){ if(it.kind !== "last" && it.kind !== "recall") main[it.code] = (main[it.code] || 0) + it.h; }); });
@@ -420,6 +481,6 @@
   }
 
   root.SEM7_PLAN = { build:build, weigh:weigh, M:M, STUDY_START:STUDY_START, DAY:DAY, MOCK_H:MOCK_H, POST_SHARE:POST_SHARE,
-                     SPLIT:SPLIT, KIND:{ learn:"Learn", refresh:"Refresh", revise:"Revise + practise", recall:"Recall", mock:"Mock paper", last:"Last look" } };
+                     SPLIT:SPLIT, KIND:{ learn:"Learn", refresh:"Refresh", revise:"Revise + practise", recall:"Recall", mock:"Mock paper", last:"Last look", task:"Study" } };
   if(typeof module !== "undefined" && module.exports) module.exports = root.SEM7_PLAN;
 })(typeof window !== "undefined" ? window : this);

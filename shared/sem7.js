@@ -924,8 +924,8 @@
   function isOpen(key){ return !!OPEN[pid(key)]; }
 
   /* "Analyse the result": what to write after a numerical answer (exam marks interpretation) */
-  function analysisBox(a){
-    return '<div class="box exam s7-analysis"><h5>Analyse the result</h5>' + (/^\s*</.test(a) ? a : "<p>" + a + "</p>") + "</div>";
+  function analysisBox(a, title){
+    return '<div class="box exam s7-analysis"><h5>' + (title || "Analyse the result") + "</h5>" + (/^\s*</.test(a) ? a : "<p>" + a + "</p>") + "</div>";
   }
   /* a linked topic card opens as a whole: forward a click anywhere on it to its title button */
   document.addEventListener("click", function(ev){
@@ -948,7 +948,7 @@
       panel(k, (pre ? '<div class="s7-minis">' + pre + "</div>" : "") +
         (e.body || "") + steps +
         (e.answer ? '<div class="box tip"><h5>Answer</h5>' + (/^\s*</.test(e.answer) ? e.answer : "<p>" + e.answer + "</p>") + "</div>" : "") +
-        (e.analysis ? analysisBox(e.analysis) : "") +
+        (e.analysis ? analysisBox(e.analysis, e.analysisTitle) : "") +
         (e.why ? '<div class="box neutral"><h5>Why it works</h5><p>' + e.why + "</p></div>" : "") +
         (e.trap ? '<div class="box mistake"><h5>Watch out</h5><p>' + e.trap + "</p></div>" : "")) +
       "</article>";
@@ -962,7 +962,7 @@
       '<div class="s7-q">' + p.q + "</div>" +
       '<div class="btnrow">' + toggleBtn(k, "Show solution", true) + (p.hint ? toggleBtn(kh, "Hint") : "") + markBtn(mark) + "</div>" +
       (p.hint ? panel(kh, '<p class="s7-hint">' + icon("zap") + "<span>" + p.hint + "</span></p>") : "") +
-      panel(k, (/^\s*</.test(p.a || "") ? p.a : rich(p.a)) + (p.analysis ? analysisBox(p.analysis) : "")) + "</article>";
+      panel(k, (/^\s*</.test(p.a || "") ? p.a : rich(p.a)) + (p.analysis ? analysisBox(p.analysis, p.analysisTitle) : "")) + "</article>";
   }
 
   /* o: {head (for UI.head), key:{t, b}, concept, can:[...], extra, answer:[{label, marks, body}],

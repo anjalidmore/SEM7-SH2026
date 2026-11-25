@@ -4,12 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Applied Data Science · Semester 7</title>
-<meta name="description" content="Mid-Semester Exam preparation for CEPEC7041 Applied Data Science. Modules 1–2, 30 marks, 1.5 hours. Built from the official syllabus, both COMP A and COMP B lecture decks, the class notes, the formula sheet and CIA-2. Progress saved locally in your browser.">
+<meta name="description" content="End Semester exam preparation for CEPEC7041 Applied Data Science. Modules 1–6, split into small subtopics; numericals with inference first. Built from the official syllabus, both COMP A and COMP B lecture decks, the class notes, the formula sheet and CIA-2. Progress saved locally in your browser.">
 <link rel="stylesheet" href="../../shared/sem7.css">
 <script src="../../shared/sem7.js"></script>
 <script src="../../shared/syllabus.js"></script>
+<script src="sub-m12.js"></script>
+<script src="sub-m34.js"></script>
+<script src="sub-m56.js"></script>
 <style>
 /* ADS only. Everything shared is in ../../shared/sem7.css */
+.ads-group{margin:0 0 22px}
+.ads-group-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:18px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.ads-group-h h3{margin:0;font-size:1.02rem;flex:1 1 220px}
+.ads-group-n{font-size:.8rem;color:var(--muted)}
+.ads-group .s7-tcard{margin-left:12px}
+@media (max-width:560px){ .ads-group .s7-tcard{margin-left:0} }
+.ads-track-note{margin-top:.2rem}
+.ads-sublist ol{margin:.3rem 0 0;padding-left:1.3rem}
+.ads-sublist li{margin:.25rem 0}
+.ads-sublink{background:none;border:0;padding:0;font:inherit;font-weight:650;color:var(--accent);cursor:pointer;text-align:left}
+.ads-sublink:hover{text-decoration:underline}
+.ads-foot{margin-top:18px}
 .reveal-row{display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; align-items:center}
 .hidden-body{display:none; padding-top:11px; border-top:1px solid var(--border); margin-top:11px}
 .hidden-body.show{display:block}
@@ -79,20 +94,13 @@ const EXAM = {
   code: "CEPEC7041",
   title: "Applied Data Science",
   primaryClass: "COMP B",
-  marks: 30,
-  duration: "1.5 hours",
-  scope: "Module 1 and Module 2 — all topics",
-  weighting: "The official scheme states the MSE is based on 40%–50% of the syllabus. Modules 1 and 2 are 4 + 12 = 16 of the 45 contact hours, and Module 2 alone is the single largest module in the course.",
-  scopeNote: "The MSE syllabus sheet says it explicitly: “Note that both Module 1 and Module 2 — All topics listed above are included in the MSE.” There is no reduced list to hide behind.",
-  focus: [
-    "Concepts &amp; definitions",
-    "Numerical problems",
-    "Interpretation of statistical measures",
-    "Graphs and data visualizations",
-    "Differences / comparisons between concepts",
-    "Practical examples and applications"
-  ],
-  focusNote: "This six-item “Focus on” list is printed on the MSE syllabus sheet itself. It is the closest thing you have to a marking scheme, and it is why this site is built around <em>interpretation</em> and <em>comparison</em>, not just calculation. Notice that four of the six are not calculation at all."
+  paper: "End Semester",
+  marks: 50,
+  duration: "2 hours",
+  scope: "Modules 1–6",
+  /* weighting as told by the class (21 Nov 2026), not an official pattern */
+  split: {numerical:"about 80%", theory:"15–20%"},
+  splitNote: "Mostly numericals, and each numerical is marked with its inference: what the result means. Theory is about 15–20% of the paper. Two-way ANOVA is asked only as a comparison with one-way (no numerical); ARIMA is theory only."
 };
 
 const MODULES = [
@@ -4555,25 +4563,25 @@ t = (30 − 28)/√(5.967 + 4.773) = 0.61  &lt;  t(25) = 2.06</div>
 });
 
 TOPICS.push({
- id:"m3t7", m:"m3", title:"ANOVA: One-Way and Two-Way",
+ id:"m3t7", m:"m3", title:"ANOVA: One-Way (numerical) and Two-Way (comparison only)",
  classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 3.2","LO 3.3","LO 3.4"],
  src:"COMP B M3 deck slides 41–57 (wheat varieties, seeds × fertilizers)",
  summary:"Compare three or more means at once with F = MS between / MS within. Build the ANOVA table.",
  whatIs:`<p><b>Analysis of variance (ANOVA)</b> tests whether two or more population means differ. Running many t-tests inflates the Type I error rate; ANOVA compares all means in one test. It makes two estimates of the population variance — <b>between</b> samples and <b>within</b> samples — and compares them with the <b>F-ratio</b>.</p>
-<p><b>One-way</b> ANOVA has one factor (wheat variety). <b>Two-way</b> ANOVA has two factors at once (seed variety in columns, fertilizer in rows).</p>`,
+<p><b>One-way</b> ANOVA has one factor (wheat variety). <b>Two-way</b> ANOVA has two factors at once (seed variety in columns, fertilizer in rows); for this paper learn two-way only as a comparison with one-way, with no numerical.</p>`,
  needToKnow:[
   "Why ANOVA instead of repeated t-tests.",
   "One-way: SS between = Σ nⱼ(X̄ⱼ − X̿)², SS within = Σ Σ(X − X̄ⱼ)², SS total = SS between + SS within.",
   "df: between k − 1, within n − k, total n − 1. MS = SS/df. F = MS between / MS within.",
-  "Two-way (one value per cell): correction factor T²/n; SS columns = Σ Tⱼ²/nⱼ − T²/n; SS rows = Σ Tᵢ²/nᵢ − T²/n; SS residual = total − columns − rows; df residual = (c − 1)(r − 1).",
+  "Two-way ANOVA (comparison only, no numerical): two factors, variation split into columns + rows + residual, two F-ratios.",
   "Decision: F &lt; table F → accept H₀ (no significant difference); F ≥ table F → reject."],
  recognition:{
   clues:["<b>Three or more groups</b> and “are the differences significant?” → ANOVA.",
    "<b>One classifying factor</b> (varieties, machines, methods) → one-way.",
-   "<b>A grid with two factors</b> (seeds × fertilizers, workers × machines) → two-way."],
+   "<b>A grid with two factors</b> (seeds × fertilizers) → two-way: compare it with one-way in words, no table to compute."],
   wording:["Set up an analysis of variance table for the per-acre production of three wheat varieties on 4 plots each.",
-   "Set up a two-way ANOVA table for the yields of seed varieties A, B, C under fertilizers W, X, Y, Z."],
-  firstStep:"Count k (groups) and n (total observations); for two-way, c (columns) and r (rows). Write the df column first.",
+   "Distinguish one-way and two-way ANOVA."],
+  firstStep:"Count k (groups) and n (total observations). Write the df column first.",
   method:"Group means / totals → SS → df → MS → F → compare with F(df₁, df₂) → conclusion. Present it as the ANOVA table.",
   trap:"Putting the df in the wrong order in F(v₁, v₂): v₁ is the numerator (between) df."},
  concept:`<h4>One-way ANOVA table</h4>
@@ -4581,17 +4589,16 @@ TOPICS.push({
 <tr><td>Between samples</td><td>Σ nⱼ(X̄ⱼ − X̿)²</td><td>k − 1</td><td>SS/(k − 1)</td><td>MS between / MS within</td></tr>
 <tr><td>Within samples</td><td>Σ Σ (X − X̄ⱼ)²</td><td>n − k</td><td>SS/(n − k)</td><td></td></tr>
 <tr><td>Total</td><td>Σ (X − X̿)²</td><td>n − 1</td><td></td><td></td></tr></tbody></table></div>
-<h4>Two-way ANOVA table (one observation per cell)</h4>
-<div class="scroll"><table class="t"><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody>
-<tr><td>Between columns</td><td>Σ Tⱼ²/nⱼ − T²/n</td><td>c − 1</td><td>SS/(c − 1)</td><td>MS columns / MS residual</td></tr>
-<tr><td>Between rows</td><td>Σ Tᵢ²/nᵢ − T²/n</td><td>r − 1</td><td>SS/(r − 1)</td><td>MS rows / MS residual</td></tr>
-<tr><td>Residual</td><td>Total − (columns + rows)</td><td>(c − 1)(r − 1)</td><td>SS/df</td><td></td></tr>
-<tr><td>Total</td><td>Σ X² − T²/n</td><td>cr − 1</td><td></td><td></td></tr></tbody></table></div>
+<h4>One-way vs two-way (comparison only)</h4>
+<div class="scroll"><table class="t"><thead><tr><th></th><th>One-way</th><th>Two-way</th></tr></thead><tbody>
+<tr><td>Factors</td><td>One</td><td>Two (columns × rows)</td></tr>
+<tr><td>Variation split into</td><td>Between + within</td><td>Columns + rows + residual</td></tr>
+<tr><td>F-ratios</td><td>One</td><td>Two, one per factor</td></tr></tbody></table></div>
 <div class="box neutral"><h5>Slips in the deck</h5><p style="margin:0">Step 5 of the one-way procedure is labelled “SS between” but defines <b>SS within</b>, and writes every group's deviations from X̄₁; each group uses its <b>own</b> mean X̄ⱼ. The X̿ = mean of sample means shortcut is exact only when the groups are equal in size; otherwise use the grand mean of all observations.</p></div>`,
  examAnswer:{
   short:"Define ANOVA and the F-ratio.",
   medium:"The full ANOVA table for the given data with the conclusion.",
-  long:"Principle (two variance estimates), why not many t-tests, the steps, the table, and the conclusion; for two-way, both F-ratios with their conclusions."},
+  long:"Principle (two variance estimates), why not many t-tests, the steps, the one-way table, and the conclusion; two-way only as a comparison."},
  mistakes:[
   "Forgetting to multiply by nⱼ in SS between.",
   "Using n − 1 for the within df (it is n − k).",
@@ -4616,27 +4623,7 @@ TOPICS.push({
 <tr><td>Total</td><td>32</td><td>11</td><td></td><td></td><td></td></tr></tbody></table></div>
 <div class="answer">F = 1.5 &lt; 4.26 — the variety differences are not significant; they could have arisen by chance.</div>`,
    why:"If the varieties were really different, the between-sample variance would be large relative to the natural plot-to-plot variance within each variety.",
-   trap:"SS between = (6−5)² + (5−5)² + (4−5)² = 2, forgetting the factor 4."},
-  {id:"ex_m3t7_2", topic:"m3t7", title:"Two-way ANOVA: seeds × fertilizers",
-   category:"Two-way ANOVA",
-   recog:"A grid: seed varieties in columns, fertilizers in rows, one value per cell.",
-   need:"T, correction factor, column and row totals, residual by subtraction.",
-   q:"Per-acre production (tonnes). Columns are seed varieties A, B, C; rows are fertilizers W, X, Y, Z. W: 6, 5, 5. X: 7, 5, 4. Y: 3, 3, 3. Z: 8, 7, 4. Set up the ANOVA table and test both factors at 5%.",
-   steps:[
-    "T = 60, n = 12, correction factor T²/n = 3600/12 = <b>300</b>.",
-    "Total SS = ΣX² − 300 = 332 − 300 = <b>32</b>.",
-    "Column totals A = 24, B = 20, C = 16: SS columns = (576 + 400 + 256)/4 − 300 = 308 − 300 = <b>8</b>.",
-    "Row totals W = 16, X = 16, Y = 9, Z = 19: SS rows = (256 + 256 + 81 + 361)/3 − 300 = 318 − 300 = <b>18</b>.",
-    "SS residual = 32 − (8 + 18) = <b>6</b>, df = (3 − 1)(4 − 1) = 6, MS = 1.",
-    "F seeds = 4/1 = 4 &lt; F(2, 6) = 5.14 → not significant. F fertilizers = 6/1 = 6 &gt; F(3, 6) = 4.76 → significant."],
-   answer:`<div class="scroll"><table class="t num"><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>5% table F</th></tr></thead><tbody>
-<tr><td>Between columns (seeds)</td><td>8</td><td>2</td><td>4</td><td>4</td><td>F(2, 6) = 5.14</td></tr>
-<tr><td>Between rows (fertilizers)</td><td>18</td><td>3</td><td>6</td><td>6</td><td>F(3, 6) = 4.76</td></tr>
-<tr><td>Residual</td><td>6</td><td>6</td><td>1</td><td></td><td></td></tr>
-<tr><td>Total</td><td>32</td><td>11</td><td></td><td></td><td></td></tr></tbody></table></div>
-<div class="answer">Seed differences are <b>not significant</b>; fertilizer differences <b>are significant</b> at 5%.</div>`,
-   why:"Taking the fertilizer variation out of the residual leaves a much smaller error term (MS = 1 instead of 2.67), which is why two-way ANOVA can detect effects that one-way misses.",
-   trap:"Dividing row totals by 4 instead of by the number of values in each row (3)."}],
+   trap:"SS between = (6−5)² + (5−5)² + (4−5)² = 2, forgetting the factor 4."}],
  practice:[
   {id:"p_m3t7_1", d:"standard", marks:10, q:"Three teaching methods were tried on 3 students each. Scores — Method 1: 4, 5, 6; Method 2: 6, 7, 8; Method 3: 8, 9, 10. Test at 5% whether the methods differ. (F(2, 6) = 5.14)",
    hint:"Means 5, 7, 9; grand mean 7.",
@@ -4649,7 +4636,7 @@ TOPICS.push({
 Comparing k groups with t-tests needs k(k − 1)/2 tests, and each carries a risk α of a Type I error, so the overall chance of a false “significant” result grows. ANOVA tests all the means in <b>one</b> test at level α.`}],
  questions:[
   {q:"Set up a one-way ANOVA table for the given data and state whether the differences are significant.", marks:10, d:"highvalue", priority:"high", source:"source"},
-  {q:"Set up a two-way ANOVA table and test both factors.", marks:10, d:"highvalue", priority:"high", source:"source"},
+  {q:"Distinguish one-way and two-way ANOVA.", marks:5, d:"basic", priority:"medium", source:"predicted"},
   {q:"Explain the principle of ANOVA.", marks:5, d:"basic", priority:"medium", source:"source"}]
 });
 
@@ -4973,7 +4960,7 @@ F = [(20 − 3 − 1) × 0.80] / [3 × 0.20] = 12.8 / 0.6 = 21.33</div>
 TOPICS.push({
  id:"m5t1", m:"m5", title:"Outliers, Causes of Outliers &amp; Detection Techniques",
  classification:"bonly", priority:"high", core:true, type:"theory", marks:5, los:["LO 5.1","LO 5.5"],
- src:"Textbook: Kotu &amp; Deshpande, Data Science Concepts and Practice, Ch. 13.1 (no COMP B deck for 5.1–5.5 yet)",
+ src:"COMP B Module 5 deck (causes, types, method tree; received 21 Nov) · textbook Kotu &amp; Deshpande Ch. 13.1",
  summary:"What an outlier is, the four causes, and the five families of detection technique.",
  whatIs:`<p>An <b>outlier</b> (anomaly) is a data object markedly different from the other objects in a dataset. It is always defined <b>in context</b>: a high income is an outlier in a middle-class neighbourhood but not among luxury-car owners. <b>Anomaly detection</b> is the process of finding them.</p>`,
  needToKnow:[
@@ -5003,7 +4990,7 @@ TOPICS.push({
 <tr><td>Density-based</td><td>Outliers sit in low-density regions (LOF handles varying density)</td></tr>
 <tr><td>Clustering</td><td>Outliers do not belong to any cluster, or form small far-away clusters</td></tr>
 <tr><td>Classification</td><td>Needs labelled data with an “outlier” class; outliers are rare, so oversample them</td></tr></tbody></table></div>
-<div class="box neutral"><h5>Gap in the material</h5><p style="margin:0">No COMP B slides for 5.1–5.5 or for <b>5.6 SMOTE</b> have been received. This topic follows the course textbook. SMOTE has no class slides either; it has its own page, written from the standard treatment.</p></div>`,
+<div class="box neutral"><h5>Sources</h5><p style="margin:0">The COMP B Module 5 deck arrived on 21 Nov. Its lists of causes and types are in the green box below; use them in the paper. The textbook's four causes above are kept as background.</p></div>`,
  examAnswer:{
   short:"Definition of an outlier with the context point.",
   medium:"Definition, the four causes with examples, and what to do with each.",
@@ -5039,7 +5026,7 @@ TOPICS.push({
 TOPICS.push({
  id:"m5t2", m:"m5", title:"Outlier Detection using Statistics: 3σ Rule and IQR Fences",
  classification:"bonly", priority:"medium", core:false, type:"problem-solving", marks:5, los:["LO 5.2"],
- src:"Textbook Ch. 13.1.2 (normal model, ±3σ) · formula sheet p.5 (box plot fences, Module 2)",
+ src:"COMP B Module 5 deck (z-score with n − 1, IQR, box plot) · formula sheet p.5 · textbook Ch. 13.1.2",
  summary:"Flag points with |z| > 3, or outside Q1 − 1.5 IQR and Q3 + 1.5 IQR.",
  whatIs:`<p>Statistical outlier detection builds a <b>distribution model</b> of the data and flags points that do not fit it. Two rules cover the exam: the <b>3σ rule</b> on the normal model, and the <b>IQR fences</b> of the box plot from Module 2.</p>`,
  needToKnow:[
@@ -5083,7 +5070,32 @@ Lower fence = Q1 − 1.5 × IQR       Upper fence = Q3 + 1.5 × IQR</div>
 z(45) = (45 − 16.18) / 9.27 = 3.11</div>
 <div class="answer">Both methods flag <b>45</b>. Note how 45 itself raised the mean to 16.18 and σ to 9.27. In a small sample no value can have |z| above √(n − 1), so with 10 or fewer values the 3σ rule can never fire, while the IQR fences still can.</div>`,
    why:"Quartiles depend on order, not size, so one extreme value cannot drag the fences toward itself.",
-   trap:"Computing the mean and σ without the suspect value and then claiming it as a z-rule result — state which you did."}],
+   trap:"Computing the mean and σ without the suspect value and then claiming it as a z-rule result — state which you did."},
+  {id:"ex_m5t2_2", topic:"m5t2", title:"COMP B deck: z-score on 30 days of sales (sample SD)",
+   category:"Z-score detection",
+   recog:"A list of values and “identify days that are anomalies”, no threshold given → z-score with ±3.",
+   need:"μ = Σx/n, σ = √[Σ(x − μ)²/(n − 1)], z = (x − μ)/σ, outlier if |z| &gt; 3.",
+   q:"Daily sales for 30 days: 100, 150, 120, 125, 140, 130, 110, 135, 130, 150, 140, 100, 95, 80, 120, 125, 130, 100, 140, 135, 130, 145, 110, 120, 130, 135, 140, 125, 130, 120. Use z-scores to find any anomalies.",
+   steps:[
+    "μ = Σx/n = 3740/30 = <b>124.67</b>.",
+    "Σ(x − μ)² = 8346.67, so σ = √(8346.67/29) = <b>16.97</b> (COMP B divides by n − 1).",
+    "Extremes: z(80) = (80 − 124.67)/16.97 = <b>−2.63</b>; z(150) = (150 − 124.67)/16.97 = <b>+1.49</b>.",
+    "All 30 z-scores lie between −3 and +3."],
+   answer:`<div class="answer">No outliers: every z lies in (−3, +3). The most unusual day is sales of 80 (z = −2.63).</div>`,
+   why:"Beyond ±3σ lies only 0.3% of normal data (empirical rule), so that is the cut-off.",
+   trap:"Dividing by n (σ = 16.68, z(80) = −2.68). The verdict does not change here, but write n − 1, as the COMP B deck does."},
+  {id:"ex_m5t2_3", topic:"m5t2", title:"COMP B deck: IQR fences with two outliers",
+   category:"IQR detection",
+   recog:"Small or skewed data with one or two extreme values → IQR fences.",
+   need:"Q1 = [(N + 1)/4]-th value, Q3 = [3(N + 1)/4]-th value, fences Q1 − 1.5·IQR and Q3 + 1.5·IQR.",
+   q:"Find the outliers in −50, −2, 8, 19, 29, 33, 34, 49, 50, 53, 59, 64, 87, 99, 1456 using the IQR method.",
+   steps:[
+    "Already sorted; N = 15.",
+    "Q1 = (16/4) = 4th value = <b>19</b>; Q3 = 3(16)/4 = 12th value = <b>64</b>; IQR = 45.",
+    "1.5 × IQR = 67.5. Lower fence 19 − 67.5 = <b>−48.5</b>; upper fence 64 + 67.5 = <b>131.5</b>."],
+   answer:`<div class="answer">Outliers: <b>−50</b> (below −48.5) and <b>1456</b> (above 131.5).</div>`,
+   why:"Quartiles ignore the extremes, so the fences are not dragged out by the outliers themselves.",
+   trap:"Missing −50: it is only 1.5 below the fence, but it is still outside."}],
  practice:[
   {id:"p_m5t2_1", d:"basic", marks:5, q:"Mean daily transactions are 200 with S.D. 15. Using the 3σ rule, which of 250, 160 and 245 are outliers?",
    a:`<div class="formula">z(250) = 50/15 = 3.33   → |z| &gt; 3, outlier
@@ -5098,7 +5110,7 @@ z(245) = 45/15 = 3.00  → on the threshold, not beyond it</div>
 TOPICS.push({
  id:"m5t3", m:"m5", title:"Distance-Based &amp; Density-Based Outlier Detection",
  classification:"bonly", priority:"high", core:true, type:"theory", marks:5, los:["LO 5.3","LO 5.5"],
- src:"Textbook Ch. 13.2–13.3 · LOF handout data reused for the k-distance example",
+ src:"COMP B Module 5 deck (kNN K = 3; DBSCAN ε = 1.9, minPts = 4) · textbook Ch. 13.2–13.3",
  summary:"Score each point by its distance to the k-th nearest neighbour, or by the density around it. Choice of k and normalisation matter.",
  whatIs:`<p><b>Distance-based</b> detection gives every point a score equal to its distance to its <b>k-th nearest neighbour</b>; outliers are far from other points, so they score highest. <b>Density-based</b> detection flags points in <b>low-density</b> regions: a point X is an outlier if at least a fraction <b>p</b> of all points lie more than distance <b>d</b> from X (Knorr &amp; Ng).</p>`,
  needToKnow:[
@@ -5146,7 +5158,34 @@ TOPICS.push({
     "k = 2 scores (2nd value): a 2, b 1, c 2, <b>d 3</b>."],
    answer:`<div class="answer">d is the top outlier for both k = 1 (score 3) and k = 2 (score 3).</div>`,
    why:"An isolated point is far even from its nearest neighbours, so any k-th distance is large.",
-   trap:"Including the point's distance to itself (0) as its first neighbour."}],
+   trap:"Including the point's distance to itself (0) as its first neighbour."},
+  {id:"ex_m5t3_2", topic:"m5t3", title:"COMP B deck: kNN anomaly score, K = 3, threshold 3",
+   category:"Distance-based (kNN)",
+   recog:"Points, a K and a threshold; “score = mean distance to the K nearest”.",
+   need:"Euclidean distance table, K nearest per point, score = (d1 + … + dK)/K, compare with the threshold.",
+   q:"P1(3,3), P2(4,3), P3(3,4), P4(4,4), P5(5,3), P6(5,4), P7(4,5), P8(9,9). Using K = 3, Euclidean distance and threshold 3, find the anomaly.",
+   steps:[
+    "Distance table, e.g. d(P1,P2) = 1, d(P1,P4) = √2 = 1.41, d(P8,P6) = √(16 + 25) = 6.40, d(P8,P4) = √50 = 7.07.",
+    "3 nearest: P1 → P2(1), P3(1), P4(1.41) · P2 → P1, P4, P5 (all 1) · P7 → P4(1), P3(1.41), P6(1.41) · P8 → P6(6.40), P7(6.40), P4(7.07).",
+    "Scores: P1 1.14 · P2 1 · P3 1.14 · P4 1 · P5 1.14 · P6 1.14 · P7 1.28 · <b>P8 6.63</b>.",
+    "Only P8 exceeds the threshold 3."],
+   answer:`<div class="answer"><b>P8 (9, 9)</b> is the anomaly (score 6.63 &gt; 3); P1–P7 score 1 to 1.28 and are normal.</div>`,
+   why:"A normal point has close neighbours, so its mean neighbour distance is small.",
+   trap:"Counting the point itself (distance 0) as one of its K neighbours."},
+  {id:"ex_m5t3_3", topic:"m5t3", title:"COMP B deck: DBSCAN with ε = 1.9, minPts = 4",
+   category:"Density-based (DBSCAN)",
+   recog:"“Apply DBSCAN”, with ε and minPoints given; asks for core, border, noise and clusters.",
+   need:"Distance table; neighbours within ε; core if (neighbours + itself) ≥ minPts; border if within ε of a core; else noise.",
+   q:"P1(3,7), P2(4,6), P3(5,5), P4(6,4), P5(7,3), P6(6,2), P7(7,2), P8(8,4), P9(3,3), P10(2,6), P11(3,5), P12(2,4). Apply DBSCAN with ε = 1.9 and minPts = 4 (Euclidean).",
+   steps:[
+    "Neighbours within 1.9: P1 {P2, P10} · P2 {P1, P3, P11} · P3 {P2, P4} · P4 {P3, P5} · P5 {P4, P6, P7, P8} · P6 {P5, P7} · P7 {P5, P6} · P8 {P5} · P9 {P12} · P10 {P1, P11} · P11 {P2, P10, P12} · P12 {P9, P11}.",
+    "Core (3 or more neighbours, plus itself = 4): <b>P2, P5, P11</b>.",
+    "Border (not core, within ε of a core): P1, P3, P10, P12 (via P2 or P11) and P4, P6, P7, P8 (via P5).",
+    "Noise: <b>P9</b>; its only neighbour P12 is not a core point.",
+    "P2 and P11 are core points 1.41 apart, so they are in the same cluster."],
+   answer:`<div class="answer">Core P2, P5, P11 · Noise (outlier) <b>P9</b> · Cluster 1 = {P1, P2, P3, P10, P11, P12} · Cluster 2 = {P4, P5, P6, P7, P8}.</div>`,
+   why:"Clusters grow through chains of core points; border points join but do not extend a cluster.",
+   trap:"The deck's last slide lists 3 clusters, with {P2, P1, P3, P11} and {P11, P2, P10, P12} as separate groups. They share core points P2 and P11, so they are one cluster: the answer is 2 clusters."}],
  practice:[
   {id:"p_m5t3_1", d:"basic", marks:5, q:"Compare distance-based and density-based outlier detection.",
    a:`<b>Distance-based:</b> each point's score is its distance to the k-th nearest neighbour; the largest scores are outliers. Parameter k: too small misses grouped outliers, too large flags small genuine clusters. Needs normalised attributes.<br>
@@ -5158,9 +5197,9 @@ TOPICS.push({
 });
 
 TOPICS.push({
- id:"m5t4", m:"m5", title:"Local Outlier Factor (LOF) with Manhattan Distance",
+ id:"m5t4", m:"m5", title:"Local Outlier Factor (LOF): Euclidean and Manhattan",
  classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:10, los:["LO 5.3","LO 5.4"],
- src:"COMP B handout “LOF using Manhattan distance” (8 slides) · textbook Ch. 13.4",
+ src:"COMP B Module 5 deck (1-D and Euclidean 2-D LOF) · COMP B handout (Manhattan LOF) · textbook Ch. 13.4",
  summary:"Four steps: k-distance and neighbourhood, reachability distance, lrd, LOF. LOF ≈ 1 normal, LOF > 1 outlier.",
  whatIs:`<p><b>LOF</b> is a density-based method that compares the density around a point with the density around its neighbours, so it works when different parts of the data have <b>different densities</b>. LOF ≈ 1 means the point is as dense as its neighbours (normal); LOF clearly above 1 means it is sparser than its neighbours (outlier).</p>`,
  needToKnow:[
@@ -5212,7 +5251,20 @@ LOF(p)           = [ Σ lrd(o) / |N_k(p)| ] / lrd(p)</div>
 <tr><td>d</td><td>a, c</td><td>3</td><td>3 + 3 = 6</td><td>0.333</td><td>0.667</td><td><b>2.00</b></td></tr></tbody></table></div>
 <div class="answer">d is the outlier (LOF 2.00, about twice as sparse as its neighbours). Ranking: d &gt; b &gt; a = c.</div>`,
    why:"reach-dist smooths distances inside a cluster (a close point gets the neighbour's k-distance), so only genuinely isolated points get low lrd.",
-   trap:"Writing 2-dist(b) = 4: b's two nearest are a and c, both at 1."}],
+   trap:"Writing 2-dist(b) = 4: b's two nearest are a and c, both at 1."},
+  {id:"ex_m5t4_2", topic:"m5t4", title:"COMP B deck: LOF in one dimension, k = 2",
+   category:"LOF",
+   recog:"Values on a line, k given, “is A an outlier compared with B, C, D?”.",
+   need:"dist = |p − q|; k-distance; reach-dist = max(k-distance(o), dist(p, o)); lrd = k/Σreach-dist; LOF = average lrd of neighbours / lrd(p).",
+   q:"A = 0, B = 8, C = 9, D = 10. Using k = 2, compute the LOF of every point.",
+   steps:[
+    "2-distances: A 9 (B 8, C 9) · B 2 (C 1, D 2) · C 1 (B 1, D 1) · D 2 (C 1, B 2).",
+    "Reach-dist: A→B max(2, 8) = 8, A→C max(1, 9) = 9 · B→C 1, B→D 2 · C→B 2, C→D 2 · D→C 1, D→B 2.",
+    "lrd: A 2/17 = <b>0.118</b> · B 2/3 = 0.667 · C 2/4 = 0.5 · D 2/3 = 0.667.",
+    "LOF(A) = [(0.667 + 0.5)/2]/0.118 = 0.583/0.118 = <b>4.96</b>; LOF(B) = 0.583/0.667 = 0.87; LOF(C) = 0.667/0.5 = 1.33; LOF(D) = 0.87."],
+   answer:`<div class="answer"><b>A</b> is the outlier (LOF ≈ 4.96, about 5 times sparser than its neighbours); B, C, D are normal (0.87 to 1.33).</div>`,
+   why:"LOF compares a point's density with its neighbours', so it is a ratio, not a raw distance.",
+   trap:"Using dist(p, o) instead of the max with k-distance(o) in the reachability step."}],
  practice:[
   {id:"p_m5t4_1", d:"moderate", marks:10, q:"Four points on a line: P = 1, Q = 2, R = 4, S = 9. Using k = 2 and distance |x − y|, compute the LOF of each point and identify the outlier.",
    hint:"2-distances: P 3, Q 2, R 3, S 7.",
@@ -5232,7 +5284,7 @@ LOF(p)           = [ Σ lrd(o) / |N_k(p)| ] / lrd(p)</div>
 TOPICS.push({
  id:"m5t5", m:"m5", title:"SMOTE: Synthetic Minority Over-sampling Technique",
  classification:"bonly", priority:"high", core:true, type:"problem-solving", marks:5, los:["LO 5.6"],
- src:"Syllabus 5.6 · no class slides received; standard treatment (Chawla et al., 2002)",
+ src:"COMP B Module 5 deck (SMOTE, k = 2 and k = 3 examples) · Chawla et al., 2002",
  summary:"Balance a rare class by creating new minority points on the line between a minority point and one of its nearest minority neighbours.",
  whatIs:`<p>Anomaly data are <b>imbalanced</b>: frauds, faults and attacks are a tiny share of the records. A classifier trained on such data can score 98% accuracy by calling everything normal. <b>SMOTE</b> fixes the training set by adding <b>synthetic</b> minority-class points, instead of duplicating the existing ones.</p>`,
  needToKnow:[
@@ -5309,7 +5361,20 @@ Synthetic points needed to balance = (majority count) − (minority count)</div>
     "After SMOTE: 950 normal and 950 fraud, 1,900 training records in all."],
    answer:`<div class="answer"><b>900 synthetic records</b>, 18 from each original fraud record (1800% over-sampling). The test set is left untouched.</div>`,
    why:"Balancing means bringing the minority count up to the majority count.",
-   trap:"Answering 950. That is the final minority count, not the number created."}],
+   trap:"Answering 950. That is the final minority count, not the number created."},
+  {id:"ex_m5t5_3", topic:"m5t5", title:"COMP B deck: SMOTE with k = 3",
+   category:"SMOTE",
+   recog:"Minority points, k and λ given; “generate a synthetic point”.",
+   need:"Distances from the base point to the other minority points, keep the k nearest, Z = P + λ(Q − P).",
+   q:"Minority points P1(2,3), P2(4,5), P3(1,2), P4(3,1), P5(5,4), P6(6,2). Base point P1, k = 3; the randomly chosen neighbour is P4 and λ = 0.4. Generate the synthetic point.",
+   steps:[
+    "Distances from P1: P3 √2 = 1.41 · P4 √5 = 2.24 · P2 √8 = 2.83 · P5 √10 = 3.16 · P6 √17 = 4.12.",
+    "k = 3 nearest: <b>P3, P4, P2</b>. The random pick is Q = P4(3, 1).",
+    "Q − P = (1, −2); λ(Q − P) = (0.4, −0.8).",
+    "Z = (2 + 0.4, 3 − 0.8) = <b>(2.4, 2.2)</b>."],
+   answer:`<div class="answer">Synthetic point Z = (2.4, 2.2), 40% of the way from P1 to P4. The minority class now has 7 points.</div>`,
+   why:"The new point lies on the segment between two real minority points, so it is plausible but not a copy.",
+   trap:"Choosing Q from outside the k nearest (P5 or P6), or using majority-class points as neighbours."}],
  practice:[
   {id:"p_m5t5_1", d:"standard", marks:5, q:"Minority point P(1, 2) has nearest minority neighbour Q(5, 4). Generate synthetic points for λ = 0.25 and λ = 0.75.",
    a:`<div class="formula">Q − P = (4, 2)
@@ -5831,9 +5896,6 @@ const RESULT_ANALYSIS = (function(){
   ex_m3t7_1: A("F = 1.5 &lt; 4.26, so H₀ is accepted: <b>the wheat varieties do not differ significantly</b>.",
     "The variation between varieties (MS = 4.0) is only 1.5 times the variation within them (2.67), which is the kind of difference chance alone produces.",
     "ANOVA is a yes/no test for any difference. It does not say which variety is better."),
-  ex_m3t7_2: A("<b>Seeds: F = 4 &lt; 5.14, so not significant. Fertilizers: F = 6 &gt; 4.76, so significant.</b>",
-    "So the fertilizer matters, but the seed variety does not. Fertilizer Y has the lowest mean yield (3) and Z the highest (6.3).",
-    "Seeds are only just short of significance (4 vs 5.14), so a bigger trial might change that. Say so."),
   p_m3t7_1: A("F = 12 &gt; 5.14, so H₀ is rejected: <b>the teaching methods differ significantly</b>.",
     "The group means rise steadily (5, 7, 9), with Method 3 the best. ANOVA only says the means are not all equal, so a follow-up comparison would be needed to confirm which pairs differ."),
 
@@ -5906,6 +5968,44 @@ TOPICS.forEach(t => {
   (t.examples || []).forEach(e => { if(RESULT_ANALYSIS[e.id]) e.analysis = RESULT_ANALYSIS[e.id]; });
   (t.practice || []).forEach(p => { if(RESULT_ANALYSIS[p.id]) p.analysis = RESULT_ANALYSIS[p.id]; });
 });
+
+/* =====================================================================
+   SUBTOPICS — sub-m12.js, sub-m34.js, sub-m56.js
+   Every topic is split into small study pages. A subtopic owns some of its
+   parent's examples and practice questions (each item sits in exactly one
+   subtopic), so progress ids and totals are unchanged. The self-study topics
+   arrive as new parent topics, with their own questions.
+   ===================================================================== */
+const SUBDATA = window.ADS_SUBS || {subs:[], newItems:{}, analysis:{}, parents:[]};
+SUBDATA.parents.forEach(p => TOPICS.push(p));
+const SUBS = [], SUBS_OF = {};
+(function(){
+  const byId = {};
+  TOPICS.forEach(t => byId[t.id] = t);
+  Object.keys(SUBDATA.newItems).forEach(pid => {
+    const t = byId[pid], n = SUBDATA.newItems[pid];
+    if(!t) return;
+    t.examples = (t.examples || []).concat(n.examples || []);
+    t.practice = (t.practice || []).concat(n.practice || []);
+  });
+  TOPICS.forEach(t => (t.examples || []).concat(t.practice || []).forEach(x => {
+    if(!x.analysis && SUBDATA.analysis[x.id]) x.analysis = SUBDATA.analysis[x.id];
+  }));
+  SUBDATA.subs.forEach(d => {
+    const t = byId[d.p];
+    if(!t) return;
+    const find = (list, id) => (list || []).find(x => x.id === id);
+    const o = Object.assign({}, d, {
+      m:t.m, parent:t, sub:true, summary:d.sum, los:t.los, core:t.core,
+      priority: d.tag === "self" ? "medium" : t.priority,
+      type: d.kind === "num" ? "problem-solving" : "theory",
+      examples: d.items.map(id => find(t.examples, id)).filter(Boolean),
+      practice: d.items.map(id => find(t.practice, id)).filter(Boolean)
+    });
+    SUBS.push(o);
+    (SUBS_OF[t.id] = SUBS_OF[t.id] || []).push(o);
+  });
+})();
 
 /* =====================================================================
    QUIZ BANK
@@ -6385,7 +6485,7 @@ const FORMULAE = [
  {f:"t = d̄ / (s_d/√n),  df = n − 1", m:"Paired t on differences d", w:"Before/after on the same subjects", r:"m3t6"},
  {f:"F = MS between / MS within", m:"One-way ANOVA; df (k − 1, n − k)", w:"Three or more group means", r:"m3t7"},
  {f:"SS between = Σ nⱼ(X̄ⱼ − X̿)²,  SS within = ΣΣ(X − X̄ⱼ)²", m:"One-way sums of squares", w:"ANOVA table", r:"m3t7"},
- {f:"SS cols = ΣTⱼ²/nⱼ − T²/n,  SS rows = ΣTᵢ²/nᵢ − T²/n", m:"Two-way ANOVA; residual = total − cols − rows, df (c−1)(r−1)", w:"Two factors, one value per cell", r:"m3t7"}]},
+ {f:"Two-way ANOVA: two factors, two F-ratios", m:"Comparison with one-way only; no numerical", w:"A grid of two factors", r:"m3t7"}]},
 {g:"Module 4 — Regression", items:[
  {f:"a = [nΣxy − ΣxΣy] / [nΣx² − (Σx)²]", m:"Slope of y′ = ax + b", w:"Simple least-squares line", r:"m4t1"},
  {f:"b = (Σy − aΣx)/n = ȳ − a x̄", m:"Intercept", w:"After the slope", r:"m4t1"},
@@ -6421,7 +6521,7 @@ const FORMULAE = [
    ===================================================================== */
 const AB_MAP = {
  note:"Both divisions follow the same official syllabus (CEPEC7041), so at module level the coverage is identical. The differences are in worked examples, emphasis and a handful of sub-topics. Where COMP A and COMP B use different examples for the same concept, that is noted rather than merged.",
- sameness:"Every one of the 24 Module 1–2 topics is taught to COMP B. 20 of the 24 are also clearly present in the COMP A material, making them COMMON — the highest study priority.",
+ sameness:"Every topic is taught to COMP B. Module 1–2: 20 of the 24 topics are also clearly present in the COMP A material. Modules 3–5: all 16 topics appear in both, but with the method differences listed below. Module 6: COMP B only (no COMP A material received).",
  rows:[
  {topic:"Definition of Data Science, AI/ML/DS relationship", a:true, b:true, c:"common", note:"Identical definition in both. COMP B adds the traditional-programming vs ML input/output diagram."},
  {topic:"Volume, Dimensionality, Complexity", a:true, b:true, c:"common", note:"COMP A drills it harder — the Apollo Hospital case study and a three-dataset ranking exercise. Worth borrowing for practice."},
@@ -6454,10 +6554,129 @@ const AB_MAP = {
  {topic:"Correlation — types, causation, Karl Pearson r", a:true, b:true, c:"common", note:"Large in both. Class notes tick Karl Pearson's method and cross out the other four."},
  {topic:"Concurrent deviation method", a:false, b:true, c:"bonly", note:"Named in the COMP B list of correlation methods, but crossed out in the class notes — awareness only."},
  {topic:"Univariate visualization: box plot", a:true, b:true, c:"common", note:"Class notes work a complete box plot with outlier detection."},
- {topic:"Distribution chart · Normal distribution · Empirical rule", a:false, b:true, c:"bonly", note:"The normal equation and 68–95–99.7 rule are in the COMP B deck and the teacher's formula sheet."},
+ {topic:"Distribution chart · Normal distribution · Empirical rule", a:false, b:true, c:"bonly", note:"In Module 2 the normal equation and 68–95–99.7 rule are COMP B only (deck and formula sheet). COMP A teaches the same equation and rule later, in its Module 3 deck."},
  {topic:"Multivariate visualization: scatter, matrix, bubble", a:true, b:true, c:"common", note:"Same three charts in both."},
- {topic:"Lorenz curve", a:false, b:true, c:"bonly", note:"Mentioned in the COMP B deck. Low priority — not in the MSE focus list."}
+ {topic:"Lorenz curve", a:false, b:true, c:"bonly", note:"Mentioned in the COMP B deck. Low priority — not in the MSE focus list."},
+ /* ---- Modules 3–6 (added 21 Nov 2026 from the COMP A M3, M4 and M5 material) ---- */
+ {m:"m3", topic:"Normal distribution: z, areas from the z-table, empirical rule", a:true, b:true, c:"common", note:"Same method in both: z = (X − μ)/σ, area 0→z from the table, add or subtract from 0.5. COMP A adds reverse questions (find z from an area)."},
+ {m:"m3", topic:"Poisson distribution", a:true, b:true, c:"common", note:"Same formula P(r) = e<sup>−λ</sup>λ<sup>r</sup>/r!. COMP A adds λ = np (Poisson as an approximation to the binomial) and a find-λ-from-a-ratio problem."},
+ {m:"m3", topic:"Other distributions: binomial, uniform, exponential, geometric", a:true, b:false, c:"aonly", note:"COMP A's overview slides only. No numericals."},
+ {m:"m3", topic:"Sampling techniques (probability and non-probability)", a:true, b:false, c:"aonly", note:"COMP A only: simple random, systematic, stratified, cluster; convenience, snowball, quota, judgement."},
+ {m:"m3", topic:"Central limit theorem · Confidence interval", a:true, b:true, c:"common", note:"Same formula x̄ ± z·σ/√n. COMP A adds one-tailed bounds and checks H₀ by asking whether μ₀ lies inside the interval."},
+ {m:"m3", topic:"Hypothesis-testing procedure · Type I and Type II errors", a:true, b:true, c:"common", note:"<b>Method difference:</b> COMP B uses 5 steps, compares with the critical value and says “accept H₀”. COMP A uses 7 steps, allows a p-value and says “fail to reject H₀”. Only COMP B names the producer's and consumer's risk."},
+ {m:"m3", topic:"Z-test for a single mean", a:true, b:true, c:"common", note:"Same statistic. COMP B gives the z-or-t choice table and names the four large-sample tests."},
+ {m:"m3", topic:"t-tests: one-sample, independent, paired", a:true, b:true, c:"common", note:"<b>Method difference:</b> for a paired test COMP B takes d = Before − After, COMP A takes d = After − Before, which flips the sign of t. COMP A's formula slide also shows an unpooled two-sample t."},
+ {m:"m3", topic:"One-way ANOVA", a:true, b:true, c:"common", note:"Same SS-between / SS-within / F table. COMP B defines the grand mean as the mean of the sample means; COMP A uses the mean of all observations. They are equal only when the groups are the same size."},
+ {m:"m3", topic:"Two-way ANOVA (numerical, T²/N correction factor)", a:false, b:true, c:"bonly", note:"Only COMP B works a two-way numerical (seeds × fertilizers, one value per cell, no interaction). COMP A describes two-way ANOVA in words only, with an interaction effect."},
+ {m:"m4", topic:"Simple linear regression: slope and intercept", a:true, b:true, c:"common", note:"<b>Notation clash:</b> COMP B writes y = ax + b, so <b>a is the slope</b>. COMP A writes Y = β₀ + β₁X, and its textbook slides use Y = a + bX, so <b>a is the intercept</b> there."},
+ {m:"m4", topic:"Two lines of regression (Y on X and X on Y)", a:true, b:false, c:"aonly", note:"COMP A works both regression lines by deviations from assumed means: b<sub>yx</sub> = [NΣd<sub>x</sub>d<sub>y</sub> − Σd<sub>x</sub>Σd<sub>y</sub>]/[NΣd<sub>x</sub>² − (Σd<sub>x</sub>)²]. COMP B fits Y on X only."},
+ {m:"m4", topic:"Error term · R², MAE, MSE, RMSE, MAPE", a:true, b:true, c:"common", note:"Same formulas in both."},
+ {m:"m4", topic:"Multiple linear regression · partial regression coefficients", a:true, b:true, c:"common", note:"Same deviation-sum method (Σx₁², Σx₂², Σx₁x₂, Σx₁y, Σx₂y) and the same b₁, b₂, b₀ formulas. COMP A has its own solved example (sales, advertising, competitors)."},
+ {m:"m4", topic:"Overall F-test · t-test for each coefficient", a:true, b:true, c:"common", note:"Same F table from R². SE(b) is written differently but gives the same number: COMP B uses √[MSE / (Σx₁²(1 − r₁₂²))], COMP A uses √(MSE × c₁₁) with c₁₁ = Σx₂²/D."},
+ {m:"m5", topic:"Outliers · causes · types · why detect them", a:true, b:true, c:"common", note:"Both decks list the same causes (data entry, measurement, experimental, intentional, data processing, natural variation); COMP A adds sampling error. COMP B adds univariate and multivariate outliers to global, contextual and collective. Only COMP A covers outlier vs anomaly and handling (trimming, capping, binning)."},
+ {m:"m5", topic:"Statistical detection: z-score, IQR / box plot", a:true, b:true, c:"common", note:"<b>Method difference:</b> COMP B's z-score uses the <b>sample</b> SD, √[Σ(x − μ)²/(n − 1)]. COMP A divides by n, and drops the threshold to ±2 for small data. IQR fences are the same in both: Q1 = (N + 1)/4-th value, Q3 = 3(N + 1)/4-th value. Only COMP A adds the percentile method."},
+ {m:"m5", topic:"Distance-based detection (kNN)", a:true, b:true, c:"common", note:"Same score in both (mean distance to the k nearest neighbours, Euclidean). <b>Threshold differs:</b> COMP B gives a fixed number (score &gt; 3); COMP A derives it from the scores with Q3 + 1.5·IQR."},
+ {m:"m5", topic:"Density-based detection: DBSCAN", a:true, b:true, c:"common", note:"Same rules in both (ε, MinPts counted including the point itself, core, border and noise). COMP B: 12 points, ε = 1.9, MinPts = 4, plus advantages, disadvantages and applications."},
+ {m:"m5", topic:"Local Outlier Factor (LOF)", a:true, b:true, c:"common", note:"Same four steps. Both main decks use <b>Euclidean</b> distance on a(0,0), b(0,1), c(1,1), d(3,0), giving LOF(d) = 2.17. The older COMP B handout works the same points with <b>Manhattan</b> distance, giving 2.00. COMP B also has a 1-D example (A = 0, B = 8, C = 9, D = 10 gives LOF(A) = 4.96)."},
+ {m:"m5", topic:"SMOTE · imbalanced data", a:true, b:true, c:"common", note:"Same formula: Z = P + λ(Q − P). COMP B works two examples (k = 2 and k = 3, λ = 0.4). Only COMP A covers the accuracy trap and under-, over- and hybrid sampling."},
+ {m:"m6", topic:"Module 6: time series (decomposition, smoothing, evaluation)", a:false, b:true, c:"bonly", note:"No COMP A material for Module 6 has been received. Everything here follows the COMP B deck and the two decomposition videos."}
 ]};
+
+/* Per-topic COMP A vs COMP B flags for Modules 3–6, merged into TOPICS below.
+   crucial = a real method or notation difference that changes what you write or the number you get.
+   Each crucial item says what COMP B does and what to do in the paper. */
+const AB_TOPIC = {
+ m3t1:{c:"common",
+  aExtras:["COMP A also asks the reverse question: given an area, find z. For example, P(0 ≤ Z ≤ z₁) = 0.4938 gives z₁ = 2.50, and P(Z ≤ z₁) = 0.834 gives area 0.334 above the mean, so z₁ = 0.97.",
+   "COMP A has overview slides on other distributions (binomial, uniform, exponential, geometric, chi-square, Student's t): what each models, no numericals."]},
+ m3t2:{c:"common",
+  aExtras:["Poisson as an approximation to the binomial: when n is large and p is small, λ = np. COMP A's example: p = 0.001, n = 2000, so λ = 2 and P(r &gt; 2) = 1 − [P(0) + P(1) + P(2)] = 0.3233.",
+   "Finding λ from a ratio: P(X = 2) = ⅔ P(X = 1) gives λ/2 = ⅔, so λ = 4/3 and P(0) = e<sup>−4/3</sup> = 0.2636."]},
+ m3t3:{c:"common",
+  aExtras:["One-tailed confidence bounds: lower bound x̄ − z<sub>α</sub>σ/√n, upper bound x̄ + z<sub>α</sub>σ/√n.",
+   "Using a CI to test H₀: if μ₀ lies outside the 95% interval, reject H₀ at 5%. COMP A's battery example: (1000.8, 1079.2) excludes 1000, but the 99% interval (988.48, 1091.52) contains it.",
+   "Sampling techniques. Probability: simple random, systematic (every n-th item), stratified (random from each group), cluster (whole groups chosen at random). Non-probability: convenience, snowball, quota, judgement."]},
+ m3t4:{c:"common",
+  crucial:["<b>Decision wording.</b> COMP B writes “accept H₀”; COMP A writes “fail to reject H₀”. <b>Write:</b> “|Z| &lt; Z<sub>α</sub>, so H₀ is accepted (we fail to reject it)”. That reads correctly to an examiner from either division.",
+   "<b>Number of steps.</b> COMP B uses 5 steps (H₀ · H₁ · α · test statistic · conclusion against the critical value). COMP A uses 7 and allows a p-value. <b>Write the COMP B 5 steps</b>: the paper gives tables, not software, so you always compare with a critical value."],
+  bExtras:["Type I error = producer's risk (rejecting a good lot); Type II error = consumer's risk (accepting a bad lot). COMP A does not use these names."],
+  aExtras:["COMP A's tree of tests: parametric (z, t, paired t) vs non-parametric (chi-square, Mann-Whitney, Wilcoxon, sign test). Names only.",
+   "One COMP A slide writes one-tailed nulls as H₀: μ ≥ 50 or μ ≤ 50. COMP B always writes H₀: μ = μ₀. Both are accepted; stay with μ = μ₀."]},
+ m3t5:{c:"common",
+  bExtras:["The z-or-t choice table: n ≥ 30 → z (use s when σ is unknown); n &lt; 30 with σ known → z; n &lt; 30 with σ unknown → t.",
+   "The four large-sample tests by name: single proportion, difference of proportions, single mean, difference of means.",
+   "If |Z| &gt; 3, H₀ can be rejected without naming a level."]},
+ m3t6:{c:"common",
+  crucial:["<b>Paired t: which way to subtract.</b> COMP B takes <b>d = Before − After</b>; COMP A takes d = After − Before. The size of t is the same but the <b>sign flips</b>, and on a one-tailed test so do H₁ and the critical value. <b>Write:</b> “d = Before − After” in the table heading, then set H₁ to match. If training should raise scores, d̄ is negative, so H₁: μ<sub>d</sub> &lt; 0.",
+   "<b>Independent t: use the pooled variance.</b> COMP B: s² = [Σ(x − x̄)² + Σ(y − ȳ)²]/(n₁ + n₂ − 2), t = (x̄ − ȳ)/√(s²/n₁ + s²/n₂). COMP A's pooled S√(1/n₁ + 1/n₂) gives the <b>same</b> number. COMP A's formula slide also shows an unpooled √(s₁²/n₁ + s₂²/n₂), which gives a <b>different</b> t when the sample sizes differ. Do not use it; df = n₁ + n₂ − 2 belongs to the pooled form."],
+  aExtras:["COMP A states the decision with a p-value as an alternative (p &lt; α → reject). The paper gives t-tables, so compare with the critical t."]},
+ m3t7:{c:"common",
+  crucial:["<b>Grand mean when the groups have different sizes.</b> COMP B's step 2 takes the grand mean as the mean of the sample means, (X̄₁ + … + X̄ₖ)/k. COMP A takes the mean of all observations. With <b>equal</b> group sizes (every class example) they are the same. With <b>unequal</b> sizes only the mean of all observations makes SS between + SS within = SS total. <b>Use:</b> grand mean = ΣX / n, and check that SST = SSB + SSW."],
+  bExtras:["The two-way ANOVA numerical (in the COMP B deck, but for this paper two-way is a comparison only, with no numerical): correction factor T²/n, SS between columns = Σ T<sub>j</sub>²/n<sub>j</sub> − T²/n, SS between rows likewise, SS residual = total − columns − rows, residual df = (c − 1)(r − 1). COMP A has no two-way numerical."],
+  aExtras:["COMP A's two-way ANOVA (in words only) includes an <b>interaction effect</b> (does the effect of the method depend on gender?). COMP B's two-way design has one value per cell, so it has no interaction term. For a theory question, name all three hypotheses: factor A, factor B and interaction."]},
+ m4t1:{c:"common",
+  crucial:["<b>What “a” and “b” mean.</b> COMP B writes <b>y = ax + b</b>: a = slope = [nΣxy − ΣxΣy]/[nΣx² − (Σx)²], b = intercept = (Σy − aΣx)/n. COMP A writes Y = β₀ + β₁X, and its textbook slides use <b>Y = a + bX</b>, where a is the <b>intercept</b>. If a paper asks you to “find a and b”, the letters may mean the opposite of what you learned. <b>Always write:</b> “slope = …, intercept = …”, then the full equation ŷ = 1.2x + 3.5. That is correct under either convention."],
+  aExtras:["<b>Two lines of regression.</b> COMP A fits both Y on X and X on Y, using deviations from assumed means: b<sub>yx</sub> = [NΣd<sub>x</sub>d<sub>y</sub> − Σd<sub>x</sub>Σd<sub>y</sub>]/[NΣd<sub>x</sub>² − (Σd<sub>x</sub>)²], then Y − Ȳ = b<sub>yx</sub>(X − X̄); X on Y swaps the roles. COMP B only fits Y on X. If a question asks for “the two regression equations” or “X on Y”, this is the method.",
+   "COMP A's note on the intercept: it only has real meaning if X = 0 lies inside the observed data range."]},
+ m4t2:{c:"common"},
+ m4t3:{c:"common",
+  aExtras:["COMP A's solved example (sales Y, advertising X₁, competitors X₂, n = 8): Σx₁² = 42, Σx₂² = 12, Σx₁x₂ = −21, Σx₁y = 150.5, Σx₂y = −77, so b₁ = 3, b₂ = −1.1667, b₀ = 19.625 and Ŷ = 19.625 + 3X₁ − 1.1667X₂. Same method as COMP B, good extra practice."]},
+ m4t4:{c:"common",
+  aExtras:["SE(b) by COMP A's route: D = Σx₁²Σx₂² − (Σx₁x₂)², c₁₁ = Σx₂²/D, c₂₂ = Σx₁²/D, SE(b₁) = √(MSE·c₁₁). This is algebraically the same as COMP B's √[MSE/(Σx₁²(1 − r₁₂²))], so either gives full marks. COMP A's example: SE(b₁) = 0.1436, t = 20.88; SE(b₂) = 0.2687, t = −4.34; F = 2498.5."]},
+ m5t1:{c:"common",
+  bDeck:"<b>Causes (COMP B deck):</b> data entry errors · measurement errors · experimental errors · intentional outliers (fraud, manipulation) · data processing errors · natural variation.<br>"+
+   "<b>Types (COMP B deck):</b> univariate (a 7-ft adult) · multivariate (an unusual combination of height and weight) · point / global · contextual / conditional (contextual attributes such as season, plus behavioural attributes such as temperature) · collective (a sequence of unusual network activity).<br>"+
+   "<b>Why detecting them matters:</b> they distort the mean and variance · they may come from errors · they can mask, or be, important signals · they break model assumptions · they lead to misleading conclusions.<br>"+
+   "<b>Classification of methods (COMP B tree):</b> Statistics → parametric (z-score) and non-parametric (box plot) · Clustering → density (DBSCAN) · Nearest neighbours → distance (k-NN) and density (LOF).",
+  crucial:["<b>Use the COMP B lists for “causes” and “types”.</b> This page was first written from the textbook, whose four causes are different (data errors, normal variance, another distribution class, distributional assumptions). The COMP B deck's six causes and five types, in the green box above, are what your class was taught. Write those."],
+  aExtras:["COMP A adds <b>sampling error</b> to the causes (data from the wrong population) and groups them as artificial vs natural.",
+   "Outlier vs anomaly (COMP A): an outlier is a statistical idea (far from the bulk); an anomaly is a domain idea (breaks expected behaviour). An impossible login (Mumbai at 10:00, London at 10:05) is an anomaly with no extreme value.",
+   "Handling (COMP A): trimming (remove), capping / winsorization (replace with the IQR fences), discretization / binning, mean or median imputation. Errors are corrected or removed; natural outliers are kept."]},
+ m5t2:{c:"common",
+  bDeck:"<b>Z-score (COMP B):</b> μ = Σx/n, <b>σ = √[Σ(x − μ)²/(n − 1)]</b>, z = (x − μ)/σ; an outlier has z &lt; −3 or z &gt; +3 (empirical rule). Worked example: 30 days of sales → μ = 124.67, σ = 16.97, z from −2.63 to +1.49, so <b>no outliers</b>.<br>"+
+   "<b>IQR (COMP B):</b> sort; Q1 = [(N + 1)/4]-th value, Q3 = [3(N + 1)/4]-th value; fences Q1 − 1.5·IQR and Q3 + 1.5·IQR. Worked example: [−50, −2, 8, …, 99, 1456] → Q1 = 19, Q3 = 64, IQR = 45, fences −48.5 and 131.5, so <b>−50 and 1456</b> are outliers.",
+  crucial:["<b>n − 1 or n in the z-score SD.</b> COMP B divides by <b>n − 1</b> (σ = 16.97 in its example). COMP A divides by n (16.68 on the same data). The z-values shift a little; on a borderline value that changes the verdict. <b>Use n − 1</b> and write the formula on the first line."],
+  aExtras:["COMP A uses <b>±2 for small datasets</b>, because an outlier inflates σ. Example: 16, 17, 19, 19, 19, 20, 20, 30 → z(30) = 2.5, an outlier at ±2 but not at ±3. Stay with ±3 unless the question gives a threshold.",
+   "Percentile method (COMP A only): values below P<sub>k</sub> or above P<sub>100−k</sub> are outliers; P<sub>k</sub> = k(n + 1)/100-th item. Weakness: it always flags a fixed share."]},
+ m5t3:{c:"common",
+  bDeck:"<b>kNN (COMP B):</b> choose K → Euclidean distance table → K nearest of each point → score = mean of the K distances → score &gt; threshold = anomaly. Example: K = 3, threshold = 3; P8 (9, 9) scores 6.63, P1–P7 score 1 to 1.28.<br>"+
+   "<b>DBSCAN (COMP B):</b> ε = radius; minPoints = points needed within ε, <b>counting the point itself</b>. Core: ≥ minPoints within ε. Border: not core, but within ε of a core point. Noise: neither, so an outlier. Advantages: robust to outliers, no need to fix the number of clusters, arbitrary shapes, only 2 parameters. Disadvantages: sensitive to ε and minPoints, struggles with varying density, cannot predict new points.",
+  crucial:["<b>DBSCAN clusters in the COMP B example.</b> The deck ends with “3 clusters”: {P2, P1, P3, P11}, {P5, P4, P6, P7, P8}, {P11, P2, P10, P12}. P2 and P11 are <b>both</b> core points and only 1.41 apart (≤ ε), so the first and third groups are one cluster. The correct result is <b>2 clusters</b> plus noise P9. Write: core P2, P5, P11; border P1, P3, P4, P6, P7, P8, P10, P12; noise P9; Cluster 1 = {P1, P2, P3, P10, P11, P12}, Cluster 2 = {P4, P5, P6, P7, P8}.",
+   "<b>kNN threshold.</b> COMP B uses a given fixed threshold (score &gt; 3). COMP A computes one from the scores (Q3 + 1.5·IQR). Use the threshold the question gives; if none is given, use the IQR rule on the scores and say so."],
+  aExtras:["Why statistics fails (COMP A): for 10, 11, 12, 12, 13, 30, 48, …, 52 the mean (30.7) falls in the gap, so z(30) ≈ 0 and the IQR fences pass it, but 30 has no neighbours."]},
+ m5t4:{c:"common",
+  bDeck:"<b>LOF (COMP B deck):</b> k-distance and N<sub>k</sub>(p) → reach-dist<sub>k</sub>(p, o) = max{k-distance(o), dist(p, o)} → lrd<sub>k</sub>(p) = |N<sub>k</sub>(p)| / Σ reach-dist → LOF(p) = average lrd of the neighbours / lrd(p). LOF ≈ 1 normal, LOF &gt; 1 outlier.<br>"+
+   "1-D example: A = 0, B = 8, C = 9, D = 10, k = 2 → lrd = 0.118, 0.667, 0.5, 0.667 → <b>LOF(A) = 4.96</b>, B 0.87, C 1.33, D 0.87.<br>"+
+   "2-D example (Euclidean): a(0,0), b(0,1), c(1,1), d(3,0), k = 2 → lrd = 0.828, 0.707, 0.828, 0.382 → <b>LOF(d) = 2.17</b>, a and c 0.93, b 1.17.",
+  crucial:["<b>Which distance.</b> The COMP B deck uses <b>Euclidean</b> (LOF(d) = 2.17); the older COMP B handout uses <b>Manhattan</b> on the same points (LOF(d) = 2.00). COMP A uses Euclidean. <b>Use the distance the question names.</b> If it names none, use Euclidean (both decks) and write “using Euclidean distance” as the first line."],
+  aExtras:["COMP A writes the last step as LOF(p) = Σ lrd(neighbours) / (k × lrd(p)), the same value.",
+   "COMP A's reading: LOF &lt; 1 means denser than its neighbours (inside a cluster), so still normal."]},
+ m5t5:{c:"common",
+  bDeck:"<b>SMOTE (COMP B):</b> pick a base minority point P → find its k nearest <b>minority</b> neighbours (Euclidean) → pick one at random, Q → <b>Z = P + λ(Q − P)</b>, λ uniform in [0, 1] → repeat until balanced. Duplicating rows overfits; SMOTE makes new, slightly different points on the line P–Q.<br>"+
+   "Examples: P₁(2, 3), Q = P₂(4, 5), λ = 0.4 → <b>Z = (2.8, 3.8)</b>. With k = 3 among six points, the neighbours are P₃, P₄, P₂; Q = P₄(3, 1), λ = 0.4 → <b>Z = (2.4, 2.2)</b>.",
+  aExtras:["The accuracy trap (COMP A): with 99% normal and 1% fraud, always predicting “normal” scores 99% accuracy and catches no fraud, so use precision, recall, F1.",
+   "Sampling families (COMP A): random undersampling (loses data; for &gt; 10K rows) · random oversampling by duplication (risks overfitting; for &lt; 10K rows) · hybrid (e.g. undersample normal 10,000 → 3,000 and SMOTE fraud 500 → 3,000)."]},
+ m6t1:{c:"bonly"}, m6t2:{c:"bonly"}, m6t3:{c:"bonly"}, m6t4:{c:"bonly"}
+};
+TOPICS.forEach(t => {
+  const x = AB_TOPIC[t.id]; if(!x) return;
+  if(x.c) t.classification = x.c;
+  if(x.crucial) t.abCrucial = x.crucial;
+  if(x.bDeck) t.bDeck = x.bDeck;
+  if(x.bExtras) t.bExtras = (t.bExtras || []).concat(x.bExtras);
+  if(x.aExtras) t.aExtras = (t.aExtras || []).concat(x.aExtras);
+});
+
+/* The COMP A vs COMP B block shown inside a topic's Concept section */
+function abBox(t){
+  const li = a => '<ul class="list" style="margin:0">'+a.map(x => '<li>'+x+'</li>').join("")+'</ul>';
+  let h = "";
+  if(t.bDeck) h += '<div class="box tip"><h5>From the COMP B deck (write it this way)</h5><p style="margin:0">'+t.bDeck+'</p></div>';
+  if(t.abCrucial && t.abCrucial.length) h += '<div class="box mistake"><h5>Crucial COMP A / COMP B difference</h5>'+li(t.abCrucial)+'</div>';
+  if(t.bExtras && t.bExtras.length) h += '<div class="box neutral"><h5>In COMP B only</h5>'+li(t.bExtras)+'</div>';
+  if(t.aExtras && t.aExtras.length) h += '<div class="box neutral"><h5>COMP A goes further (awareness)</h5>'+li(t.aExtras)+'</div>';
+  return h ? '<h4 class="s7-sub-h">COMP A vs COMP B</h4>'+h : "";
+}
 
 /* =====================================================================
    QUICK REVIEW — per module. Appears as the third sub-tab inside each
@@ -6617,7 +6836,7 @@ BUILDING THE TABLE
 <tr><td>Two separate groups, small</td><td>Independent t (pooled s²)</td><td>n₁ + n₂ − 2</td></tr>
 <tr><td>Same subjects before / after</td><td>Paired t on d</td><td>n − 1</td></tr>
 <tr><td>Three or more groups, one factor</td><td>One-way ANOVA, F</td><td>(k − 1, n − k)</td></tr>
-<tr><td>Grid of two factors</td><td>Two-way ANOVA, F</td><td>(c − 1, (c−1)(r−1)) and (r − 1, (c−1)(r−1))</td></tr></tbody></table></div>`},
+<tr><td>Grid of two factors</td><td>Two-way ANOVA (theory: compare with one-way, no numerical)</td><td>—</td></tr></tbody></table></div>`},
 {m:"m3", h:"Module 3 in eight lines", b:`<ol class="list" style="margin-bottom:0">
 <li><b>Normal:</b> z = (X − μ)/σ; same side subtract, opposite sides add, tail = 0.5 − area.</li>
 <li><b>Poisson:</b> e<sup>−m</sup>mˣ/x!, mean = variance = m.</li>
@@ -6682,6 +6901,7 @@ let P = blankProgress();
 /* ---------- indexes built once from the data ---------- */
 const TOPIC_BY_ID = {};
 TOPICS.forEach(t => TOPIC_BY_ID[t.id] = t);
+SUBS.forEach(x => TOPIC_BY_ID[x.id] = x);      /* subtopics open like topics */
 const ALL_EXAMPLES = [];
 TOPICS.forEach(t => (t.examples||[]).forEach(e => ALL_EXAMPLES.push(Object.assign({}, e, {topic:t.id, m:t.m}))));
 const ALL_PRACTICE = [];
@@ -6702,6 +6922,11 @@ function topicSequence(){
   return MODULES.reduce((out, m) => out.concat(sortedTrack(m.id, "theory"), sortedTrack(m.id, "numerical")), []);
 }
 function trackOf(t){ return t.type === "theory" ? "theory" : "numerical"; }
+/* subtopics: numericals first in each module (they carry most of the paper) */
+function subsOf(m, track){ return SUBS.filter(x => x.m === m && (!track || trackOf(x) === track)); }
+function subSequence(){
+  return MODULES.reduce((out, m) => out.concat(subsOf(m.id, "numerical"), subsOf(m.id, "theory")), []);
+}
 function topicsInTrack(m, track){ return topicsOf(m).filter(t => trackOf(t) === track); }
 
 /* ---------- persistence ---------- */
@@ -6728,6 +6953,7 @@ function validateProgress(o){
   if(!looksRight) return {ok:false};
   const d = blankProgress();
   const topicIds    = new Set(TOPICS.map(t=>t.id));
+  const pageIds     = new Set(TOPICS.map(t=>t.id).concat(SUBS.map(x=>x.id)));
   const exampleIds  = new Set(ALL_EXAMPLES.map(e=>e.id));
   const practiceIds = new Set(ALL_PRACTICE.map(p=>p.id));
   const stages      = new Set(["recognise","select","solve","concept"]);
@@ -6752,7 +6978,7 @@ function validateProgress(o){
   d.practice  = pick(o.practice, practiceIds, v => v === true ? true : undefined);
   d.quizTopic = pick(o.quizTopic, topicIds, score);
   d.quizStage = pick(o.quizStage, stages, score);
-  d.lastStudied = (typeof o.lastStudied === "string" && topicIds.has(o.lastStudied)) ? o.lastStudied : null;
+  d.lastStudied = (typeof o.lastStudied === "string" && pageIds.has(o.lastStudied)) ? o.lastStudied : null;
   d.lastVisit   = typeof o.lastVisit === "string" ? o.lastVisit : null;
   d.firstVisit  = typeof o.firstVisit === "string" ? o.firstVisit : today();
   d.streak      = Math.max(0, Math.min(3650, +o.streak || 0));
@@ -6811,7 +7037,7 @@ function progressOf(list){
 }
 function overallProgress(){ return progressOf(TOPICS); }
 function moduleProgress(m){ return progressOf(topicsOf(m)); }
-function trackProgress(track){ return progressOf(TOPICS.filter(t => trackOf(t) === track)); }
+function trackProgress(track){ return progressOf(SUBS.filter(t => trackOf(t) === track)); }
 /* "Core only" (one setting for all five sites): the dashboard and the module
    lists show and count Core topics alone. Topic pages, the pager and every
    other page keep the full course. Tags are provisional until the paper pattern. */
@@ -6853,22 +7079,24 @@ function stageStats(){
 /* ---------- "Study next" — transparent rule order ------------------- */
 /* core: pick from Core topics only (the dashboard passes coreOn()) */
 function studyNext(core){
+  const num = t => trackOf(t) === "numerical" ? 0 : 1;
   const prio = t => (t.priority === "high" ? 0 : t.priority === "medium" ? 1 : 2);
-  const started = t => topicProgress(t).done > 0 ? 0 : 1;
-  const pool = core ? TOPICS.filter(SEM7.isCore) : TOPICS;
+  const pool = core ? SUBS.filter(SEM7.isCore) : SUBS;
+  const firstOpen = list => list.find(x => topicStatus(x.id) !== "done");
 
-  const weak = weakTopics().filter(w => pool.includes(w.topic));
-  if(weak.length) return {topic:weak[0].topic, rule:1};
-
-  const c1 = pool.filter(t => t.priority === "high" && topicStatus(t.id) === "progress");
+  /* 1 · a weak quiz topic: its first unfinished subtopic */
+  for(const w of weakTopics()){
+    const x = firstOpen((SUBS_OF[w.topic.id] || []).filter(y => pool.includes(y)));
+    if(x) return {topic:x, rule:1};
+  }
+  /* 2 · finish what is started, numericals first */
+  const c1 = pool.filter(t => t.priority === "high" && topicStatus(t.id) === "progress").sort((a,b) => num(a)-num(b));
   if(c1.length) return {topic:c1[0], rule:2};
-
-  const c2 = pool.filter(t => t.priority === "high" && topicStatus(t.id) === "none")
-    .sort((a,b) => (trackOf(a)==="numerical"?0:1) - (trackOf(b)==="numerical"?0:1));
+  /* 3 · high priority not started, numericals first */
+  const c2 = pool.filter(t => t.priority === "high" && topicStatus(t.id) === "none").sort((a,b) => num(a)-num(b));
   if(c2.length) return {topic:c2[0], rule:3};
-
-  const c3 = pool.filter(t => topicStatus(t.id) !== "done")
-    .sort((a,b) => prio(a)-prio(b) || started(a)-started(b));
+  /* 4 · anything left */
+  const c3 = pool.filter(t => topicStatus(t.id) !== "done").sort((a,b) => num(a)-num(b) || prio(a)-prio(b));
   if(c3.length) return {topic:c3[0], rule:4};
 
   if(quizOverall().n < QUIZ.length) return {topic:null, view:"quiz", rule:5};
@@ -6919,11 +7147,14 @@ let revealed = {};   /* session-only: which answers are showing */
 
 /* ---------------------------- DASHBOARD ----------------------------- */
 function vDashboard(){
-  const scope = shown(TOPICS), next = studyNext(coreOn()), built = {};
+  const scope = shown(TOPICS), subs = shown(SUBS), next = studyNext(coreOn()), built = {};
   MODULES.forEach(m => { built[m.id] = {pct:progressOf(shown(topicsOf(m.id))).pct}; });
-  return SEM7.ui.dashboard({code:"ads", overall:progressOf(scope),
-    numericals:progressOf(scope.filter(t => trackOf(t) === "numerical")),
-    theory:progressOf(scope.filter(t => trackOf(t) === "theory")),
+  return '<div class="banner info ads-split"><b>End Sem paper:</b> numericals '+EXAM.split.numerical+
+      ', theory '+EXAM.split.theory+'. Every numerical answer ends with its <b>inference</b>. '+
+      'Topics are split into small subtopics; numerical ones open with the theory you need.</div>'+
+    SEM7.ui.dashboard({code:"ads", overall:progressOf(scope),
+    numericals:progressOf(subs.filter(t => trackOf(t) === "numerical")),
+    theory:progressOf(subs.filter(t => trackOf(t) === "theory")),
     next:next.topic ? {kicker:"Study next &middot; Module "+next.topic.m.slice(1), title:next.topic.title, attrs:'data-topic="'+next.topic.id+'"'}
                     : {kicker:"Study next", title:next.view === "quiz" ? "Take the quiz" : "Exam Mode", attrs:'data-go="'+next.view+'"'},
     built, attrs:id => 'data-go="'+id+'"'});
@@ -6932,9 +7163,12 @@ function vDashboard(){
 /* --------------------------- MODULE VIEW ---------------------------- */
 let subTab = {m1:"numerical", m2:"numerical", m3:"numerical", m4:"numerical", m5:"numerical", m6:"numerical"};
 
+const TAG_LABEL = {self:"Self-study", brief:"Comparison only", nonum:"Theory only"};
+function subPill(x){ return x.tag ? pill(x.tag === "self" ? "pred" : "low", TAG_LABEL[x.tag]) : ""; }
 function topicCard(t){
   const tp = topicProgress(t);
-  return SEM7.ui.topicCard({linkTitle:true, title:t.title, summary:esc(t.summary), high:t.priority === "high", pill:prioPill(t.priority),
+  return SEM7.ui.topicCard({linkTitle:true, title:t.title, summary:esc(t.summary),
+    high:!t.sub && t.priority === "high", pill:t.sub ? subPill(t) : prioPill(t.priority),
     state:topicStatus(t.id), done:tp.done, total:tp.total, attrs:'data-topic="'+t.id+'"'});
 }
 
@@ -6942,11 +7176,12 @@ function vModule(mid){
   const m = moduleOf(mid);
   const mp = progressOf(shown(topicsOf(mid)));
   const tab = subTab[mid] || "numerical";
+  const inTrack = tr => shown(subsOf(mid, tr)).filter(x => shown([x.parent]).length);
   let h = SEM7.ui.head({eyebrow:'Module '+m.num, title:esc(m.title),
     progress:{pct:mp.pct, done:mp.done, total:mp.total, unit:"questions done"}});
   h += SEM7.ui.subtabs([
-    {label:"Numericals", n:shown(topicsInTrack(mid,"numerical")).length, on:tab === "numerical", attrs:'data-sub="numerical" data-mid="'+mid+'"'},
-    {label:"Theory", n:shown(topicsInTrack(mid,"theory")).length, on:tab === "theory", attrs:'data-sub="theory" data-mid="'+mid+'"'},
+    {label:"Numericals", n:inTrack("numerical").length, on:tab === "numerical", attrs:'data-sub="numerical" data-mid="'+mid+'"'},
+    {label:"Theory", n:inTrack("theory").length, on:tab === "theory", attrs:'data-sub="theory" data-mid="'+mid+'"'},
     {label:"Quick Review", on:tab === "review", attrs:'data-sub="review" data-mid="'+mid+'"'}]);
 
   if(tab === "review"){
@@ -6955,42 +7190,101 @@ function vModule(mid){
     });
     return h;
   }
-  const list = shown(sortedTrack(mid, tab));
-  if(!list.length) return h + '<div class="empty">'+(coreOn() ? 'No Core topics in this track.' : 'No topics in this track.')+'</div>';
-  list.forEach(t => { h += topicCard(t); });
+  h += tab === "numerical"
+    ? '<p class="lead ads-track-note">Numericals are about 80% of the paper. Each page starts with the theory you need, then the method, then worked questions; finish every answer with the inference.</p>'
+    : '<p class="lead ads-track-note">Theory is about 15&ndash;20% of the paper: learn these as short notes.</p>';
+  /* one group per topic, its subtopics underneath */
+  const groups = shown(topicsOf(mid)).slice().sort((a,b) => (PRIO_RANK[a.priority] ?? 2) - (PRIO_RANK[b.priority] ?? 2))
+    .map(t => ({t, list:(SUBS_OF[t.id] || []).filter(x => trackOf(x) === tab)})).filter(g => g.list.length);
+  if(!groups.length) return h + '<div class="empty">'+(coreOn() ? 'No Core topics in this track.' : 'No topics in this track.')+'</div>';
+  groups.forEach(g => {
+    const gp = progressOf(g.list);
+    h += '<section class="ads-group"><div class="ads-group-h"><h3>'+g.t.title+'</h3>'+
+      '<span class="ads-group-n">'+g.list.length+' subtopic'+(g.list.length === 1 ? "" : "s")+' &middot; '+gp.done+' / '+gp.total+'</span>'+
+      '<button type="button" class="small" data-topic="'+g.t.id+'">Full notes</button></div>';
+    g.list.forEach(x => { h += topicCard(x); });
+    h += '</section>';
+  });
   return h;
 }
 
 /* ---------------------------- TOPIC DETAIL -------------------------- */
 /* the shared six-section study method (SEM7.ui.topic) */
+function exampleMap(e){
+  return {id:e.id, anchor:"ex_"+e.id, title:esc(e.title), q:e.q,
+    tags:e.category ? '<span class="pill">'+esc(e.category)+'</span>' : "",
+    boxes:[e.recog && {h:"How to recognise it", b:e.recog}, e.need && {h:"Concept required", b:e.need}].filter(Boolean),
+    steps:e.steps, answer:e.answer, analysis:e.analysis, analysisTitle:"Inference", why:e.why, trap:e.trap};
+}
+function practiceMap(p){
+  return {id:p.id, anchor:"pr_"+p.id, q:p.q, d:p.d, marks:p.marks, hint:p.hint && esc(p.hint), a:p.a,
+    analysis:p.analysis, analysisTitle:"Inference"};
+}
+const markFn = (kind, id) => kind === "ex"
+  ? {done:!!P.examples[id], attrs:'data-exdone="'+id+'"'}
+  : {done:!!P.practice[id], attrs:'data-prdone="'+id+'"'};
+
 function vTopic(id){
   const t = TOPIC_BY_ID[id];
   if(!t) return '<div class="empty">Topic not found.</div>';
+  if(t.sub) return vSub(t);
   const m = moduleOf(t.m), tp = topicProgress(t), tr = trackOf(t), rc = t.recognition || {}, ea = t.examAnswer || {};
   const nb = SEM7.ui.neighbours(topicSequence(), t.id, x => 'Module '+moduleOf(x).num);
   const side = x => x && {title:x.t.title, note:x.note, attrs:'data-topic="'+x.t.id+'"'};
+  const subs = SUBS_OF[t.id] || [];
+  const list = subs.length ? '<div class="box tip ads-sublist"><h5>Study it in '+subs.length+' small parts</h5><ol>'+
+    subs.map(x => '<li><button type="button" class="ads-sublink" data-topic="'+x.id+'">'+x.title+'</button> '+
+      (trackOf(x) === "numerical" ? pill("low","Numerical") : pill("low","Theory"))+subPill(x)+'</li>').join("")+'</ol></div>' : "";
   return SEM7.ui.topic({
     head:{
       crumb:[{label:'Module '+m.num+' &middot; '+esc(m.title), attrs:'data-go="'+t.m+'"'},
              {label:TRACK_LABEL[tr], attrs:'data-sub="'+tr+'" data-mid="'+t.m+'"'}],
-      title:t.title, meta:prioPill(t.priority)+t.los.map(loPill).join(""),
+      title:t.title, meta:prioPill(t.priority)+pill("low","Full notes")+t.los.map(loPill).join(""),
       progress:{done:tp.done, total:tp.total, unit:"questions worked"}},
-    concept:t.whatIs+t.concept, can:t.needToKnow,
+    diagram:list,
+    concept:t.whatIs+t.concept, can:t.needToKnow, extra:abBox(t),
     answer:[{label:"Short &middot; 2&ndash;3 marks", marks:3, body:ea.short},
             {label:"Medium &middot; 5 marks", marks:5, body:ea.medium},
             {label:"Long &middot; 10 marks", marks:10, body:ea.long}],
     mistakes:t.mistakes,
-    examples:(t.examples || []).map(e => ({id:e.id, anchor:"ex_"+e.id, title:esc(e.title), q:e.q,
-      tags:e.category ? '<span class="pill">'+esc(e.category)+'</span>' : "",
-      boxes:[e.recog && {h:"How to recognise it", b:e.recog}, e.need && {h:"Concept required", b:e.need}].filter(Boolean),
-      steps:e.steps, answer:e.answer, analysis:e.analysis, why:e.why, trap:e.trap})),
-    practice:(t.practice || []).map(p => ({id:p.id, anchor:"pr_"+p.id, q:p.q, d:p.d, marks:p.marks, hint:p.hint && esc(p.hint), a:p.a, analysis:p.analysis})),
+    examples:(t.examples || []).map(exampleMap),
+    practice:(t.practice || []).map(practiceMap),
     recog:{clues:rc.clues, wording:(rc.wording || []).map(esc), first:rc.firstStep, method:rc.method, trap:rc.trap},
     questions:(t.questions || []).map(q => ({q:esc(q.q), marks:q.marks, source:q.source})),
-    mark:(kind, id) => kind === "ex"
-      ? {done:!!P.examples[id], attrs:'data-exdone="'+id+'"'}
-      : {done:!!P.practice[id], attrs:'data-prdone="'+id+'"'},
+    mark:markFn,
     pager:{prev:side(nb.prev), next:side(nb.next), up:{label:'Back to Module '+m.num, attrs:'data-go="'+t.m+'"'}}
+  });
+}
+
+/* a subtopic page: theory first, the method, then its own questions */
+function vSub(x){
+  const t = x.parent, m = moduleOf(x.m), tp = topicProgress(x), tr = trackOf(x), num = tr === "numerical";
+  const nb = SEM7.ui.neighbours(subSequence(), x.id, y => 'Module '+moduleOf(y).num);
+  const side = y => y && {title:y.t.title, note:y.note, attrs:'data-topic="'+y.t.id+'"'};
+  const sibs = SUBS_OF[t.id] || [], pos = sibs.indexOf(x) + 1;
+  const method = x.steps && x.steps.length
+    ? '<h4 class="s7-sub-h">Method, step by step</h4><ol class="s7-steps">'+x.steps.map(s => '<li>'+s+'</li>').join("")+'</ol>' : "";
+  const w = x.write || {};
+  return SEM7.ui.topic({
+    head:{
+      crumb:[{label:'Module '+m.num+' &middot; '+esc(m.title), attrs:'data-go="'+x.m+'"'},
+             {label:TRACK_LABEL[tr], attrs:'data-sub="'+tr+'" data-mid="'+x.m+'"'},
+             {label:t.title, attrs:'data-topic="'+t.id+'"'}],
+      title:x.title, meta:pill("low", (num ? "Numerical" : "Theory")+' &middot; part '+pos+' of '+sibs.length)+subPill(x),
+      progress:{done:tp.done, total:tp.total, unit:"questions worked"}},
+    key:{t:num ? "Theory first" : "In short", b:x.key},
+    concept:(x.theory || "")+method,
+    answer:num
+      ? [{label:"Write the inference", body:x.infer}]
+      : [{label:"Short &middot; 2&ndash;3 marks", marks:3, body:w.short}, {label:"Long &middot; 5 marks", marks:5, body:w.long}],
+    mistakes:x.mistakes,
+    examples:x.examples.map(exampleMap),
+    practice:x.practice.map(practiceMap),
+    recog:{clues:x.clues, trap:x.trap},
+    questions:(x.q || []).map(q => ({q:esc(q.q), marks:q.marks})),
+    mark:markFn,
+    foot:'<div class="btnrow ads-foot"><button type="button" class="btn" data-topic="'+t.id+'">Full notes: '+t.title+'</button></div>',
+    pager:{prev:side(nb.prev), next:side(nb.next), up:{label:'Back to Module '+m.num, attrs:'data-go="'+x.m+'"'}}
   });
 }
 
@@ -7086,7 +7380,7 @@ function vRecognition(){
    '     |\n'+
    '     +-- THREE or more means\n'+
    '     |        +-- one factor                  -> ONE-WAY ANOVA\n'+
-   '     |        +-- two factors (grid)          -> TWO-WAY ANOVA\n'+
+   '     |        +-- two factors (grid)          -> TWO-WAY ANOVA (theory only)\n'+
    '     |\n'+
    '     +-- a RANGE for the mean, not a yes/no  -> CONFIDENCE INTERVAL\n</div>';
 
@@ -7243,8 +7537,9 @@ function vCompare(){
   const nCommon = rows.filter(r=>r.c==="common").length;
   const nB = rows.filter(r=>r.c==="bonly").length;
   const nA = rows.filter(r=>r.c==="aonly").length;
-  /* COMP A material exists for Modules 1–2 only, so the comparison covers those */
-  const ab = TOPICS.filter(t => t.m === "m1" || t.m === "m2"), abp = progressOf(ab);
+  /* COMP A material exists for Modules 1–5 (none for Module 6) */
+  const ab = TOPICS.filter(t => t.m !== "m6"), abp = progressOf(ab);
+  const crucial = TOPICS.filter(t => t.abCrucial && t.abCrucial.length);
 
   let h = '<h1>COMP A vs COMP B</h1><p class="lead">You are in <b>COMP B</b>, so COMP B is the primary syllabus. '+
     'COMP A is analysed here for two reasons: to find the <b>common ground</b>, which is the safest place to spend study time, '+
@@ -7252,7 +7547,7 @@ function vCompare(){
 
   h += '<div class="banner info"><b>How to read this page.</b> '+esc(AB_MAP.note)+'</div>';
   h += '<div class="banner alert"><b>The single most useful finding.</b> At <b>topic</b> level there is almost no difference &mdash; both divisions follow the same syllabus, so all '+ab.length+
-    ' Module 1–2 topics are taught to both. Modules 3–6 are compared once COMP A material for them arrives. The real differences are <b>inside</b> topics, at sub-topic level: '+countBExtras()+
+    ' Module 1–5 topics are taught to both (no COMP A material exists for Module 6). The real differences are <b>inside</b> topics: in Modules 3–5 several are differences of <b>method or notation</b> that change what you write, listed first below. Beyond those, '+countBExtras()+
     ' sub-topics appear in the COMP B material only, and '+countAExtras()+' places where COMP A goes further are flagged for awareness. '+
     'Each one is called out on its own topic page, so you never have to guess which half of a topic is which.</div>';
 
@@ -7261,7 +7556,7 @@ function vCompare(){
    '<div class="stat"><div class="num" style="color:var(--accent)">'+nB+'</div><div class="label">COMP B only</div><div class="sub">Still your syllabus</div></div>'+
    '<div class="stat"><div class="num" style="color:var(--ink-mute)">'+nA+'</div><div class="label">COMP A only</div><div class="sub">Awareness</div></div>'+
    '<div class="stat"><div class="num">'+abp.pct+'%</div><div class="label">Your coverage</div>'+
-     '<div class="sub">across the '+ab.length+' Module 1–2 topics</div>'+pbar(abp.pct, barClass(abp.pct))+'</div>'+
+     '<div class="sub">across the '+ab.length+' Module 1–5 topics</div>'+pbar(abp.pct, barClass(abp.pct))+'</div>'+
    '</div>';
 
   h += '<div class="box tip"><h5>Your priority order</h5>'+
@@ -7269,6 +7564,14 @@ function vCompare(){
    '2. COMP B only         still your syllabus, still examinable\n'+
    '3. COMP A only         awareness only - do not let it displace 1 or 2\n</div>'+
    '<p style="margin:0">'+esc(AB_MAP.sameness)+'</p></div>';
+
+  h += '<h2>Crucial differences: method and notation</h2>'+
+   '<p>Where COMP A and COMP B do the same calculation differently, or use the same letter for different things. Each card says what COMP B does and what to write. They also appear in red on the topic pages.</p>';
+  crucial.forEach(t => {
+    h += '<div class="box mistake"><h5>Module '+moduleOf(t.m).num+' &middot; '+t.title+
+      ' <button class="small" data-topic="'+t.id+'" style="margin-left:6px">Open topic</button></h5>'+
+      '<ul class="list" style="margin:0">'+t.abCrucial.map(x => '<li>'+x+'</li>').join("")+'</ul></div>';
+  });
 
   h += '<h2>Full topic-by-topic map</h2>'+
    '<div class="scroll"><table class="t"><thead><tr><th>Topic / sub-topic</th><th>COMP A</th><th>COMP B</th><th>Classification</th><th>Notes on the difference</th></tr></thead><tbody>';
@@ -7310,28 +7613,37 @@ function vCompare(){
    order plus the timing rules. */
 function vExam(){
   const ov = overallProgress();
-  const order = TOPICS.slice().sort((a,b) => {
+  const order = SUBS.slice().sort((a,b) => {
     const pr = t => (t.priority === "high" ? 0 : t.priority === "medium" ? 1 : 2);
     const st = t => (topicStatus(t.id) === "done" ? 1 : 0);      /* unfinished first */
     const tr = t => (trackOf(t) === "numerical" ? 0 : 1);        /* numericals first */
-    return st(a)-st(b) || pr(a)-pr(b) || tr(a)-tr(b);
+    return st(a)-st(b) || tr(a)-tr(b) || pr(a)-pr(b);
   });
   const left = order.filter(t => topicStatus(t.id) !== "done");
+  const perMark = Math.round(120/EXAM.marks*10)/10;
 
   let h = '<h1>Exam Mode</h1><p class="lead">A running order for the time you have left, and the timing rules. '+
-    'Formulas are in <b>Formulae</b>, recognition trees are in <b>Recognition</b>, and every worked question sits on its own topic page — '+
-    'none of it is repeated here.</p>';
+    'Formulas are in <b>Formulae</b>, recognition trees are in <b>Recognition</b>, and every worked question sits on its own subtopic page.</p>';
 
-  h += '<div class="banner alert"><b>Timing.</b> '+EXAM.marks+' marks in '+EXAM.duration+' is about <b>3 minutes per mark</b>. '+
-    'A 10-mark question deserves roughly 30 minutes, a 5-mark part about 15. If you are 10 minutes into a 5-mark part, leave it and come back.</div>';
+  h += '<div class="banner info"><b>The paper.</b> '+EXAM.splitNote+'</div>';
+  h += '<div class="banner alert"><b>Timing.</b> '+EXAM.marks+' marks in '+EXAM.duration+' is about <b>'+perMark+' minutes per mark</b>. '+
+    'A 10-mark numerical deserves about 24 minutes, a 5-mark part about 12. Keep the last two minutes of every numerical for the inference.</div>';
 
   h += '<div class="card tight"><div class="badge-row"><b>'+ov.done+' of '+ov.total+' questions worked</b>'+
     '<span style="margin-left:auto;font-weight:800;color:var(--accent)">'+ov.pct+'%</span></div>'+pbar(ov.pct, barClass(ov.pct))+'</div>';
 
+  h += '<h2>How to write a numerical for full marks</h2><div class="card"><ol class="list" style="margin-bottom:0">'+
+   '<li><b>Name the method</b> in one line (e.g. “paired t-test, since the same subjects are measured twice”).</li>'+
+   '<li><b>Write H₀ and H₁</b> for every test, and the formula before substituting.</li>'+
+   '<li><b>Show the table</b> of working columns; examiners mark the steps.</li>'+
+   '<li><b>Box the result</b> with its unit.</li>'+
+   '<li><b>Write the inference</b>: what the number means in the words of the question (significant or not, which is better, what share is explained, which point is the outlier).</li>'+
+   '</ol></div>';
+
   h += '<h2>Running order</h2><p class="lead" style="margin-top:-.4rem">'+
     (left.length
-      ? 'Unfinished topics first, highest priority first, numericals ahead of theory — because numericals carry the working marks and take longer.'
-      : 'Everything is worked. Use this list to re-check the high-priority topics, then take the quiz.')+'</p>';
+      ? 'Unfinished subtopics first, numericals ahead of theory (they carry about 80% of the paper), then by priority.'
+      : 'Everything is worked. Use this list to re-check the numericals, then take the quiz.')+'</p>';
 
   h += '<div class="card">';
   order.forEach((t,i) => {
@@ -7339,7 +7651,7 @@ function vExam(){
     h += '<div style="padding:9px 0'+(i?';border-top:1px solid var(--border)':'')+'">'+
       '<div class="badge-row" style="margin-bottom:4px">'+
         '<b style="font-size:.92rem;flex:1">'+statusDot(t.id)+' '+t.title+'</b>'+
-        prioPill(t.priority)+
+        subPill(t)+
         '<span class="pill low">M'+t.m.slice(1)+' &middot; '+(trackOf(t)==="numerical"?"Numerical":"Theory")+'</span>'+
         '<button class="small" data-topic="'+t.id+'">Open</button></div>'+
       '<div class="qmeter">'+pbar(tp.pct, barClass(tp.pct))+'<span class="qn">'+tp.done+' / '+tp.total+'</span></div>'+
@@ -7348,14 +7660,13 @@ function vExam(){
   h += '</div>';
 
   h += '<h2>The last thirty minutes</h2><div class="card"><ol class="list" style="margin-bottom:0">'+
-   '<li>The Module 2 formula block — mean, median, mode, σ, both skewness formulas, r.</li>'+
-   '<li>The correction factor, and the fact that it applies whenever classes have a gap.</li>'+
-   '<li>Mean–median–mode ordering for positive and negative skew.</li>'+
-   '<li>β₂ thresholds: &gt; 3 leptokurtic, = 3 mesokurtic, &lt; 3 platykurtic.</li>'+
-   '<li>Box plot fences: Q₁ − 1.5×IQR and Q₃ + 1.5×IQR.</li>'+
-   '<li>k-fold: train = N − N/k.</li>'+
-   '<li>Data Science vs Data Analytics.</li>'+
-   '<li>The interpretation sentences — after every number, write what it means.</li>'+
+   '<li>Module 2 formula block: mean, median, mode, σ, CV, both skewness formulas, β₂, r.</li>'+
+   '<li>Which test: z (n ≥ 30) · one-sample t · independent t · paired t · one-way ANOVA. Decision: |calculated| ≥ table → reject H₀.</li>'+
+   '<li>Regression: a, b of y′ = ax + b; R², adjusted R², F = (n − k − 1)R² / k(1 − R²).</li>'+
+   '<li>LOF steps: k-distance → reach-dist = max(k-dist(o), d) → lrd → LOF; SMOTE x + λ(x_nn − x); precision, recall, F1.</li>'+
+   '<li>Decomposition: centred MA → Y − T or Y / T → indices sum to 0 or 4 → forecast; MASE &lt; 1 beats naïve.</li>'+
+   '<li>Two-way ANOVA and ARIMA: theory only.</li>'+
+   '<li>After every number, write what it means.</li>'+
    '</ol></div>';
 
   h += '<div class="btn-row" style="margin-top:14px">'+
@@ -7374,15 +7685,21 @@ function searchIndex(){
     const base = "Module "+m.num+" → "+strip(t.title);
     idx.push({kind:"Topic", path:base, title:strip(t.title),
       text:strip(t.whatIs)+" "+strip(t.concept)+" "+t.needToKnow.map(strip).join(" ")+" "+t.summary, go:{topic:t.id}});
+    const owner = id => ((SUBS_OF[t.id] || []).find(x => x.items.includes(id)) || t).id;
     (t.examples||[]).forEach(e => idx.push({kind:"Worked example", path:base+" → Practice",
-      title:e.title, text:strip(e.q)+" "+e.category+" "+strip(e.answer), go:{topic:t.id, anchor:"ex_"+e.id}}));
+      title:e.title, text:strip(e.q)+" "+(e.category||"")+" "+strip(e.answer), go:{topic:owner(e.id), anchor:"ex_"+e.id}}));
     (t.practice||[]).forEach(p => idx.push({kind:"Practice", path:base+" → Practice",
-      title:clip(strip(p.q),80), text:strip(p.q)+" "+strip(p.a), go:{topic:t.id, anchor:"pr_"+p.id}}));
+      title:clip(strip(p.q),80), text:strip(p.q)+" "+strip(p.a), go:{topic:owner(p.id), anchor:"pr_"+p.id}}));
     (t.questions||[]).forEach(q => idx.push({kind:"Likely question", path:base,
       title:q.q, text:q.q, go:{topic:t.id}}));
     idx.push({kind:"Recognition", path:base+" → Question recognition", title:"How to recognise: "+strip(t.title),
       text:t.recognition.clues.map(strip).join(" ")+" "+t.recognition.wording.join(" ")+" "+strip(t.recognition.trap),
       go:{topic:t.id}});
+  });
+  SUBS.forEach(x => {
+    const m = moduleOf(x.m);
+    idx.push({kind:"Subtopic", path:"Module "+m.num+" → "+strip(x.parent.title), title:strip(x.title),
+      text:strip(x.key||"")+" "+strip(x.theory||"")+" "+strip(x.infer||"")+" "+(x.sum||""), go:{topic:x.id}});
   });
   FORMULAE.forEach(g => g.items.forEach(it => idx.push({kind:"Formula", path:"Formulae → "+strip(g.g), title:strip(it.f),
     text:strip(it.f)+" "+strip(it.m)+" "+strip(it.w), go:{view:"formula"}})));
@@ -7479,7 +7796,7 @@ function vSettings(){
    'The study material is untouched and nobody else is affected. This cannot be undone &mdash; export first if you may want it back.</p>'+
    '<button class="sel-bad" id="resetBtn">Reset my progress</button></div>';
 
-  h += '<h2>About</h2><div class="card"><p style="margin-top:0">'+EXAM.code+' '+EXAM.title+' &middot; MSE &middot; '+
+  h += '<h2>About</h2><div class="card"><p style="margin-top:0">'+EXAM.code+' '+EXAM.title+' &middot; '+EXAM.paper+' &middot; '+
    EXAM.marks+' marks &middot; '+EXAM.duration+' &middot; '+EXAM.scope+'. Primary class: '+EXAM.primaryClass+'.</p>'+
    '<p>Built from the official syllabus and MSE scope sheet, the COMP B and COMP A lecture decks, the teacher&rsquo;s formula sheet, '+
    'the handwritten class notes, and CIA&#8209;2.</p>'+
