@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../../shared/sem7.css">
 <script src="../../shared/sem7.js"></script>
 <script src="../../shared/syllabus.js"></script>
+<script src="priority.js"></script>
 <style>
 /* OR only. Everything shared is in ../../shared/sem7.css */
 #searchwrap{display:none; max-width:var(--page); margin:0 auto; padding:0 var(--gutter) 12px}
@@ -882,7 +883,25 @@ var M1_NUM1 = [
       "Evaluate: Z(0,0) = 0; Z(20,0) = 160000; Z(12,6) = 96000 + 72000 = 168000; Z(0,10) = 120000.",
       "Maximum is 168000 at (12, 6)."],
      answer:"The company should produce <b>12 pieces of Model A and 6 of Model B</b>, for a maximum profit of <b>Rs 1,68,000 per week</b>.",
-     trap:"Answer in the problem's language. 'Z = 168000' alone is an incomplete answer; the examiner is looking for the production plan."}
+     trap:"Answer in the problem's language. 'Z = 168000' alone is an incomplete answer; the examiner is looking for the production plan."},
+    /* deck 1.03, slide 30 (the table is an image on the slide). Named in the teacher's ESE note, 25 Nov 2026. */
+    {id:"m1t11e4", title:"Deck — the farmer's 110 hectares, wheat or barley",
+     q:"A farmer has recently acquired a 110 hectare piece of land and has decided to grow wheat and barley on it. The entire production can be sold. Costs, net profits and labour per hectare:"+
+       "<table><tr><th>Variety</th><th>Cost (per ha)</th><th>Net profit (per ha)</th><th>Man-days (per ha)</th></tr>"+
+       "<tr><td>Wheat</td><td>100</td><td>50</td><td>10</td></tr><tr><td>Barley</td><td>200</td><td>120</td><td>30</td></tr></table>"+
+       "The farmer has a budget of US$10,000 and 1,200 man-days available during the planning horizon. Find the optimal solution and the optimal value.",
+     body:dgm(dgFarm(), "Feasible region OABC. The land line x + y = 110 lies wholly outside it, so land is not a binding constraint."),
+     steps:[
+      "<b>Variables.</b> Let x = hectares of wheat and y = hectares of barley.",
+      "<b>Objective.</b> Maximise Z = 50x + 120y (net profit, not cost).",
+      "<b>Constraints.</b> Land: x + y ≤ 110. Budget: 100x + 200y ≤ 10000, i.e. x + 2y ≤ 100. Labour: 10x + 30y ≤ 1200, i.e. x + 3y ≤ 120. Non-negativity: x, y ≥ 0.",
+      "<b>Intercepts.</b> x + y = 110: (110, 0), (0, 110). x + 2y = 100: (100, 0), (0, 50). x + 3y = 120: (120, 0), (0, 40). Binding: (100, 0) on the x-axis and (0, 40) on the y-axis.",
+      "<b>Interior corner.</b> Solve x + 2y = 100 and x + 3y = 120. Subtracting, y = 20, so x = 60. Check land: 60 + 20 = 80 ≤ 110 ✓.",
+      "<b>Corners.</b> O(0, 0), A(100, 0), B(60, 20), C(0, 40).",
+      "<b>Evaluate.</b> Z(O) = 0; Z(A) = 5000; Z(B) = 3000 + 2400 = 5400; Z(C) = 4800.",
+      "Maximum Z = 5400 at B(60, 20)."],
+     answer:"Plant <b>60 hectares of wheat and 20 hectares of barley</b> for a maximum net profit of <b>US$5,400</b>. The budget (6000 + 4000 = 10,000) and the man-days (600 + 600 = 1,200) are both used up; 30 hectares of land are left unplanted.",
+     trap:"The budget constraint uses the <b>cost</b> column and the objective uses the <b>net profit</b> column. Swapping them is the common slip. Draw the land line too and say it is redundant: it does not touch the region."}
   ],
   practice:[
     {id:"m1t11p1", d:"easy", q:"Solve graphically: Minimise Z = 200x + 500y subject to x + 2y ≥ 10, 3x + 4y ≤ 24, x ≥ 0, y ≥ 0.",
@@ -3406,6 +3425,26 @@ function sTxt(x, y, s, cls, anchor){
   return "<text x='"+x+"' y='"+y+"' class='"+(cls || "dg-t")+"'"+(anchor ? " text-anchor='"+anchor+"'" : "")+">"+s+"</text>";
 }
 
+/* Graphical LP: the farmer's wheat (x) and barley (y), feasible region OABC, optimum at B(60, 20) */
+function dgFarm(){
+  function px(x){ return 60 + x*4.1667; }
+  function py(y){ return 262 - y*4; }
+  function pt(x, y){ return px(x).toFixed(1)+" "+py(y).toFixed(1); }
+  var s = svgOpen(600, 300, "Graph of x + 2y ≤ 100, x + 3y ≤ 120 and x + y ≤ 110. Feasible region with corners O, A(100,0), B(60,20), C(0,40); maximum at B");
+  s += "<path d='M"+pt(0,0)+" L"+pt(100,0)+" L"+pt(60,20)+" L"+pt(0,40)+" Z' class='dg-bx hl' style='fill-opacity:.55'/>";
+  s += "<path d='M"+pt(0,0)+" H"+px(122).toFixed(1)+" M"+pt(0,0)+" V"+py(62).toFixed(1)+"' class='dg-ax'/>";
+  [20,40,60,80,100,120].forEach(function(v){ s += sTxt(px(v), py(0)+16, v, "dg-t", "middle"); });
+  [20,40,60].forEach(function(v){ s += sTxt(px(0)-8, py(v)+4, v, "dg-t", "end"); });
+  s += "<path d='M"+pt(0,50)+" L"+pt(100,0)+"' class='dg-ln'/>"+sTxt(px(8), py(50)+4, "x + 2y = 100 (budget)", "dg-tb");
+  s += "<path d='M"+pt(0,40)+" L"+pt(120,0)+"' class='dg-ln2'/>"+sTxt(px(4), py(18), "x + 3y = 120 (man-days)", "dg-t");
+  s += "<path d='M"+pt(50,60)+" L"+pt(110,0)+"' class='dg-ds'/>"+sTxt(px(84), py(34), "x + y = 110 (land)", "dg-t");
+  s += "<circle cx='"+px(60)+"' cy='"+py(20)+"' r='5' fill='var(--accent-ui)'/>";
+  s += sTxt(px(60)+8, py(20)-8, "B(60, 20)  Z = 5400 max", "dg-tb");
+  s += sTxt(px(0)-6, py(0)+16, "O", "dg-t", "end") + sTxt(px(100), py(0)-8, "A", "dg-tb", "middle") + sTxt(px(0)+8, py(40)-6, "C(0, 40)", "dg-t");
+  s += sTxt(px(122), py(0)+4, "x", "dg-t") + sTxt(px(0)+6, py(62)+4, "y", "dg-t");
+  return s + "</svg>";
+}
+
 /* Monte Carlo: a cumulative-probability bar cut into random-number intervals, with one random number landing on it */
 function dgMonteCarlo(){
   var segs = [["00",0,0,"0"],["01–20",1,20,"10"],["21–35",21,35,"20"],["36–85",36,85,"30"],["86–97",86,97,"40"],["98–99",98,99,"50"]];
@@ -5267,7 +5306,7 @@ var TBYID = {};
 TOPICS.forEach(function(t){ TBYID[t.id] = t; });
 
 /* ===== 10b · Important questions list for the End Sem =====
-   Source: _resources/or/Comp B/_Important Questions/0.03 (OR_Important questions.docx, filed 16 Nov 2026).
+   Source: _resources/or/OR Resources/00 Important Questions & Past Papers/0.03 (OR_Important questions.docx, filed 16 Nov 2026).
    29 questions listed, 25 distinct. Nine were already solved on the site; the other sixteen are
    added below. Every one is flagged `imp`, shown with an "Important" tag, moved to the top of its
    topic and listed on the Plan tab. IMP_ADD holds the new items, IMPQ is the list itself. */
@@ -6801,7 +6840,7 @@ function moduleTitle(m){
 }
 function topicCard(t){
   var p = topicProgress(t);
-  return SEM7.ui.topicCard({linkTitle:true, title:esc(t.title), summary:esc(t.summary), high:t.priority === "high", pill:prioPill(t.priority)+impPill(t),
+  return SEM7.ui.topicCard({linkTitle:true, title:esc(t.title), summary:esc(t.summary), high:t.priority === "high", pill:pzTopicPill(t)+prioPill(t.priority)+impPill(t),
     state:topicStatus(t.id), done:p.done, total:p.total, attrs:'data-go="topic" data-id="'+esc(t.id)+'"'});
 }
 function topicSequence(){
@@ -6829,7 +6868,8 @@ function viewDash(){
   app.innerHTML = SEM7.ui.dashboard({code:"or", overall:overallProgress(),
     numericals:trackProgress("problem-solving"), theory:trackProgress("theory"),
     next:nx && {kicker:"Study next &middot; "+esc(moduleName(nx.m)), title:esc(nx.title), attrs:'data-go="topic" data-id="'+esc(nx.id)+'"'},
-    built:built, attrs:function(id){ return 'data-go="mod" data-m="'+id+'"'; }});
+    built:built, attrs:function(id){ return 'data-go="mod" data-m="'+id+'"'; }})
+    .replace('</h1>', '</h1>'+pzDashCard());   /* priority.js: the teacher's note comes first */
 }
 /* ===== 19 · Module tab ===== */
 var subTab = {};   /* session-lifetime only, never persisted */
@@ -6841,6 +6881,7 @@ function viewModule(m){
   var mp = moduleProgress(m), tf = topicsFinished(m);
   var h = SEM7.ui.head({eyebrow:esc(moduleName(m)), title:esc(moduleTitle(m)),
     progress:{pct:mp.pct, done:mp.done, total:mp.total, note:tf.done+' / '+tf.total+' topics finished'}});
+  h += pzModuleStrip(m);   /* the teacher's note for this module (priority.js) */
 
   var cur = subTab[m] || TRACKS[0].id;
   h += SEM7.ui.subtabs(TRACKS.map(function(tr){
@@ -6869,7 +6910,7 @@ function viewTopic(id){
   var t = TBYID[id];
   if (!t){ viewDash(); return; }
   var p = topicProgress(t), trk = TRACKS.filter(function(x){ return x.id === t.type; })[0];
-  var meta = prioPill(t.priority)+impPill(t);
+  var meta = pzTopicPill(t)+prioPill(t.priority)+impPill(t);
   (t.los || []).forEach(function(n){ meta += '<span class="pill">LO'+n+'</span>'; });
   var modLink = 'data-go="mod" data-m="'+esc(t.m)+'"';
   var nb = SEM7.ui.neighbours(topicSequence(), t.id, moduleName);
@@ -7378,7 +7419,7 @@ var searchWrap = document.getElementById("searchwrap");
 var qEl = document.getElementById("q");
 
 /* All six syllabus modules; the ones without material open the shared "pending" page. */
-var NAV = [{k:"dash", label:"Dashboard"}, {k:"plan", label:"Plan"}]
+var NAV = [{k:"dash", label:"Dashboard"}, {k:"prio", label:"Priority"}, {k:"plan", label:"Plan"}]
   .concat(SEM7.syllabus("or").modules.map(function(m){ return {k:"mod", m:m.id, label:"Module "+m.n, pending:!m.built}; }))
   .concat([{k:"recog", label:"Recognition"}, {k:"quiz", label:"Quiz"},
            {k:"formulae", label:"Formulae"}, {k:"exam", label:"Exam Mode"}]);
@@ -7415,6 +7456,7 @@ function render(){
     case "formulae": viewFormulae(); break;
     case "exam":     viewExam(); break;
     case "plan":     viewPlan(); break;
+    case "prio":     viewPrio(); break;
     case "settings": viewSettings(); break;
     case "search":   runSearch(view.q || ""); break;
     default:         viewDash();
@@ -7535,6 +7577,7 @@ document.addEventListener("keydown", function(ev){
 
 /* boot */
 applyTheme(loadTheme());
+pzTagItems();   /* priority.js: tag the teacher's-note questions on their topic pages */
 P = loadProgress();
 touchVisit();
 render();

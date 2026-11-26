@@ -3,9 +3,9 @@
 Files are named `<module>.<nn> [LOs] <description>`. The number is also the recommended
 study order within each module.
 
-> Since 12 Nov 2026 the files live at `_resources/or/<Comp A|Comp B>/<Module folder>/`. Most decks are
-> Comp A; the handwritten notes (N1-N3) and the past IA paper (1.18) are Comp B. Modules 3 and 6 are now
-> numbered (3.01, 6.01-6.10). Module 4 (Dynamic Programming) has one deck, `4.01` in Comp B (filed 14 Nov 2026); see `_ORGANISATION.md`.
+> Since 26 Nov 2026 the files live in one folder, `_resources/or/OR Resources/<folder>/` (Comp A and Comp B
+> merged). The handwritten notes (N1-N3) are in `00 Handwritten Notes (multi-module)`; 1.18-1.20 and the
+> past papers are in `00 Important Questions & Past Papers`. Module 4 has the deck `4.01` and typed notes `4.02`; see `_ORGANISATION.md`.
 
 ## Learning outcomes
 
@@ -49,7 +49,7 @@ full probability set (Pb, P0, Pn, P(n≥k), P(n>k), P(queue non-empty)). N3 also
 
 ## ESE important questions list (all modules)
 
-`Comp B/_Important Questions/0.03`, filed 16 Nov 2026. Where each question is solved on the site:
+`00 Important Questions & Past Papers/0.03`, filed 16 Nov 2026. Where each question is solved on the site:
 
 | Questions | Module | Topic page |
 |---|---|---|

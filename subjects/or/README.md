@@ -2,7 +2,7 @@
 
 > **Folder layout (same in every subject):** `index.html` the site · `README.md` this file ·
 > `_ORGANISATION.md` how the resources are filed and what is missing · `_LO-MAP.md` learning outcomes and
-> files per module. Resources: `_resources/or/<division>/<module>/` (local only, gitignored).
+> files per module. Resources: `_resources/or/OR Resources/<module>/` (local only, gitignored).
 
 A single self-contained `index.html` that trains you to recognise an Operations Research
 exam question, choose the right method, and execute it under time pressure.
@@ -14,6 +14,20 @@ behaves identically opened from disk (`file://`) and published on GitHub Pages.
 **30 marks · 1.5 hours · Modules 1, 2 and 5.**
 
 ---
+
+## Teacher's note for the End Sem (added 25 Nov 2026): highest priority
+
+The teacher's note sets the paper: **Q1** any 5 two-mark questions from Modules 1 + 5 (3 theory + 2
+numerical, payoff matrix etc.) · **Q2** any 2 from Module 3 · **Q3** any 4 from Module 4 (shortest
+path graph question certain) · **Q4** any 1 from Module 6. The questions come from the slides with
+new numbers. Named problems: game theory / saddle point, the dentist and bakery simulations, the
+farmers problem. Module 2 is not in the note.
+
+The **Priority tab** (`priority.js`, note kept verbatim at the top of the file) lists 58 questions
+by paper question. Every row points at a question already solved on its topic page and shares its
+tick. One new item was added: the farmer's 110 hectares (wheat and barley, deck 1.03 slide 30,
+`m1t11e4`, with a graph). The dashboard opens with the note, each module page shows its part of it,
+and the hub timetable for 25–27 Nov is hand-written from it (`shared/studyplan.js`, `FIXED`).
 
 ## ESE important questions list (added 16 Nov 2026)
 
